@@ -23,8 +23,6 @@ See the wiki on how to setup
 
 * **Creepysim** - *Initial work* - [Creepysin](https://github.com/CreepysinStudios)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
