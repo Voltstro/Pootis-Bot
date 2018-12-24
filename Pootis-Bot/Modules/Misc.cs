@@ -28,12 +28,5 @@ namespace Pootis_Bot.Modules
         {
             await Context.Channel.SendMessageAsync("Heres creepysin channel: \n https://bit.ly/2KfKeAf");
         }
-
-        [RequireUserPermission(GuildPermission.Administrator)]
-        [Command("jackgay")]
-        public async Task JackGay()
-        {
-            await Context.Channel.SendMessageAsync("Yes jack is very gay.");
-        }
     }
 }
