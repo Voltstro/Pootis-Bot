@@ -17,7 +17,7 @@ Visual Studio 2017
 
 ### Setup
 
-See the wiki on how to setup
+[View this wiki page on how to setup and build](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Building-Pootis-Bot)
 
 ## Authors
 
