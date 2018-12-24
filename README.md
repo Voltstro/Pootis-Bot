@@ -21,7 +21,7 @@ Visual Studio 2017
 
 ## Authors
 
-* **Creepysim** - *Initial work* - [Creepysin](https://github.com/CreepysinStudios)
+* **Creepysin** - *Initial work* - [Creepysin](https://github.com/CreepysinStudios)
 
 ## License
 
