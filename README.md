@@ -21,7 +21,7 @@ See the wiki on how to setup
 
 ## Authors
 
-* **Creepysim** - *Initial work* - [PurpleBooth](https://github.com/CreepysinStudios)
+* **Creepysim** - *Initial work* - [Creepysin](https://github.com/CreepysinStudios)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
