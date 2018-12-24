@@ -25,7 +25,7 @@ Visual Studio 2017
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/CreepysinProjects/Pootis-Bot/blob/master/LICENSE) file for details
 
 ## Quick Notes
 
