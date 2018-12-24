@@ -30,4 +30,8 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 ## Quick Notes
 
 * This is the first piece of software that I have publicly release ever, there are bound to be mistakes
+* This bot is still under heavy development, everything is subject to change
+* The name 'Pootis-Bot' was suggested by my friend
+* 
+* The robot heavy icon is Valves
 * Thanks for discord for the discord.NET API
