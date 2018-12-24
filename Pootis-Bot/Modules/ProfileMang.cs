@@ -8,6 +8,8 @@ using Pootis_Bot.Core.UserAccounts;
 
 namespace Pootis_Bot.Modules
 {
+    //Profile Managment commands
+
     public class ProfileMang : ModuleBase<SocketCommandContext>
     {      
         [Command("MakeNotWarnable")]
