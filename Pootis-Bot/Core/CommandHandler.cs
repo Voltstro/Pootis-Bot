@@ -21,7 +21,7 @@ namespace Pootis_Bot.Core
 
         private async Task HandleCommandAsync(SocketMessage s)
         {
-            var msg = s as SocketUserMessage;
+            SocketUserMessage msg = s as SocketUserMessage;
             if (msg == null) return;
             var context = new SocketCommandContext(_client, msg);
             int argPos = 0;
@@ -31,7 +31,9 @@ namespace Pootis_Bot.Core
                 var result = await _service.ExecuteAsync(context, argPos);
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(result.ErrorReason);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
             }
         }

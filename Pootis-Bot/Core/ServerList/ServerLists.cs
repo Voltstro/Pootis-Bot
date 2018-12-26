@@ -8,7 +8,7 @@ namespace Pootis_Bot.Core.ServerList
     {
         private static List<ServerList> serverLists;
 
-        private static string serverListFile = "Resources/serverlist.json";
+        private readonly static string serverListFile = "Resources/serverlist.json";
 
         static ServerLists()
         {

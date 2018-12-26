@@ -8,6 +8,8 @@
 
         public ulong welcomeID;
 
+        public string staffRoleName;
+
         public string adminRoleName;
     }
 }
