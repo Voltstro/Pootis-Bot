@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Pootis_Bot.Core.ServerList;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,23 @@ namespace Pootis_Bot.Modules
 {
     public class ServerSetup : ModuleBase<SocketCommandContext>
     {
+        [Command("setup")]
+        [RequireOwner]
+        public async Task Setup()
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle("Setup Commands");
+            embed.WithDescription($"\nSetup commands for {Config.bot.botName}.\n\n" +
+                $"'setupwelcomeid [Welcome ChannelID]' -- Use this to setup the welcome channel ID" +
+                $"'togglewelcome' -- Toggels between enabling the welcome message or not " +
+                $"\'setupadmin [Admin Role Name]' -- The admin role name" +
+                $"\n'setupstaff [Staff Role Name' -- The staff role name" +
+                $"");
+            embed.WithColor(new Color(0, 255, 0));
+
+            await Context.Channel.SendMessageAsync("", false, embed);
+        }
+
         [Command("setupwelcomeid")]
         [RequireOwner]
         public async Task SetupWelcomeID(ulong ID)
@@ -40,6 +58,17 @@ namespace Pootis_Bot.Modules
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync("Admin role was set to " + adminRoleName);
+        }
+
+        [Command("setupstaff")]
+        [RequireOwner]
+        public async Task SetupStaff(string staffRoleName)
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+            server.staffRoleName = staffRoleName;
+            ServerLists.SaveServerList();
+
+            await Context.Channel.SendMessageAsync("Staff role was set to " + staffRoleName);
         }
 
         [Command("addserver")]

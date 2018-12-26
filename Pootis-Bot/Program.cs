@@ -84,7 +84,7 @@ namespace Pootis_Bot
                 if (input.Trim().ToLower() == "exit")
                 {
                     Console.WriteLine("Shutting down...");
-                    await _client.SetGameAsync("Bot Shutting down");
+                    await _client.SetGameAsync("Bot shutting down");
                     await _client.LogoutAsync();
                     _client.Dispose();
                     Console.WriteLine("Press any key to quit...");
