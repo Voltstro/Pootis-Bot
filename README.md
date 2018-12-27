@@ -1,4 +1,8 @@
-# Pootis-Bot
+<img src="https://raw.githubusercontent.com/CreepysinProjects/Pootis-Bot/master/Pootis-Bot/icon.ico" align="right" />
+
+# Pootis-Bot 
+
+![MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![https://www.nuget.org/packages/Discord.Net/](https://img.shields.io/nuget/v/Discord.Net.svg)
 
 Pootis-Bot an open source C# Discord bot
 
@@ -11,8 +15,7 @@ These instructions will get you a copy of the project up and running on your loc
 Things you need
 
 ```
-Visual Studio 2017
-.NET Core 2.1
+.NET Core 2.2
 ```
 
 ### Setup
@@ -31,7 +34,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 * This is the first piece of software that I have publicly release ever, there are bound to be mistakes
 * This bot is still under heavy development, everything is subject to change
-* The name 'Pootis-Bot' was suggested by my friend
+* The name 'Pootis-Bot' was suggested by my friend. Yes, I know what game it is from
 
 * The robot heavy icon is Valves
 * Thanks for discord for the discord.NET API
