@@ -21,11 +21,11 @@ namespace Pootis_Bot
 
         public async Task StartAsync()
         {          
-            if (Config.bot.token == "" || Config.bot.token == null) //Makes sure that the token is not null or empty
+            if (Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
             {
                 Console.WriteLine("The token was null or not present.");
 
-                Config.SaveConfig(ServerConfigToken(), ServerConfigPrefix(), ServerConfigName());
+                Config.SaveConfig(ServerConfigToken(), ServerConfigPrefix(), ServerConfigName(), null, null);
             }
 
             Console.Title = Config.bot.botName + " Console";
@@ -51,7 +51,7 @@ namespace Pootis_Bot
         {
             if (isBotOn == false)
             {
-                await _client.LoginAsync(TokenType.Bot, Config.bot.token);
+                await _client.LoginAsync(TokenType.Bot, Config.bot.botToken);
                 isBotOn = true;
             }
             else

@@ -23,18 +23,17 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
-        [Command("checkrole")]
-        public async Task CheckRole(string _role)
+        [Command("hasrole")]
+        public async Task HasRole(string _role, SocketGuildUser user)
         {
-            var user = Context.User as SocketGuildUser;
             var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == _role);
             if (user.Roles.Contains(role))
             {
-                await Context.Channel.SendMessageAsync(Context.User + " has the role " + _role);
+                await Context.Channel.SendMessageAsync(user + " has the role '" + _role + "'");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(Context.User + " Doesn't have the " + _role);
+                await Context.Channel.SendMessageAsync(user + " Doesn't have the role '" + _role + "'");
             }
         }
     }
