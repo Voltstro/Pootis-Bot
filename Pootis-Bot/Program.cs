@@ -25,7 +25,7 @@ namespace Pootis_Bot
             {
                 Console.WriteLine("The token was null or not present.");
 
-                Config.SaveConfig(ServerConfigToken(), ServerConfigPrefix(), ServerConfigName(), null, null);
+                Config.SaveConfig(ServerConfigToken(), ServerConfigPrefix(), ServerConfigName(), null, null, null, null);
             }
 
             Console.Title = Config.bot.botName + " Console";
@@ -131,10 +131,12 @@ namespace Pootis_Bot
 
             if (server.enableWelcome == true)
             {
-                UserAccounts.GetAccount(user);
-                var channel = _client.GetChannel(server.welcomeID) as SocketTextChannel; //gets channel to send message in
-                await channel.SendMessageAsync("Welcome " + user.Mention + " to the Creepysin's Discord server! Consider checking out the rules first then enjoy your stay!"); //Welcomes the new user
-
+                if(!user.IsBot)
+                {
+                    UserAccounts.GetAccount(user);
+                    var channel = _client.GetChannel(server.welcomeID) as SocketTextChannel; //gets channel to send message in
+                    await channel.SendMessageAsync("Welcome " + user.Mention + " to the Creepysin's Discord server! Consider checking out the rules first then enjoy your stay!"); //Welcomes the new user
+                }
             }
         }
 

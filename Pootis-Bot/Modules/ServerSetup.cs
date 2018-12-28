@@ -22,7 +22,7 @@ namespace Pootis_Bot.Modules
                 $"\'setupadmin [Admin Role Name]' -- The admin role name" +
                 $"\n'setupstaff [Staff Role Name' -- The staff role name" +
                 $"");
-            embed.WithColor(new Color(0, 255, 0));
+            embed.WithColor(new Color(255, 81, 168));
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }

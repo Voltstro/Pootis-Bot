@@ -65,8 +65,7 @@ namespace Pootis_Bot.Modules.Fun
                     embed.WithDescription($"{_videos} \n {_channels}");
 
                     embedfoot.WithIconUrl(Context.User.GetAvatarUrl());
-                    embedfoot.WithText("Commanded issued by " + Context.User);
-                    
+                    embedfoot.WithText("Commanded issued by " + Context.User); 
 
                     embed.WithFooter(embedfoot);
                     embed.WithColor(new Color(229, 57, 38));
@@ -81,6 +80,7 @@ namespace Pootis_Bot.Modules.Fun
                     embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
                     embed.WithColor(new Color(229, 57, 38));
                     await Context.Channel.SendMessageAsync("", false, embed);
+                    return;
                 }         
             }
             else
