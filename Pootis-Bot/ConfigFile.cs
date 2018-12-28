@@ -10,6 +10,8 @@
         //API Keys
         public string apiGiphyKey;
         public string apiYoutubeKey;
+        public string apiGoogleSearchKey;
+        public string googleSearchEngineID;
 
     }
 }

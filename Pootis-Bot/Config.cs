@@ -18,7 +18,7 @@ namespace Pootis_Bot
 
             if (!File.Exists(configFolder + "/" + configFile))   //If the config.json file doesn't exist it creats a new one.
             {
-                SaveConfig(null, null, null, null, null);
+                SaveConfig(null, null, null, null, null, null, null);
                 Console.WriteLine("Config.json was created. Is this your first time runing?");
             }
             else
@@ -28,7 +28,7 @@ namespace Pootis_Bot
             }
         }
 
-        public static void SaveConfig(string _token, string prefix, string name, string giphyyAPI, string ytAPI)
+        public static void SaveConfig(string _token, string prefix, string name, string giphyyAPI, string ytAPI, string gAPI, string gsSe)
         {
             bot = new ConfigFile()
             {
@@ -36,7 +36,9 @@ namespace Pootis_Bot
                 botPrefix = prefix,
                 botName = name,      
                 apiGiphyKey = giphyyAPI,
-                apiYoutubeKey = ytAPI
+                apiYoutubeKey = ytAPI,
+                apiGoogleSearchKey = gAPI,
+                googleSearchEngineID = gsSe
             };
             string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
             File.WriteAllText(configFolder + "/" + configFile, json);
