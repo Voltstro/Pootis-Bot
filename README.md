@@ -4,7 +4,7 @@
 
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![https://www.nuget.org/packages/Discord.Net/](https://img.shields.io/nuget/v/Discord.Net.svg)
 
-Pootis-Bot an open source C# Discord bot
+Pootis-Bot, an open source Discord bot written in the c# language.
 
 ## Getting Started
 
@@ -16,7 +16,10 @@ Things you need
 
 ```
 .NET Core 2.2
+*Visual Studio 2017
 ```
+
+*[Visual Studio 2017](https://visualstudio.microsoft.com) is the **recommened** IDE. If you do use Visual Studio 2017 make sure you installed `.NET desktop development` 
 
 ### Setup
 
@@ -33,7 +36,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 ## Quick Notes
 
 * This is the first piece of software that I have publicly release ever, there are bound to be mistakes
-* This bot is still under heavy development, everything is subject to change
+* **This bot is still under heavy development, everything is subject to change!**
 * The name 'Pootis-Bot' was suggested by my friend. Yes, I know what game it is from
 
 * The robot heavy icon is Valves
