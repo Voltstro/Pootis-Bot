@@ -17,57 +17,70 @@ namespace Pootis_Bot.Modules.Fun
         {
             if (search != "")
             {
-                try
+                if(Config.bot.apiGoogleSearchKey.Trim() != "" || Config.bot.googleSearchEngineID.Trim() == "")
                 {
-                    var google = new CustomsearchService(new BaseClientService.Initializer()
+                    try
                     {
-                        ApiKey = Config.bot.apiGoogleSearchKey,
-                        ApplicationName = this.GetType().ToString()
-                    });
-
-                    var searchListRequest = google.Cse.List(search);
-                    searchListRequest.Cx = Config.bot.googleSearchEngineID;
-
-                    var searchListResponse = await searchListRequest.ExecuteAsync();
-
-                    List<string> _search = new List<string>();
-
-                    int currentresult = 0;
-                    foreach (var searchResult in searchListResponse.Items)
-                    {
-                        if (currentresult != 5)
+                        var google = new CustomsearchService(new BaseClientService.Initializer()
                         {
-                            _search.Add($"**{searchResult.Title}**\n{searchResult.Snippet}\n{searchResult.Link}\n");
-                            currentresult += 1;
+                            ApiKey = Config.bot.apiGoogleSearchKey,
+                            ApplicationName = this.GetType().ToString()
+                        });
+
+                        var searchListRequest = google.Cse.List(search);
+                        searchListRequest.Cx = Config.bot.googleSearchEngineID;
+
+                        var searchListResponse = await searchListRequest.ExecuteAsync();
+
+                        List<string> _search = new List<string>();
+
+                        int currentresult = 0;
+                        foreach (var searchResult in searchListResponse.Items)
+                        {
+                            if (currentresult != 5)
+                            {
+                                _search.Add($"**{searchResult.Title}**\n{searchResult.Snippet}\n{searchResult.Link}\n");
+                                currentresult += 1;
+                            }
                         }
+
+                        string response = string.Format(string.Join("\n", _search));
+
+                        EmbedBuilder embed = new EmbedBuilder();
+                        EmbedFooterBuilder embedfoot = new EmbedFooterBuilder();
+                        embed.Title = $"Google Search For '{search}'";
+                        embed.WithDescription($"{response}");
+
+                        embedfoot.WithIconUrl(Context.User.GetAvatarUrl());
+                        embedfoot.WithText("Commanded issued by " + Context.User);
+
+                        embed.WithFooter(embedfoot);
+                        embed.WithColor(new Color(53, 169, 84));
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
                     }
+                    catch (Exception ex)
+                    {
+                        Global.ColorMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on google. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
-                    string response = string.Format(string.Join("\n", _search));
-
-                    EmbedBuilder embed = new EmbedBuilder();
-                    EmbedFooterBuilder embedfoot = new EmbedFooterBuilder();
-                    embed.Title = $"Google Search For '{search}'";
-                    embed.WithDescription($"{response}");
-
-                    embedfoot.WithIconUrl(Context.User.GetAvatarUrl());
-                    embedfoot.WithText("Commanded issued by " + Context.User);
-
-                    embed.WithFooter(embedfoot);
-                    embed.WithColor(new Color(53, 169, 84));
-                    await Context.Channel.SendMessageAsync("", false, embed.Build());
+                        EmbedBuilder embed = new EmbedBuilder
+                        {
+                            Title = "Google Search Error"
+                        };
+                        embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
+                        embed.WithColor(new Color(53, 169, 84));
+                        await Context.Channel.SendMessageAsync("", false, embed.Build());
+                    }
                 }
-                catch(Exception ex)
+                else
                 {
-                    Global.ColorMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on google. \nError Details: \n{ex.Message}", ConsoleColor.Red);
-
                     EmbedBuilder embed = new EmbedBuilder
                     {
                         Title = "Google Search Error"
                     };
-                    embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
+                    embed.WithDescription($"We are sorry, but google search is disabled by the bot owner.");
                     embed.WithColor(new Color(53, 169, 84));
                     await Context.Channel.SendMessageAsync("", false, embed.Build());
-                }               
+                } 
             }
             else
             {
