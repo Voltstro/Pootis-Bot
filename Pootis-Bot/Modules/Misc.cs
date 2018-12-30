@@ -8,6 +8,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.UserAccounts;
+using System.IO;
 
 namespace Pootis_Bot.Modules
 {
