@@ -9,13 +9,13 @@ namespace Pootis_Bot.Core
     class CommandHandler
     {
         DiscordSocketClient _client;
-        CommandService _service;
+        CommandService _cmdService;
 
         public async Task InitializeAsync(DiscordSocketClient client)
         {
             _client = client;
-            _service = new CommandService();
-            await _service.AddModulesAsync(Assembly.GetEntryAssembly());
+            _cmdService = new CommandService();
+            await _cmdService.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
         }
 
@@ -28,14 +28,13 @@ namespace Pootis_Bot.Core
             if (msg.HasStringPrefix(Config.bot.botPrefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                var result = await _service.ExecuteAsync(context, argPos);
+                var result = await _cmdService.ExecuteAsync(context, argPos);
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(result.ErrorReason);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Global.ColorMessage($"[{ Global.TimeNow()}] " + result.ErrorReason, ConsoleColor.Red);
                 }
             }
         }
+
     }
 }

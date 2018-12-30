@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules.Fun
 {
@@ -45,17 +46,19 @@ namespace Pootis_Bot.Modules.Fun
                     embed.WithFooter(embedfoot);
                     embed.WithDescription($"BY: {author}\nURL: {shorturl}");
                     embed.WithColor(new Color(190, 101, 249));
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                 }
                 catch(Exception ex)
                 {
+                    Global.ColorMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on giphy. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+
                     EmbedBuilder embed = new EmbedBuilder
                     {
                         Title = "Giphy Search Error"
                     };
                     embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
                     embed.WithColor(new Color(229, 57, 38));
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                     return;
                 }           
             }
@@ -67,7 +70,7 @@ namespace Pootis_Bot.Modules.Fun
                 };
                 embed.WithDescription($"Don't you want to search something?\nE.G: {Config.bot.botPrefix}giphy Funny Cats");
                 embed.WithColor(new Color(190, 101, 249));
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
             }          
         } 
     }

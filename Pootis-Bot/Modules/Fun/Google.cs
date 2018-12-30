@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
+using Pootis_Bot.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -53,17 +54,19 @@ namespace Pootis_Bot.Modules.Fun
 
                     embed.WithFooter(embedfoot);
                     embed.WithColor(new Color(53, 169, 84));
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                 }
                 catch(Exception ex)
                 {
+                    Global.ColorMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on google. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+
                     EmbedBuilder embed = new EmbedBuilder
                     {
                         Title = "Google Search Error"
                     };
                     embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
                     embed.WithColor(new Color(53, 169, 84));
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                 }               
             }
             else
@@ -74,7 +77,7 @@ namespace Pootis_Bot.Modules.Fun
                 };
                 embed.WithDescription($"Don't you want to search something?\nE.G: {Config.bot.botPrefix}google Dank Memes");
                 embed.WithColor(new Color(53, 169, 84));
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
             }
         }
     }

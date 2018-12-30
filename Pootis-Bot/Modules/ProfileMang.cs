@@ -115,7 +115,7 @@ namespace Pootis_Bot.Modules
             embed.WithTitle(Context.User.Username + "'s Profile.");
             embed.WithDescription($"You have {account.XP} XP. \nYou have {account.Points} points. \n \n" + WarningText);
             embed.WithColor(new Color(56, 56, 56));
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }       
     }
 }

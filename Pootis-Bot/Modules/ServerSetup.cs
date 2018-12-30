@@ -15,6 +15,7 @@ namespace Pootis_Bot.Modules
         public async Task Setup()
         {
             var embed = new EmbedBuilder();
+
             embed.WithTitle("Setup Commands");
             embed.WithDescription($"\nSetup commands for {Config.bot.botName}.\n\n" +
                 $"'setupwelcomeid [Welcome ChannelID]' -- Use this to setup the welcome channel ID" +
@@ -24,8 +25,10 @@ namespace Pootis_Bot.Modules
                 $"");
             embed.WithColor(new Color(255, 81, 168));
 
-            await Context.Channel.SendMessageAsync("", false, embed);
-        }
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+
+
+        }           
 
         [Command("setupwelcomeid")]
         [RequireOwner]

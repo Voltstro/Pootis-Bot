@@ -7,6 +7,7 @@ using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
 using Discord;
 using System.Linq;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules.Fun
 {
@@ -69,17 +70,19 @@ namespace Pootis_Bot.Modules.Fun
 
                     embed.WithFooter(embedfoot);
                     embed.WithColor(new Color(229, 57, 38));
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                 }
                 catch (Exception ex)
                 {
+                    Global.ColorMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on Youtube. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+
                     EmbedBuilder embed = new EmbedBuilder
                     {
                         Title = "Youtube Search Error"
                     };
                     embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
                     embed.WithColor(new Color(229, 57, 38));
-                    await Context.Channel.SendMessageAsync("", false, embed);
+                    await Context.Channel.SendMessageAsync("", false, embed.Build());
                     return;
                 }         
             }
@@ -91,7 +94,7 @@ namespace Pootis_Bot.Modules.Fun
                 };
                 embed.WithDescription($"Don't you want to search something?\nE.G: {Config.bot.botPrefix}youtube Dank Memes");
                 embed.WithColor(new Color(229, 57, 38));
-                await Context.Channel.SendMessageAsync("", false, embed);
+                await Context.Channel.SendMessageAsync("", false, embed.Build());
             }        
         }
     }

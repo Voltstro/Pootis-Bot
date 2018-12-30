@@ -20,7 +20,7 @@ namespace Pootis_Bot.Modules
             embed.WithDescription($"Help for {Config.bot.botName} \nMain - \nProfile - Profile\nFun - \nMisc - Pick, Creepysin");
             embed.WithColor(new Color(0, 255, 0));
 
-            await Context.Channel.SendMessageAsync("", false, embed);
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         [Command("hasrole")]
