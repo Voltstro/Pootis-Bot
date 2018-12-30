@@ -98,22 +98,25 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("profile")]       
-        public async Task Profile()
+        public async Task Profile([Remainder]string arg = "")
         {
-            string userprofilpic = Context.User.GetAvatarUrl();
+            SocketUser target = null;
+            var metionUser = Context.Message.MentionedUsers.FirstOrDefault();
+            target = metionUser ?? Context.User;
 
-            var account = UserAccounts.GetAccount(Context.User);
-            string WarningText = $"You Currently have {account.NumberOfWarnings} Warnings.";
+            var account = UserAccounts.GetAccount(target);
+            string WarningText = $"{ target.Username} currently has {account.NumberOfWarnings} warnings.";
+            string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has { account.Points} points. \n \n" + WarningText;
             var embed = new EmbedBuilder();
 
             if (account.IsNotWarnable == true)
             {
-                WarningText = "Your account is not warnable.";
+                WarningText = $"{target.Username} account is not warnable.";
             }
 
-            embed.WithThumbnailUrl(userprofilpic);
-            embed.WithTitle(Context.User.Username + "'s Profile.");
-            embed.WithDescription($"You have {account.XP} XP. \nYou have {account.Points} points. \n \n" + WarningText);
+            embed.WithThumbnailUrl(target.GetAvatarUrl());
+            embed.WithTitle(target.Username + "'s Profile.");
+            embed.WithDescription(Desciption);
             embed.WithColor(new Color(56, 56, 56));
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }       
