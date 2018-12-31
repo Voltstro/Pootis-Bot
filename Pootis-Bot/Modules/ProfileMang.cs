@@ -16,48 +16,45 @@ namespace Pootis_Bot.Modules
         [Command("makenotwarnable")]
         public async Task NotWarnable(IGuildUser user)
         {
-            var userAccount = UserAccounts.GetAccount((SocketUser)user);
+            var server = ServerLists.GetServer(Context.Guild);
             var _user = Context.User as SocketGuildUser;
-            var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).staffRoleName);
 
-            if (_user.Roles.Contains(role))
+            if (server.permNotWarnableRole != null && server.permNotWarnableRole.Trim() != "")
             {
-                if (userAccount.IsNotWarnable == true)
-                {
-                    await Context.Channel.SendMessageAsync($"The user {user} is already not warnable.");
-                }
-                else
-                {
-                    userAccount.IsNotWarnable = true;
-                    userAccount.NumberOfWarnings = 0;
-                    UserAccounts.SaveAccounts();
-                    Console.WriteLine($"The user {user} was made not warnable.");
-                    await Context.Channel.SendMessageAsync($"The user {user} was made not warnable.");
-                }
-            }              
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permNotWarnableRole);
+
+                if(_user.Roles.Contains(setrole))
+                    await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));
+            }
+            else //There isn't a set role, use deafult of the 'admin' role.
+            {
+                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).adminRoleName);
+
+                if (_user.Roles.Contains(deafultrole))
+                    await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));
+            }        
         }
     
         [Command("makewarnable")]
         public async Task MakeWarnable(IGuildUser user)
-        {
-            var userAccount = UserAccounts.GetAccount((SocketUser)user);
+        {           
             var _user = Context.User as SocketGuildUser;
-            var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).staffRoleName);
+            var server = ServerLists.GetServer(Context.Guild);
             
-            if(_user.Roles.Contains(role))
+            if (server.permMakeWarnableRole != null && server.permMakeWarnableRole.Trim() != "")
             {
-                if (userAccount.IsNotWarnable == false)
-                {
-                    await Context.Channel.SendMessageAsync($"The user {user} is already warnable.");
-                }
-                else
-                {
-                    userAccount.IsNotWarnable = false;
-                    UserAccounts.SaveAccounts();
-                    Console.WriteLine($"The user {user} was made warnable.");
-                    await Context.Channel.SendMessageAsync($"The user {user} was made warnable.");
-                }
-            }       
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permMakeWarnableRole);
+
+                if(_user.Roles.Contains(setrole))
+                    await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));
+            }
+            else //There isn't a set role, use deafult of the 'admin' role.
+            {
+                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).adminRoleName);
+
+                if (_user.Roles.Contains(deafultrole))
+                    await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));
+            }            
         }
 
         [Command("warn")]
@@ -66,35 +63,28 @@ namespace Pootis_Bot.Modules
         {
             var userAccount = UserAccounts.GetAccount((SocketUser)user);
             var _user = Context.User as SocketGuildUser;
-            var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).staffRoleName);
+            var server = ServerLists.GetServer(Context.Guild);
 
-            if (_user.Roles.Contains(role))
+            if (server.permWarn != null && server.permWarn.Trim() != "")
             {
-                if (userAccount.IsNotWarnable == true)
-                {
-                    await Context.Channel.SendMessageAsync($"A warning cannot be given to {user}. That person's account is set to not warnable.");
-                    return;
-                }
-                else
-                {
-                    userAccount.NumberOfWarnings++;
-                    UserAccounts.SaveAccounts();
-                    Console.WriteLine($"A warning was given to {user}");
-                    await Context.Channel.SendMessageAsync($"A warning was given to {user}");
-                }
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permMakeWarnableRole);
 
-                if (userAccount.NumberOfWarnings >= 3)
+                if (_user.Roles.Contains(setrole))
                 {
-                    Console.WriteLine($"{user} was kicked due to having 3 warnings.");
-                    await user.KickAsync("Was kicked due to having 3 warnings.");
+                    await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
+                    await CheckWarnStatus(user);                 
                 }
+            }
+            else //There isn't a set role, use deafult of the 'staff' role.
+            {
+                var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).staffRoleName);
 
-                if (userAccount.NumberOfWarnings >= 4)
+                if (_user.Roles.Contains(role))
                 {
-                    Console.WriteLine($"{user} was baned due to having 4 warnings.");
-                    await user.Guild.AddBanAsync(user, 5, "Was baned due to having 4 warnings.");
+                    await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
+                    await CheckWarnStatus(user);
                 }
-            }               
+            }    
         }
 
         [Command("profile")]       
@@ -119,6 +109,75 @@ namespace Pootis_Bot.Modules
             embed.WithDescription(Desciption);
             embed.WithColor(new Color(56, 56, 56));
             await Context.Channel.SendMessageAsync("", false, embed.Build());
-        }       
+        }
+
+        #region Functions
+
+        string MakeNotWarnable(SocketUser user)
+        {
+            var userAccount = UserAccounts.GetAccount(user);
+
+            if (userAccount.IsNotWarnable == true)
+            {
+                return $"The user {user} is already not warnable.";
+            }
+            else
+            {
+                userAccount.IsNotWarnable = true;
+                userAccount.NumberOfWarnings = 0;
+                UserAccounts.SaveAccounts();
+                Console.WriteLine($"The user {user} was made not warnable.");
+                return $"The user {user} was made not warnable.";
+            }
+        }
+
+        string MakeWarnable(SocketUser user)
+        {
+            var userAccount = UserAccounts.GetAccount(user);
+            if (userAccount.IsNotWarnable == false)
+            {
+                return $"The user {user} is already warnable.";
+            }
+            else
+            {
+                userAccount.IsNotWarnable = false;
+                UserAccounts.SaveAccounts();
+                Console.WriteLine($"The user {user} was made warnable.");
+                return $"The user {user} was made warnable.";
+            }
+        }
+
+        string Warn(SocketUser user)
+        {
+            var userAccount = UserAccounts.GetAccount(user);
+
+            if (userAccount.IsNotWarnable == true)
+            {
+                return $"A warning cannot be given to {user}. That person's account is set to not warnable.";
+            }
+            else
+            {
+                userAccount.NumberOfWarnings++;
+                UserAccounts.SaveAccounts();
+                return $"A warning was given to {user}";
+            }
+        }
+
+        async Task CheckWarnStatus(IGuildUser user)
+        {
+            var userAccount = UserAccounts.GetAccount((SocketUser)user);
+
+            if (userAccount.NumberOfWarnings >= 3)
+            {
+                await user.KickAsync("Was kicked due to having 3 warnings.");
+            }
+
+            if (userAccount.NumberOfWarnings >= 4)
+            {
+                await user.Guild.AddBanAsync(user, 5, "Was baned due to having 4 warnings.");
+            }
+        }
+
+        #endregion
     }
 }

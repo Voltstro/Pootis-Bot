@@ -11,5 +11,13 @@
         public string staffRoleName;
 
         public string adminRoleName;
+
+        //Profile mang. command permissions
+        public string permNotWarnableRole;
+        public string permMakeWarnableRole;
+        public string permWarn;
+        public string permYT;
+        public string permGiphy;
+        public string permGoogle;
     }
 }

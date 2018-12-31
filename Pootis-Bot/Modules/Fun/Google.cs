@@ -1,23 +1,52 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using Pootis_Bot.Core;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Pootis_Bot.Core.ServerList;
 
 namespace Pootis_Bot.Modules.Fun
 {
+    /*  
+     *  Name: Google Search
+     *  Command(s): google [Search]
+     *  Set Permission Command(s): permgoogle [Role Name]
+     *  Author(s): Creepysin
+     */ 
+
     public class Google : ModuleBase<SocketCommandContext>
     {
+        readonly Color googleColor = new Color(53, 169, 84);
+
         [Command("google")]
         [Alias("g")]
-        public async Task GoogleSearch([Remainder]string search = "")
+        public async Task CmdGoogleSearch([Remainder]string search = "")
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+
+            //Check to see if the command has a permission set
+            if (server.permGoogle != null && server.permGoogle != "")
+            {
+                var _user = Context.User as SocketGuildUser;
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permGoogle);
+
+                if(_user.Roles.Contains(setrole))
+                    await Context.Channel.SendMessageAsync("", false, GoogleSearch(search).Build());
+            }
+            else
+                await Context.Channel.SendMessageAsync("", false, GoogleSearch(search).Build());
+        }
+
+        EmbedBuilder GoogleSearch(string search)
         {
             if (search != "")
             {
-                if(Config.bot.apiGoogleSearchKey.Trim() != "" || Config.bot.googleSearchEngineID.Trim() == "")
+                if (Config.bot.apiGoogleSearchKey.Trim() != "" || Config.bot.googleSearchEngineID.Trim() == "")
                 {
                     try
                     {
@@ -30,7 +59,7 @@ namespace Pootis_Bot.Modules.Fun
                         var searchListRequest = google.Cse.List(search);
                         searchListRequest.Cx = Config.bot.googleSearchEngineID;
 
-                        var searchListResponse = await searchListRequest.ExecuteAsync();
+                        var searchListResponse = searchListRequest.Execute();
 
                         List<string> _search = new List<string>();
 
@@ -54,9 +83,11 @@ namespace Pootis_Bot.Modules.Fun
                         embedfoot.WithIconUrl(Context.User.GetAvatarUrl());
                         embedfoot.WithText("Commanded issued by " + Context.User);
 
-                        embed.WithFooter(embedfoot);
-                        embed.WithColor(new Color(53, 169, 84));
-                        await Context.Channel.SendMessageAsync("", false, embed.Build());
+                        embed.WithFooter(embedfoot);                    
+                        embed.WithColor(googleColor);
+
+                        return embed;
+                        
                     }
                     catch (Exception ex)
                     {
@@ -67,8 +98,9 @@ namespace Pootis_Bot.Modules.Fun
                             Title = "Google Search Error"
                         };
                         embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
-                        embed.WithColor(new Color(53, 169, 84));
-                        await Context.Channel.SendMessageAsync("", false, embed.Build());
+                        embed.WithColor(googleColor);
+
+                        return embed;
                     }
                 }
                 else
@@ -78,9 +110,10 @@ namespace Pootis_Bot.Modules.Fun
                         Title = "Google Search Error"
                     };
                     embed.WithDescription($"We are sorry, but google search is disabled by the bot owner.");
-                    embed.WithColor(new Color(53, 169, 84));
-                    await Context.Channel.SendMessageAsync("", false, embed.Build());
-                } 
+                    embed.WithColor(googleColor);
+
+                    return embed;
+                }
             }
             else
             {
@@ -90,7 +123,8 @@ namespace Pootis_Bot.Modules.Fun
                 };
                 embed.WithDescription($"Don't you want to search something?\nE.G: {Config.bot.botPrefix}google Dank Memes");
                 embed.WithColor(new Color(53, 169, 84));
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
+
+                return embed;
             }
         }
     }
