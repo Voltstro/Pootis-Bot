@@ -1,13 +1,14 @@
-﻿using Discord.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
+using Discord.Commands;
 using Discord;
-using System.Linq;
+using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.ServerList;
 
 namespace Pootis_Bot.Modules.Fun
 {
@@ -16,10 +17,29 @@ namespace Pootis_Bot.Modules.Fun
         readonly string ytstartLink = "https://www.youtube.com/watch?v=";
         readonly string ytChannelStart = "https://www.youtube.com/channel/";
 
+        readonly Color youtubeColor = new Color(229, 57, 38);
+
         //Based off youtubes documentation
         [Command("youtube")]
         [Alias("yt")]
-        public async Task YoutubeSearch([Remainder] string search = "")
+        public async Task CmdYoutubeSearch([Remainder] string search = "")
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+
+            //Check to see if the command has a permission set
+            if (server.permYT != null && server.permYT != "")
+            {
+                var _user = Context.User as SocketGuildUser;
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permYT);
+
+                if (_user.Roles.Contains(setrole))
+                    await Context.Channel.SendMessageAsync("", false, YoutubeSearch(search).Build());
+            }
+            else
+                await Context.Channel.SendMessageAsync("", false, YoutubeSearch(search).Build());
+        }
+
+        EmbedBuilder YoutubeSearch(string search)
         {
             if (search != "")
             {
@@ -38,7 +58,7 @@ namespace Pootis_Bot.Modules.Fun
                         searchListRequest.MaxResults = 10;
 
                         // Call the search.list method to retrieve results matching the specified query term.
-                        var searchListResponse = await searchListRequest.ExecuteAsync();
+                        var searchListResponse = searchListRequest.Execute();
 
                         List<string> videos = new List<string>();
                         List<string> channels = new List<string>();
@@ -71,8 +91,9 @@ namespace Pootis_Bot.Modules.Fun
                         embedfoot.WithText("Commanded issued by " + Context.User);
 
                         embed.WithFooter(embedfoot);
-                        embed.WithColor(new Color(229, 57, 38));
-                        await Context.Channel.SendMessageAsync("", false, embed.Build());
+                        embed.WithColor(youtubeColor);
+
+                        return embed;
                     }
                     catch (Exception ex)
                     {
@@ -83,9 +104,9 @@ namespace Pootis_Bot.Modules.Fun
                             Title = "Youtube Search Error"
                         };
                         embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
-                        embed.WithColor(new Color(229, 57, 38));
-                        await Context.Channel.SendMessageAsync("", false, embed.Build());
-                        return;
+                        embed.WithColor(youtubeColor);
+
+                        return embed;
                     }
                 }
                 else
@@ -95,11 +116,11 @@ namespace Pootis_Bot.Modules.Fun
                         Title = "Youtube Search Error"
                     };
                     embed.WithDescription($"We are sorry, but youtube search is disabled by the bot owner.");
-                    embed.WithColor(new Color(229, 57, 38));
-                    await Context.Channel.SendMessageAsync("", false, embed.Build());
-                }
-            } 
+                    embed.WithColor(youtubeColor);
 
+                    return embed;
+                }
+            }
             else
             {
                 EmbedBuilder embed = new EmbedBuilder
@@ -107,9 +128,10 @@ namespace Pootis_Bot.Modules.Fun
                     Title = "Youtube Search Error"
                 };
                 embed.WithDescription($"Don't you want to search something?\nE.G: {Config.bot.botPrefix}youtube Dank Memes");
-                embed.WithColor(new Color(229, 57, 38));
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
-            }        
+                embed.WithColor(youtubeColor);
+
+                return embed;
+            }
         }
     }
 }
