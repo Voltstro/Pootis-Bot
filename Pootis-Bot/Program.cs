@@ -42,7 +42,9 @@ namespace Pootis_Bot
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
             await _client.SetGameAsync("Use $help for help.");
-            ConsoleInput();           
+            #pragma warning disable CS4014
+            ConsoleInput();
+            #pragma warning restore CS4014
             await Task.Delay(-1);
         }
 
@@ -68,7 +70,9 @@ namespace Pootis_Bot
                 Console.WriteLine("Bot is already disconnected");
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async Task JoinedNewServer(SocketGuild arg)
+
         {
             Console.WriteLine("Joining server " + arg);
             ServerLists.GetServer(arg);
@@ -118,6 +122,8 @@ namespace Pootis_Bot
         {
             Console.WriteLine($"[{Global.TimeNow()}] " + msg.Message);
         }
+
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
         {
