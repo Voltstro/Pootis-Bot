@@ -12,6 +12,9 @@
 
         public string adminRoleName;
 
+        //Misc. command permissions
+        public string permEmbedMessage;
+
         //Profile mang. command permissions
         public string permNotWarnableRole;
         public string permMakeWarnableRole;
@@ -19,5 +22,6 @@
         public string permYT;
         public string permGiphy;
         public string permGoogle;
+        
     }
 }
