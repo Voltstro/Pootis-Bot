@@ -70,14 +70,23 @@ namespace Pootis_Bot
                 Console.WriteLine("Bot is already disconnected");
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        private async Task JoinedNewServer(SocketGuild arg)
 
+        private async Task JoinedNewServer(SocketGuild arg)
         {
             Console.WriteLine("Joining server " + arg);
             ServerLists.GetServer(arg);
-        }
 
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.WithTitle("Thanks for inviting me!");
+            embed.WithDescription($"Hello everyone my name is **{Config.bot.botName}**!\nIf this is your first time adding me and your are the server I suggest using the `{Config.bot.botPrefix}setup` to set started!" +
+                $"\nFor basic list of commands do `{Config.bot.botPrefix}help` to get a list of commands." +
+                $"\n**Links**\n[Creepysin Development Server](https://discord.gg/m4YcsUa)\n[Creepysin Primary Server](https://discord.gg/m7hg47t)\n[Github Page](https://Github.com/CreepysinProjects/Pootis-Bot/)");
+            embed.WithColor(new Color(241, 196, 15));
+
+
+            await arg.DefaultChannel.SendMessageAsync("", false, embed.Build());
+        }
+        
         private async Task ConsoleInput()
         {
             var input = String.Empty;
@@ -117,12 +126,11 @@ namespace Pootis_Bot
                 }
             }
         }
-
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async Task Log(LogMessage msg)
         {
             Console.WriteLine($"[{Global.TimeNow()}] " + msg.Message);
         }
-
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         public async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players

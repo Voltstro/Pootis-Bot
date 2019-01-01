@@ -8,6 +8,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.UserAccounts;
+using Pootis_Bot.Core.ServerList;
 using System.IO;
 
 namespace Pootis_Bot.Modules
@@ -29,5 +30,37 @@ namespace Pootis_Bot.Modules
         {
             await Context.Channel.SendMessageAsync("Heres creepysin channel: \n https://bit.ly/2KfKeAf");
         }
+
+        [Command("embedmessage")]
+        [Alias("embed")]
+        public async Task CmdEmbedMessage(string title = "", [Remainder]string msg = "")
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+            var _user = Context.User as SocketGuildUser;
+            var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permEmbedMessage);
+
+            if(server.permEmbedMessage != null && server.permEmbedMessage.Trim() != "")
+            {
+                if (_user.Roles.Contains(setrole))
+                {
+                    await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
+                }
+            }
+            else
+                await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
+        }
+
+        #region Functions
+
+        EmbedBuilder EmbedMessage(string title, string msg)
+        {
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.WithTitle(title);
+            embed.WithDescription(msg);
+
+            return embed;
+        }
+
+        #endregion
     }
 }

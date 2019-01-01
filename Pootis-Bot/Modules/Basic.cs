@@ -12,6 +12,20 @@ namespace Pootis_Bot.Modules
 {
     public class Basic : ModuleBase<SocketCommandContext>
     {
+        [Command("hello")]
+        public async Task Hello()
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle("Hello!");
+            embed.WithDescription("Hello! My name is " + Config.bot.botName + "!\n\n**__Links__**" +
+                "\n:computer: [Commands](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Pootis-Bot-Commands)" +
+                "\n<:GitHub:529571722991763456> [Github Page](https://github.com/CreepysinProjects/Pootis-Bot)" +
+                "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
+                "\n<:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
+
         [Command("help")]
         public async Task Help()
         {
