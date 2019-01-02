@@ -52,7 +52,7 @@ namespace Pootis_Bot.Modules.Fun
 
                         var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 
-                        int choose = Wording.RandomNumber(0, 25);
+                        int choose = Global.RandomNumber(0, 25);
 
                         //Read the json file
                         string url = dataObject.data[choose].images.fixed_height.url.ToString();
@@ -63,7 +63,7 @@ namespace Pootis_Bot.Modules.Fun
                         //Build the embed and return it.
                         EmbedBuilder embed = new EmbedBuilder();
                         EmbedFooterBuilder embedfoot = new EmbedFooterBuilder();
-                        embed.Title = Wording.Title(title);
+                        embed.Title = Global.Title(title);
                         embed.WithImageUrl(url);
 
                         embedfoot.WithIconUrl(Context.User.GetAvatarUrl());

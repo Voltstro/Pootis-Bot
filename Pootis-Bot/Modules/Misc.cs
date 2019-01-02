@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core;
-using Pootis_Bot.Core.UserAccounts;
 using Pootis_Bot.Core.ServerList;
-using System.IO;
 
 namespace Pootis_Bot.Modules
 {
