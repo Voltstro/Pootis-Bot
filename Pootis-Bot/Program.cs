@@ -22,6 +22,7 @@ namespace Pootis_Bot
         {          
             if (Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
             {
+                //Token was null or empty, enter into bot config mode.
                 Global.ColorMessage($"[{Global.TimeNow()}] The token was null or not present. Entering Bot Config Mode", ConsoleColor.Red);
 
                 BotConfigStart();
@@ -42,7 +43,7 @@ namespace Pootis_Bot
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
             await _client.SetGameAsync("Use $help for help.");
-            #pragma warning disable CS4014
+            #pragma warning disable CS4014 //Ingnore this annoying warning
             ConsoleInput();
             #pragma warning restore CS4014
             await Task.Delay(-1);
@@ -78,9 +79,11 @@ namespace Pootis_Bot
 
             EmbedBuilder embed = new EmbedBuilder();
             embed.WithTitle("Thanks for inviting me!");
-            embed.WithDescription($"Hello everyone my name is **{Config.bot.botName}**!\nIf this is your first time adding me and your are the server I suggest using the `{Config.bot.botPrefix}setup` to set started!" +
-                $"\nFor basic list of commands do `{Config.bot.botPrefix}help` to get a list of commands." +
-                $"\n**Links**\n[Creepysin Development Server](https://discord.gg/m4YcsUa)\n[Creepysin Primary Server](https://discord.gg/m7hg47t)\n[Github Page](https://Github.com/CreepysinProjects/Pootis-Bot/)");
+            embed.WithDescription("Hello! My name is " + Config.bot.botName + "!\n\n**__Links__**" +
+                "\n:computer: [Commands](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Pootis-Bot-Commands)" +
+                "\n<:GitHub:529571722991763456> [Github Page](https://github.com/CreepysinProjects/Pootis-Bot)" +
+                "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
+                "\n<:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
             embed.WithColor(new Color(241, 196, 15));
 
 
@@ -107,6 +110,13 @@ namespace Pootis_Bot
                 {
                     BotConfigStart();
                     Console.WriteLine($"[{Global.TimeNow()}] Restart the bot to apply the settings");
+                }
+                else if(input.Trim().ToLower() == "setgame")
+                {
+                    Console.WriteLine("Enter in what you want to set the bot's game to.");
+                    string set = Console.ReadLine();
+                    await _client.SetGameAsync(set);
+                    Console.WriteLine($"Bot's game was set to '{set}'");
                 }
             }
         }
@@ -144,8 +154,16 @@ namespace Pootis_Bot
                 if(!user.IsBot)
                 {
                     UserAccounts.GetAccount(user);
+                    if (server.enableWelcome == false)
+                        return;
                     var channel = _client.GetChannel(server.welcomeID) as SocketTextChannel; //gets channel to send message in
-                    await channel.SendMessageAsync("Welcome " + user.Mention + " to the Creepysin's Discord server! Consider checking out the rules first then enjoy your stay!"); //Welcomes the new user
+                    string rules = "";
+                    if(server.isRules)
+                    {
+                        rules = "Consider checking out the #rules then enjoy your stay!";
+                    }
+
+                    await channel.SendMessageAsync("Welcome " + user.Mention + $" to the {user.Guild.Name}! {rules}"); //Welcomes the new user
                 }
             }
         }

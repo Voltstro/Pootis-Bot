@@ -21,10 +21,11 @@ namespace Pootis_Bot.Core
 
         private async Task HandleCommandAsync(SocketMessage s)
         {
-            SocketUserMessage msg = s as SocketUserMessage;
-            if (msg == null) return;
+            if (!(s is SocketUserMessage msg)) return;
             var context = new SocketCommandContext(_client, msg);
             int argPos = 0;
+            if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
+                return;
             if (msg.HasStringPrefix(Config.bot.botPrefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {

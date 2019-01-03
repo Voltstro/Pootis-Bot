@@ -95,7 +95,7 @@ namespace Pootis_Bot.Modules
             target = metionUser ?? Context.User;
 
             var account = UserAccounts.GetAccount(target);
-            string WarningText = $"{ target.Username} currently has {account.NumberOfWarnings} warnings.";
+            string WarningText = $"{target.Username} currently has {account.NumberOfWarnings} warnings.";
             string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has { account.Points} points. \n \n" + WarningText;
             var embed = new EmbedBuilder();
 

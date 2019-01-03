@@ -8,6 +8,8 @@
 
         public ulong welcomeID;
 
+        public bool isRules;
+
         public string staffRoleName;
 
         public string adminRoleName;
