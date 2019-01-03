@@ -19,6 +19,7 @@ namespace Pootis_Bot.Modules
                 "\n<:GitHub:529571722991763456> [Github Page](https://github.com/CreepysinProjects/Pootis-Bot)" +
                 "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
                 "\n<:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
+            embed.WithColor(new Color(241, 196, 15));
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
@@ -28,7 +29,7 @@ namespace Pootis_Bot.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithTitle(Context.User.Username);
-            embed.WithDescription($"Help for {Config.bot.botName} \nMain - \nProfile - Profile\nFun - \nMisc - Pick, Creepysin");
+            embed.WithDescription($"**Help for {Config.bot.botName}** \n\n :computer: [Commands](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Pootis-Bot-Commands)\n\nFor support ask on my server <:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
             embed.WithColor(new Color(0, 255, 0));
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());
