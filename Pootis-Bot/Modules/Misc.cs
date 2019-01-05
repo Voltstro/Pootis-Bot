@@ -20,12 +20,6 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync("Choice for " + Context.Message.Author.Mention + "\nI Choose: " + seletion);
         }
 
-        [Command("creepysin")]
-        public async Task Creepysin()
-        {
-            await Context.Channel.SendMessageAsync("Heres creepysin channel: \n https://bit.ly/2KfKeAf");
-        }
-
         [Command("embedmessage")]
         [Alias("embed")]
         public async Task CmdEmbedMessage(string title = "", [Remainder]string msg = "")
