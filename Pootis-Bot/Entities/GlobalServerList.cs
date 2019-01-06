@@ -1,6 +1,6 @@
-﻿namespace Pootis_Bot.Core.ServerList
+﻿namespace Pootis_Bot.Entities
 {
-    public class ServerList
+    public class GlobalServerList
     {
         public ulong serverID;
 

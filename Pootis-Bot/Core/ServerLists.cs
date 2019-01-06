@@ -1,12 +1,13 @@
 ﻿using Discord.WebSocket;
+using Pootis_Bot.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Pootis_Bot.Core.ServerList
+namespace Pootis_Bot.Core
 {
     public class ServerLists
     {
-        private static List<ServerList> serverLists;
+        private static List<GlobalServerList> serverLists;
 
         private readonly static string serverListFile = "Resources/serverlist.json";
 
@@ -18,7 +19,7 @@ namespace Pootis_Bot.Core.ServerList
             }
             else
             {
-                serverLists = new List<ServerList>();
+                serverLists = new List<GlobalServerList>();
                 SaveServerList();
             }
         }
@@ -28,12 +29,12 @@ namespace Pootis_Bot.Core.ServerList
             DataStorage.SaveServerList(serverLists, serverListFile);
         }
 
-        public static ServerList GetServer(SocketGuild server)
+        public static GlobalServerList GetServer(SocketGuild server)
         {
             return GetOrCreateServer(server.Id);
         }
 
-        private static ServerList GetOrCreateServer(ulong id)
+        private static GlobalServerList GetOrCreateServer(ulong id)
         {
             var result = from a in serverLists
                          where a.serverID == id
@@ -44,9 +45,9 @@ namespace Pootis_Bot.Core.ServerList
             return server;
         }
 
-        private static ServerList CreateServer(ulong id)
+        private static GlobalServerList CreateServer(ulong id)
         {
-            var newServer = new ServerList()
+            var newServer = new GlobalServerList()
             {
                 serverID = id,
                 enableWelcome = false,

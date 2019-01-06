@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core.ServerList;
-using Pootis_Bot.Core.UserAccounts;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
@@ -61,7 +60,7 @@ namespace Pootis_Bot.Modules
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task WarnUser(IGuildUser user)
         {
-            var userAccount = UserAccounts.GetAccount((SocketUser)user);
+            var userAccount = UserAccounts.GetAccount((SocketGuildUser)user);
             var _user = Context.User as SocketGuildUser;
             var server = ServerLists.GetServer(Context.Guild);
 
@@ -72,7 +71,7 @@ namespace Pootis_Bot.Modules
                 if (_user.Roles.Contains(setrole))
                 {
                     await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
-                    await CheckWarnStatus(user);                 
+                    await CheckWarnStatus((SocketGuildUser)user);                 
                 }
             }
             else //There isn't a set role, use deafult of the 'staff' role.
@@ -82,7 +81,7 @@ namespace Pootis_Bot.Modules
                 if (_user.Roles.Contains(role))
                 {
                     await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
-                    await CheckWarnStatus(user);
+                    await CheckWarnStatus((SocketGuildUser)user);
                 }
             }    
         }
@@ -94,15 +93,19 @@ namespace Pootis_Bot.Modules
             var metionUser = Context.Message.MentionedUsers.FirstOrDefault();
             target = metionUser ?? Context.User;
 
-            var account = UserAccounts.GetAccount(target);
-            string WarningText = $"{target.Username} currently has {account.NumberOfWarnings} warnings.";
-            string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has { account.Points} points. \n \n" + WarningText;
-            var embed = new EmbedBuilder();
+            var account = UserAccounts.GetAccount((SocketGuildUser)target);
 
-            if (account.IsNotWarnable == true)
+            var guildtarget = (SocketGuildUser)target;
+            var accountserver = account.GetOrCreateServer(guildtarget.Guild.Id);
+
+            string WarningText = $"{target.Username} currently has {accountserver.warnings} warnings.";
+            if (accountserver.isNotWarnable == true)
             {
                 WarningText = $"{target.Username} account is not warnable.";
             }
+
+            string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has { account.Points} points. \n \n" + WarningText;
+            var embed = new EmbedBuilder();     
 
             embed.WithThumbnailUrl(target.GetAvatarUrl());
             embed.WithTitle(target.Username + "'s Profile.");
@@ -115,16 +118,17 @@ namespace Pootis_Bot.Modules
 
         string MakeNotWarnable(SocketUser user)
         {
-            var userAccount = UserAccounts.GetAccount(user);
+            SocketGuildUser userguild = (SocketGuildUser)user;
+            var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 
-            if (userAccount.IsNotWarnable == true)
+            if (userAccount.isNotWarnable == true)
             {
                 return $"The user {user} is already not warnable.";
             }
             else
             {
-                userAccount.IsNotWarnable = true;
-                userAccount.NumberOfWarnings = 0;
+                userAccount.isNotWarnable = true;
+                userAccount.warnings = 0;
                 UserAccounts.SaveAccounts();
                 Console.WriteLine($"The user {user} was made not warnable.");
                 return $"The user {user} was made not warnable.";
@@ -133,14 +137,16 @@ namespace Pootis_Bot.Modules
 
         string MakeWarnable(SocketUser user)
         {
-            var userAccount = UserAccounts.GetAccount(user);
-            if (userAccount.IsNotWarnable == false)
+            SocketGuildUser userguild = (SocketGuildUser)user;
+
+            var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
+            if (userAccount.isNotWarnable == false)
             {
                 return $"The user {user} is already warnable.";
             }
             else
             {
-                userAccount.IsNotWarnable = false;
+                userAccount.isNotWarnable = false;
                 UserAccounts.SaveAccounts();
                 Console.WriteLine($"The user {user} was made warnable.");
                 return $"The user {user} was made warnable.";
@@ -149,30 +155,31 @@ namespace Pootis_Bot.Modules
 
         string Warn(SocketUser user)
         {
-            var userAccount = UserAccounts.GetAccount(user);
+            SocketGuildUser userguild = (SocketGuildUser)user;
+            var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 
-            if (userAccount.IsNotWarnable == true)
+            if (userAccount.isNotWarnable == true)
             {
                 return $"A warning cannot be given to {user}. That person's account is set to not warnable.";
             }
             else
             {
-                userAccount.NumberOfWarnings++;
+                userAccount.warnings++;
                 UserAccounts.SaveAccounts();
                 return $"A warning was given to {user}";
             }
         }
 
-        async Task CheckWarnStatus(IGuildUser user)
+        async Task CheckWarnStatus(SocketGuildUser user)
         {
-            var userAccount = UserAccounts.GetAccount((SocketUser)user);
+            var userAccount = UserAccounts.GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
-            if (userAccount.NumberOfWarnings >= 3)
+            if (userAccount.warnings >= 3)
             {
                 await user.KickAsync("Was kicked due to having 3 warnings.");
             }
 
-            if (userAccount.NumberOfWarnings >= 4)
+            if (userAccount.warnings >= 4)
             {
                 await user.Guild.AddBanAsync(user, 5, "Was baned due to having 4 warnings.");
             }

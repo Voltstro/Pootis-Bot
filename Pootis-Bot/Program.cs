@@ -3,8 +3,6 @@ using System;
 using System.Threading.Tasks;
 using Pootis_Bot.Core;
 using Discord;
-using Pootis_Bot.Core.ServerList;
-using Pootis_Bot.Core.UserAccounts;
 
 namespace Pootis_Bot
 {
