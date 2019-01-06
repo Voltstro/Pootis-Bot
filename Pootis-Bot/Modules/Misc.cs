@@ -39,10 +39,24 @@ namespace Pootis_Bot.Modules
                 await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
         }
 
-        [Command("serverguild")]
+        [Command("server")]
         public async Task ServerGuild()
         {
-            await Context.Channel.SendMessageAsync(Context.Guild.Id.ToString());
+            var guilduser = (SocketGuildUser)Context.User;            
+
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.WithTitle("Server Details");
+            embed.WithDescription($"**__Server__**" +
+                $"\n**Server Name:** {guilduser.Guild}" +
+                $"\n**Server ID:** {guilduser.Guild.Id}" +
+                $"\n**Server Member Count:** {guilduser.Guild.MemberCount}" +
+                $"\n\n**__Server Owner__**" +
+                $"\n**Owner Name: **{guilduser.Guild.Owner.Username}" +
+                $"\n**Owner ID: ** {guilduser.Guild.OwnerId}");
+            embed.WithThumbnailUrl(guilduser.Guild.IconUrl);
+            embed.WithColor(new Color(241, 196, 15));
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         #region Functions
