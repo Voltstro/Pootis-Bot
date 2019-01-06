@@ -8,7 +8,6 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
-using Pootis_Bot.Core.ServerList;
 
 namespace Pootis_Bot.Modules.Fun
 {

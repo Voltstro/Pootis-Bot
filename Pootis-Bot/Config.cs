@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
+using Pootis_Bot.Entities;
 
 namespace Pootis_Bot
 {
@@ -9,7 +10,7 @@ namespace Pootis_Bot
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
 
-        public static ConfigFile bot;
+        public static GlobalConfigFile bot;
 
         static Config()
         {
@@ -24,13 +25,13 @@ namespace Pootis_Bot
             else
             {
                 string json = File.ReadAllText(configFolder + "/" + configFile); //If it does exist then it continues like normal.
-                bot = JsonConvert.DeserializeObject<ConfigFile>(json);
+                bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
             }
         }
 
         public static void SaveConfig(string _token, string prefix, string name, string giphyyAPI, string ytAPI, string gAPI, string gsSe)
         {
-            bot = new ConfigFile()
+            bot = new GlobalConfigFile()
             {
                 botToken = _token,
                 botPrefix = prefix,

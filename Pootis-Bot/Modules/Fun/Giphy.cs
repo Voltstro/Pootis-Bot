@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core.ServerList;
 using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules.Fun

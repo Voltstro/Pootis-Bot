@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
-using Pootis_Bot.Core.ServerList;
+using Pootis_Bot.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;

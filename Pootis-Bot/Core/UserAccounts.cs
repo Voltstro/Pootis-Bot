@@ -1,13 +1,14 @@
 ﻿using Discord.WebSocket;
+using Pootis_Bot.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Pootis_Bot.Core.UserAccounts
+namespace Pootis_Bot.Core
 {
     public static class UserAccounts
     {
-        private static List<UserAccount> accounts;
+        private static List<GlobalUserAccount> accounts;
 
         private static string accountsFile = "Resources/accounts.json";
 
@@ -19,7 +20,7 @@ namespace Pootis_Bot.Core.UserAccounts
             }
             else
             {
-                accounts = new List<UserAccount>();
+                accounts = new List<GlobalUserAccount>();
                 SaveAccounts();
             }
         }
@@ -29,31 +30,33 @@ namespace Pootis_Bot.Core.UserAccounts
             DataStorage.SaveUserAccounts(accounts, accountsFile);
         }
 
-        public static UserAccount GetAccount(SocketUser user)
+        public static GlobalUserAccount GetAccount(SocketGuildUser user)
         {
-            return GetOrCreateAccount(user.Id);
+            return GetOrCreateAccount(user.Id, user);
+            
         }
 
-        private static UserAccount GetOrCreateAccount(ulong id)
+        private static GlobalUserAccount GetOrCreateAccount(ulong id, SocketGuildUser user)
         {
             var result = from a in accounts
                          where a.ID == id
                          select a;
 
             var account = result.FirstOrDefault();
-            if (account == null) account = CreateUserAccount(id);
+            if (account == null) account = CreateUserAccount(id, user);
             return account;
         }
 
-        private static UserAccount CreateUserAccount(ulong id)
+        private static GlobalUserAccount CreateUserAccount(ulong id, SocketGuildUser user)
         {
-            Console.WriteLine("Creating new user account " + id);
-            var newAccount = new UserAccount()
+            var newAccount = new GlobalUserAccount()
             {
                 ID = id,
                 Points = 10,
                 XP = 0
             };
+
+            newAccount.GetOrCreateServer(user.Guild.Id);
 
             accounts.Add(newAccount);
             SaveAccounts();

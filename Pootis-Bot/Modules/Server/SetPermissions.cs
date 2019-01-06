@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Pootis_Bot.Core.ServerList;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules.Server
 {

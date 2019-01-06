@@ -1,6 +1,6 @@
-﻿namespace Pootis_Bot
+﻿namespace Pootis_Bot.Entities
 {
-    public class ConfigFile
+    public class GlobalConfigFile
     {
         //Bot Related
         public string botToken = "";
@@ -12,6 +12,5 @@
         public string apiYoutubeKey;
         public string apiGoogleSearchKey;
         public string googleSearchEngineID;
-
     }
 }

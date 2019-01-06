@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core.ServerList;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
@@ -37,6 +37,12 @@ namespace Pootis_Bot.Modules
             }
             else
                 await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
+        }
+
+        [Command("serverguild")]
+        public async Task ServerGuild()
+        {
+            await Context.Channel.SendMessageAsync(Context.Guild.Id.ToString());
         }
 
         #region Functions
