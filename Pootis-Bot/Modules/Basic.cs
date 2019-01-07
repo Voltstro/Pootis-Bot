@@ -29,7 +29,7 @@ namespace Pootis_Bot.Modules
         {
             var embed = new EmbedBuilder();
             embed.WithTitle(Context.User.Username);
-            embed.WithDescription($"**Help for {Config.bot.botName}** \n\n :computer: [Commands](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Pootis-Bot-Commands)\n\nFor support ask on my server <:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
+            embed.WithDescription($"**Help for {Program.setname}** \n\n :computer: [Commands](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Pootis-Bot-Commands)\n\nFor support ask on my server <:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
             embed.WithColor(new Color(0, 255, 0));
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());

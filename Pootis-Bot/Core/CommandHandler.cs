@@ -11,12 +11,16 @@ namespace Pootis_Bot.Core
         DiscordSocketClient _client;
         CommandService _cmdService;
 
-        public async Task InitializeAsync(DiscordSocketClient client)
+        string prefix;
+
+        public async Task InitializeAsync(DiscordSocketClient client, string _prefix)
         {
             _client = client;
             _cmdService = new CommandService();
             await _cmdService.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
+
+            prefix = _prefix;
         }
 
         private async Task HandleCommandAsync(SocketMessage s)
@@ -26,7 +30,7 @@ namespace Pootis_Bot.Core
             int argPos = 0;
             if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
                 return;
-            if (msg.HasStringPrefix(Config.bot.botPrefix, ref argPos)
+            if (msg.HasStringPrefix(prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var result = await _cmdService.ExecuteAsync(context, argPos);

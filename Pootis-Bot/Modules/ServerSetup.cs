@@ -17,7 +17,7 @@ namespace Pootis_Bot.Modules
             var embed = new EmbedBuilder();
 
             embed.WithTitle("Setup Commands");
-            embed.WithDescription($"\nSetup commands for {Config.bot.botName}.\n**ALL OF THESE COMMAND CAN ONLY BE EXCUTED BY THE OWNER OF THE SERVER!**\n\n" +
+            embed.WithDescription($"\nSetup commands for {Program.setname}.\n**ALL OF THESE COMMAND CAN ONLY BE EXCUTED BY THE OWNER OF THE SERVER!**\n\n" +
                 $"'setupwelcomeid [Welcome ChannelID]' -- Use this to setup the welcome channel ID\n" +
                 $"'togglewelcome' -- Toggels between enabling the welcome message or not\n" +
                 $"'togglerules' -- In the welcome chat it will say 'check out #rules'. Do you want that?\n" +
