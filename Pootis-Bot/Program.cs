@@ -151,8 +151,6 @@ namespace Pootis_Bot
                     await _client.SetGameAsync("Bot shutting down");
                     await _client.LogoutAsync();
                     _client.Dispose();
-                    Console.WriteLine("Press any key to quit...");
-                    Console.ReadKey(true);
                     Environment.Exit(0);
                 }
                 else if (input.Trim().ToLower() == "config")
