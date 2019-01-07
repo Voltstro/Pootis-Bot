@@ -10,23 +10,70 @@ namespace Pootis_Bot
     {
         private bool isBotOn;
 
+        string settoken;
+        string setprefix;
+        public static string setname;
+
         DiscordSocketClient _client;
         CommandHandler _handler;
 
         static void Main(string[] args)
-        => new Program().StartAsync().GetAwaiter().GetResult();
+        => new Program().StartAsync(args).GetAwaiter().GetResult();
 
-        public async Task StartAsync()
-        {          
-            if (Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
+        public async Task StartAsync(string[] args)
+        {
+            if(args.Length != 0)
             {
-                //Token was null or empty, enter into bot config mode.
-                Global.ColorMessage($"[{Global.TimeNow()}] The token was null or not present. Entering Bot Config Mode", ConsoleColor.Red);
+                string token = args[0];
+                if(!String.IsNullOrEmpty(token))
+                    settoken = token;
+                else
+                {
+                    if(Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
+                    {
+                        //Token was null or empty, enter into bot config mode.
+                        Global.ColorMessage($"[{Global.TimeNow()}] The token was null or not present. Entering Bot Config Mode", ConsoleColor.Red);
 
-                BotConfigStart();
+                        BotConfigStart();
+                    }
+                }    
+            }
+            else
+            {
+                if (Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
+                {
+                    //Token was null or empty, enter into bot config mode.
+                    Global.ColorMessage($"[{Global.TimeNow()}] The token was null or not present. Entering Bot Config Mode", ConsoleColor.Red);
+
+                    BotConfigStart();
+                }
             }
 
-            Console.Title = Config.bot.botName + " Console";
+            if(args.Length == 2)
+            {
+                string prefix = args[1];
+                if (!String.IsNullOrEmpty(prefix))
+                    setprefix = prefix;
+                    
+                else
+                    setprefix = Config.bot.botPrefix;                  
+            }
+            else
+                setprefix = Config.bot.botPrefix;
+
+            if (args.Length == 3)
+            {
+                string name = args[2];
+                if (!String.IsNullOrEmpty(name))
+                    setname = name;
+
+                else
+                    setname = Config.bot.botName;
+            }
+            else
+                setname = Config.bot.botName;
+
+            Console.Title = setname + " Console";
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -36,10 +83,15 @@ namespace Pootis_Bot
             _client.UserJoined += AnnounceJoinedUser;
             _client.UserLeft += UserLeft;
             _client.JoinedGuild += JoinedNewServer;
-            await ConnectBot(); //Loging into the bot using the token in the config.
+
+            if(String.IsNullOrEmpty(settoken))
+                await ConnectBot(Config.bot.botToken); //Loging into the bot using the token in the config.
+            else
+                await ConnectBot(settoken); //Loging into the bot using the token in the config.
+
             await _client.StartAsync();
             _handler = new CommandHandler();
-            await _handler.InitializeAsync(_client);
+            await _handler.InitializeAsync(_client, setprefix);
             await _client.SetGameAsync("Use $help for help.");
             #pragma warning disable CS4014 //Ingnore this annoying warning
             ConsoleInput();
@@ -47,11 +99,11 @@ namespace Pootis_Bot
             await Task.Delay(-1);
         }
 
-        private async Task ConnectBot()
+        private async Task ConnectBot(string token)
         {
             if (isBotOn == false)
             {
-                await _client.LoginAsync(TokenType.Bot, Config.bot.botToken);
+                await _client.LoginAsync(TokenType.Bot, token);
                 isBotOn = true;
             }
             else
@@ -77,7 +129,7 @@ namespace Pootis_Bot
 
             EmbedBuilder embed = new EmbedBuilder();
             embed.WithTitle("Thanks for inviting me!");
-            embed.WithDescription("Hello! My name is " + Config.bot.botName + "!\n\n**__Links__**" +
+            embed.WithDescription("Hello! My name is " + setname + "!\n\n**__Links__**" +
                 "\n:computer: [Commands](https://creepysin.github.io/docs/Pootis-Bot/commands)" +
                 "\n<:GitHub:529571722991763456> [Github Page](https://github.com/Creepysin/Pootis-Bot)" +
                 "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
