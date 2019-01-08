@@ -6,34 +6,42 @@ using System.Threading.Tasks;
 
 namespace Pootis_Bot.Core
 {
-    class CommandHandler
+    public class CommandHandler
     {
-        DiscordSocketClient _client;
-        CommandService _cmdService;
+        //https://docs.stillu.cc/guides/commands/intro.html
+        //For helping me updated the old commandhandler to discord.net 2.0
 
-        string prefix;
+        private readonly DiscordSocketClient _client;
+        private readonly CommandService _commands;
 
-        public async Task InitializeAsync(DiscordSocketClient client, string _prefix)
+        private readonly string _prefix;
+
+        public CommandHandler(DiscordSocketClient client, CommandService commands, string prefix)
         {
+            _commands = commands;
             _client = client;
-            _cmdService = new CommandService();
-            await _cmdService.AddModulesAsync(Assembly.GetEntryAssembly());
-            _client.MessageReceived += HandleCommandAsync;
-
-            prefix = _prefix;
+            _prefix = prefix;
         }
 
-        private async Task HandleCommandAsync(SocketMessage s)
+        public async Task InstallCommandsAsync()
         {
-            if (!(s is SocketUserMessage msg)) return;
+            _client.MessageReceived += HandleCommandAsync;
+
+            await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
+                                            services: null);
+        }
+
+        private async Task HandleCommandAsync(SocketMessage messageParam)
+        {
+            if (!(messageParam is SocketUserMessage msg)) return;
             var context = new SocketCommandContext(_client, msg);
             int argPos = 0;
             if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
                 return;
-            if (msg.HasStringPrefix(prefix, ref argPos)
+            if (msg.HasStringPrefix(_prefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                var result = await _cmdService.ExecuteAsync(context, argPos);
+                var result = await _commands.ExecuteAsync(context, argPos, services: null);
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
                     Global.ColorMessage($"[{ Global.TimeNow()}] " + result.ErrorReason, ConsoleColor.Red);

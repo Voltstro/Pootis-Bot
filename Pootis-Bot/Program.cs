@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Pootis_Bot.Core;
 using Discord;
+using Discord.Commands;
 
 namespace Pootis_Bot
 {
@@ -15,6 +16,7 @@ namespace Pootis_Bot
         public static string setname;
 
         DiscordSocketClient _client;
+        CommandService _commands;
         CommandHandler _handler;
 
         static void Main(string[] args)
@@ -25,11 +27,15 @@ namespace Pootis_Bot
             if(args.Length != 0)
             {
                 string token = args[0];
-                if(!String.IsNullOrEmpty(token))
+                if(!String.IsNullOrEmpty(token)) //Use the argument token
+                {
                     settoken = token;
+                    Console.WriteLine($"[{Global.TimeNow()}] Using argument token");
+                }                   
                 else
                 {
-                    if(Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
+                    Console.WriteLine($"[{Global.TimeNow()}] Using config token");
+                    if (Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
                     {
                         //Token was null or empty, enter into bot config mode.
                         Global.ColorMessage($"[{Global.TimeNow()}] The token was null or not present. Entering Bot Config Mode", ConsoleColor.Red);
@@ -40,6 +46,7 @@ namespace Pootis_Bot
             }
             else
             {
+                Console.WriteLine($"[{Global.TimeNow()}] Using config token");
                 if (Config.bot.botToken == "" || Config.bot.botToken == null) //Makes sure that the token is not null or empty
                 {
                     //Token was null or empty, enter into bot config mode.
@@ -52,28 +59,49 @@ namespace Pootis_Bot
             if(args.Length == 2)
             {
                 string prefix = args[1];
-                if (!String.IsNullOrEmpty(prefix))
+                if (!String.IsNullOrEmpty(prefix)) //Use the argument prefix
+                {
+                    Console.WriteLine($"[{Global.TimeNow()}] Using argument prefix");
                     setprefix = prefix;
-                    
+                }              
                 else
-                    setprefix = Config.bot.botPrefix;                  
+                {
+                    Console.WriteLine($"[{Global.TimeNow()}] Using config prefix");
+                    setprefix = Config.bot.botPrefix;
+                }
+                                     
             }
             else
+            {
+                Console.WriteLine($"[{Global.TimeNow()}] Using config prefix");
                 setprefix = Config.bot.botPrefix;
+            }
+                
 
             if (args.Length == 3)
             {
                 string name = args[2];
-                if (!String.IsNullOrEmpty(name))
+                if (!String.IsNullOrEmpty(name)) //Use the argument bot name
+                {
+                    Console.WriteLine($"[{Global.TimeNow()}] Using argument bot name");
                     setname = name;
-
+                }
                 else
+                {
+                    Console.WriteLine($"[{Global.TimeNow()}] Using config bot name");
                     setname = Config.bot.botName;
+                }
+                    
             }
             else
+            {
+                Console.WriteLine($"[{Global.TimeNow()}] Using config bot name");
                 setname = Config.bot.botName;
+            }
+                
 
             Console.Title = setname + " Console";
+            Console.WriteLine($"[{Global.TimeNow()}] Starting...");
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -84,14 +112,16 @@ namespace Pootis_Bot
             _client.UserLeft += UserLeft;
             _client.JoinedGuild += JoinedNewServer;
 
+            _commands = new CommandService();
+
             if(String.IsNullOrEmpty(settoken))
                 await ConnectBot(Config.bot.botToken); //Loging into the bot using the token in the config.
             else
                 await ConnectBot(settoken); //Loging into the bot using the token in the config.
 
             await _client.StartAsync();
-            _handler = new CommandHandler();
-            await _handler.InitializeAsync(_client, setprefix);
+            _handler = new CommandHandler(_client, _commands, setprefix);
+            await _handler.InstallCommandsAsync();
             await _client.SetGameAsync("Use $help for help.");
             #pragma warning disable CS4014 //Ingnore this annoying warning
             ConsoleInput();
