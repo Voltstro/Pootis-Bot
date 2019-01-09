@@ -24,6 +24,7 @@ namespace Pootis_Bot
 
         public async Task StartAsync(string[] args)
         {
+            //Check to see wether to use config or argument token/prefix/name
             if(args.Length != 0)
             {
                 string token = args[0];
@@ -76,8 +77,6 @@ namespace Pootis_Bot
                 Console.WriteLine($"[{Global.TimeNow()}] Using config prefix");
                 setprefix = Config.bot.botPrefix;
             }
-                
-
             if (args.Length == 3)
             {
                 string name = args[2];
@@ -98,7 +97,16 @@ namespace Pootis_Bot
                 Console.WriteLine($"[{Global.TimeNow()}] Using config bot name");
                 setname = Config.bot.botName;
             }
-                
+
+            //Warn if api/search key is null or empty.
+            if (String.IsNullOrEmpty(Config.bot.apiGiphyKey))
+                Global.ColorMessage($"[{Global.TimeNow()}] Giphy api key is null or empty", ConsoleColor.Yellow);
+            if (String.IsNullOrEmpty(Config.bot.apiGoogleSearchKey))
+                Global.ColorMessage($"[{Global.TimeNow()}] Google api key is null or empty", ConsoleColor.Yellow);
+            if (String.IsNullOrEmpty(Config.bot.apiYoutubeKey))
+                Global.ColorMessage($"[{Global.TimeNow()}] Youtube api key is null or empty", ConsoleColor.Yellow);
+            if (String.IsNullOrEmpty(Config.bot.googleSearchEngineID))
+                Global.ColorMessage($"[{Global.TimeNow()}] Google Search Engine ID is null or empty", ConsoleColor.Yellow);
 
             Console.Title = setname + " Console";
             Console.WriteLine($"[{Global.TimeNow()}] Starting...");
