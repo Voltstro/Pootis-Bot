@@ -1,4 +1,8 @@
-﻿namespace Pootis_Bot.Entities
+﻿using Pootis_Bot.Entities.Server;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Pootis_Bot.Entities
 {
     public class GlobalServerList
     {
@@ -24,6 +28,42 @@
         public string permYT;
         public string permGiphy;
         public string permGoogle;
-        
+
+        public List<GlobalServerBanedChannelList> banedChannels = new List<GlobalServerBanedChannelList>();
+
+        public GlobalServerBanedChannelList GetOrCreateBanedChannel(ulong id)
+        {
+            var result = from a in banedChannels
+                         where a.channelID == id
+                         select a;
+
+            var channel = result.FirstOrDefault();
+            if (channel == null) channel = CreateBanedChannel(id);
+            return channel;
+        }
+
+        GlobalServerBanedChannelList CreateBanedChannel(ulong _channelID)
+        {
+            var banedchannelitem = new GlobalServerBanedChannelList
+            {
+                channelID = _channelID
+            };
+
+            banedChannels.Add(banedchannelitem);
+            return banedchannelitem;
+        }
+
+        public GlobalServerBanedChannelList[] GetAllBanedChannels()
+        {
+            GlobalServerBanedChannelList[] convert = banedChannels.ToArray();
+            return convert;
+        }
+
+        public void DeleteChannel(ulong id)
+        {
+            var channel = GetOrCreateBanedChannel(id);
+            banedChannels.Remove(channel);         
+        }
+
     }
 }
