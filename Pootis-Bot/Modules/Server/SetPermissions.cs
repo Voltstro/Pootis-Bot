@@ -104,6 +104,7 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("addbanedchannel")]
+        [RequireOwner]
         public async Task AddBanedChannel(SocketTextChannel channel)
         {
             var server = ServerLists.GetServer(Context.Guild).GetOrCreateBanedChannel(channel.Id);
@@ -114,6 +115,7 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("removebanedchannel")]
+        [RequireOwner]
         public async Task RemoveBanedChannel(SocketTextChannel channel)
         {
             var server = ServerLists.GetServer(Context.Guild);
