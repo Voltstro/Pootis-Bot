@@ -35,12 +35,16 @@ namespace Pootis_Bot
             {
                 botToken = _token,
                 botPrefix = prefix,
-                botName = name,      
+                botName = name      
+            };
+            bot.apis = new GlobalConfigFile.ConfigApis()
+            {
                 apiGiphyKey = giphyyAPI,
                 apiYoutubeKey = ytAPI,
                 apiGoogleSearchKey = gAPI,
                 googleSearchEngineID = gsSe
             };
+
             string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
             File.WriteAllText(configFolder + "/" + configFile, json);
         }

@@ -18,16 +18,16 @@ namespace Pootis_Bot.Modules
             var server = ServerLists.GetServer(Context.Guild);
             var _user = Context.User as SocketGuildUser;
 
-            if (server.permNotWarnableRole != null && server.permNotWarnableRole.Trim() != "")
+            if (server.permissions.PermNotWarnableRole != null && server.permissions.PermNotWarnableRole.Trim() != "")
             {
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permNotWarnableRole);
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermNotWarnableRole);
 
                 if(_user.Roles.Contains(setrole))
                     await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));
             }
             else //There isn't a set role, use deafult of the 'admin' role.
             {
-                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).adminRoleName);
+                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).AdminRoleName);
 
                 if (_user.Roles.Contains(deafultrole))
                     await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));
@@ -40,16 +40,16 @@ namespace Pootis_Bot.Modules
             var _user = Context.User as SocketGuildUser;
             var server = ServerLists.GetServer(Context.Guild);
             
-            if (server.permMakeWarnableRole != null && server.permMakeWarnableRole.Trim() != "")
+            if (server.permissions.PermMakeWarnableRole != null && server.permissions.PermMakeWarnableRole.Trim() != "")
             {
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permMakeWarnableRole);
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMakeWarnableRole);
 
                 if(_user.Roles.Contains(setrole))
                     await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));
             }
             else //There isn't a set role, use deafult of the 'admin' role.
             {
-                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).adminRoleName);
+                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).AdminRoleName);
 
                 if (_user.Roles.Contains(deafultrole))
                     await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));
@@ -64,9 +64,9 @@ namespace Pootis_Bot.Modules
             var _user = Context.User as SocketGuildUser;
             var server = ServerLists.GetServer(Context.Guild);
 
-            if (server.permWarn != null && server.permWarn.Trim() != "")
+            if (server.permissions.PermWarn != null && server.permissions.PermWarn.Trim() != "")
             {
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permMakeWarnableRole);
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMakeWarnableRole);
 
                 if (_user.Roles.Contains(setrole))
                 {
@@ -76,7 +76,7 @@ namespace Pootis_Bot.Modules
             }
             else //There isn't a set role, use deafult of the 'staff' role.
             {
-                var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).staffRoleName);
+                var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).StaffRoleName);
 
                 if (_user.Roles.Contains(role))
                 {
@@ -98,8 +98,8 @@ namespace Pootis_Bot.Modules
             var guildtarget = (SocketGuildUser)target;
             var accountserver = account.GetOrCreateServer(guildtarget.Guild.Id);
 
-            string WarningText = $"{target.Username} currently has {accountserver.warnings} warnings.";
-            if (accountserver.isNotWarnable == true)
+            string WarningText = $"{target.Username} currently has {accountserver.Warnings} warnings.";
+            if (accountserver.IsAccountNotWarnable == true)
             {
                 WarningText = $"{target.Username} account is not warnable.";
             }
@@ -121,14 +121,14 @@ namespace Pootis_Bot.Modules
             SocketGuildUser userguild = (SocketGuildUser)user;
             var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 
-            if (userAccount.isNotWarnable == true)
+            if (userAccount.IsAccountNotWarnable == true)
             {
                 return $"The user {user} is already not warnable.";
             }
             else
             {
-                userAccount.isNotWarnable = true;
-                userAccount.warnings = 0;
+                userAccount.IsAccountNotWarnable = true;
+                userAccount.Warnings = 0;
                 UserAccounts.SaveAccounts();
                 Console.WriteLine($"The user {user} was made not warnable.");
                 return $"The user {user} was made not warnable.";
@@ -140,13 +140,13 @@ namespace Pootis_Bot.Modules
             SocketGuildUser userguild = (SocketGuildUser)user;
 
             var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
-            if (userAccount.isNotWarnable == false)
+            if (userAccount.IsAccountNotWarnable == false)
             {
                 return $"The user {user} is already warnable.";
             }
             else
             {
-                userAccount.isNotWarnable = false;
+                userAccount.IsAccountNotWarnable = false;
                 UserAccounts.SaveAccounts();
                 Console.WriteLine($"The user {user} was made warnable.");
                 return $"The user {user} was made warnable.";
@@ -158,13 +158,13 @@ namespace Pootis_Bot.Modules
             SocketGuildUser userguild = (SocketGuildUser)user;
             var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 
-            if (userAccount.isNotWarnable == true)
+            if (userAccount.IsAccountNotWarnable == true)
             {
                 return $"A warning cannot be given to {user}. That person's account is set to not warnable.";
             }
             else
             {
-                userAccount.warnings++;
+                userAccount.Warnings++;
                 UserAccounts.SaveAccounts();
                 return $"A warning was given to {user}";
             }
@@ -174,12 +174,12 @@ namespace Pootis_Bot.Modules
         {
             var userAccount = UserAccounts.GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
-            if (userAccount.warnings >= 3)
+            if (userAccount.Warnings >= 3)
             {
                 await user.KickAsync("Was kicked due to having 3 warnings.");
             }
 
-            if (userAccount.warnings >= 4)
+            if (userAccount.Warnings >= 4)
             {
                 await user.Guild.AddBanAsync(user, 5, "Was baned due to having 4 warnings.");
             }

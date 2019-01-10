@@ -1,35 +1,41 @@
-﻿using Pootis_Bot.Entities.Server;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Pootis_Bot.Entities
 {
     public class GlobalServerList
     {
-        public ulong serverID;
+        public ulong ServerID { get; set; }
 
-        public bool enableWelcome;
+        public bool EnableWelcome { get; set; }
 
-        public ulong welcomeID;
+        public ulong WelcomeID { get; set; }
 
-        public bool isRules;
+        public bool IsRules { get; set; }
 
-        public string staffRoleName;
+        public string StaffRoleName { get; set; }
 
-        public string adminRoleName;
+        public string AdminRoleName { get; set; }
 
-        //Misc. command permissions
-        public string permEmbedMessage;
-
-        //Profile mang. command permissions
-        public string permNotWarnableRole;
-        public string permMakeWarnableRole;
-        public string permWarn;
-        public string permYT;
-        public string permGiphy;
-        public string permGoogle;
+        public Permissions permissions;
 
         public List<GlobalServerBanedChannelList> banedChannels = new List<GlobalServerBanedChannelList>();
+
+        public class Permissions
+        {
+            public string PermEmbedMessage { get; set; }
+            public string PermNotWarnableRole { get; set; }
+            public string PermMakeWarnableRole { get; set; }
+            public string PermWarn { get; set; }
+            public string PermYT { get; set; }
+            public string PermGiphy { get; set; }
+            public string PermGoogle { get; set; }
+        }
+
+        public class GlobalServerBanedChannelList
+        {
+            public ulong channelID;
+        }
 
         public GlobalServerBanedChannelList GetOrCreateBanedChannel(ulong id)
         {

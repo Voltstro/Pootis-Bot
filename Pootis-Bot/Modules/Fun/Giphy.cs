@@ -21,10 +21,10 @@ namespace Pootis_Bot.Modules.Fun
             var server = ServerLists.GetServer(Context.Guild);
 
             //Check to see if the command has a permission set
-            if (server.permGiphy != null && server.permGiphy != "")
+            if (server.permissions.PermGiphy != null && server.permissions.PermGiphy != "")
             {
                 var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permGiphy);
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermGiphy);
 
                 if(_user.Roles.Contains(setrole))
                     await Context.Channel.SendMessageAsync("", false, GiphySearch(search).Build());                         
@@ -37,7 +37,7 @@ namespace Pootis_Bot.Modules.Fun
         {
             if (search.Trim() != "") //Check to see if search is nothing
             {
-                if (Config.bot.apiGiphyKey.Trim() != "") //Check to see if the bot giphy api is nothing
+                if (Config.bot.apis.apiGiphyKey.Trim() != "") //Check to see if the bot giphy api is nothing
                 {
                     try
                     {
@@ -46,7 +46,7 @@ namespace Pootis_Bot.Modules.Fun
                         string json = "";
                         using (WebClient client = new WebClient()) //Search the term using the giphy api; More about the api here: https://developers.giphy.com/docs/
                         {
-                            json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key=" + Config.bot.apiGiphyKey);
+                            json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key=" + Config.bot.apis.apiGiphyKey);
                         }
 
                         var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
