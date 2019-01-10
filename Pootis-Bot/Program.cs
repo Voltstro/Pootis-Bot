@@ -278,11 +278,6 @@ namespace Pootis_Bot
             string name = Config.bot.botName;
             string prefix = Config.bot.botPrefix;
 
-            if (token == null)
-                Console.WriteLine("Token is null");
-            else
-                Console.WriteLine("token is: " + token);
-
             while(botConfig == true)
             {
                 string input = Console.ReadLine();

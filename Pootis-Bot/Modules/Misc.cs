@@ -59,6 +59,12 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
+        [Command("ping")]
+        public async Task Ping()
+        {
+            await Context.Channel.SendMessageAsync($"Pong! {Context.Client.Latency}ms");
+        }
+
         #region Functions
 
         EmbedBuilder EmbedMessage(string title, string msg)
