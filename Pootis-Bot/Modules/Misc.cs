@@ -26,9 +26,9 @@ namespace Pootis_Bot.Modules
         {
             var server = ServerLists.GetServer(Context.Guild);
             var _user = Context.User as SocketGuildUser;
-            var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permEmbedMessage);
+            var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermEmbedMessage);
 
-            if(server.permEmbedMessage != null && server.permEmbedMessage.Trim() != "")
+            if(server.permissions.PermEmbedMessage != null && server.permissions.PermEmbedMessage.Trim() != "")
             {
                 if (_user.Roles.Contains(setrole))
                 {

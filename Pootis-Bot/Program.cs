@@ -99,13 +99,13 @@ namespace Pootis_Bot
             }
 
             //Warn if api/search key is null or empty.
-            if (String.IsNullOrEmpty(Config.bot.apiGiphyKey))
+            if (String.IsNullOrEmpty(Config.bot.apis.apiGiphyKey))
                 Global.ColorMessage($"[{Global.TimeNow()}] Giphy api key is null or empty", ConsoleColor.Yellow);
-            if (String.IsNullOrEmpty(Config.bot.apiGoogleSearchKey))
+            if (String.IsNullOrEmpty(Config.bot.apis.apiGoogleSearchKey))
                 Global.ColorMessage($"[{Global.TimeNow()}] Google api key is null or empty", ConsoleColor.Yellow);
-            if (String.IsNullOrEmpty(Config.bot.apiYoutubeKey))
+            if (String.IsNullOrEmpty(Config.bot.apis.apiYoutubeKey))
                 Global.ColorMessage($"[{Global.TimeNow()}] Youtube api key is null or empty", ConsoleColor.Yellow);
-            if (String.IsNullOrEmpty(Config.bot.googleSearchEngineID))
+            if (String.IsNullOrEmpty(Config.bot.apis.googleSearchEngineID))
                 Global.ColorMessage($"[{Global.TimeNow()}] Google Search Engine ID is null or empty", ConsoleColor.Yellow);
 
             Console.Title = setname + " Console";
@@ -212,11 +212,11 @@ namespace Pootis_Bot
 
             var server = ServerLists.GetServer(user.Guild);
 
-            if (server.enableWelcome == true)
+            if (server.EnableWelcome == true)
             {
                 if (!user.IsBot)
                 {
-                    var channel = _client.GetChannel(server.welcomeID) as SocketTextChannel; //gets channel to send message in
+                    var channel = _client.GetChannel(server.WelcomeID) as SocketTextChannel; //gets channel to send message in
                     await channel.SendMessageAsync("Goodbye " + user.Mention + ". We hope you enjoyed your stay."); //Says goodbye.  
                 }
             }
@@ -234,16 +234,16 @@ namespace Pootis_Bot
 
             var server = ServerLists.GetServer(user.Guild);
 
-            if (server.enableWelcome == true)
+            if (server.EnableWelcome == true)
             {
                 if(!user.IsBot)
                 {
                     UserAccounts.GetAccount(user);
-                    if (server.enableWelcome == false)
+                    if (server.EnableWelcome == false)
                         return;
-                    var channel = _client.GetChannel(server.welcomeID) as SocketTextChannel; //gets channel to send message in
+                    var channel = _client.GetChannel(server.WelcomeID) as SocketTextChannel; //gets channel to send message in
                     string rules = "";
-                    if(server.isRules)
+                    if(server.IsRules)
                     {
                         rules = "Consider checking out the #rules then enjoy your stay!";
                     }
@@ -295,7 +295,7 @@ namespace Pootis_Bot
                             if (prefix != null)
                             {
                                 botConfig = false;
-                                Config.SaveConfig(token, prefix, name, Config.bot.apiGiphyKey, Config.bot.apiYoutubeKey, Config.bot.apiGoogleSearchKey, Config.bot.googleSearchEngineID);
+                                Config.SaveConfig(token, prefix, name, Config.bot.apis.apiGiphyKey, Config.bot.apis.apiYoutubeKey, Config.bot.apis.apiGoogleSearchKey, Config.bot.apis.googleSearchEngineID);
 
                                 Console.WriteLine("Exited bot configuration");
                                 return;
@@ -457,7 +457,7 @@ namespace Pootis_Bot
             string key = "";
             bool set = false;
 
-            Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.apiGiphyKey}'");
+            Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.apis.apiGiphyKey}'");
             Console.WriteLine("Enter in what you want to change the bot Giphy key to: ");
 
             while (set == false)
@@ -482,7 +482,7 @@ namespace Pootis_Bot
             string key = "";
             bool set = false;
 
-            Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.apiYoutubeKey}'");
+            Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.apis.apiYoutubeKey}'");
             Console.WriteLine("Enter in what you want to change the bot Youtube key to: ");
 
             while (set == false)
@@ -507,7 +507,7 @@ namespace Pootis_Bot
             string key = "";
             bool set = false;
 
-            Console.WriteLine($"The current bot Google key is set to: '{Config.bot.apiGoogleSearchKey}'");
+            Console.WriteLine($"The current bot Google key is set to: '{Config.bot.apis.apiGoogleSearchKey}'");
             Console.WriteLine("Enter in what you want to change the bot Google key to: ");
 
             while (set == false)
@@ -532,7 +532,7 @@ namespace Pootis_Bot
             string key = "";
             bool set = false;
 
-            Console.WriteLine($"The current bot Google Search ID is set to: '{Config.bot.googleSearchEngineID}'");
+            Console.WriteLine($"The current bot Google Search ID is set to: '{Config.bot.apis.googleSearchEngineID}'");
             Console.WriteLine("Enter in what you want to change the bot Google Search ID to: ");
 
             while (set == false)

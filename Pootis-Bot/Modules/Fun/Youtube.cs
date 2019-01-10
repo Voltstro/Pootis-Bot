@@ -26,10 +26,10 @@ namespace Pootis_Bot.Modules.Fun
             var server = ServerLists.GetServer(Context.Guild);
 
             //Check to see if the command has a permission set
-            if (server.permYT != null && server.permYT != "")
+            if (server.permissions.PermYT != null && server.permissions.PermYT != "")
             {
                 var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permYT);
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermYT);
 
                 if (_user.Roles.Contains(setrole))
                     await Context.Channel.SendMessageAsync("", false, YoutubeSearch(search).Build());
@@ -42,13 +42,13 @@ namespace Pootis_Bot.Modules.Fun
         {
             if (search != "")
             {
-                if (Config.bot.apiYoutubeKey.Trim() != "")
+                if (Config.bot.apis.apiYoutubeKey.Trim() != "")
                 {
                     try
                     {
                         var youtube = new YouTubeService(new BaseClientService.Initializer()
                         {
-                            ApiKey = Config.bot.apiYoutubeKey,
+                            ApiKey = Config.bot.apis.apiYoutubeKey,
                             ApplicationName = this.GetType().ToString()
                         });
 

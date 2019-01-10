@@ -29,10 +29,10 @@ namespace Pootis_Bot.Modules.Fun
             var server = ServerLists.GetServer(Context.Guild);
 
             //Check to see if the command has a permission set
-            if (server.permGoogle != null && server.permGoogle != "")
+            if (server.permissions.PermGoogle != null && server.permissions.PermGoogle != "")
             {
                 var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permGoogle);
+                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermGoogle);
 
                 if(_user.Roles.Contains(setrole))
                     await Context.Channel.SendMessageAsync("", false, GoogleSearch(search).Build());
@@ -45,18 +45,18 @@ namespace Pootis_Bot.Modules.Fun
         {
             if (search != "")
             {
-                if (Config.bot.apiGoogleSearchKey.Trim() != "" || Config.bot.googleSearchEngineID.Trim() == "")
+                if (Config.bot.apis.apiGoogleSearchKey.Trim() != "" || Config.bot.apis.googleSearchEngineID.Trim() == "")
                 {
                     try
                     {
                         var google = new CustomsearchService(new BaseClientService.Initializer()
                         {
-                            ApiKey = Config.bot.apiGoogleSearchKey,
+                            ApiKey = Config.bot.apis.apiGoogleSearchKey,
                             ApplicationName = this.GetType().ToString()
                         });
 
                         var searchListRequest = google.Cse.List(search);
-                        searchListRequest.Cx = Config.bot.googleSearchEngineID;
+                        searchListRequest.Cx = Config.bot.apis.googleSearchEngineID;
 
                         var searchListResponse = searchListRequest.Execute();
 

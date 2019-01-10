@@ -7,10 +7,14 @@
         public string botPrefix = "";
         public string botName = "";
 
-        //API Keys
-        public string apiGiphyKey;
-        public string apiYoutubeKey;
-        public string apiGoogleSearchKey;
-        public string googleSearchEngineID;
+        public ConfigApis apis;
+
+        public struct ConfigApis
+        {
+            public string apiGiphyKey;
+            public string apiYoutubeKey;
+            public string apiGoogleSearchKey;
+            public string googleSearchEngineID;
+        }
     }
 }

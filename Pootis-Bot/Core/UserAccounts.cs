@@ -10,7 +10,7 @@ namespace Pootis_Bot.Core
     {
         private static List<GlobalUserAccount> accounts;
 
-        private static string accountsFile = "Resources/accounts.json";
+        private static readonly string accountsFile = "Resources/accounts.json";
 
         static UserAccounts()
         {
@@ -32,8 +32,7 @@ namespace Pootis_Bot.Core
 
         public static GlobalUserAccount GetAccount(SocketGuildUser user)
         {
-            return GetOrCreateAccount(user.Id, user);
-            
+            return GetOrCreateAccount(user.Id, user); 
         }
 
         private static GlobalUserAccount GetOrCreateAccount(ulong id, SocketGuildUser user)

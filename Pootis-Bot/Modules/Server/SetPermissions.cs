@@ -17,7 +17,7 @@ namespace Pootis_Bot.Modules.Server
             }
 
             var list = ServerLists.GetServer(Context.Guild);
-            list.permNotWarnableRole = role;
+            list.permissions.PermNotWarnableRole = role;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Command `makenotwarnable` permission was set to '{role}'");
@@ -33,7 +33,7 @@ namespace Pootis_Bot.Modules.Server
             }
 
             var list = ServerLists.GetServer(Context.Guild);
-            list.permMakeWarnableRole = role;
+            list.permissions.PermMakeWarnableRole = role;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Command `makewarnable` permission was set to '{role}'");
@@ -49,7 +49,7 @@ namespace Pootis_Bot.Modules.Server
             }
 
             var list = ServerLists.GetServer(Context.Guild);
-            list.permWarn = role;
+            list.permissions.PermWarn = role;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Command `warn` permission was set to '{role}'");
@@ -65,7 +65,7 @@ namespace Pootis_Bot.Modules.Server
             }
 
             var list = ServerLists.GetServer(Context.Guild);
-            list.permGoogle = role;
+            list.permissions.PermGoogle = role;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Command `google` permission was set to '{role}'");
@@ -81,7 +81,7 @@ namespace Pootis_Bot.Modules.Server
             }
 
             var list = ServerLists.GetServer(Context.Guild);
-            list.permYT = role;
+            list.permissions.PermYT = role;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Command `youtube` permission was set to '{role}'");
@@ -97,7 +97,7 @@ namespace Pootis_Bot.Modules.Server
             }
 
             var list = ServerLists.GetServer(Context.Guild);
-            list.permGiphy = role;
+            list.permissions.PermGiphy = role;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Command `giphy` permission was set to '{role}'");

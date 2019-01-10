@@ -13,11 +13,17 @@ namespace Pootis_Bot.Entities
 
         public List<GlobalUserAccountServer> servers = new List<GlobalUserAccountServer>();
 
+        public class GlobalUserAccountServer
+        {
+            public ulong ServerID { get; set; }
+            public int Warnings { get; set; }
+            public bool IsAccountNotWarnable { get; set; }
+        }
 
         public GlobalUserAccountServer GetOrCreateServer(ulong id)
         {
             var result = from a in servers
-                         where a.serverID == id
+                         where a.ServerID == id
                          select a;
 
             var server = result.FirstOrDefault();
@@ -29,9 +35,9 @@ namespace Pootis_Bot.Entities
         {
             var serveritem = new GlobalUserAccountServer
             {
-                serverID = _serverID,
-                isNotWarnable = false,
-                warnings = 0
+                ServerID = _serverID,
+                IsAccountNotWarnable = false,
+                Warnings = 0
             };
 
             servers.Add(serveritem);

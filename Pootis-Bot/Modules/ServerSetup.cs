@@ -34,7 +34,7 @@ namespace Pootis_Bot.Modules
         public async Task SetupWelcomeID(ulong ID)
         {
             var server = ServerLists.GetServer(Context.Guild);
-            server.welcomeID = ID;
+            server.WelcomeID = ID;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync("Server welcome id was set to " + ID);
@@ -45,10 +45,10 @@ namespace Pootis_Bot.Modules
         public async Task ToggleWelcome()
         {
             var server = ServerLists.GetServer(Context.Guild);
-            server.enableWelcome = server.enableWelcome = !server.enableWelcome;
+            server.EnableWelcome = server.EnableWelcome = !server.EnableWelcome;
             ServerLists.SaveServerList();
 
-            await Context.Channel.SendMessageAsync("Welcome users was set to " + server.enableWelcome);
+            await Context.Channel.SendMessageAsync("Welcome users was set to " + server.EnableWelcome);
         }
 
         [Command("togglerules")]
@@ -56,10 +56,10 @@ namespace Pootis_Bot.Modules
         public async Task ToggleRules()
         {
             var server = ServerLists.GetServer(Context.Guild);
-            server.enableWelcome = server.isRules = !server.isRules;
+            server.EnableWelcome = server.IsRules = !server.IsRules;
             ServerLists.SaveServerList();
 
-            await Context.Channel.SendMessageAsync("Rules was set to " + server.isRules);
+            await Context.Channel.SendMessageAsync("Rules was set to " + server.IsRules);
         }
 
         [Command("setupadmin")]
@@ -67,7 +67,7 @@ namespace Pootis_Bot.Modules
         public async Task SetupAdmin(string adminRoleName)
         {
             var server = ServerLists.GetServer(Context.Guild);
-            server.adminRoleName = adminRoleName;
+            server.AdminRoleName = adminRoleName;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync("Admin role was set to " + adminRoleName);
@@ -78,7 +78,7 @@ namespace Pootis_Bot.Modules
         public async Task SetupStaff(string staffRoleName)
         {
             var server = ServerLists.GetServer(Context.Guild);
-            server.staffRoleName = staffRoleName;
+            server.StaffRoleName = staffRoleName;
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync("Staff role was set to " + staffRoleName);

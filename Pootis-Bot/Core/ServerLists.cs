@@ -37,7 +37,7 @@ namespace Pootis_Bot.Core
         private static GlobalServerList GetOrCreateServer(ulong id)
         {
             var result = from a in serverLists
-                         where a.serverID == id
+                         where a.ServerID == id
                          select a;
 
             var server = result.FirstOrDefault();
@@ -49,11 +49,13 @@ namespace Pootis_Bot.Core
         {
             var newServer = new GlobalServerList()
             {
-                serverID = id,
-                enableWelcome = false,
-                welcomeID = 0,
-                adminRoleName = "Admin"
+                ServerID = id,
+                EnableWelcome = false,
+                WelcomeID = 0,
+                AdminRoleName = "Admin"
             };
+
+            newServer.permissions = new GlobalServerList.Permissions();
 
             serverLists.Add(newServer);
             SaveServerList();
