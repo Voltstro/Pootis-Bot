@@ -2,7 +2,7 @@
 
 # Pootis-Bot 
 
-![MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![https://www.nuget.org/packages/Discord.Net/](https://img.shields.io/nuget/v/Discord.Net.svg)
+![MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![https://www.nuget.org/packages/Discord.Net/](https://img.shields.io/nuget/v/Discord.Net.svg) ![Discord](https://img.shields.io/discord/424080906232266753.svg)
 
 Pootis-Bot, an open source Discord bot written in the c# language.
 
