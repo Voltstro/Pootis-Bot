@@ -76,14 +76,14 @@ public class AudioDownload
 
     }
 
-    private async Task CreateYTDLProcess(string url)
+    private void CreateYTDLProcess(string url)
     {
         Console.WriteLine("Starting download of " + url);
         try
         {
             ProcessStartInfo startinfo = new ProcessStartInfo
             {
-                FileName = "youtube-dl.exe",
+                FileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/External/youtube-dl.exe",
                 Arguments = $"-x --audio-format mp3 -o /music/%(title)s.%(ext)s \"{url}\"",
                 CreateNoWindow = false,
                 RedirectStandardOutput = false,
@@ -97,8 +97,10 @@ public class AudioDownload
 
             proc.Start();
             proc.WaitForExit();
+
+            proc.Dispose();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }

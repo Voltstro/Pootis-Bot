@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Audio;
@@ -12,34 +13,35 @@ public class AudioService
 {
     private readonly string ffmpegloc = $"\\external\ffmpeg.exe";
 
-    private static ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
+    private static List<GlobalServerMusicItem> channels = new List<GlobalServerMusicItem>();
 
     public async Task JoinAudio(IGuild guild, IVoiceChannel target)
     {
         var audio = await target.ConnectAsync();
 
-        if (ConnectedChannels.TryAdd(guild.Id, audio))
+        var item = new GlobalServerMusicItem
         {
-            //If you add a method to log happenings from this service,
-            // you can uncomment these commented lines to make use of that.
-            //await Log(LogSeverity.Info, $"Connected to voice on {guild.Name}.");
-        }
+            GuildID = guild.Id,
+            IsPlaying = false,
+            AudioClient = audio
+        };
+
+        channels.Add(item);
     }
 
     public async Task LeaveAudio(IGuild guild)
     {
         if (guild == null) return;
 
-        if (ConnectedChannels.TryRemove(guild.Id, out var client))
-        {
-            await client.StopAsync();
-            return;
-        }
+        await GetMusicList(guild.Id).AudioClient.StopAsync();
+        GetMusicList(guild.Id).IsPlaying = false;
     }
 
     public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string path)
     {
         var searchResults = SearchAudio(path);
+
+        Console.WriteLine(searchResults);
         if(searchResults == null)
         {
             AudioDownload download = new AudioDownload();
@@ -47,22 +49,24 @@ public class AudioService
             if (results == null) return;
             searchResults = results;
         }
+
         Console.WriteLine(searchResults);
 
-        if (ConnectedChannels.TryGetValue(guild.Id, out IAudioClient client))
+        var client = GetMusicList(guild.Id).AudioClient;
+    
+        //await Log(LogSeverity.Debug, $"Starting playback of {path} in {guild.Name}");
+        using (var ffmpeg = CreateProcess(searchResults))
+        using (var stream = client.CreatePCMStream(AudioApplication.Music))
         {
-            //await Log(LogSeverity.Debug, $"Starting playback of {path} in {guild.Name}");
-            using (var ffmpeg = CreateProcess(searchResults))
-            using (var stream = client.CreatePCMStream(AudioApplication.Music))
-            {
-                try { await ffmpeg.StandardOutput.BaseStream.CopyToAsync(stream); }
-                finally { await stream.FlushAsync(); }       
-            }      
-        }
+           try { await ffmpeg.StandardOutput.BaseStream.CopyToAsync(stream); }
+           finally { await stream.FlushAsync(); }       
+        }      
     }
 
     private string SearchAudio(string search)
     {
+        if (!Directory.Exists("Music/")) Directory.CreateDirectory("Music/");
+
         DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo("Music/");
         FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles("*" + search + "*.mp3");
 
@@ -85,4 +89,18 @@ public class AudioService
             RedirectStandardOutput = true
         });
     }
+
+    #region List Fuctions
+
+    private GlobalServerMusicItem GetMusicList(ulong guildid)
+    {
+        var result = from a in channels
+                     where a.GuildID == guildid
+                     select a;
+
+        var list = result.FirstOrDefault();
+        return list;
+    }
+
+    #endregion
 }
