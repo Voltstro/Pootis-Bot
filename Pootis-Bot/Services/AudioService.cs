@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,55 +10,62 @@ using Pootis_Bot.Entities;
 
 public class AudioService
 {
-    private readonly string ffmpegloc = $"\\external\ffmpeg.exe";
+    private readonly string ffmpegloc = "external/ffmpeg.exe";
 
-    private static List<GlobalServerMusicItem> channels = new List<GlobalServerMusicItem>();
+    private static List<GlobalServerMusicItem> CurrentChannels = new List<GlobalServerMusicItem>();
 
     public async Task JoinAudio(IGuild guild, IVoiceChannel target)
     {
-        var audio = await target.ConnectAsync();
+        var audio = await target.ConnectAsync(); //Connect to the voice channel
 
-        var item = new GlobalServerMusicItem
+        var item = new GlobalServerMusicItem //Added it to the CurrentChannels list
         {
             GuildID = guild.Id,
             IsPlaying = false,
             AudioClient = audio
         };
 
-        channels.Add(item);
+        CurrentChannels.Add(item);
     }
 
     public async Task LeaveAudio(IGuild guild)
     {
-        if (guild == null) return;
+        if (guild == null) return; //Check if guild is null
 
-        await GetMusicList(guild.Id).AudioClient.StopAsync();
+        await GetMusicList(guild.Id).AudioClient.StopAsync(); //Stop the audio client
         GetMusicList(guild.Id).IsPlaying = false;
+
+        CurrentChannels.Remove(GetMusicList(guild.Id)); //Remove it from the CurrentChannels list
     }
 
-    public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string path)
+    public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string search)
     {
-        var searchResults = SearchAudio(path);
+        var searchResults = SearchAudio(search); //Search to see if we might allready have the song
+        string results;
 
-        Console.WriteLine(searchResults);
         if(searchResults == null)
         {
             AudioDownload download = new AudioDownload();
-            string results = download.DownloadAudio(path, channel);
-            if (results == null) return;
-            searchResults = results;
+            results = download.DownloadAudio(search, channel);
+            if (results == null)
+            {
+                await channel.SendMessageAsync($"Failed to download the song '{search}'\n");
+                return;
+            }  
         }
+        else
+            results = searchResults;
 
-        Console.WriteLine(searchResults);
+
 
         var client = GetMusicList(guild.Id).AudioClient;
     
-        //await Log(LogSeverity.Debug, $"Starting playback of {path} in {guild.Name}");
-        using (var ffmpeg = CreateProcess(searchResults))
+        using (var ffmpeg = CreateProcess(results))
         using (var stream = client.CreatePCMStream(AudioApplication.Music))
         {
+           await channel.SendMessageAsync($"Now playing '{search}'");
            try { await ffmpeg.StandardOutput.BaseStream.CopyToAsync(stream); }
-           finally { await stream.FlushAsync(); }       
+           finally { await stream.FlushAsync(); ffmpeg.Dispose(); }       
         }      
     }
 
@@ -83,7 +89,7 @@ public class AudioService
     {
         return Process.Start(new ProcessStartInfo
         {
-            FileName = "external/ffmpeg.exe",
+            FileName = ffmpegloc,
             Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
             UseShellExecute = false,
             RedirectStandardOutput = true
@@ -94,7 +100,7 @@ public class AudioService
 
     private GlobalServerMusicItem GetMusicList(ulong guildid)
     {
-        var result = from a in channels
+        var result = from a in CurrentChannels
                      where a.GuildID == guildid
                      select a;
 
