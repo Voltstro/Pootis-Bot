@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
 using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
 using Discord;
@@ -11,25 +9,12 @@ using Pootis_Bot;
 public class AudioDownload
 {
     readonly string ytstartLink = "https://www.youtube.com/watch?v=";
+    readonly string youtubedlloc = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/External/youtube-dl.exe";
 
     public string DownloadAudio(string search, IMessageChannel channel)
     {
-        var result = SearchYoutube(search);
-        if (result != "fail")
-        {
-            channel.SendMessageAsync($"Download of '{search}' was successfull");
-            return result;
-        }
-        else
-        {
-            channel.SendMessageAsync($"Download of '{search}' failed");
-            return "fail";
-        }
-    }
+        channel.SendMessageAsync($"Searching youtube for '{search}'");
 
-    public string SearchYoutube(string search)
-    {
-        Console.WriteLine("Searching youtube for " + search);
         var youtube = new YouTubeService(new BaseClientService.Initializer()
         {
             ApiKey = Config.bot.apis.apiYoutubeKey,
@@ -58,53 +43,44 @@ public class AudioDownload
         }
 
         string[] videosarray = videos.ToArray();
-        if(videosarray.Length != 0)
+        if (videosarray.Length != 0)
         {
             try
             {
+                channel.SendMessageAsync($"Downloading {videosarray[0]}");
                 CreateYTDLProcess(videosarray[0]);
+                channel.SendMessageAsync($"Done");
                 return videosarray[0];
             }
-            catch
+            catch (Exception ex)
             {
-                return "fail";
-            }       
+                channel.SendMessageAsync("An error occured. Here are the detailes:\n" + ex.Message);
+                return null;
+            }
         }
-        Console.WriteLine("Searching failed");
 
-        return "fail";
-
+        return null;
     }
 
     private void CreateYTDLProcess(string url)
     {
-        Console.WriteLine("Starting download of " + url);
-        try
+        ProcessStartInfo startinfo = new ProcessStartInfo
         {
-            ProcessStartInfo startinfo = new ProcessStartInfo
-            {
-                FileName = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/External/youtube-dl.exe",
-                Arguments = $"-x --audio-format mp3 -o /music/%(title)s.%(ext)s \"{url}\"",
-                CreateNoWindow = false,
-                RedirectStandardOutput = false,
-                UseShellExecute = true
-            };
+            FileName = youtubedlloc,
+            Arguments = $"-x --audio-format mp3 -o /music/%(title)s.%(ext)s \"{url}\"",
+            CreateNoWindow = false,
+            RedirectStandardOutput = false,
+            UseShellExecute = true
+        };
 
-            Process proc = new Process()
-            {
-                StartInfo = startinfo
-            };
-
-            proc.Start();
-            proc.WaitForExit();
-
-            proc.Dispose();
-        }
-        catch (Exception ex)
+        Process proc = new Process()
         {
-            Console.WriteLine(ex.Message);
-        }
+            StartInfo = startinfo
+        };
+
+        proc.Start();
+        proc.WaitForExit();
+
+        proc.Dispose();
     }
 }
-
-//youtube-dl -x --audio-format mp3 -o "\g\%(title)s.%(ext)s" https://www.youtube.com/watch?v=ZcoqR9Bwx1Y
