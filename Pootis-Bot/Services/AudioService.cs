@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Audio;
@@ -40,10 +41,12 @@ public class AudioService
 
     public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string search)
     {
+        var ServerList = GetMusicList(guild.Id);
+
         var searchResults = SearchAudio(search); //Search to see if we might allready have the song
         string results;
 
-        if(searchResults == null)
+        if(searchResults == null) //If we don't have the song then attempt to download it from youtube
         {
             AudioDownload download = new AudioDownload();
             results = download.DownloadAudio(search, channel);
@@ -56,17 +59,75 @@ public class AudioService
         else
             results = searchResults;
 
+        var client = ServerList.AudioClient;
 
+        Process ffmpeg = GetFfmpeg(results);
 
-        var client = GetMusicList(guild.Id).AudioClient;
-    
-        using (var ffmpeg = CreateProcess(results))
-        using (var stream = client.CreatePCMStream(AudioApplication.Music))
+        using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
         {
-           await channel.SendMessageAsync($"Now playing '{search}'");
-           try { await ffmpeg.StandardOutput.BaseStream.CopyToAsync(stream); }
-           finally { await stream.FlushAsync(); ffmpeg.Dispose(); }       
-        }      
+            using (AudioOutStream discord = client.CreatePCMStream(AudioApplication.Music))
+            {
+                ServerList.IsPlaying = true;
+                bool fail = false;
+                bool exit = false;
+                int bufferSize = 1024;
+                byte[] buffer = new byte[bufferSize];
+
+                CancellationToken cancellation = new CancellationToken();
+
+                await channel.SendMessageAsync($"Now playing '{search}'");
+                
+                while(!fail && !exit)
+                {
+                    try
+                    {
+                        int read = await output.ReadAsync(buffer, 0, bufferSize, cancellation);
+                        if(read == 0)
+                        {
+                            exit = true;
+                            break;
+                        }
+
+                        await discord.WriteAsync(buffer, 0, read, cancellation);
+
+                        if(ServerList.IsPlaying == false)
+                        {
+                            do
+                            {
+                                //Do nothing, wait till isplaying is true
+                                await Task.Delay(100);
+                            } while (ServerList.IsPlaying == false);
+                        }
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        await channel.SendMessageAsync("Song finished");
+                        exit = true;
+                    }
+                    catch
+                    {
+                        await channel.SendMessageAsync("Sorry an error occured");
+                        fail = true;
+                    }
+                }
+                //End
+                await discord.FlushAsync();
+            }
+        }  
+    }
+
+    public async Task PauseAudio(IGuild guild, IMessageChannel channel)
+    {
+        if (guild == null) return; //Check guild if null
+
+        var musicList = GetMusicList(guild.Id);
+        if (musicList == null) return; //Check server list if it is null
+
+        musicList.IsPlaying = !musicList.IsPlaying; //Toggel pause status
+
+        if (musicList.IsPlaying) await channel.SendMessageAsync("Current song has been un-paused");
+        else await channel.SendMessageAsync("Current song has been paused");
+
     }
 
     private string SearchAudio(string search)
@@ -85,7 +146,7 @@ public class AudioService
         return null;
     }
 
-    private Process CreateProcess(string path)
+    private Process GetFfmpeg(string path)
     {
         return Process.Start(new ProcessStartInfo
         {

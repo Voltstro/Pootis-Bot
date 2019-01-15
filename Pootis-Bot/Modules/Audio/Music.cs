@@ -38,5 +38,11 @@ namespace Pootis_Bot.Modules.Audio
         {
             await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
         }
+
+        [Command("pause", RunMode = RunMode.Async)]
+        public async Task PauseCmd()
+        {
+            await _service.PauseAudio(Context.Guild, Context.Channel);
+        }
     }
 }
