@@ -4,10 +4,10 @@ namespace Pootis_Bot.Core
 {
     public class Global
     {
-        public static void ColorMessage(string msg, ConsoleColor color)
+        public static void WriteMessage(string msg, ConsoleColor color)
         {
             Console.ForegroundColor = color;
-            Console.WriteLine(msg);
+            Console.WriteLine($"[{TimeNow()}] " + msg);
             Console.ForegroundColor = ConsoleColor.White;
         }
 

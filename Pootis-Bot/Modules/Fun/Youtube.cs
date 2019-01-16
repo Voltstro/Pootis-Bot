@@ -96,7 +96,7 @@ namespace Pootis_Bot.Modules.Fun
                     }
                     catch (Exception ex)
                     {
-                        Global.ColorMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on Youtube. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+                        Global.WriteMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on Youtube. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
                         EmbedBuilder embed = new EmbedBuilder
                         {

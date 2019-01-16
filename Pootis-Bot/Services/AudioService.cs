@@ -11,7 +11,8 @@ using Pootis_Bot.Entities;
 
 public class AudioService
 {
-    private readonly string ffmpegloc = "external/ffmpeg.exe";
+    private readonly string ffmpegloc = "external/ffmpeg";
+    private readonly string musicdir = "Music/";
 
     private static List<GlobalServerMusicItem> CurrentChannels = new List<GlobalServerMusicItem>();
 
@@ -132,9 +133,9 @@ public class AudioService
 
     private string SearchAudio(string search)
     {
-        if (!Directory.Exists("Music/")) Directory.CreateDirectory("Music/");
+        if (!Directory.Exists(musicdir)) Directory.CreateDirectory(musicdir);
 
-        DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo("Music/");
+        DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(musicdir);
         FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles("*" + search + "*.mp3");
 
         foreach (FileInfo foundFile in filesInDir)

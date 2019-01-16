@@ -9,7 +9,8 @@ using Pootis_Bot;
 public class AudioDownload
 {
     readonly string ytstartLink = "https://www.youtube.com/watch?v=";
-    readonly string youtubedlloc = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/External/youtube-dl.exe";
+    readonly string youtubedlloc = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/External/youtube-dl";
+
 
     public string DownloadAudio(string search, IMessageChannel channel)
     {
