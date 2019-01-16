@@ -4,7 +4,9 @@
 
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![https://www.nuget.org/packages/Discord.Net/](https://img.shields.io/nuget/v/Discord.Net.svg) ![Discord](https://img.shields.io/discord/424080906232266753.svg)
 
-Pootis-Bot, an open source Discord bot written in the c# language.
+Pootis-Bot, an open source Discord bot written in the c# language using [Discord .NET](https://github.com/RogueException/Discord.Net)
+
+Pootis-Bot is desgined to run on multiable servers though it is not recommened to add it to to many servers due to the audio services.
 
 ## Getting Started
 
