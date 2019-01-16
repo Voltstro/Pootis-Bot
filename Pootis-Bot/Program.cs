@@ -37,6 +37,7 @@ namespace Pootis_Bot
             Global.WriteMessage($"Starting...", ConsoleColor.White);
 
             Bot bot = new Bot(token, name, prefix);
+
             await bot.StartBot();
         }
     }

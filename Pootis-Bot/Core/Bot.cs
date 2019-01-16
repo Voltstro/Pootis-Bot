@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Pootis_Bot.Core;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
-using Pootis_Bot.Modules.Audio;
 
 namespace Pootis_Bot.Core
 {
-    class Bot
+    public class Bot
     {
         DiscordSocketClient _client;
         CommandService _commands;
@@ -17,9 +14,9 @@ namespace Pootis_Bot.Core
 
         private bool isBotOn;
 
-        private readonly string bottoken;
+        private static string bottoken;
         public static string botname;
-        private readonly string botprefix;
+        private static string botprefix;
 
         public Bot(string _bottoken, string _botname, string _botprefix)
         {
@@ -30,6 +27,13 @@ namespace Pootis_Bot.Core
 
         public async Task StartBot()
         {
+            if (string.IsNullOrEmpty(bottoken))
+            {
+                BotConfigStart();
+
+            }
+            
+
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Verbose
@@ -133,7 +137,7 @@ namespace Pootis_Bot.Core
             }
         }
 
-        public async Task UserLeft(SocketGuildUser user) //Says goodbye to user.
+        private async Task UserLeft(SocketGuildUser user) //Says goodbye to user.
         {
             var server = ServerLists.GetServer(user.Guild);
 
@@ -153,7 +157,7 @@ namespace Pootis_Bot.Core
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
-        public async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
+        private async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
         {
             Console.WriteLine($"User {user} has joined the server.");
 
@@ -180,7 +184,7 @@ namespace Pootis_Bot.Core
 
         #region Bot Config
 
-        void BotConfigStart()
+        public void BotConfigStart()
         {
             Console.WriteLine("");
             Console.WriteLine("---------------------------------------------------------");
@@ -208,14 +212,18 @@ namespace Pootis_Bot.Core
                 string input = Console.ReadLine();
                 if (input.Trim().ToLower() == "exit")
                 {
-                    if (token != null)
+                    if (!string.IsNullOrEmpty(token))
                     {
-                        if (name != null)
+                        if (!string.IsNullOrEmpty(name))
                         {
-                            if (prefix != null)
+                            if (!string.IsNullOrEmpty(prefix))
                             {
                                 botConfig = false;
                                 Config.SaveConfig(token, prefix, name, Config.bot.apis.apiGiphyKey, Config.bot.apis.apiYoutubeKey, Config.bot.apis.apiGoogleSearchKey, Config.bot.apis.googleSearchEngineID);
+                                Config.LoadConfig();
+                                bottoken = token;
+                                botname = name;
+                                botprefix = prefix;
 
                                 Console.WriteLine("Exited bot configuration");
                                 return;
