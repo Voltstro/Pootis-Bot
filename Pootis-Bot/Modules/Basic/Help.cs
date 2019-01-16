@@ -18,6 +18,7 @@ namespace Pootis_Bot.Modules.Basic
         }
 
         [Command("help")]
+        [Alias("h")]
         [Summary("Gets help")]
         public async Task Help()
         {
@@ -25,7 +26,7 @@ namespace Pootis_Bot.Modules.Basic
 
             await Context.Channel.SendMessageAsync("I sent the help info to your dms!");
 
-            await dm.SendMessageAsync("```css\nHere is a list of the current commands I can do !```\n");
+            await dm.SendMessageAsync("Here is a list of the current commands I can do ! :relieved: (Please note that some commands may note work depending on server settings and your role :dark_sunglasses: ) \n<:GitHub:529571722991763456> Vist <https://creepysin.github.io/docs/Pootis-Bot/commands> for more info.\n\n");
             
 
             List<string> parts = new List<string>();
@@ -38,7 +39,7 @@ namespace Pootis_Bot.Modules.Basic
                 var commands = moduel.Commands;
                 foreach(var command in commands)
                 {
-                    data += $"\n- {command.Name} \n  └ Summary: {command.Summary}\n  └ Alias: {FormatAliases(command)}\n";
+                    data += $"\n- {command.Name} \n  └ Summary: {command.Summary}\n  └ Alias: {FormatAliases(command)}\n  └ Usage: `{command.Name} {FormatParms(command)}`";
                 }
 
                 data += "\n```";
@@ -48,14 +49,12 @@ namespace Pootis_Bot.Modules.Basic
 
             int currentmod = 0;
             int maxmod = parts.Count();
-            var desarray = parts.ToArray();
-            
+            var desarray = parts.ToArray();     
 
-            while(currentmod != maxmod - 1)
+            while(currentmod != maxmod)
             {    
                 string item = "";
-                item += desarray[currentmod];
-                currentmod += 1;
+
                 item += desarray[currentmod];
                 currentmod += 1;
                 item += desarray[currentmod];
@@ -64,11 +63,33 @@ namespace Pootis_Bot.Modules.Basic
                 await dm.SendMessageAsync(item);     
             }
 
-            await dm.SendMessageAsync("\nVist <https://creepysin.github.io/docs/Pootis-Bot/commands> for more info.\n\n");
+            await dm.SendMessageAsync("");
+        }
+
+        [Command("help")]
+        [Summary("Gets help on a specific command")]
+        public async Task HelpSpecific([Remainder] string query)
+        {
+            var embed = new EmbedBuilder();
+            embed.WithTitle($"Help for {query}");
+            embed.WithColor(new Color(241, 196, 15));
+
+            var result = _service.Search(Context, query);
+            if(result.IsSuccess)
+            {
+                foreach(var command in result.Commands)
+                {
+                    embed.AddField(command.Command.Name, $"Summary: {command.Command.Summary}\nAlias: {FormatAliases(command.Command)}\nUsage: `{command.Command.Name} {FormatParms(command.Command)}`");
+                }
+            }
+            if (embed.Fields.Count == 0)
+                embed.WithDescription("Nothing was found for " + query);
+
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         private string FormatAliases(CommandInfo commandinfo)
-        {
+        {          
             var aliases = commandinfo.Aliases;
 
             string format = "";
@@ -81,6 +102,27 @@ namespace Pootis_Bot.Modules.Basic
                 if (currentCount != count) format += ", ";
                 currentCount += 1;
             }
+
+            return format;
+        }
+
+        private string FormatParms(CommandInfo commandinfo)
+        {
+            var parms = commandinfo.Parameters;
+
+            string format = "";
+            int count = parms.Count;
+            if (count != 0) format += "[";
+            int currentCount = 1;
+            foreach (var parm in parms)
+            {
+                format += parm;
+
+                if (currentCount != count) format += ", ";
+                currentCount += 1;
+            }
+
+            if (count != 0) format += "]";
 
             return format;
         }

@@ -91,7 +91,7 @@ namespace Pootis_Bot.Modules
 
         [Command("profile")]
         [Summary("Gets your or other's profile")]
-        public async Task Profile([Remainder]string arg = "")
+        public async Task Profile([Remainder]string user = "")
         {
             SocketUser target = null;
             var metionUser = Context.Message.MentionedUsers.FirstOrDefault();

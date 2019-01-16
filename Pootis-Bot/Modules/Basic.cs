@@ -28,10 +28,10 @@ namespace Pootis_Bot.Modules
 
         [Command("hasrole")]
         [Summary("Check if user has a role")]
-        public async Task HasRole(string _role, SocketGuildUser user)
+        public async Task HasRole(string role, SocketGuildUser user)
         {
-            var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == _role);
-            if (user.Roles.Contains(role))
+            var _role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == role);
+            if (user.Roles.Contains(_role))
             {
                 await Context.Channel.SendMessageAsync(user + " has the role '" + _role + "'");
             }
