@@ -4,8 +4,8 @@
     {
         //Bot Related
         public string botToken = "";
-        public string botPrefix = "";
-        public string botName = "";
+        public string botPrefix = "$";
+        public string botName = "Bot";
 
         public ConfigApis apis;
 

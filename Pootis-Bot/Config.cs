@@ -24,9 +24,14 @@ namespace Pootis_Bot
             }
             else
             {
-                string json = File.ReadAllText(configFolder + "/" + configFile); //If it does exist then it continues like normal.
-                bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
+                LoadConfig();
             }
+        }
+
+        public static void LoadConfig()
+        {
+            string json = File.ReadAllText(configFolder + "/" + configFile); //If it does exist then it continues like normal.
+            bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
         }
 
         public static void SaveConfig(string _token, string prefix, string name, string giphyyAPI, string ytAPI, string gAPI, string gsSe)
