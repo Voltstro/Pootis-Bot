@@ -56,7 +56,7 @@ namespace Pootis_Bot.Core
                 var result = await _commands.ExecuteAsync(context, argPos, services: null);
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
-                    Global.WriteMessage($"[{ Global.TimeNow()}] " + result.ErrorReason, ConsoleColor.Red);
+                    Global.WriteMessage(result.ErrorReason, ConsoleColor.Red);
                 }
             }
         }
