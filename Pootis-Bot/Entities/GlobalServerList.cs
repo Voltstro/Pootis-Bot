@@ -17,7 +17,7 @@ namespace Pootis_Bot.Entities
 
         public string AdminRoleName { get; set; }
 
-        public Permissions permissions;
+        public Permissions permissions = new Permissions();
 
         public List<GlobalServerBanedChannelList> banedChannels = new List<GlobalServerBanedChannelList>();
 
