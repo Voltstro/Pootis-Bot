@@ -16,8 +16,7 @@ namespace Pootis_Bot.Modules.Fun
      *  Command(s): google [Search]
      *  Set Permission Command(s): permgoogle [Role Name]
      *  Author(s): Creepysin
-     */ 
-
+     */
     public class Google : ModuleBase<SocketCommandContext>
     {
         readonly Color googleColor = new Color(53, 169, 84);
@@ -90,7 +89,7 @@ namespace Pootis_Bot.Modules.Fun
                     }
                     catch (Exception ex)
                     {
-                        Global.ColorMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on google. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+                        Global.WriteMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on google. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
                         EmbedBuilder embed = new EmbedBuilder
                         {

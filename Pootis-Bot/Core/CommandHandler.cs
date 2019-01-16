@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Modules.Basic;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Pootis_Bot.Core
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
+        private readonly AudioService _audio;
 
         private readonly string _prefix;
 
@@ -21,14 +23,17 @@ namespace Pootis_Bot.Core
             _commands = commands;
             _client = client;
             _prefix = prefix;
+
+            _audio = new AudioService();
         }
+
+        
 
         public async Task InstallCommandsAsync()
         {
             _client.MessageReceived += HandleCommandAsync;
 
-            await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
-                                            services: null);
+            await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(), services: null);
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -51,7 +56,7 @@ namespace Pootis_Bot.Core
                 var result = await _commands.ExecuteAsync(context, argPos, services: null);
                 if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
                 {
-                    Global.ColorMessage($"[{ Global.TimeNow()}] " + result.ErrorReason, ConsoleColor.Red);
+                    Global.WriteMessage($"[{ Global.TimeNow()}] " + result.ErrorReason, ConsoleColor.Red);
                 }
             }
         }

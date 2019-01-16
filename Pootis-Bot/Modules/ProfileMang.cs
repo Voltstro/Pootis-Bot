@@ -13,6 +13,7 @@ namespace Pootis_Bot.Modules
     public class ProfileMang : ModuleBase<SocketCommandContext>
     {      
         [Command("makenotwarnable")]
+        [Summary("Makes the user not warnable")]
         public async Task NotWarnable(IGuildUser user)
         {
             var server = ServerLists.GetServer(Context.Guild);
@@ -35,6 +36,7 @@ namespace Pootis_Bot.Modules
         }
     
         [Command("makewarnable")]
+        [Summary("Makes the user warnable.")]
         public async Task MakeWarnable(IGuildUser user)
         {           
             var _user = Context.User as SocketGuildUser;
@@ -57,6 +59,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("warn")]
+        [Summary("Warns the user")]
         [RequireBotPermission(GuildPermission.KickMembers)]
         public async Task WarnUser(IGuildUser user)
         {
@@ -86,7 +89,8 @@ namespace Pootis_Bot.Modules
             }    
         }
 
-        [Command("profile")]       
+        [Command("profile")]
+        [Summary("Gets your or other's profile")]
         public async Task Profile([Remainder]string arg = "")
         {
             SocketUser target = null;

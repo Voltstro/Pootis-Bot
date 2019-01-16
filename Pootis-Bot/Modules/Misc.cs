@@ -11,6 +11,7 @@ namespace Pootis_Bot.Modules
     public class Misc : ModuleBase<SocketCommandContext>
     {
         [Command("pick")]
+        [Summary("Picks between two things")]
         public async Task PickOne([Remainder]string message)
         {
             string[] options = message.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -22,6 +23,7 @@ namespace Pootis_Bot.Modules
 
         [Command("embedmessage")]
         [Alias("embed")]
+        [Summary("Displays your message in an embed message")]
         public async Task CmdEmbedMessage(string title = "", [Remainder]string msg = "")
         {
             var server = ServerLists.GetServer(Context.Guild);
@@ -40,6 +42,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("server")]
+        [Summary("Gets details about the server you are in")]
         public async Task ServerGuild()
         {
             var guilduser = (SocketGuildUser)Context.User;            
@@ -60,6 +63,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("ping")]
+        [Summary("Ping Pong!")]
         public async Task Ping()
         {
             await Context.Channel.SendMessageAsync($"Pong! {Context.Client.Latency}ms");

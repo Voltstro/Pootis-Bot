@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
-    public class Basic : ModuleBase<SocketCommandContext>
+    public class BasicCommands : ModuleBase<SocketCommandContext>
     {
         [Command("hello")]
+        [Summary("Displays the 'hello' message")]
         public async Task Hello()
         {
             var embed = new EmbedBuilder();
@@ -24,18 +26,8 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
-        [Command("help")]
-        public async Task Help()
-        {
-            var embed = new EmbedBuilder();
-            embed.WithTitle(Context.User.Username);
-            embed.WithDescription($"**Help for {Program.setname}** \n\n :computer: [Commands](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Pootis-Bot-Commands)\n\nFor support ask on my server <:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
-            embed.WithColor(new Color(0, 255, 0));
-
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
-        }
-
         [Command("hasrole")]
+        [Summary("Check if user has a role")]
         public async Task HasRole(string _role, SocketGuildUser user)
         {
             var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == _role);

@@ -11,13 +11,14 @@ namespace Pootis_Bot.Modules
     public class ServerSetup : ModuleBase<SocketCommandContext>
     {
         [Command("setup")]
+        [Summary("Displays setup info")]
         [RequireOwner]
         public async Task Setup()
         {
             var embed = new EmbedBuilder();
 
             embed.WithTitle("Setup Commands");
-            embed.WithDescription($"\nSetup commands for {Program.setname}.\n**ALL OF THESE COMMAND CAN ONLY BE EXCUTED BY THE OWNER OF THE SERVER!**\n\n" +
+            embed.WithDescription($"\nSetup commands for {Bot.botname}.\n**ALL OF THESE COMMAND CAN ONLY BE EXCUTED BY THE OWNER OF THE SERVER!**\n\n" +
                 $"'setupwelcomeid [Welcome ChannelID]' -- Use this to setup the welcome channel ID\n" +
                 $"'togglewelcome' -- Toggels between enabling the welcome message or not\n" +
                 $"'togglerules' -- In the welcome chat it will say 'check out #rules'. Do you want that?\n" +
@@ -30,6 +31,7 @@ namespace Pootis_Bot.Modules
         }           
 
         [Command("setupwelcomeid")]
+        [Summary("Sets the welcome id")]
         [RequireOwner]
         public async Task SetupWelcomeID(ulong ID)
         {
@@ -41,6 +43,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("togglewelcome")]
+        [Summary("Enables or disables welcome")]
         [RequireOwner]
         public async Task ToggleWelcome()
         {
@@ -52,6 +55,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("togglerules")]
+        [Summary("Displays whether it should metion the rules in the welcome message")]
         [RequireOwner]
         public async Task ToggleRules()
         {
@@ -63,6 +67,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("setupadmin")]
+        [Summary("Sets the admin role")]
         [RequireOwner]
         public async Task SetupAdmin(string adminRoleName)
         {
@@ -74,6 +79,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("setupstaff")]
+        [Summary("Sets the staff role")]
         [RequireOwner]
         public async Task SetupStaff(string staffRoleName)
         {
