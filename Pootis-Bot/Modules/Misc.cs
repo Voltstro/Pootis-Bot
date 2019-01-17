@@ -21,6 +21,15 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync("Choice for " + Context.Message.Author.Mention + "\nI Choose: " + seletion);
         }
 
+        [Command("roll")]
+        [Summary("Roles between 0 and 50 or between two custom numbers")]
+        public async Task Roll(int min = 0, int max = 50)
+        {
+            Random r = new Random();
+            int random = r.Next(min, max);
+            await Context.Channel.SendMessageAsync("The number was: " + random);
+        }
+
         [Command("embedmessage")]
         [Alias("embed")]
         [Summary("Displays your message in an embed message")]

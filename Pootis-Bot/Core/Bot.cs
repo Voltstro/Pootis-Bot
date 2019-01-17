@@ -30,9 +30,7 @@ namespace Pootis_Bot.Core
             if (string.IsNullOrEmpty(bottoken))
             {
                 BotConfigStart();
-
             }
-            
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {

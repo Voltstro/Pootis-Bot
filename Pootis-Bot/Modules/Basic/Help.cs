@@ -49,21 +49,52 @@ namespace Pootis_Bot.Modules.Basic
 
             int currentmod = 0;
             int maxmod = parts.Count();
-            var desarray = parts.ToArray();     
+            var desarray = parts.ToArray();
 
-            while(currentmod != maxmod)
-            {    
+            while (currentmod != maxmod)
+            {
                 string item = "";
 
-                item += desarray[currentmod];
-                currentmod += 1;
-                item += desarray[currentmod];
-                currentmod += 1;
+                if (desarray[currentmod].Count() < 1400)
+                {
+                    int count = 0;
+                    try
+                    {
+                        while (count < 1400)
+                        {
+                            if (desarray[currentmod].Count() + desarray[currentmod + 1].Count() < 1400)
+                            {
+                                if (currentmod >= maxmod)
+                                {
+                                    count = 1400;
+                                    item += desarray[currentmod];
+                                    currentmod += 1;
+                                }
+                                else
+                                {
+                                    count += desarray[currentmod].Count() + desarray[currentmod + 1].Count();
+                                    item += desarray[currentmod] + desarray[currentmod + 1];
+                                    currentmod += 2;
+                                }
+                            }
+                            else
+                            {
+                                item += desarray[currentmod];
+                                currentmod += 1;
+                                count = 1400;
+                            }
+                        }
+                    }
+                    catch (IndexOutOfRangeException) //Last module
+                    {
+                        item += desarray[currentmod];
+                        currentmod = maxmod;
+                        count = 1400;
+                    }
+                }
 
-                await dm.SendMessageAsync(item);     
+                await dm.SendMessageAsync(item);
             }
-
-            await dm.SendMessageAsync("");
         }
 
         [Command("help")]
