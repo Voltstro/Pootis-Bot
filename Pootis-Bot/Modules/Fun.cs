@@ -25,6 +25,7 @@ namespace Pootis_Bot.Modules
 
         //Based off youtubes documentation
         [Command("youtube")]
+        [Summary("Searches Youtube")]
         [Alias("yt")]
         public async Task CmdYoutubeSearch([Remainder] string search = "")
         {
@@ -44,6 +45,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("giphy")]
+        [Summary("Searches Giphy")]
         [Alias("gy")]
         public async Task CmdGiphySearch([Remainder] string search = "")
         {
@@ -63,6 +65,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("google")]
+        [Summary("Searches Google")]
         [Alias("g")]
         public async Task CmdGoogleSearch([Remainder]string search = "")
         {

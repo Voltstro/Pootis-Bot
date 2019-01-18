@@ -1,9 +1,6 @@
-﻿using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Pootis_Bot.Core;
-using Discord;
-using Discord.Commands;
 
 namespace Pootis_Bot
 {
