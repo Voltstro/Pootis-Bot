@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Pootis_Bot.Entities
@@ -10,6 +11,14 @@ namespace Pootis_Bot.Entities
         public uint Points { get; set; }
 
         public uint XP { get; set; }
+
+        public uint LevelNumber
+        {
+            get
+            {
+                return (uint)Math.Sqrt(XP / 30);
+            }
+        }
 
         public List<GlobalUserAccountServer> servers = new List<GlobalUserAccountServer>();
 
