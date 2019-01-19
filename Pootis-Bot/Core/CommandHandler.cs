@@ -25,9 +25,7 @@ namespace Pootis_Bot.Core
             _prefix = prefix;
 
             _audio = new AudioService();
-        }
-
-        
+        }    
 
         public async Task InstallCommandsAsync()
         {
@@ -43,6 +41,8 @@ namespace Pootis_Bot.Core
             int argPos = 0;
             if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
                 return;
+
+            LevelingSystem.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel, 10);
 
             foreach (var item in ServerLists.GetServer(context.Guild).GetAllBanedChannels())//Check to channel, make sure its not on the baned list
             {

@@ -40,6 +40,7 @@ namespace Pootis_Bot.Core
             _client.UserJoined += AnnounceJoinedUser;
             _client.UserLeft += UserLeft;
             _client.JoinedGuild += JoinedNewServer;
+            _client.ReactionAdded += ReactionAdded;
 
             _commands = new CommandService();
 
@@ -53,6 +54,13 @@ namespace Pootis_Bot.Core
             ConsoleInput();
 #pragma warning restore CS4014
             await Task.Delay(-1);
+        }
+
+        private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            LevelingSystem.UserSentMessage((SocketGuildUser)reaction.User, (SocketTextChannel)reaction.Channel, 5);
+
+            return Task.CompletedTask;
         }
 
         private async Task ConnectBot(string token)
