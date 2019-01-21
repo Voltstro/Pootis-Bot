@@ -1,9 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Pootis_Bot.Modules
