@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
-using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Core

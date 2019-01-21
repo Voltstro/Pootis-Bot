@@ -1,6 +1,5 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Modules.Basic;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;

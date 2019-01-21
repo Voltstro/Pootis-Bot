@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
