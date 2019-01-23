@@ -13,6 +13,8 @@ namespace Pootis_Bot.Entities
 
         public bool IsRules { get; set; }
 
+        public string RulesMessage { get; set; }
+
         public string StaffRoleName { get; set; }
 
         public string AdminRoleName { get; set; }

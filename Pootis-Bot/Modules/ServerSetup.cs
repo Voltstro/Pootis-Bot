@@ -12,19 +12,43 @@ namespace Pootis_Bot.Modules
         [RequireOwner]
         public async Task Setup()
         {
+            var dm = await Context.User.GetOrCreateDMChannelAsync();
+            var server = ServerLists.GetServer(Context.Guild);
             var embed = new EmbedBuilder();
 
-            embed.WithTitle("Setup Commands");
-            embed.WithDescription($"\nSetup commands for {Bot.botname}.\n**ALL OF THESE COMMAND CAN ONLY BE EXCUTED BY THE OWNER OF THE SERVER!**\n\n" +
-                $"'setupwelcomeid [Welcome ChannelID]' -- Use this to setup the welcome channel ID\n" +
-                $"'togglewelcome' -- Toggels between enabling the welcome message or not\n" +
-                $"'togglerules' -- In the welcome chat it will say 'check out #rules'. Do you want that?\n" +
-                $"'setupadmin [Admin Role Name]' -- The admin role name" +
-                $"\n'setupstaff [Staff Role Name]' -- The staff role name" +
-                $"");
-            embed.WithColor(new Color(255, 81, 168));
+            await Context.Channel.SendMessageAsync("Setup status was set to ur dms");
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
+            embed.WithTitle("Setup");
+            embed.WithColor(new Color(255, 81, 168));
+            embed.WithDescription("<:Menu:537572055760109568> Here your setup status.\n\n");
+
+            string welcometitle = "<:Cross:537572008574189578> Welcome Channel Disabled";                           // Welcome Message and channel
+            string welocmedes = "Welcome channel is disabled\n";
+            if(server.EnableWelcome == true && server.WelcomeID != 0)
+            {
+                welcometitle = "<:Check:537572054266806292> Welcome Channel Enabled";
+                welocmedes = $"Welcome channel is enabled and is set to channel: {server.WelcomeID}\n";
+            }
+            embed.AddField(welcometitle, welocmedes);
+
+            string rulestitle = "<:Cross:537572008574189578> Rules Message Disabled";                             // Rules message
+            string rulesdes = "Rules message is disabled\n";
+            if(server.IsRules == true && !string.IsNullOrWhiteSpace(server.RulesMessage))
+            {
+                rulestitle = "<:Check:537572054266806292> Rules Message Enabled";
+                welocmedes = $"The rules message is enabled and is set to {server.RulesMessage}\n";
+            }
+            embed.AddField(rulestitle, rulesdes);
+
+            string admintitle = "Admin Role Name";              // Admin role
+            string admindes = $"Admin role name is set to: {server.AdminRoleName}\n";
+            embed.AddField(admintitle, admindes);
+
+            string stafftitle = "Staff Role Name";              // Staff role
+            string staffdes = $"Staff role name is set to: {server.StaffRoleName}\n";
+            embed.AddField(stafftitle, staffdes);
+
+            await dm.SendMessageAsync("", false, embed.Build());
         }           
 
         [Command("setupwelcomeid")]
@@ -61,6 +85,18 @@ namespace Pootis_Bot.Modules
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync("Rules was set to " + server.IsRules);
+        }
+
+        [Command("rulesmsg")]
+        [Summary("Set the rules message")]
+        [RequireOwner]
+        public async Task RulesMsg(string rulesmsg)
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+            server.RulesMessage = rulesmsg;
+            ServerLists.SaveServerList();
+
+            await Context.Channel.SendMessageAsync($"Rules message was set to '{rulesmsg}'");
         }
 
         [Command("setupadmin")]
