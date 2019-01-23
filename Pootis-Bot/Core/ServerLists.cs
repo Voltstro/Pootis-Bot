@@ -52,7 +52,8 @@ namespace Pootis_Bot.Core
                 ServerID = id,
                 EnableWelcome = false,
                 WelcomeID = 0,
-                AdminRoleName = "Admin"
+                AdminRoleName = "Admin",
+                StaffRoleName = "Staff"
             };
 
             newServer.permissions = new GlobalServerList.Permissions();

@@ -180,7 +180,7 @@ namespace Pootis_Bot.Core
                     string rules = "";
                     if (server.IsRules)
                     {
-                        rules = "Consider checking out the #rules then enjoy your stay!";
+                        rules = server.RulesMessage;
                     }
 
                     await channel.SendMessageAsync("Welcome " + user.Mention + $" to the {user.Guild.Name}! {rules}"); //Welcomes the new user
