@@ -10,7 +10,7 @@ namespace Pootis_Bot
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
 
-        public static GlobalConfigFile bot;
+        public static GlobalConfigFile bot = new GlobalConfigFile();
 
         static Config()
         {
@@ -19,7 +19,7 @@ namespace Pootis_Bot
 
             if (!File.Exists(configFolder + "/" + configFile))   //If the config.json file doesn't exist it creats a new one.
             {
-                SaveConfig(null, null, null, null, null, null, null);
+                SaveConfig();
                 Console.WriteLine("Config.json was created. Is this your first time runing?");
             }
             else
@@ -34,22 +34,8 @@ namespace Pootis_Bot
             bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
         }
 
-        public static void SaveConfig(string _token, string prefix, string name, string giphyyAPI, string ytAPI, string gAPI, string gsSe)
+        public static void SaveConfig()
         {
-            bot = new GlobalConfigFile()
-            {
-                botToken = _token,
-                botPrefix = prefix,
-                botName = name      
-            };
-            bot.apis = new GlobalConfigFile.ConfigApis()
-            {
-                apiGiphyKey = giphyyAPI,
-                apiYoutubeKey = ytAPI,
-                apiGoogleSearchKey = gAPI,
-                googleSearchEngineID = gsSe
-            };
-
             string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
             File.WriteAllText(configFolder + "/" + configFile, json);
         }
