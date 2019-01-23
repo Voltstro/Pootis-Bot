@@ -6,6 +6,7 @@
         public string botToken = "";
         public string botPrefix = "$";
         public string botName = "Bot";
+        public bool isAudioServiceEnabled = false;
 
         public ConfigApis apis;
 

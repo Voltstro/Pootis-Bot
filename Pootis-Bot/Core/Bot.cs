@@ -218,30 +218,24 @@ namespace Pootis_Bot.Core
                 string input = Console.ReadLine();
                 if (input.Trim().ToLower() == "exit")
                 {
-                    if (!string.IsNullOrEmpty(token))
+                    if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(prefix))
                     {
-                        if (!string.IsNullOrEmpty(name))
-                        {
-                            if (!string.IsNullOrEmpty(prefix))
-                            {
-                                botConfig = false;
-                                Config.SaveConfig(token, prefix, name, Config.bot.apis.apiGiphyKey, Config.bot.apis.apiYoutubeKey, Config.bot.apis.apiGoogleSearchKey, Config.bot.apis.googleSearchEngineID);
-                                Config.LoadConfig();
-                                bottoken = token;
-                                botname = name;
-                                botprefix = prefix;
+                        botConfig = false;
+                        Config.bot.botToken = token;
+                        Config.bot.botName = name;
+                        Config.bot.botPrefix = prefix;
 
-                                Console.WriteLine("Exited bot configuration");
-                                return;
-                            }
-                            else
-                                Console.WriteLine("You need to set the bot prefix");
-                        }
-                        else
-                            Console.WriteLine("You need to set the bot name");
+                        Config.SaveConfig();
+
+                        bottoken = token;
+                        botname = name;
+                        botprefix = prefix;
+
+                        Console.WriteLine("Exited bot configuration");
+                        return;
                     }
                     else
-                        Console.WriteLine("You need to set the bot token");
+                        Console.WriteLine("You need to set the token the name AND the prefix! One of them are null or empty");
                 }
                 else if (input.Trim().ToLower() == "1")
                 {
@@ -264,10 +258,10 @@ namespace Pootis_Bot.Core
 
         void BotConfigAPIs()
         {
-            string giphyAPI = "";
-            string youtubeAPI = "";
-            string googleAPI = "";
-            string googleSearchID = "";
+            string giphyAPI = Config.bot.apis.apiGiphyKey;
+            string youtubeAPI = Config.bot.apis.apiYoutubeKey;
+            string googleAPI = Config.bot.apis.apiGoogleSearchKey;
+            string googleSearchID = Config.bot.apis.googleSearchEngineID;
 
             bool setAPIS = false;
 
@@ -286,7 +280,12 @@ namespace Pootis_Bot.Core
                 string input = Console.ReadLine();
                 if (input.Trim().ToLower() == "return")
                 {
-                    Config.SaveConfig(Config.bot.botToken, Config.bot.botPrefix, Config.bot.botName, giphyAPI, youtubeAPI, googleAPI, googleSearchID);
+                    Config.bot.apis.apiGiphyKey = giphyAPI;
+                    Config.bot.apis.apiYoutubeKey = youtubeAPI;
+                    Config.bot.apis.apiGoogleSearchKey = googleAPI;
+                    Config.bot.apis.googleSearchEngineID = googleSearchID;
+
+                    Config.SaveConfig();
                     Console.WriteLine("Exited api configuration");
                     return;
                 }
