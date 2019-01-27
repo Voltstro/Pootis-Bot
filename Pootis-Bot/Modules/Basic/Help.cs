@@ -22,12 +22,10 @@ namespace Pootis_Bot.Modules.Basic
         public async Task Help()
         {
             var dm = await Context.User.GetOrCreateDMChannelAsync();
-
             await Context.Channel.SendMessageAsync("I sent the help info to your dms!");
 
             await dm.SendMessageAsync("Here is a list of the current commands I can do ! :relieved: (Please note that some commands may note work depending on server settings and your role :dark_sunglasses: ) \n<:GitHub:529571722991763456> Vist <https://creepysin.github.io/docs/Pootis-Bot/commands> for more info.\n\n");
             
-
             List<string> parts = new List<string>();
 
             foreach(var moduel in _service.Modules) //Get a list of all the modules
@@ -97,6 +95,7 @@ namespace Pootis_Bot.Modules.Basic
         }
 
         [Command("help")]
+        [Alias("h", "command", "chelp", "ch")]
         [Summary("Gets help on a specific command")]
         public async Task HelpSpecific([Remainder] string query)
         {

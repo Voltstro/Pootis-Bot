@@ -61,6 +61,7 @@ namespace Pootis_Bot.Modules
         [Command("warn")]
         [Summary("Warns the user")]
         [RequireBotPermission(GuildPermission.KickMembers)]
+        [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task WarnUser(IGuildUser user)
         {
             var userAccount = UserAccounts.GetAccount((SocketGuildUser)user);
@@ -134,7 +135,6 @@ namespace Pootis_Bot.Modules
                 userAccount.IsAccountNotWarnable = true;
                 userAccount.Warnings = 0;
                 UserAccounts.SaveAccounts();
-                Console.WriteLine($"The user {user} was made not warnable.");
                 return $"The user {user} was made not warnable.";
             }
         }
@@ -152,7 +152,6 @@ namespace Pootis_Bot.Modules
             {
                 userAccount.IsAccountNotWarnable = false;
                 UserAccounts.SaveAccounts();
-                Console.WriteLine($"The user {user} was made warnable.");
                 return $"The user {user} was made warnable.";
             }
         }

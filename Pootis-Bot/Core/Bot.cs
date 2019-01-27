@@ -71,7 +71,7 @@ namespace Pootis_Bot.Core
                 isBotOn = true;
             }
             else
-                Console.WriteLine("Bot is already connected");
+                Global.WriteMessage("Bot is already connected", ConsoleColor.Yellow);
         }
 
         private async Task DisconnectBot()
@@ -82,13 +82,13 @@ namespace Pootis_Bot.Core
                 isBotOn = false;
             }
             else
-                Console.WriteLine("Bot is already disconnected");
+                Global.WriteMessage("Bot is already disconnected", ConsoleColor.Yellow);
         }
 
 
         private async Task JoinedNewServer(SocketGuild arg)
         {
-            Console.WriteLine("Joining server " + arg);
+            Global.WriteMessage("Joining server " + arg, ConsoleColor.Blue);
             ServerLists.GetServer(arg);
 
             EmbedBuilder embed = new EmbedBuilder();
@@ -111,7 +111,7 @@ namespace Pootis_Bot.Core
                 input = Console.ReadLine();
                 if (input.Trim().ToLower() == "exit")
                 {
-                    Console.WriteLine($"[{Global.TimeNow()}] Shutting down...");
+                    Global.WriteMessage("Shutting down...", ConsoleColor.White);
                     await _client.SetGameAsync("Bot shutting down");
                     await _client.LogoutAsync();
                     _client.Dispose();
@@ -120,14 +120,14 @@ namespace Pootis_Bot.Core
                 else if (input.Trim().ToLower() == "config")
                 {
                     BotConfigStart();
-                    Console.WriteLine($"[{Global.TimeNow()}] Restart the bot to apply the settings");
+                    Global.WriteMessage("Restart the bot to apply the settings", ConsoleColor.White);
                 }
                 else if (input.Trim().ToLower() == "setgame")
                 {
-                    Console.WriteLine("Enter in what you want to set the bot's game to.");
+                    Global.WriteMessage("Enter in what you want to set the bot's game to.", ConsoleColor.White);
                     string set = Console.ReadLine();
                     await _client.SetGameAsync(set);
-                    Console.WriteLine($"Bot's game was set to '{set}'");
+                    Global.WriteMessage($"Bot's game was set to '{set}'", ConsoleColor.White);
                 }
                 else if (input.Trim().ToLower() == "deletemusic")
                 {
@@ -165,7 +165,7 @@ namespace Pootis_Bot.Core
 
         private async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
         {
-            Console.WriteLine($"User {user} has joined the server.");
+            Global.WriteMessage($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})", ConsoleColor.White);
 
             var server = ServerLists.GetServer(user.Guild);
 
