@@ -27,6 +27,7 @@ namespace Pootis_Bot.Modules
         [Command("youtube")]
         [Summary("Searches Youtube")]
         [Alias("yt")]
+        [RequireBotPermission(GuildPermission.EmbedLinks)]
         public async Task CmdYoutubeSearch([Remainder] string search = "")
         {
             var server = ServerLists.GetServer(Context.Guild);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
+using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
 
 namespace Pootis_Bot
@@ -20,7 +21,8 @@ namespace Pootis_Bot
             if (!File.Exists(configFolder + "/" + configFile))   //If the config.json file doesn't exist it creats a new one.
             {
                 SaveConfig();
-                Console.WriteLine("Config.json was created. Is this your first time runing?");
+
+                Global.WriteMessage("Config.json was created. Is this your first time runing?", ConsoleColor.Yellow);
             }
             else
             {

@@ -20,6 +20,8 @@ namespace Pootis_Bot.Modules.Audio
         // otherwise the bot will not respond until the Task times out.
         [Command("join", RunMode = RunMode.Async)]
         [Summary("Joins in the current voice channel you are in")]
+        [RequireBotPermission(GuildPermission.Connect)]
+        [RequireBotPermission(GuildPermission.Speak)]
         public async Task JoinCmd()
         {
             await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel);
@@ -37,6 +39,7 @@ namespace Pootis_Bot.Modules.Audio
 
         [Command("play", RunMode = RunMode.Async)]
         [Summary("Plays a song")]
+        [RequireBotPermission(GuildPermission.Speak)]
         public async Task PlayCmd([Remainder] string song)
         {
             await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
@@ -44,6 +47,7 @@ namespace Pootis_Bot.Modules.Audio
 
         [Command("pause", RunMode = RunMode.Async)]
         [Summary("Pauses the current song")]
+        [RequireBotPermission(GuildPermission.Speak)]
         public async Task PauseCmd()
         {
             await _service.PauseAudio(Context.Guild, Context.Channel);
