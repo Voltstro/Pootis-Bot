@@ -8,6 +8,8 @@ namespace Pootis_Bot.Entities
 
         public bool IsPlaying { get; set; }
 
+        public bool IsExit { get; set; }
+
         public IAudioClient AudioClient { get; set; }
     }
 }

@@ -45,6 +45,15 @@ namespace Pootis_Bot.Modules.Audio
             await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
         }
 
+        [Command("stop")]
+        [Summary("Stops the current playing song")]
+        [RequireBotPermission(GuildPermission.Speak)]
+        public async Task StopCmd()
+        {
+            _service.StopAudio(Context.Guild);
+            await Context.Channel.SendMessageAsync(":musical_note: Song Stoped");
+        }
+
         [Command("pause", RunMode = RunMode.Async)]
         [Summary("Pauses the current song")]
         [RequireBotPermission(GuildPermission.Speak)]
