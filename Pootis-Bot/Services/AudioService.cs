@@ -24,6 +24,7 @@ public class AudioService
         {
             GuildID = guild.Id,
             IsPlaying = false,
+            IsExit = false,
             AudioClient = audio
         };
 
@@ -38,6 +39,13 @@ public class AudioService
         GetMusicList(guild.Id).IsPlaying = false;
 
         CurrentChannels.Remove(GetMusicList(guild.Id)); //Remove it from the CurrentChannels list
+    }
+
+    public void StopAudio(IGuild guild)
+    {
+        var ServerList = GetMusicList(guild.Id);
+        ServerList.IsExit = true;
+        
     }
 
     public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string search)
@@ -62,6 +70,8 @@ public class AudioService
 
         var client = ServerList.AudioClient;
 
+        ServerList.IsExit = false;
+
         Process ffmpeg = GetFfmpeg(results);
 
         using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
@@ -76,12 +86,18 @@ public class AudioService
 
                 CancellationToken cancellation = new CancellationToken();
 
-                await channel.SendMessageAsync($"Now playing '{search}'");
+                await channel.SendMessageAsync($":musical_note: Now playing '{search}'");
                 
                 while(!fail && !exit)
                 {
                     try
                     {
+                        if (ServerList.IsExit == true)
+                        {
+                            exit = true;
+                            break;
+                        }
+
                         int read = await output.ReadAsync(buffer, 0, bufferSize, cancellation);
                         if(read == 0)
                         {
@@ -98,7 +114,7 @@ public class AudioService
                                 //Do nothing, wait till isplaying is true
                                 await Task.Delay(100);
                             } while (ServerList.IsPlaying == false);
-                        }
+                        } 
                     }
                     catch (TaskCanceledException)
                     {
@@ -113,6 +129,7 @@ public class AudioService
                 }
                 //End
                 await discord.FlushAsync();
+
             }
         }  
     }
