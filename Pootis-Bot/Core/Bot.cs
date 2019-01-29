@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Core
 {
@@ -113,6 +114,11 @@ namespace Pootis_Bot.Core
                 {
                     Global.WriteMessage("Shutting down...", ConsoleColor.White);
                     await _client.SetGameAsync("Bot shutting down");
+                    foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+                    {
+                        channel.AudioClient.Dispose();
+                    }
+
                     await _client.LogoutAsync();
                     _client.Dispose();
                     Environment.Exit(0);
@@ -131,6 +137,11 @@ namespace Pootis_Bot.Core
                 }
                 else if (input.Trim().ToLower() == "deletemusic")
                 {
+                    foreach(GlobalServerMusicItem channel in AudioService.CurrentChannels)
+                    {
+                        channel.AudioClient.Dispose();
+                    }
+
                     Global.WriteMessage("Deleting music directory...", ConsoleColor.Blue);
                     if (System.IO.Directory.Exists("Music/"))
                     {

@@ -24,7 +24,7 @@ namespace Pootis_Bot.Modules.Audio
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task JoinCmd()
         {
-            await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel);
+            await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel, Context.Channel);
         }
 
         // Remember to add preconditions to your commands,
@@ -34,7 +34,7 @@ namespace Pootis_Bot.Modules.Audio
         [Summary("Leaves the current voice channel thats it in")]
         public async Task LeaveCmd()
         {
-            await _service.LeaveAudio(Context.Guild);
+            await _service.LeaveAudio(Context.Guild, Context.Channel);
         }
 
         [Command("play", RunMode = RunMode.Async)]
@@ -50,8 +50,7 @@ namespace Pootis_Bot.Modules.Audio
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task StopCmd()
         {
-            _service.StopAudio(Context.Guild);
-            await Context.Channel.SendMessageAsync(":musical_note: Song Stoped");
+            await _service.StopAudioAsync(Context.Guild, Context.Channel);
         }
 
         [Command("pause", RunMode = RunMode.Async)]
