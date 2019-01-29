@@ -14,10 +14,16 @@ public class AudioService
     private readonly string ffmpegloc = "external/ffmpeg";
     private readonly string musicdir = "Music/";
 
-    private static List<GlobalServerMusicItem> CurrentChannels = new List<GlobalServerMusicItem>();
+    public static List<GlobalServerMusicItem> CurrentChannels = new List<GlobalServerMusicItem>();
 
-    public async Task JoinAudio(IGuild guild, IVoiceChannel target)
+    public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel)
     {
+        if (target == null)
+        {
+            await channel.SendMessageAsync(":musical_note: You need to be in a voice channel");
+            return;
+        }
+
         var audio = await target.ConnectAsync(); //Connect to the voice channel
 
         var item = new GlobalServerMusicItem //Added it to the CurrentChannels list
@@ -31,26 +37,50 @@ public class AudioService
         CurrentChannels.Add(item);
     }
 
-    public async Task LeaveAudio(IGuild guild)
+    public async Task LeaveAudio(IGuild guild, IMessageChannel channel)
     {
         if (guild == null) return; //Check if guild is null
+        var ServerList = GetMusicList(guild.Id);
+        if(ServerList == null)
+        {
+            await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
+            return;
+        }
 
-        await GetMusicList(guild.Id).AudioClient.StopAsync(); //Stop the audio client
-        GetMusicList(guild.Id).IsPlaying = false;
+        await ServerList.AudioClient.StopAsync(); //Stop the audio client
+        ServerList.IsPlaying = false;
 
         CurrentChannels.Remove(GetMusicList(guild.Id)); //Remove it from the CurrentChannels list
     }
 
-    public void StopAudio(IGuild guild)
+    public async Task StopAudioAsync(IGuild guild, IMessageChannel channel)
     {
         var ServerList = GetMusicList(guild.Id);
+
+        if(ServerList == null)
+        {
+            await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
+            return;
+        }
+
+        if(ServerList.IsPlaying == false)
+        {
+            await channel.SendMessageAsync(":musical_note: No audio is playing.");
+        }
+
         ServerList.IsExit = true;
-        
+        await channel.SendMessageAsync(":musical_note: Stopping current playing song.");
     }
 
     public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string search)
     {
         var ServerList = GetMusicList(guild.Id);
+
+        if(ServerList == null)
+        {
+            await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
+            return;
+        }
 
         var searchResults = SearchAudio(search); //Search to see if we might allready have the song
         string results;
@@ -129,6 +159,7 @@ public class AudioService
                 }
                 //End
                 await discord.FlushAsync();
+                ServerList.IsPlaying = false;
 
             }
         }  
