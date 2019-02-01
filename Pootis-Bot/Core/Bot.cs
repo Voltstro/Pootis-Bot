@@ -17,7 +17,7 @@ namespace Pootis_Bot.Core
 
         private static string bottoken;
         public static string botname;
-        private static string botprefix;
+        public static string botprefix;
 
         public Bot(string _bottoken, string _botname, string _botprefix)
         {
@@ -51,6 +51,7 @@ namespace Pootis_Bot.Core
             _handler = new CommandHandler(_client, _commands, botprefix);
             await _handler.InstallCommandsAsync();
             await _client.SetGameAsync("Use $help for help.");
+            isBotOn = true;
 #pragma warning disable CS4014 //Ingnore this annoying warning
             ConsoleInput();
 #pragma warning restore CS4014
@@ -74,18 +75,6 @@ namespace Pootis_Bot.Core
             else
                 Global.WriteMessage("Bot is already connected", ConsoleColor.Yellow);
         }
-
-        private async Task DisconnectBot()
-        {
-            if (isBotOn)
-            {
-                await _client.LogoutAsync();
-                isBotOn = false;
-            }
-            else
-                Global.WriteMessage("Bot is already disconnected", ConsoleColor.Yellow);
-        }
-
 
         private async Task JoinedNewServer(SocketGuild arg)
         {
@@ -150,6 +139,15 @@ namespace Pootis_Bot.Core
                     }
                     else
                         Global.WriteMessage("The music directory doesn't exist!", ConsoleColor.Blue);
+                }
+                else if (input.Trim().ToLower() == "toggelaudio")
+                {
+                    Config.bot.isAudioServiceEnabled = !Config.bot.isAudioServiceEnabled;
+                    Config.SaveConfig();
+
+                    Global.WriteMessage($"The audio service was set to {Config.bot.isAudioServiceEnabled}", ConsoleColor.Blue);
+                    if (Config.bot.isAudioServiceEnabled == true)
+                        Program.CheckAudioService();
                 }
             }
         }
