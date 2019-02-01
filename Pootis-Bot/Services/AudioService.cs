@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Audio;
+using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
 
 public class AudioService
@@ -83,26 +84,31 @@ public class AudioService
         }
 
         var searchResults = SearchAudio(search); //Search to see if we might allready have the song
-        string results;
+        string results = "";
 
-        if(searchResults == null) //If we don't have the song then attempt to download it from youtube
+        if (searchResults == null) //If we don't have the song then attempt to download it from youtube
         {
             AudioDownload download = new AudioDownload();
-            results = download.DownloadAudio(search, channel);
-            if (results == null)
+            string result = download.DownloadAudio(search, channel);
+            if (result == null)
             {
                 await channel.SendMessageAsync($"Failed to download the song '{search}'\n");
                 return;
-            }  
+            }
+            else
+                results = result;
         }
         else
             results = searchResults;
+
+        Console.WriteLine(results);
 
         var client = ServerList.AudioClient;
 
         ServerList.IsExit = false;
 
         Process ffmpeg = GetFfmpeg(results);
+        Global.WriteMessage($"The song '{search}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
         using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
         {
@@ -151,16 +157,20 @@ public class AudioService
                         await channel.SendMessageAsync("Song finished");
                         exit = true;
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        await channel.SendMessageAsync("Sorry an error occured");
+                        await channel.SendMessageAsync($"Sorry an error occured **Error Details**\n{ex.Message}");
                         fail = true;
                     }
                 }
+
                 //End
+                Global.WriteMessage($"The song '{search}' on server {guild.Name}({guild.Id}) has stopped.", ConsoleColor.Blue);
                 await discord.FlushAsync();
                 ServerList.IsPlaying = false;
 
+                //Check to make sure that ffmpeg was disposed
+                ffmpeg.Dispose();
             }
         }  
     }

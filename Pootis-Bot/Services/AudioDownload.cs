@@ -8,7 +8,8 @@ using Pootis_Bot;
 
 public class AudioDownload
 {
-    readonly string ytstartLink = "https://www.youtube.com/watch?v=";
+    readonly string ytstartLink = "https://www.youtube.com/watch?v="; //The begining of the yt URL
+    readonly string ytstartLinkShort = "https://youtu.be/";
     readonly string youtubedlloc = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "/External/youtube-dl";
 
     public string DownloadAudio(string search, IMessageChannel channel)
@@ -22,35 +23,32 @@ public class AudioDownload
         });
 
         var searchListRequest = youtube.Search.List("snippet");
-        searchListRequest.Q = search; // Replace with your search term.
+        searchListRequest.Q = search; 
         searchListRequest.MaxResults = 10;
 
         // Call the search.list method to retrieve results matching the specified query term.
         var searchListResponse = searchListRequest.Execute();
 
-        List<string> videos = new List<string>();
-
-        // Add each result to the appropriate list, and then display the lists of
-        // matching videos and channels.
-        foreach (var searchResult in searchListResponse.Items)
-        {
-            switch (searchResult.Id.Kind)
-            {
-                case "youtube#video":
-                    videos.Add(String.Format($"{ytstartLink + searchResult.Id.VideoId}"));
-                    break;
-            }
-        }
-
-        string[] videosarray = videos.ToArray();
-        if (videosarray.Length != 0)
+        if (searchListResponse.Items.Count != 0)
         {
             try
             {
-                channel.SendMessageAsync($"Downloading {videosarray[0]}");
-                CreateYTDLProcess(videosarray[0]);
+                string videourl = ytstartLink + searchListResponse.Items[0].Id.VideoId;
+                string videotitle = searchListResponse.Items[0].Snippet.Title;
+                string videoloc = "Music/" + videotitle + ".mp3";
+
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.WithTitle(videotitle);
+                embed.WithDescription($"Downloading '{videotitle}'\n**Please Wait**");
+                embed.AddField("Uploader", searchListResponse.Items[0].Snippet.ChannelTitle);
+                embed.AddField("URL", ytstartLinkShort + searchListResponse.Items[0].Id.VideoId);
+                embed.WithImageUrl(searchListResponse.Items[0].Snippet.Thumbnails.Medium.Url);
+                channel.SendMessageAsync("", false, embed.Build());
+
+                //Use Youtube-dl to download the song and convert it to a .mp3
+                CreateYTDLProcess(videourl);
                 channel.SendMessageAsync($"Done");
-                return videosarray[0];
+                return videoloc;
             }
             catch (Exception ex)
             {
