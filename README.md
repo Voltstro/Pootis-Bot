@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/CreepysinProjects/Pootis-Bot/master/Pootis-Bot/icon.ico" align="right" />
+<img src="https://github.com/Creepysin/Pootis-Bot/blob/master/docs/img/bot.png" align="right" />
 
 # Pootis-Bot 
 
@@ -12,20 +12,7 @@ Pootis-Bot is desgined to run on multiable servers though it is not recommened t
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Prerequisites
-
-Things you need
-
-```
-.NET Core 2.2
-*Visual Studio 2017
-```
-
-*[Visual Studio 2017](https://visualstudio.microsoft.com) is the **recommened** IDE. If you do use Visual Studio 2017 make sure you installed `.NET desktop development` 
-
-### Setup
-
-[View this wiki page on how to setup and build](https://github.com/CreepysinProjects/Pootis-Bot/wiki/Building-Pootis-Bot)
+You can vist [this site](https://creepysin.github.io/Pootis-Bot/buildingwin/) on how to setup and build Pootis-Bot
 
 ## Authors
 
