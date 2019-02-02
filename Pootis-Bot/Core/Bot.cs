@@ -84,8 +84,9 @@ namespace Pootis_Bot.Core
             EmbedBuilder embed = new EmbedBuilder();
             embed.WithTitle("Thanks for inviting me!");
             embed.WithDescription("Hello! My name is " + botname + "!\n\n**__Links__**" +
-                "\n:computer: [Commands](https://creepysin.github.io/docs/Pootis-Bot/commands)" +
+                "\n:computer: [Commands](https://creepysin.github.io/Pootis-Bot/commands/)" +
                 "\n<:GitHub:529571722991763456> [Github Page](https://github.com/Creepysin/Pootis-Bot)" +
+                "\n:bookmark: [Documation](https://creepysin.github.io/Pootis-Bot/)" +
                 "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
                 "\n<:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
             embed.WithColor(new Color(241, 196, 15));
