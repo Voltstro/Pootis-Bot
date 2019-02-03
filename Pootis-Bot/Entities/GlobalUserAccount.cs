@@ -12,6 +12,8 @@ namespace Pootis_Bot.Entities
 
         public uint XP { get; set; }
 
+        public string Msg { get; set; }
+
         public uint LevelNumber
         {
             get

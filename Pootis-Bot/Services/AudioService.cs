@@ -101,18 +101,26 @@ public class AudioService
         else
             results = searchResults;
 
-        Console.WriteLine(results);
+        if (ServerList.IsPlaying)
+        {
+            //Kill and dispose of ffmpeg
+            ServerList.Ffmpeg.Kill();
+            ServerList.Ffmpeg.Dispose();
+
+            await ServerList.Discord.FlushAsync();
+        }
 
         var client = ServerList.AudioClient;
 
         ServerList.IsExit = false;
 
-        Process ffmpeg = GetFfmpeg(results);
+        var ffmpeg = ServerList.Ffmpeg = GetFfmpeg(results);
+
         Global.WriteMessage($"The song '{search}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
         using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
         {
-            using (AudioOutStream discord = client.CreatePCMStream(AudioApplication.Music))
+            using (ServerList.Discord = client.CreatePCMStream(AudioApplication.Music))
             {
                 ServerList.IsPlaying = true;
                 bool fail = false;
@@ -141,7 +149,7 @@ public class AudioService
                             break;
                         }
 
-                        await discord.WriteAsync(buffer, 0, read, cancellation);
+                        await ServerList.Discord.WriteAsync(buffer, 0, read, cancellation);
 
                         if(ServerList.IsPlaying == false)
                         {
@@ -166,7 +174,8 @@ public class AudioService
 
                 //End
                 Global.WriteMessage($"The song '{search}' on server {guild.Name}({guild.Id}) has stopped.", ConsoleColor.Blue);
-                await discord.FlushAsync();
+                await ServerList.Discord.FlushAsync();
+                ServerList.Discord.Dispose();
                 ServerList.IsPlaying = false;
 
                 //Check to make sure that ffmpeg was disposed
