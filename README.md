@@ -1,4 +1,4 @@
-<img src="https://github.com/Creepysin/Pootis-Bot/blob/master/docs/img/bot.png" align="right" />
+<img src="https://github.com/Creepysin/Pootis-Bot/blob/master/doc.png" align="right" />
 
 # Pootis-Bot 
 
