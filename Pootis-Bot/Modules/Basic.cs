@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules
 {
@@ -39,6 +40,15 @@ namespace Pootis_Bot.Modules
             {
                 await Context.Channel.SendMessageAsync(user + " Doesn't have the role '" + _role + "'");
             }
+        }
+
+        [Command("reminds")]
+        [Summary("Reminds you, duh (In Seconds)")]
+        [Alias("res")]
+        public async Task Remind(int seconds, [Remainder] string remindmsg)
+        {
+            await Context.Channel.SendMessageAsync($"Ok, i will send you the message '{remindmsg}' in {seconds} seconds.");
+            await ReminderService.RemindAsyncSeconds(Context.User, seconds, remindmsg);
         }
     }
 }

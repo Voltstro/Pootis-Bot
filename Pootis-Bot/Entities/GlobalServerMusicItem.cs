@@ -1,5 +1,6 @@
 ﻿using Discord.Audio;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Pootis_Bot.Entities
 {
@@ -12,5 +13,7 @@ namespace Pootis_Bot.Entities
         public bool IsExit { get; set; }
 
         public IAudioClient AudioClient { get; set; }
+        public AudioOutStream Discord { get; set; } 
+        public Process Ffmpeg { get; set; }
     }
 }

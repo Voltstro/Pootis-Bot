@@ -109,7 +109,7 @@ namespace Pootis_Bot.Modules
                 WarningText = $"{target.Username} account is not warnable.";
             }
 
-            string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has { account.Points} points. \n \n" + WarningText;
+            string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has {account.Points} points. \n '{account.Msg}'\n\n" + WarningText;
             var embed = new EmbedBuilder();     
 
             embed.WithThumbnailUrl(target.GetAvatarUrl());
@@ -117,6 +117,16 @@ namespace Pootis_Bot.Modules
             embed.WithDescription(Desciption);
             embed.WithColor(new Color(56, 56, 56));
             await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
+
+        [Command("profilemsg")]
+        public async Task ProfileMsg([Remainder]string message = "")
+        {
+            var account = UserAccounts.GetAccount((SocketGuildUser)Context.User);
+            account.Msg = message;
+            UserAccounts.SaveAccounts();
+
+            await Context.Channel.SendMessageAsync($"Your profile message was set to '{message}'");
         }
 
         #region Functions
