@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Discord;
+using Discord.WebSocket;
+using System;
+using System.Linq;
 
 namespace Pootis_Bot.Core
 {
@@ -46,6 +49,16 @@ namespace Pootis_Bot.Core
         {
             Random random = new Random();
             return random.Next(min, max);
+        }
+
+        public static IRole CheckIfRoleExist(SocketGuild guild, string rolename)
+        {
+            var result = from a in guild.Roles
+                         where a.Name == rolename
+                         select a;
+
+            var role = result.FirstOrDefault();
+            return role;
         }
 
     }
