@@ -1,5 +1,4 @@
 ﻿using Discord.Audio;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Pootis_Bot.Entities

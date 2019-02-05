@@ -141,7 +141,7 @@ namespace Pootis_Bot.Core
                     else
                         Global.WriteMessage("The music directory doesn't exist!", ConsoleColor.Blue);
                 }
-                else if (input.Trim().ToLower() == "toggelaudio")
+                else if (input.Trim().ToLower() == "toggleaudio")
                 {
                     Config.bot.isAudioServiceEnabled = !Config.bot.isAudioServiceEnabled;
                     Config.SaveConfig();

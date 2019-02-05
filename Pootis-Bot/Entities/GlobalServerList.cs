@@ -32,6 +32,7 @@ namespace Pootis_Bot.Entities
             public string PermYT { get; set; }
             public string PermGiphy { get; set; }
             public string PermGoogle { get; set; }
+            public string PermMusic { get; set; }
         }
 
         public class GlobalServerBanedChannelList

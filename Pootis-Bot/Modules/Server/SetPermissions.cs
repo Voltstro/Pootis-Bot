@@ -8,11 +8,12 @@ namespace Pootis_Bot.Modules.Server
     public class SetPermissions : ModuleBase<SocketCommandContext>
     {
         [Command("permmakenotwarnable")]
+        [RequireOwner]
         public async Task PermNotWarnable([Remainder]string role = "")
         {
-            if(role.Trim() == "")
+            if (Global.CheckIfRoleExist(Context.Guild, role) == null)
             {
-                await Context.Channel.SendMessageAsync("You need to set a role\nE.G: `permakenotwarnable Admin`");
+                await Context.Channel.SendMessageAsync("That role doesn't exist!");
                 return;
             }
 
@@ -24,11 +25,12 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("permakewarnable")]
+        [RequireOwner]
         public async Task PermWarnable([Remainder]string role = "")
         {
-            if (role.Trim() == "")
+            if(Global.CheckIfRoleExist(Context.Guild, role) == null)
             {
-                await Context.Channel.SendMessageAsync("You need to set a role\nE.G: `permakewarnable Admin`");
+                await Context.Channel.SendMessageAsync("That role doesn't exist!");
                 return;
             }
 
@@ -40,11 +42,12 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("permwarn")]
+        [RequireOwner]
         public async Task PermWarn([Remainder]string role = "")
         {
-            if (role.Trim() == "")
+            if (Global.CheckIfRoleExist(Context.Guild, role) == null)
             {
-                await Context.Channel.SendMessageAsync("You need to set a role\nE.G: `permwarn Admin`");
+                await Context.Channel.SendMessageAsync("That role doesn't exist!");
                 return;
             }
 
@@ -56,11 +59,12 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("permgoogle")]
+        [RequireOwner]
         public async Task PermGoogle([Remainder]string role = "")
         {
-            if (role.Trim() == "")
+            if (Global.CheckIfRoleExist(Context.Guild, role) == null)
             {
-                await Context.Channel.SendMessageAsync("You need to set a role\nE.G: `permgoogle Admin`");
+                await Context.Channel.SendMessageAsync("That role doesn't exist!");
                 return;
             }
 
@@ -72,11 +76,12 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("permyoutube")]
+        [RequireOwner]
         public async Task PermYoutube([Remainder]string role = "")
         {
-            if (role.Trim() == "")
+            if (Global.CheckIfRoleExist(Context.Guild, role) == null)
             {
-                await Context.Channel.SendMessageAsync("You need to set a role\nE.G: `permyoutube Admin`");
+                await Context.Channel.SendMessageAsync("That role doesn't exist!");
                 return;
             }
 
@@ -88,11 +93,12 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("permgiphy")]
+        [RequireOwner]
         public async Task PermGiphy([Remainder]string role = "")
         {
-            if (role.Trim() == "")
+            if (Global.CheckIfRoleExist(Context.Guild, role) == null)
             {
-                await Context.Channel.SendMessageAsync("You need to set a role\nE.G: `permgiphy Admin`");
+                await Context.Channel.SendMessageAsync("That role doesn't exist!");
                 return;
             }
 
@@ -101,6 +107,23 @@ namespace Pootis_Bot.Modules.Server
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Command `giphy` permission was set to '{role}'");
+        }
+
+        [Command("permmusic")]
+        [RequireOwner]
+        public async Task PermMusic([Remainder]string role = "")
+        {
+            if (Global.CheckIfRoleExist(Context.Guild, role) == null)
+            {
+                await Context.Channel.SendMessageAsync("That role doesn't exist!");
+                return;
+            }
+
+            var list = ServerLists.GetServer(Context.Guild);
+            list.permissions.PermMusic = role;
+            ServerLists.SaveServerList();
+
+            await Context.Channel.SendMessageAsync($"Audio commands permission was set to '{role}'");
         }
 
         [Command("addbanedchannel")]
