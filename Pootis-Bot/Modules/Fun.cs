@@ -30,19 +30,7 @@ namespace Pootis_Bot.Modules
         [RequireBotPermission(GuildPermission.EmbedLinks)]
         public async Task CmdYoutubeSearch([Remainder] string search = "")
         {
-            var server = ServerLists.GetServer(Context.Guild);
-
-            //Check to see if the command has a permission set
-            if (server.permissions.PermYT != null && server.permissions.PermYT != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermYT);
-
-                if (_user.Roles.Contains(setrole))
-                    await Context.Channel.SendMessageAsync("", false, YoutubeSearch(search).Build());
-            }
-            else
-                await Context.Channel.SendMessageAsync("", false, YoutubeSearch(search).Build());
+            await Context.Channel.SendMessageAsync("", false, YoutubeSearch(search).Build());
         }
 
         [Command("giphy")]
@@ -50,19 +38,7 @@ namespace Pootis_Bot.Modules
         [Alias("gy")]
         public async Task CmdGiphySearch([Remainder] string search = "")
         {
-            var server = ServerLists.GetServer(Context.Guild);
-
-            //Check to see if the command has a permission set
-            if (server.permissions.PermGiphy != null && server.permissions.PermGiphy != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermGiphy);
-
-                if (_user.Roles.Contains(setrole))
-                    await Context.Channel.SendMessageAsync("", false, GiphySearch(search).Build());
-            }
-            else
-                await Context.Channel.SendMessageAsync("", false, GiphySearch(search).Build());
+            await Context.Channel.SendMessageAsync("", false, GiphySearch(search).Build());
         }
 
         [Command("google")]
@@ -70,19 +46,7 @@ namespace Pootis_Bot.Modules
         [Alias("g")]
         public async Task CmdGoogleSearch([Remainder]string search = "")
         {
-            var server = ServerLists.GetServer(Context.Guild);
-
-            //Check to see if the command has a permission set
-            if (server.permissions.PermGoogle != null && server.permissions.PermGoogle != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermGoogle);
-
-                if (_user.Roles.Contains(setrole))
-                    await Context.Channel.SendMessageAsync("", false, GoogleSearch(search).Build());
-            }
-            else
-                await Context.Channel.SendMessageAsync("", false, GoogleSearch(search).Build());
+            await Context.Channel.SendMessageAsync("", false, GoogleSearch(search).Build());
         }
 
         #region Functions

@@ -35,19 +35,7 @@ namespace Pootis_Bot.Modules
         [Summary("Displays your message in an embed message")]
         public async Task CmdEmbedMessage(string title = "", [Remainder]string msg = "")
         {
-            var server = ServerLists.GetServer(Context.Guild);
-            var _user = Context.User as SocketGuildUser;
-            var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermEmbedMessage);
-
-            if(server.permissions.PermEmbedMessage != null && server.permissions.PermEmbedMessage.Trim() != "")
-            {
-                if (_user.Roles.Contains(setrole))
-                {
-                    await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
-                }
-            }
-            else
-                await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
+            await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
         }
 
         [Command("server")]

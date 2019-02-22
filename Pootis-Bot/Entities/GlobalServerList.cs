@@ -19,20 +19,15 @@ namespace Pootis_Bot.Entities
 
         public string AdminRoleName { get; set; }
 
-        public Permissions permissions = new Permissions();
-
         public List<GlobalServerBanedChannelList> banedChannels = new List<GlobalServerBanedChannelList>();
 
-        public class Permissions
+        public List<CommandInfo> commandInfos = new List<CommandInfo>();
+
+
+        public struct CommandInfo
         {
-            public string PermEmbedMessage { get; set; }
-            public string PermNotWarnableRole { get; set; }
-            public string PermMakeWarnableRole { get; set; }
-            public string PermWarn { get; set; }
-            public string PermYT { get; set; }
-            public string PermGiphy { get; set; }
-            public string PermGoogle { get; set; }
-            public string PermMusic { get; set; }
+            public string Command { get; set; }
+            public string Role { get; set; }
         }
 
         public class GlobalServerBanedChannelList
@@ -49,6 +44,16 @@ namespace Pootis_Bot.Entities
             var channel = result.FirstOrDefault();
             if (channel == null) channel = CreateBanedChannel(id);
             return channel;
+        }
+
+        public CommandInfo GetCommandInfo(string command)
+        {
+            var result = from a in commandInfos
+                         where a.Command == command
+                         select a;
+
+            var commandInfo = result.FirstOrDefault();
+            return commandInfo;
         }
 
         GlobalServerBanedChannelList CreateBanedChannel(ulong _channelID)

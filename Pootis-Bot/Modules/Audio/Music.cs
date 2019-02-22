@@ -33,19 +33,7 @@ namespace Pootis_Bot.Modules.Audio
                 return;
             }
 
-            var server = ServerLists.GetServer((SocketGuild)Context.Guild);
-
-            if (server.permissions.PermMusic != null && server.permissions.PermMusic != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMusic);
-
-                if (_user.Roles.Contains(setrole))
-                    await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel, Context.Channel);
-            }
-            else
-                await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel, Context.Channel);
-
+            await _service.JoinAudio(Context.Guild, (Context.User as IVoiceState).VoiceChannel, Context.Channel);
         }
 
         // Remember to add preconditions to your commands,
@@ -61,18 +49,7 @@ namespace Pootis_Bot.Modules.Audio
                 return;
             }
 
-            var server = ServerLists.GetServer((SocketGuild)Context.Guild);
-
-            if (server.permissions.PermMusic != null && server.permissions.PermMusic != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMusic);
-
-                if (_user.Roles.Contains(setrole))
-                    await _service.LeaveAudio(Context.Guild, Context.Channel);
-            }       
-            else
-                await _service.LeaveAudio(Context.Guild, Context.Channel);
+            await _service.LeaveAudio(Context.Guild, Context.Channel);
         }
 
         [Command("play", RunMode = RunMode.Async)]
@@ -86,34 +63,7 @@ namespace Pootis_Bot.Modules.Audio
                 return;
             }
 
-            var server = ServerLists.GetServer((SocketGuild)Context.Guild);
-
-            if (server.permissions.PermMusic != null && server.permissions.PermMusic != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMusic);
-
-                if (_user.Roles.Contains(setrole))
-                {
-                    if (string.IsNullOrWhiteSpace(song))
-                    {
-                        await Context.Channel.SendMessageAsync($":musical_note: You need to input a song name! \nE.G: `{Bot.botprefix}play Still Alive`");
-                        return;
-                    }
-
-                    await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
-                }
-            }
-            else
-            {
-                if (string.IsNullOrWhiteSpace(song))
-                {
-                    await Context.Channel.SendMessageAsync($":musical_note: You need to input a song name! \nE.G: `{Bot.botprefix}play Still Alive`");
-                    return;
-                }
-
-                await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
-            }
+            await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
         }
 
         [Command("stop")]
@@ -127,18 +77,7 @@ namespace Pootis_Bot.Modules.Audio
                 return;
             }
 
-            var server = ServerLists.GetServer((SocketGuild)Context.Guild);
-
-            if (server.permissions.PermMusic != null && server.permissions.PermMusic != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMusic);
-
-                if (_user.Roles.Contains(setrole))
-                    await _service.StopAudioAsync(Context.Guild, Context.Channel);
-            }
-            else
-                await _service.StopAudioAsync(Context.Guild, Context.Channel);
+            await _service.StopAudioAsync(Context.Guild, Context.Channel);
         }
 
         [Command("pause", RunMode = RunMode.Async)]
@@ -152,18 +91,7 @@ namespace Pootis_Bot.Modules.Audio
                 return;
             }
 
-            var server = ServerLists.GetServer((SocketGuild)Context.Guild);
-
-            if (server.permissions.PermMusic != null && server.permissions.PermMusic != "")
-            {
-                var _user = Context.User as SocketGuildUser;
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMusic);
-
-                if (_user.Roles.Contains(setrole))
-                    await _service.PauseAudio(Context.Guild, Context.Channel);
-            }
-            else
-                await _service.PauseAudio(Context.Guild, Context.Channel);
+            await _service.PauseAudio(Context.Guild, Context.Channel);
         }
     }
 }
