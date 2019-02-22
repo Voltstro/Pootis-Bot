@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.Entities;
 using System;
 using System.Linq;
 
@@ -59,6 +60,14 @@ namespace Pootis_Bot.Core
 
             var role = result.FirstOrDefault();
             return role;
+        }
+
+        public static GlobalServerList.CommandInfo CheckCommand(string command, SocketGuild guild)
+        {
+            var server = ServerLists.GetServer(guild);
+            var cmdinfo = server.GetCommandInfo(command);
+
+            return cmdinfo;
         }
 
     }

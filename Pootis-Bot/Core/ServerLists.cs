@@ -56,8 +56,6 @@ namespace Pootis_Bot.Core
                 StaffRoleName = "Staff"
             };
 
-            newServer.permissions = new GlobalServerList.Permissions();
-
             serverLists.Add(newServer);
             SaveServerList();
             return newServer;

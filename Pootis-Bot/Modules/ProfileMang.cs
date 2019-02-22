@@ -16,46 +16,14 @@ namespace Pootis_Bot.Modules
         [Summary("Makes the user not warnable")]
         public async Task NotWarnable(IGuildUser user)
         {
-            var server = ServerLists.GetServer(Context.Guild);
-            var _user = Context.User as SocketGuildUser;
-
-            if (server.permissions.PermNotWarnableRole != null && server.permissions.PermNotWarnableRole.Trim() != "")
-            {
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermNotWarnableRole);
-
-                if(_user.Roles.Contains(setrole))
-                    await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));
-            }
-            else //There isn't a set role, use deafult of the 'admin' role.
-            {
-                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).AdminRoleName);
-
-                if (_user.Roles.Contains(deafultrole))
-                    await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));
-            }        
+            await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));  
         }
     
         [Command("makewarnable")]
         [Summary("Makes the user warnable.")]
         public async Task MakeWarnable(IGuildUser user)
         {           
-            var _user = Context.User as SocketGuildUser;
-            var server = ServerLists.GetServer(Context.Guild);
-            
-            if (server.permissions.PermMakeWarnableRole != null && server.permissions.PermMakeWarnableRole.Trim() != "")
-            {
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMakeWarnableRole);
-
-                if(_user.Roles.Contains(setrole))
-                    await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));
-            }
-            else //There isn't a set role, use deafult of the 'admin' role.
-            {
-                var deafultrole = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).AdminRoleName);
-
-                if (_user.Roles.Contains(deafultrole))
-                    await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));
-            }            
+            await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));            
         }
 
         [Command("warn")]
@@ -64,30 +32,8 @@ namespace Pootis_Bot.Modules
         [RequireBotPermission(GuildPermission.BanMembers)]
         public async Task WarnUser(IGuildUser user)
         {
-            var userAccount = UserAccounts.GetAccount((SocketGuildUser)user);
-            var _user = Context.User as SocketGuildUser;
-            var server = ServerLists.GetServer(Context.Guild);
-
-            if (server.permissions.PermWarn != null && server.permissions.PermWarn.Trim() != "")
-            {
-                var setrole = (_user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == server.permissions.PermMakeWarnableRole);
-
-                if (_user.Roles.Contains(setrole))
-                {
-                    await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
-                    await CheckWarnStatus((SocketGuildUser)user);                 
-                }
-            }
-            else //There isn't a set role, use deafult of the 'staff' role.
-            {
-                var role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == ServerLists.GetServer(_user.Guild).StaffRoleName);
-
-                if (_user.Roles.Contains(role))
-                {
-                    await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
-                    await CheckWarnStatus((SocketGuildUser)user);
-                }
-            }    
+            await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
+            await CheckWarnStatus((SocketGuildUser)user);
         }
 
         [Command("profile")]
@@ -110,8 +56,7 @@ namespace Pootis_Bot.Modules
             }
 
             string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has {account.Points} points. \n '{account.Msg}'\n\n" + WarningText;
-            var embed = new EmbedBuilder();     
-
+            var embed = new EmbedBuilder();
             embed.WithThumbnailUrl(target.GetAvatarUrl());
             embed.WithTitle(target.Username + "'s Profile.");
             embed.WithDescription(Desciption);
