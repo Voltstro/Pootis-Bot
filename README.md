@@ -16,7 +16,7 @@ You can vist [this site](https://creepysin.github.io/Pootis-Bot/buildingwin/) on
 
 ## Authors
 
-* **Creepysin** - *Initial work* - [Creepysin](https://github.com/CreepysinStudios)
+* **Creepysin** - *Initial work* - [Creepysin](https://github.com/CreepysinMe)
 
 ## License
 
