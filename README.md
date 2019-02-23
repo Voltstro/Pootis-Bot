@@ -1,8 +1,8 @@
-<img src="https://github.com/Creepysin/Pootis-Bot/blob/master/doc.png" align="right" />
+<img src="https://github.com/Creepysin/Pootis-Bot/blob/master/Pootis-Bot/bot.png" align="right" />
 
 # Pootis-Bot 
 
-![MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![https://www.nuget.org/packages/Discord.Net/](https://img.shields.io/nuget/v/Discord.Net.svg) ![Discord](https://img.shields.io/discord/424080906232266753.svg)
+[![License](https://img.shields.io/github/license/creepysin/Pootis-Bot.svg?style=flat-square)](https://github.com/Creepysin/Pootis-Bot/blob/master/LICENSE) [![Discord](https://img.shields.io/badge/Discord-Creepysin-7289da.svg?style=flat-square&logo=discord)](https://discord.gg/m7hg47t) [![Youtube](https://img.shields.io/badge/Youtube-Creepysin-red.svg?style=flat-square&logo=youtube)](https://www.youtube.com/channel/UCGE1RiKvxmhB1mEVzJS0MtA)
 
 Pootis-Bot, an open source Discord bot written in the c# language using [Discord .NET](https://github.com/RogueException/Discord.Net)
 
