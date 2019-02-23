@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Building For Windows - Pootis-Bot</title>
+  <title>Permission System - Pootis-Bot</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Building For Windows";
-    var mkdocs_page_input_path = "buildingwin.md";
+    var mkdocs_page_name = "Permission System";
+    var mkdocs_page_input_path = "permissionsystem.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -63,26 +63,28 @@
     <a class="" href="../commandsconsole/">Console Commands</a>
 	    </li>
           
-            <li class="toctree-l1">
-		
-    <a class="" href="../permissionsystem/">Permission System</a>
-	    </li>
-          
             <li class="toctree-l1 current">
 		
-    <a class="current" href="./">Building For Windows</a>
+    <a class="current" href="./">Permission System</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#building-for-windows">Building For Windows</a></li>
+    <li class="toctree-l2"><a href="#permission-system">Permission System</a></li>
     
         <ul>
         
-            <li><a class="toctree-l3" href="#prerequisites">Prerequisites</a></li>
+            <li><a class="toctree-l3" href="#setting-a-permission">Setting a permission</a></li>
+        
+            <li><a class="toctree-l3" href="#removing-a-permission">Removing a permission</a></li>
         
         </ul>
     
 
     </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../buildingwin/">Building For Windows</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -117,7 +119,7 @@
     
       
     
-    <li>Building For Windows</li>
+    <li>Permission System</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -127,30 +129,17 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="building-for-windows">Building For Windows</h1>
-<p>Instructions on how to build for windows.</p>
-<h2 id="prerequisites">Prerequisites</h2>
-<pre><code>.NET Core 2.2
-*Visual Studio 2017
-</code></pre>
-
-<p>*Visual Studio 2017 is the recommened IDE. If you do use Visual Studio 2017 make sure you installed .NET desktop development</p>
-<h3 id="debug">Debug</h3>
-<p>Open up <code>Pootis-Bot.sln</code> in Visual Studio</p>
-<p>After the project fully opens you may have some errors, this errors should go away soon and should not stop you from building.</p>
-<p>At the top click on Green Arrow with the words Pootis-Bot next to it. (This may be diffrent on other versions of Visual Studio).</p>
-<p>Another way would be <strong>F5</strong> or <strong>Debug -&gt; Start Debugging</strong></p>
-<p>Either way this will start Pootis-Bot in debug mode.</p>
-<h3 id="full-compile">Full Compile</h3>
-<p>To build for windows navigate to were the <code>Pootis-Bot.csproj</code> is.</p>
-<p>Open up the console, and type:</p>
-<pre><code>dotnet build -c Release -r win10-x64
-</code></pre>
-
-<p>Your build should now build and be placed <code>Pootis-Bot\Bin\Release\netcoreapp2.2\win10-x64</code></p>
-<p>Alternatively you can run <code>buildWin10-x64_Release.bat</code> located in the Build folder where the .sln is.</p>
-<p>It will be in a .exe format.</p>
-<p>You CAN build for other OSes. Replace the <code>win10-64</code> in the command with something  <a href="https://docs.microsoft.com/en-us/dotnet/core/rid-catalog#windows-rids">from this list of RIDs</a></p>
+                <h1 id="permission-system">Permission System</h1>
+<p>Pootis Bot includes a permission system.</p>
+<h2 id="setting-a-permission">Setting a permission</h2>
+<p>Set a permission for a command using these command:</p>
+<p><code>perm [Command] [Role]</code></p>
+<p>The command must be the exact spelling of the command and same goes for the role, exempt that must be a role that exist on your server.</p>
+<p>EG: <code>perm youtube Admin</code></p>
+<h2 id="removing-a-permission">Removing a permission</h2>
+<p>Removing a permission is simple, type:</p>
+<p><code>perm [Command] Remove</code></p>
+<p>This will remove the permission.</p>
               
             </div>
           </div>
@@ -158,10 +147,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../buildinglinux/" class="btn btn-neutral float-right" title="Building For Linux">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../buildingwin/" class="btn btn-neutral float-right" title="Building For Windows">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../permissionsystem/" class="btn btn-neutral" title="Permission System"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../commandsconsole/" class="btn btn-neutral" title="Console Commands"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -187,10 +176,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../permissionsystem/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../commandsconsole/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../buildinglinux/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../buildingwin/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
