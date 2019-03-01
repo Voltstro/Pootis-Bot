@@ -8,6 +8,11 @@ namespace Pootis_Bot.Modules.Server
 {
     public class SetPermissions : ModuleBase<SocketCommandContext>
     {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - Anything permission related
+        // Contributors     - Creepysin, 
+
         private readonly CommandService _service;
         private readonly PermissionService _perm;
 

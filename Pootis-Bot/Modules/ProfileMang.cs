@@ -8,10 +8,13 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
-    //Profile Managment commands
-
     public class ProfileMang : ModuleBase<SocketCommandContext>
-    {      
+    {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - Handles anything to do with profile managment
+        // Contributors     - Creepysin, 
+
         [Command("makenotwarnable")]
         [Summary("Makes the user not warnable")]
         public async Task NotWarnable(IGuildUser user)

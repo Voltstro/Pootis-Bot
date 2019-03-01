@@ -9,6 +9,11 @@ namespace Pootis_Bot.Modules.Basic
 {
     public class HelpModule : ModuleBase<SocketCommandContext>
     {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - The two help commands
+        // Contributors     - Creepysin, 
+
         private readonly CommandService _service;
 
         public HelpModule(CommandService commandService)
@@ -48,7 +53,7 @@ namespace Pootis_Bot.Modules.Basic
             int maxmod = parts.Count();
             var desarray = parts.ToArray();
 
-            while (currentmod != maxmod)
+            while (currentmod != maxmod) //Go through all moduels
             {
                 string item = "";
 
