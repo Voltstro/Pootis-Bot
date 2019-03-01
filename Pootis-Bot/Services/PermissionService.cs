@@ -18,7 +18,7 @@ namespace Pootis_Bot.Services
 
         public async Task SetPermission(string _command, string role, IMessageChannel channel, SocketGuild guild)
         {
-            if (_command == "profile" || _command == "profilemsg")
+            if (_command == "profile" || _command == "profilemsg") //Check to see if the inputed command isn't invaild
             {
                 await channel.SendMessageAsync($"Cannot set the permission of {_command}");
                 return;
@@ -27,7 +27,7 @@ namespace Pootis_Bot.Services
             CommandInfo cmdinfo = null;
             bool stopsearch = false;
 
-            foreach (var moduel in _service.Modules)
+            foreach (var moduel in _service.Modules) //Get the command info
             {
                 if (stopsearch)
                     continue;
@@ -51,9 +51,9 @@ namespace Pootis_Bot.Services
 
             var server = ServerLists.GetServer(guild);
 
-            if (Global.CheckIfRoleExist(guild, role) == null)
+            if (Global.CheckIfRoleExist(guild, role) == null) //Check to see if the inputed role exist
             {
-                if (role == "remove")
+                if (role == "remove") //If the role = remove then remove the permission
                 {
                     if (RemovePermission(_command, server, channel) == true)
                     {
@@ -78,7 +78,7 @@ namespace Pootis_Bot.Services
                     Command = _command,
                     Role = role
                 };
-                server.commandInfos.Add(item);
+                server.commandInfos.Add(item); //Create and set the permission
                 ServerLists.SaveServerList();
 
                 await channel.SendMessageAsync($"The command '{_command}' had it permission set the role '{role}'");
@@ -86,10 +86,9 @@ namespace Pootis_Bot.Services
             else
             {
                 var command = server.GetCommandInfo(_command);
-                command.Role = role;
+                command.Role = role;    //Set the permission
                 ServerLists.SaveServerList();
                 await channel.SendMessageAsync($"The command '{_command}' had it permission set the role '{role}'");
-
             }
         }
 

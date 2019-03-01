@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
 using Discord.Commands;
 using Discord;
-using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Google.Apis.Customsearch.v1;
 using System.Net;
@@ -16,6 +14,11 @@ namespace Pootis_Bot.Modules
 {
     public class FunModule : ModuleBase<SocketCommandContext>
     {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - Fun commands
+        // Contributors     - Creepysin, 
+
         readonly string ytstartLink = "https://www.youtube.com/watch?v=";
         readonly string ytChannelStart = "https://www.youtube.com/channel/";
 

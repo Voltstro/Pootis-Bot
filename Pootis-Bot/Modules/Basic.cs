@@ -10,6 +10,11 @@ namespace Pootis_Bot.Modules
 {
     public class BasicCommands : ModuleBase<SocketCommandContext>
     {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - Basic, simple commands
+        // Contributors     - Creepysin, 
+
         [Command("hello")]
         [Summary("Displays the 'hello' message")]
         public async Task Hello()

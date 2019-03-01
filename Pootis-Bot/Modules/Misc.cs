@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
     public class Misc : ModuleBase<SocketCommandContext>
     {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - Misc commands
+        // Contributors     - Creepysin, 
+
         [Command("pick")]
         [Summary("Picks between two things")]
         public async Task PickOne([Remainder]string message)

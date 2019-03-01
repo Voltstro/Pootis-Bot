@@ -7,6 +7,11 @@ namespace Pootis_Bot.Modules
 {
     public class ServerSetup : ModuleBase<SocketCommandContext>
     {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - Helps the server owner set up the bot for use
+        // Contributors     - Creepysin, 
+
         [Command("setup")]
         [Summary("Displays setup info")]
         [RequireOwner]
@@ -40,11 +45,11 @@ namespace Pootis_Bot.Modules
             }
             embed.AddField(rulestitle, rulesdes);
 
-            string admintitle = "Admin Role Name";              // Admin role
+            string admintitle = "Admin Role Name";                                                                // Admin role
             string admindes = $"Admin role name is set to: {server.AdminRoleName}\n";
             embed.AddField(admintitle, admindes);
 
-            string stafftitle = "Staff Role Name";              // Staff role
+            string stafftitle = "Staff Role Name";                                                                // Staff role
             string staffdes = $"Staff role name is set to: {server.StaffRoleName}\n";
             embed.AddField(stafftitle, staffdes);
 
