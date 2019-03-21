@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Pootis_Bot.Core;
 using System.Threading.Tasks;
 
@@ -29,21 +30,12 @@ namespace Pootis_Bot.Modules
 
             string welcometitle = "<:Cross:537572008574189578> Welcome Channel Disabled";                           // Welcome Message and channel
             string welocmedes = "Welcome channel is disabled\n";
-            if(server.EnableWelcome == true && server.WelcomeID != 0)
+            if(server.WelcomeMessageEnabled == true && server.WelcomeChannel != 0)
             {
                 welcometitle = "<:Check:537572054266806292> Welcome Channel Enabled";
-                welocmedes = $"Welcome channel is enabled and is set to channel: {server.WelcomeID}\n";
+                welocmedes = $"Welcome channel is enabled and is set to channel: {server.WelcomeChannel}\n";
             }
             embed.AddField(welcometitle, welocmedes);
-
-            string rulestitle = "<:Cross:537572008574189578> Rules Message Disabled";                             // Rules message
-            string rulesdes = "Rules message is disabled\n";
-            if(server.IsRules == true && !string.IsNullOrWhiteSpace(server.RulesMessage))
-            {
-                rulestitle = "<:Check:537572054266806292> Rules Message Enabled";
-                welocmedes = $"The rules message is enabled and is set to {server.RulesMessage}\n";
-            }
-            embed.AddField(rulestitle, rulesdes);
 
             string admintitle = "Admin Role Name";                                                                // Admin role
             string admindes = $"Admin role name is set to: {server.AdminRoleName}\n";
@@ -54,54 +46,35 @@ namespace Pootis_Bot.Modules
             embed.AddField(stafftitle, staffdes);
 
             await dm.SendMessageAsync("", false, embed.Build());
-        }           
-
-        [Command("setupwelcomeid")]
-        [Summary("Sets the welcome id")]
+        }  
+        
+        [Command("setupwelcomemessage")]
+        [Summary("Setups the welcome message and channel. Use [user] to mention the user. User [server] to insert the server name.")]
         [RequireOwner]
-        public async Task SetupWelcomeID(ulong ID)
+        public async Task SetupWelcomeMessage(SocketTextChannel channelname, bool enabled, [Remainder]string message = "")
         {
             var server = ServerLists.GetServer(Context.Guild);
-            server.WelcomeID = ID;
-            ServerLists.SaveServerList();
 
-            await Context.Channel.SendMessageAsync("Server welcome id was set to " + ID);
-        }
+            if (channelname != null) //Check to see if the channel is null or not
+            {
+                server.WelcomeChannel = channelname.Id;
+                server.WelcomeMessageEnabled = enabled;
+                server.WelcomeMessage = message;
+                ServerLists.SaveServerList();
 
-        [Command("togglewelcome")]
-        [Summary("Enables or disables welcome")]
-        [RequireOwner]
-        public async Task ToggleWelcome()
-        {
-            var server = ServerLists.GetServer(Context.Guild);
-            server.EnableWelcome = server.EnableWelcome = !server.EnableWelcome;
-            ServerLists.SaveServerList();
+                await Context.Channel.SendMessageAsync($"The welcome message had its channel set to **{channelname.Name}** with it set to **{enabled}** and \nthe message set to '{message}'.");
+            }
+            else if (channelname == null && enabled == false) //If the channel is null but the owner set it to disabled
+            {
+                server.WelcomeChannel = 0;
+                server.WelcomeMessageEnabled = false;
+                server.WelcomeMessage = null;
+                ServerLists.SaveServerList();
 
-            await Context.Channel.SendMessageAsync("Welcome users was set to " + server.EnableWelcome);
-        }
-
-        [Command("togglerules")]
-        [Summary("Displays whether it should metion the rules in the welcome message")]
-        [RequireOwner]
-        public async Task ToggleRules()
-        {
-            var server = ServerLists.GetServer(Context.Guild);
-            server.EnableWelcome = server.IsRules = !server.IsRules;
-            ServerLists.SaveServerList();
-
-            await Context.Channel.SendMessageAsync("Rules was set to " + server.IsRules);
-        }
-
-        [Command("rulesmsg")]
-        [Summary("Set the rules message")]
-        [RequireOwner]
-        public async Task RulesMsg(string rulesmsg)
-        {
-            var server = ServerLists.GetServer(Context.Guild);
-            server.RulesMessage = rulesmsg;
-            ServerLists.SaveServerList();
-
-            await Context.Channel.SendMessageAsync($"Rules message was set to '{rulesmsg}'");
+                await Context.Channel.SendMessageAsync($"The welcome message was disabled.");
+            }
+            else
+                await Context.Channel.SendMessageAsync("You need to input a vaild channel name!");
         }
 
         [Command("setupadmin")]

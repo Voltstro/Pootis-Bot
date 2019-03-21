@@ -157,14 +157,14 @@ namespace Pootis_Bot.Core
         {
             var server = ServerLists.GetServer(user.Guild);
 
-            if (server.EnableWelcome == true)
-            {
-                if (!user.IsBot)
-                {
-                    var channel = _client.GetChannel(server.WelcomeID) as SocketTextChannel; //gets channel to send message in
-                    await channel.SendMessageAsync("Goodbye " + user.Mention + ". We hope you enjoyed your stay."); //Says goodbye.  
-                }
-            }
+            //if (server.EnableWelcome == true)
+            //{
+            //    if (!user.IsBot)
+            //    {
+            //        var channel = _client.GetChannel(server.WelcomeID) as SocketTextChannel; //gets channel to send message in
+            //        await channel.SendMessageAsync("Goodbye " + user.Mention + ". We hope you enjoyed your stay."); //Says goodbye.  
+            //    }
+            //}
         }
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async Task Log(LogMessage msg)
@@ -179,21 +179,20 @@ namespace Pootis_Bot.Core
 
             var server = ServerLists.GetServer(user.Guild);
 
-            if (server.EnableWelcome == true)
+            if (server.WelcomeMessageEnabled == true)
             {
                 if (!user.IsBot)
                 {
                     UserAccounts.GetAccount(user);
-                    if (server.EnableWelcome == false)
+                    if (server.WelcomeMessageEnabled == false)
                         return;
-                    var channel = _client.GetChannel(server.WelcomeID) as SocketTextChannel; //gets channel to send message in
-                    string rules = "";
-                    if (server.IsRules)
-                    {
-                        rules = server.RulesMessage;
-                    }
 
-                    await channel.SendMessageAsync("Welcome " + user.Mention + $" to the {user.Guild.Name}! {rules}"); //Welcomes the new user
+                    var channel = (ISocketMessageChannel)_client.GetChannel(server.WelcomeChannel);
+                
+                    string addUserMetion = server.WelcomeMessage.Replace("[user]", user.Mention);
+                    string addServerName = addUserMetion.Replace("[server]", user.Guild.Name);
+
+                    await channel.SendMessageAsync(addServerName); //Welcomes the new user with the server's message
                 }
             }
         }
@@ -498,7 +497,5 @@ namespace Pootis_Bot.Core
         #endregion
 
         #endregion
-
-
     }
 }
