@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Discord.WebSocket;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Pootis_Bot.Entities
@@ -7,22 +8,19 @@ namespace Pootis_Bot.Entities
     {
         public ulong ServerID { get; set; }
 
-        public bool EnableWelcome { get; set; }
+        public ulong WelcomeChannel { get; set; }
+        public bool WelcomeMessageEnabled { get; set; }
+        public string WelcomeMessage { get; set; }
 
-        public ulong WelcomeID { get; set; }
-
-        public bool IsRules { get; set; }
-
-        public string RulesMessage { get; set; }
-
+        //Important Roles and permissions
+        //TODO: Update the way how Pootis-Bot handles admin/staff roles
         public string StaffRoleName { get; set; }
-
         public string AdminRoleName { get; set; }
+
 
         public List<GlobalServerBanedChannelList> banedChannels = new List<GlobalServerBanedChannelList>();
 
         public List<CommandInfo> commandInfos = new List<CommandInfo>();
-
 
         public struct CommandInfo
         {
@@ -78,6 +76,5 @@ namespace Pootis_Bot.Entities
             var channel = GetOrCreateBanedChannel(id);
             banedChannels.Remove(channel);         
         }
-
     }
 }

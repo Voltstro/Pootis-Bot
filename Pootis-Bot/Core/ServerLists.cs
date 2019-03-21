@@ -50,8 +50,8 @@ namespace Pootis_Bot.Core
             var newServer = new GlobalServerList()
             {
                 ServerID = id,
-                EnableWelcome = false,
-                WelcomeID = 0,
+                WelcomeMessageEnabled = false,
+                WelcomeChannel = 0,
                 AdminRoleName = "Admin",
                 StaffRoleName = "Staff"
             };

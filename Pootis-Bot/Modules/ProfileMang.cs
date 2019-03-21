@@ -74,9 +74,9 @@ namespace Pootis_Bot.Modules
             account.Msg = message;
             UserAccounts.SaveAccounts();
 
-            await Context.Channel.SendMessageAsync($"Your profile message was set to '{message}'");
+            await Context.Channel.SendMessageAsync($"Your public profile message was set to '{message}'");
         }
-
+        
         #region Functions
 
         string MakeNotWarnable(SocketUser user)
