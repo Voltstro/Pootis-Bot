@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -19,6 +20,9 @@ namespace Pootis_Bot.Core
         public string botname;
         public string botprefix;
 
+        private string gameStatus = "Use $help for help.";
+        private bool isStreaming = false;
+
         public Bot(string _bottoken, string _botname, string _botprefix)
         {
             bottoken = _bottoken;
@@ -28,6 +32,8 @@ namespace Pootis_Bot.Core
 
         public async Task StartBot()
         {
+            isStreaming = false;
+
             if (string.IsNullOrEmpty(bottoken))
             {
                 BotConfigStart();
@@ -50,7 +56,7 @@ namespace Pootis_Bot.Core
             await _client.StartAsync();
             _handler = new CommandHandler(_client, _commands, botprefix);
             await _handler.InstallCommandsAsync();
-            await _client.SetGameAsync("Use $help for help.");
+            await _client.SetGameAsync(gameStatus);
             isBotOn = true;
 #pragma warning disable CS4014 //Ingnore this annoying warning
             ConsoleInput();
@@ -102,7 +108,7 @@ namespace Pootis_Bot.Core
                 input = Console.ReadLine();
                 if (input.Trim().ToLower() == "exit")
                 {
-                    Global.WriteMessage("Shutting down...", ConsoleColor.White);
+                    Global.WriteMessage("Shutting down...");
                     await _client.SetGameAsync("Bot shutting down");
                     foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
                     {
@@ -116,14 +122,30 @@ namespace Pootis_Bot.Core
                 else if (input.Trim().ToLower() == "config")
                 {
                     BotConfigStart();
-                    Global.WriteMessage("Restart the bot to apply the settings", ConsoleColor.White);
+                    Global.WriteMessage("Restart the bot to apply the settings");
                 }
                 else if (input.Trim().ToLower() == "setgame")
                 {
-                    Global.WriteMessage("Enter in what you want to set the bot's game to.", ConsoleColor.White);
-                    string set = Console.ReadLine();
-                    await _client.SetGameAsync(set);
-                    Global.WriteMessage($"Bot's game was set to '{set}'", ConsoleColor.White);
+                    Global.WriteMessage("Enter in what you want to set the bot's game to.");
+                    gameStatus = Console.ReadLine();
+                    await _client.SetGameAsync(gameStatus);
+
+                    Global.WriteMessage($"Bot's game was set to '{gameStatus}'");
+                }
+                else if (input.Trim().ToLower() == "togglestream")
+                {
+                    if(isStreaming)
+                    {
+                        isStreaming = false;
+                        await _client.SetGameAsync(gameStatus, null, ActivityType.Playing);
+                        Global.WriteMessage("Bot is no longer streaming");
+                    }
+                    else
+                    {
+                        isStreaming = true;
+                        await _client.SetGameAsync(gameStatus, "https://www.twitch.tv/creepysin", ActivityType.Streaming);
+                        Global.WriteMessage("Bot is streaming");
+                    }
                 }
                 else if (input.Trim().ToLower() == "deletemusic")
                 {
@@ -150,6 +172,7 @@ namespace Pootis_Bot.Core
                     if (Config.bot.isAudioServiceEnabled == true)
                         Program.CheckAudioService();
                 }
+                
             }
         }
 
