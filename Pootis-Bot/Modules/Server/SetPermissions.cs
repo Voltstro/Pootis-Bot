@@ -33,8 +33,7 @@ namespace Pootis_Bot.Modules.Server
         [RequireOwner]
         public async Task AddBanedChannel(SocketTextChannel channel)
         {
-            var server = ServerLists.GetServer(Context.Guild).GetOrCreateBanedChannel(channel.Id);
-
+            ServerLists.GetServer(Context.Guild).GetOrCreateBanedChannel(channel.Id);
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Channel {channel.Name} has been added to the baned channels for your server");
@@ -44,9 +43,7 @@ namespace Pootis_Bot.Modules.Server
         [RequireOwner]
         public async Task RemoveBanedChannel(SocketTextChannel channel)
         {
-            var server = ServerLists.GetServer(Context.Guild);
-            server.DeleteChannel(channel.Id);
-
+            ServerLists.GetServer(Context.Guild).DeleteChannel(channel.Id);
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Channel {channel.Name} was removed from your server's baned channel list");

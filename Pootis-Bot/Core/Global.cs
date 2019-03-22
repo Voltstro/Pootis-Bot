@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Pootis_Bot.Core
 {
-    public class Global
+    internal static class Global
     {
         public static void WriteMessage(string msg, ConsoleColor color)
         {
