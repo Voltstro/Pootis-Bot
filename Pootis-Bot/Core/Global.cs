@@ -15,6 +15,11 @@ namespace Pootis_Bot.Core
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        public static void WriteMessage(string msg)
+        {
+            Console.WriteLine($"[{TimeNow()}] " + msg);
+        }
+
         public static string TimeNow()
         {
             return DateTime.Now.ToString("h:mm:ss tt");
