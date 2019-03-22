@@ -15,9 +15,9 @@ namespace Pootis_Bot.Core
 
         private bool isBotOn;
 
-        private static string bottoken;
-        public static string botname;
-        public static string botprefix;
+        private string bottoken;
+        public string botname;
+        public string botprefix;
 
         public Bot(string _bottoken, string _botname, string _botprefix)
         {
@@ -153,9 +153,14 @@ namespace Pootis_Bot.Core
             }
         }
 
-        private async Task UserLeft(SocketGuildUser user) //Says goodbye to user.
+        private Task UserLeft(SocketGuildUser user) //Says goodbye to user.
         {
-            var server = ServerLists.GetServer(user.Guild);
+            return Task.CompletedTask;
+
+            //TODO: Implent server own goodbye message.
+
+            //This is the old version
+            //var server = ServerLists.GetServer(user.Guild);
 
             //if (server.EnableWelcome == true)
             //{

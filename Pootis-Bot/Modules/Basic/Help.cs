@@ -3,6 +3,7 @@ using Discord.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Pootis_Bot.Modules.Basic
@@ -35,18 +36,18 @@ namespace Pootis_Bot.Modules.Basic
 
             foreach(var moduel in _service.Modules) //Get a list of all the modules
             {
-                string data = "";
-                data += "```diff\n+ " + moduel.Name;
+                StringBuilder cmd = new StringBuilder();
+                cmd.Append("```diff\n+ " + moduel.Name);
 
                 var commands = moduel.Commands;
                 foreach(var command in commands)
                 {
-                    data += $"\n- {command.Name} \n  └ Summary: {command.Summary}\n  └ Alias: {FormatAliases(command)}\n  └ Usage: `{command.Name} {FormatParms(command)}`";
+                    cmd.Append($"\n- {command.Name} \n  └ Summary: {command.Summary}\n  └ Alias: {FormatAliases(command)}\n  └ Usage: `{command.Name} {FormatParms(command)}`");
                 }
 
-                data += "\n```";
+                cmd.Append("\n```");
 
-                parts.Add(data);
+                parts.Add(cmd.ToString());
             }
 
             int currentmod = 0;
@@ -55,7 +56,8 @@ namespace Pootis_Bot.Modules.Basic
 
             while (currentmod != maxmod) //Go through all moduels
             {
-                string item = "";
+                //string item = "";
+                StringBuilder mod = new StringBuilder();
 
                 if (desarray[currentmod].Count() < 1400)
                 {
@@ -69,19 +71,19 @@ namespace Pootis_Bot.Modules.Basic
                                 if (currentmod >= maxmod)
                                 {
                                     count = 1400;
-                                    item += desarray[currentmod];
+                                    mod.Append(desarray[currentmod]);
                                     currentmod += 1;
                                 }
                                 else
                                 {
                                     count += desarray[currentmod].Count() + desarray[currentmod + 1].Count();
-                                    item += desarray[currentmod] + desarray[currentmod + 1];
+                                    mod.Append(desarray[currentmod] + desarray[currentmod + 1]);
                                     currentmod += 2;
                                 }
                             }
                             else
                             {
-                                item += desarray[currentmod];
+                                mod.Append( desarray[currentmod]);
                                 currentmod += 1;
                                 count = 1400;
                             }
@@ -89,13 +91,13 @@ namespace Pootis_Bot.Modules.Basic
                     }
                     catch (IndexOutOfRangeException) //Last module
                     {
-                        item += desarray[currentmod];
+                        mod.Append(desarray[currentmod]);
                         currentmod = maxmod;
                         count = 1400;
                     }
                 }
 
-                await dm.SendMessageAsync(item);
+                await dm.SendMessageAsync(mod.ToString());
             }
         }
 
@@ -126,39 +128,43 @@ namespace Pootis_Bot.Modules.Basic
         {          
             var aliases = commandinfo.Aliases;
 
-            string format = "";
+            StringBuilder format = new StringBuilder();
+            
             int count = aliases.Count;
             int currentCount = 1;
             foreach(var alias in aliases)
             {      
-                format += alias;
+                format.Append(alias);
 
-                if (currentCount != count) format += ", ";
+                if (currentCount != count)
+                {
+                    format.Append(", ");
+                }
                 currentCount += 1;
             }
 
-            return format;
+            return format.ToString();
         }
 
         private string FormatParms(CommandInfo commandinfo)
         {
             var parms = commandinfo.Parameters;
 
-            string format = "";
+            StringBuilder format = new StringBuilder();
             int count = parms.Count;
-            if (count != 0) format += "[";
+            if (count != 0) format.Append("[");
             int currentCount = 1;
             foreach (var parm in parms)
             {
-                format += parm;
+                format.Append(parm);
 
-                if (currentCount != count) format += ", ";
+                if (currentCount != count) format.Append(", ");
                 currentCount += 1;
             }
 
-            if (count != 0) format += "]";
+            if (count != 0) format.Append("]");
 
-            return format;
+            return format.ToString();
         }
     }
 }
