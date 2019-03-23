@@ -8,6 +8,14 @@ namespace Pootis_Bot.Core
 {
     internal static class Global
     {
+        internal static readonly string version = "0.1 - Early Public Alpha";
+        internal static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
+            $"Created by Creepysin licensed under the MIT license. Vist https://github.com/Creepysin/Pootis-Bot/blob/master/LICENSE for more info.\n\n" +
+            $"Pootis Robot icon by Valve\n" +
+            $"Created with Discord.NET\n" +
+            $"https://github.com/Creepysin/Pootis-Bot \n\n" +
+            $"Thank you for using Pootis Bot";
+
         public static void WriteMessage(string msg, ConsoleColor color)
         {
             Console.ForegroundColor = color;
@@ -74,6 +82,5 @@ namespace Pootis_Bot.Core
 
             return cmdinfo;
         }
-
     }
 }

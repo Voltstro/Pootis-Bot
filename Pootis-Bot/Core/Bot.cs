@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -200,7 +199,9 @@ namespace Pootis_Bot.Core
             while (input.Trim().ToLower() != "block")
             {
                 input = Console.ReadLine();
-                if (input.Trim().ToLower() == "exit")
+                input = input.Trim().ToLower();
+
+                if (input == "exit")
                 {
                     Global.WriteMessage("Shutting down...");
                     await _client.SetGameAsync("Bot shutting down");
@@ -213,12 +214,16 @@ namespace Pootis_Bot.Core
                     _client.Dispose();
                     Environment.Exit(0);
                 }
-                else if (input.Trim().ToLower() == "config")
+                else if (input == "config")
                 {
                     BotConfigStart();
                     Global.WriteMessage("Restart the bot to apply the settings");
                 }
-                else if (input.Trim().ToLower() == "setgame")
+                else if (input == "about")
+                    Console.WriteLine(Global.aboutMessage);
+                else if (input == "version")
+                    Console.WriteLine(Global.version);
+                else if (input == "setgame")
                 {
                     Global.WriteMessage("Enter in what you want to set the bot's game to.");
                     gameStatus = Console.ReadLine();
@@ -226,7 +231,7 @@ namespace Pootis_Bot.Core
 
                     Global.WriteMessage($"Bot's game was set to '{gameStatus}'");
                 }
-                else if (input.Trim().ToLower() == "togglestream")
+                else if (input == "togglestream")
                 {
                     if (isStreaming)
                     {
@@ -241,7 +246,7 @@ namespace Pootis_Bot.Core
                         Global.WriteMessage("Bot is streaming");
                     }
                 }
-                else if (input.Trim().ToLower() == "deletemusic")
+                else if (input == "deletemusic")
                 {
                     foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
                     {
@@ -257,7 +262,7 @@ namespace Pootis_Bot.Core
                     else
                         Global.WriteMessage("The music directory doesn't exist!", ConsoleColor.Blue);
                 }
-                else if (input.Trim().ToLower() == "toggleaudio")
+                else if (input == "toggleaudio")
                 {
                     Config.bot.isAudioServiceEnabled = !Config.bot.isAudioServiceEnabled;
                     Config.SaveConfig();

@@ -57,7 +57,10 @@ namespace Pootis_Bot.Modules
 
             server.WelcomeChannel = channelname.Id;
             server.WelcomeMessageEnabled = enabled;
-            server.WelcomeMessage = message;
+
+            if(!string.IsNullOrWhiteSpace(message))
+                server.WelcomeMessage = message;
+
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"The welcome message had its channel set to **{channelname.Name}** with it set to **{enabled}** and \nthe message set to '{message}'.");
@@ -70,7 +73,9 @@ namespace Pootis_Bot.Modules
         {
             var server = ServerLists.GetServer(Context.Guild);
 
-            server.WelcomeGoodbyeMessage = message;
+            if (!string.IsNullOrWhiteSpace(message))
+                server.WelcomeGoodbyeMessage = message;
+
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"The goodbye message was set to '{message}'. For this to work the welcome message needs to be set up and enabled");
