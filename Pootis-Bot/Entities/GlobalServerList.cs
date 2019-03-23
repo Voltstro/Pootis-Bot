@@ -11,6 +11,7 @@ namespace Pootis_Bot.Entities
         public ulong WelcomeChannel { get; set; }
         public bool WelcomeMessageEnabled { get; set; }
         public string WelcomeMessage { get; set; }
+        public string WelcomeGoodbyeMessage { get; set; }
 
         //Important Roles and permissions
         //TODO: Update the way how Pootis-Bot handles admin/staff roles
