@@ -48,6 +48,7 @@ namespace Pootis_Bot.Core
             _client.UserLeft += UserLeft;
             _client.JoinedGuild += JoinedNewServer;
             _client.ReactionAdded += ReactionAdded;
+            _client.Ready += BotReadyAsync;
 
             _commands = new CommandService();
 
@@ -58,17 +59,62 @@ namespace Pootis_Bot.Core
             await _handler.InstallCommandsAsync();
             await _client.SetGameAsync(gameStatus);
             isBotOn = true;
-#pragma warning disable CS4014 //Ingnore this annoying warning
-            ConsoleInput();
-#pragma warning restore CS4014
+            
             await Task.Delay(-1);
         }
 
-        private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task BotReadyAsync()
         {
-            LevelingSystem.UserSentMessage((SocketGuildUser)reaction.User, (SocketTextChannel)reaction.Channel, 5);
+            await CheckConnectedServerSettings();
+            Global.WriteMessage("Bot is now ready and online");
+#pragma warning disable CS4014 //Ingnore this annoying warning
+            ConsoleInput();
+#pragma warning restore CS4014
+        }
 
-            return Task.CompletedTask;
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        private async Task Log(LogMessage msg)
+        {
+            Global.WriteMessage(msg.Message);
+        }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
+        private async Task CheckConnectedServerSettings()
+        {
+            Global.WriteMessage("Checking pre-connected server settings...");
+
+            bool somethingChanged = false;
+            int changeCount = 0;
+
+            foreach(var server in ServerLists.serverLists)
+            {
+                if (!server.WelcomeMessageEnabled)
+                    continue;
+
+                if(_client.GetChannel(server.WelcomeChannel) == null)
+                {
+                    somethingChanged = true;
+                    changeCount++;
+
+                    var guild = _client.GetGuild(server.ServerID);
+                    var ownerDM = await guild.Owner.GetOrCreateDMChannelAsync();
+
+                    await ownerDM.SendMessageAsync($"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +
+                        $"You can enable it again with `{Config.bot.botPrefix}setupwelcome` command and your existing message should stay. ");
+
+                    server.WelcomeMessageEnabled = false;
+                    server.WelcomeChannel = 0;
+                }
+            }
+
+            //If a server was updated then save the serverlist file
+            if (somethingChanged)
+            {
+                ServerLists.SaveServerList();
+                Global.WriteMessage(changeCount + " server settings are no longer vaild, there owners have been notified.");
+            }
+            else
+                Global.WriteMessage("All servers are good");
         }
 
         private async Task ConnectBot(string token)
@@ -80,6 +126,13 @@ namespace Pootis_Bot.Core
             }
             else
                 Global.WriteMessage("Bot is already connected", ConsoleColor.Yellow);
+        }
+
+        private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            LevelingSystem.UserSentMessage((SocketGuildUser)reaction.User, (SocketTextChannel)reaction.Channel, 5);
+
+            return Task.CompletedTask;
         }
 
         private async Task JoinedNewServer(SocketGuild arg)
@@ -98,6 +151,47 @@ namespace Pootis_Bot.Core
             embed.WithColor(new Color(241, 196, 15));
 
             await arg.DefaultChannel.SendMessageAsync("", false, embed.Build());
+        }
+
+        private async Task UserLeft(SocketGuildUser user) //Says goodbye to user.
+        {
+            var server = ServerLists.GetServer(user.Guild);
+
+            if (server.WelcomeMessageEnabled)
+            {
+                if (!user.IsBot)
+                {
+                    var channel = _client.GetChannel(server.WelcomeChannel) as SocketTextChannel; //gets channel to send message in
+
+                    string addUserMetion = server.WelcomeGoodbyeMessage.Replace("[user]", user.Mention);
+
+                    await channel.SendMessageAsync(addUserMetion); //Says goodbye.  
+                }
+            }
+        }
+
+        private async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
+        {
+            Global.WriteMessage($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})", ConsoleColor.White);
+
+            var server = ServerLists.GetServer(user.Guild);
+
+            if (server.WelcomeMessageEnabled == true)
+            {
+                if (!user.IsBot)
+                {
+                    UserAccounts.GetAccount(user);
+                    if (server.WelcomeMessageEnabled == false)
+                        return;
+
+                    var channel = (ISocketMessageChannel)_client.GetChannel(server.WelcomeChannel);
+                
+                    string addUserMetion = server.WelcomeMessage.Replace("[user]", user.Mention);
+                    string addServerName = addUserMetion.Replace("[server]", user.Guild.Name);
+
+                    await channel.SendMessageAsync(addServerName); //Welcomes the new user with the server's message
+                }
+            }
         }
 
         private async Task ConsoleInput()
@@ -134,7 +228,7 @@ namespace Pootis_Bot.Core
                 }
                 else if (input.Trim().ToLower() == "togglestream")
                 {
-                    if(isStreaming)
+                    if (isStreaming)
                     {
                         isStreaming = false;
                         await _client.SetGameAsync(gameStatus, null, ActivityType.Playing);
@@ -149,7 +243,7 @@ namespace Pootis_Bot.Core
                 }
                 else if (input.Trim().ToLower() == "deletemusic")
                 {
-                    foreach(GlobalServerMusicItem channel in AudioService.CurrentChannels)
+                    foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
                     {
                         channel.AudioClient.Dispose();
                     }
@@ -172,56 +266,7 @@ namespace Pootis_Bot.Core
                     if (Config.bot.isAudioServiceEnabled == true)
                         Program.CheckAudioService();
                 }
-                
-            }
-        }
 
-        private Task UserLeft(SocketGuildUser user) //Says goodbye to user.
-        {
-            return Task.CompletedTask;
-
-            //TODO: Implent server own goodbye message.
-
-            //This is the old version
-            //var server = ServerLists.GetServer(user.Guild);
-
-            //if (server.EnableWelcome == true)
-            //{
-            //    if (!user.IsBot)
-            //    {
-            //        var channel = _client.GetChannel(server.WelcomeID) as SocketTextChannel; //gets channel to send message in
-            //        await channel.SendMessageAsync("Goodbye " + user.Mention + ". We hope you enjoyed your stay."); //Says goodbye.  
-            //    }
-            //}
-        }
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        private async Task Log(LogMessage msg)
-        {
-            Global.WriteMessage(msg.Message, ConsoleColor.White);
-        }
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-
-        private async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
-        {
-            Global.WriteMessage($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})", ConsoleColor.White);
-
-            var server = ServerLists.GetServer(user.Guild);
-
-            if (server.WelcomeMessageEnabled == true)
-            {
-                if (!user.IsBot)
-                {
-                    UserAccounts.GetAccount(user);
-                    if (server.WelcomeMessageEnabled == false)
-                        return;
-
-                    var channel = (ISocketMessageChannel)_client.GetChannel(server.WelcomeChannel);
-                
-                    string addUserMetion = server.WelcomeMessage.Replace("[user]", user.Mention);
-                    string addServerName = addUserMetion.Replace("[server]", user.Guild.Name);
-
-                    await channel.SendMessageAsync(addServerName); //Welcomes the new user with the server's message
-                }
             }
         }
 

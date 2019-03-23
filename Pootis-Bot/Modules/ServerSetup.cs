@@ -55,26 +55,25 @@ namespace Pootis_Bot.Modules
         {
             var server = ServerLists.GetServer(Context.Guild);
 
-            if (channelname != null) //Check to see if the channel is null or not
-            {
-                server.WelcomeChannel = channelname.Id;
-                server.WelcomeMessageEnabled = enabled;
-                server.WelcomeMessage = message;
-                ServerLists.SaveServerList();
+            server.WelcomeChannel = channelname.Id;
+            server.WelcomeMessageEnabled = enabled;
+            server.WelcomeMessage = message;
+            ServerLists.SaveServerList();
 
-                await Context.Channel.SendMessageAsync($"The welcome message had its channel set to **{channelname.Name}** with it set to **{enabled}** and \nthe message set to '{message}'.");
-            }
-            else if (channelname == null && enabled == false) //If the channel is null but the owner set it to disabled
-            {
-                server.WelcomeChannel = 0;
-                server.WelcomeMessageEnabled = false;
-                server.WelcomeMessage = null;
-                ServerLists.SaveServerList();
+            await Context.Channel.SendMessageAsync($"The welcome message had its channel set to **{channelname.Name}** with it set to **{enabled}** and \nthe message set to '{message}'.");
+        }
 
-                await Context.Channel.SendMessageAsync($"The welcome message was disabled.");
-            }
-            else
-                await Context.Channel.SendMessageAsync("You need to input a vaild channel name!");
+        [Command("setupgoodbye")]
+        [Summary("Sets up the goodbye message")]
+        [RequireOwner]
+        public async Task SetupGoodbyeMessage([Remainder]string message = "")
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+
+            server.WelcomeGoodbyeMessage = message;
+            ServerLists.SaveServerList();
+
+            await Context.Channel.SendMessageAsync($"The goodbye message was set to '{message}'. For this to work the welcome message needs to be set up and enabled");
         }
 
         [Command("setupadmin")]
