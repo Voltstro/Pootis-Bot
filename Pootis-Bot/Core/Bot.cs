@@ -9,7 +9,7 @@ namespace Pootis_Bot.Core
 {
     public class Bot
     {
-        DiscordSocketClient _client;
+        public static DiscordSocketClient _client;
         CommandService _commands;
         CommandHandler _handler;
 
