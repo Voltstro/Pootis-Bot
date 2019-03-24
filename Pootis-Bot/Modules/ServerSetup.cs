@@ -46,24 +46,52 @@ namespace Pootis_Bot.Modules
             embed.AddField(stafftitle, staffdes);
 
             await dm.SendMessageAsync("", false, embed.Build());
-        }  
+        }
+
+        [Command("togglewelcomemessage")]
+        [Summary("Enables / Disabled the welcome and goodbye message")]
+        [RequireOwner]
+        public async Task ToggleWelcomeMessage([Remainder]SocketTextChannel channel = null)
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+
+            if (server.WelcomeMessageEnabled)
+            {
+                server.WelcomeMessageEnabled = false;
+                await Context.Channel.SendMessageAsync("The welcome message was disabled");
+            }
+            else
+            {
+                if(channel == null && Bot._client.GetChannel(server.WelcomeChannel) != null)
+                {
+                    server.WelcomeMessageEnabled = true;
+                    await Context.Channel.SendMessageAsync("The welcome message was enabled");
+                }
+                else if(channel != null)
+                {
+                    server.WelcomeMessageEnabled = true;
+                    await Context.Channel.SendMessageAsync($"The welcome message was enabled and set the channel to **{channel.Name}**");
+                }
+                else
+                {
+                    await Context.Channel.SendMessageAsync("You need to input a channel");
+                }
+            }
+
+            ServerLists.SaveServerList();
+        }
         
         [Command("setupwelcomemessage")]
         [Summary("Setups the welcome message and channel. Use [user] to mention the user. User [server] to insert the server name.")]
         [RequireOwner]
-        public async Task SetupWelcomeMessage(SocketTextChannel channelname, bool enabled, [Remainder]string message = "")
+        public async Task SetupWelcomeMessage([Remainder]string message = "")
         {
             var server = ServerLists.GetServer(Context.Guild);
-
-            server.WelcomeChannel = channelname.Id;
-            server.WelcomeMessageEnabled = enabled;
-
-            if(!string.IsNullOrWhiteSpace(message))
-                server.WelcomeMessage = message;
+            server.WelcomeMessage = message;
 
             ServerLists.SaveServerList();
 
-            await Context.Channel.SendMessageAsync($"The welcome message had its channel set to **{channelname.Name}** with it set to **{enabled}** and \nthe message set to '{message}'.");
+            await Context.Channel.SendMessageAsync($"The welcome message was set to '{message}'.");
         }
 
         [Command("setupgoodbye")]
