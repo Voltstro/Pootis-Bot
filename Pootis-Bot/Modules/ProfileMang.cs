@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -41,29 +42,55 @@ namespace Pootis_Bot.Modules
 
         [Command("profile")]
         [Summary("Gets your or other's profile")]
-        public async Task Profile([Remainder]string user = "")
+        public async Task Profile()
         {
-            SocketUser target = null;
-            var metionUser = Context.Message.MentionedUsers.FirstOrDefault();
-            target = metionUser ?? Context.User;
+            var userMainRole = (Context.User as IGuildUser).Guild.Roles.FirstOrDefault();
+            var account = UserAccounts.GetAccount((SocketGuildUser)Context.User);
+            var accountserver = account.GetOrCreateServer(Context.Guild.Id);
+            var embed = new EmbedBuilder();
 
-            var account = UserAccounts.GetAccount((SocketGuildUser)target);
-
-            var guildtarget = (SocketGuildUser)target;
-            var accountserver = account.GetOrCreateServer(guildtarget.Guild.Id);
-
-            string WarningText = $"{target.Username} currently has {accountserver.Warnings} warnings.";
+            string warningText = $"Yes";
             if (accountserver.IsAccountNotWarnable == true)
             {
-                WarningText = $"{target.Username} account is not warnable.";
+                warningText = $"No :sunglasses:";
             }
 
-            string Desciption = $"{target.Username} has {account.XP} XP. \n{target.Username} Has {account.Points} points. \n '{account.Msg}'\n\n" + WarningText;
+            embed.WithCurrentTimestamp();
+            embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
+            embed.WithTitle(Context.User.Username + "'s Profile");
+
+            embed.AddField("Stats", $"**Level: ** {account.LevelNumber}\n**XP: ** {account.XP}\n", true);
+            embed.AddField("Server", $"**Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
+            embed.AddField("Account", $"**ID: **{account.ID}\n**Creation Date: **{Context.User.CreatedAt}");
+
+            embed.WithColor(userMainRole.Color);
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
+        }
+
+        [Command("profile")]
+        [Summary("Gets a person's profile")]
+        public async Task Profile(SocketGuildUser user)
+        {
+            var userMainRole = (user as IGuildUser).Guild.Roles.FirstOrDefault();
+            var account = UserAccounts.GetAccount(user);
+            var accountserver = account.GetOrCreateServer(Context.Guild.Id);
             var embed = new EmbedBuilder();
-            embed.WithThumbnailUrl(target.GetAvatarUrl());
-            embed.WithTitle(target.Username + "'s Profile.");
-            embed.WithDescription(Desciption);
-            embed.WithColor(new Color(56, 56, 56));
+
+            string warningText = $"Yes";
+            if (accountserver.IsAccountNotWarnable == true)
+            {
+                warningText = $"No :sunglasses:";
+            }
+
+            embed.WithCurrentTimestamp();
+            embed.WithThumbnailUrl(user.GetAvatarUrl());
+            embed.WithTitle(user.Username + "'s Profile");
+
+            embed.AddField("Stats", $"**Level: ** {account.LevelNumber}\n**XP: ** {account.XP}\n", true);
+            embed.AddField("Server", $"**Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
+            embed.AddField("Account", $"**ID: **{account.ID}\n**Creation Date: **{user.CreatedAt}");
+
+            embed.WithColor(userMainRole.Color);
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
