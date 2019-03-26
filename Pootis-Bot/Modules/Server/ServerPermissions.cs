@@ -6,7 +6,7 @@ using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules.Server
 {
-    public class SetPermissions : ModuleBase<SocketCommandContext>
+    public class ServerPermissions : ModuleBase<SocketCommandContext>
     {
         // Module Infomation
         // Orginal Author   - Creepysin
@@ -16,7 +16,7 @@ namespace Pootis_Bot.Modules.Server
         private readonly CommandService _service;
         private readonly PermissionService _perm;
 
-        public SetPermissions(CommandService commandService)
+        public ServerPermissions(CommandService commandService)
         {
             _service = commandService;
             _perm = new PermissionService(_service);

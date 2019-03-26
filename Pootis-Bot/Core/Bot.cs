@@ -303,7 +303,10 @@ namespace Pootis_Bot.Core
             while (botConfig == true)
             {
                 string input = Console.ReadLine();
-                if (input.Trim().ToLower() == "exit")
+
+                input = input.Trim().ToLower();
+
+                if (input == "exit")
                 {
                     if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(prefix))
                     {
@@ -324,22 +327,24 @@ namespace Pootis_Bot.Core
                     else
                         Console.WriteLine("You need to set the token the name AND the prefix! One of them are null or empty");
                 }
-                else if (input.Trim().ToLower() == "1")
+                else if (input == "1")
                 {
                     token = BotConfigToken();
                 }
-                else if (input.Trim().ToLower() == "2")
+                else if (input == "2")
                 {
                     prefix = BotConfigPrefix();
                 }
-                else if (input.Trim().ToLower() == "3")
+                else if (input == "3")
                 {
                     name = BotConfigName();
                 }
-                else if (input.Trim().ToLower() == "4")
+                else if (input == "4")
                 {
                     BotConfigAPIs();
                 }
+                else
+                    Console.WriteLine("Invaild input, you need to either enter '1', '2', '3', '4'. (With out '')");
             }
         }
 
