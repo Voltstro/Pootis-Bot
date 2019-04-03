@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 using Pootis_Bot.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +7,7 @@ namespace Pootis_Bot.Core
 {
     public static class UserAccounts
     {
-        private static List<GlobalUserAccount> accounts;
+        private static readonly List<GlobalUserAccount> accounts;
 
         private static readonly string accountsFile = "Resources/accounts.json";
 
@@ -48,7 +47,7 @@ namespace Pootis_Bot.Core
 
         private static GlobalUserAccount CreateUserAccount(ulong id, SocketGuildUser user)
         {
-            var newAccount = new GlobalUserAccount()
+            var newAccount = new GlobalUserAccount
             {
                 ID = id,
                 Points = 10,

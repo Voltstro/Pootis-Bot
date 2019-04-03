@@ -15,7 +15,6 @@ namespace Pootis_Bot.Core
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
-        private readonly AudioService _audio;
 
         private readonly string _prefix;
 
@@ -24,8 +23,6 @@ namespace Pootis_Bot.Core
             _commands = commands;
             _client = client;
             _prefix = prefix;
-
-            _audio = new AudioService();
         }    
 
         public async Task InstallCommandsAsync()

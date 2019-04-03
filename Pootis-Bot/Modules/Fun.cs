@@ -157,7 +157,7 @@ namespace Pootis_Bot.Modules
                 {
                     try
                     {
-                        var google = new CustomsearchService(new BaseClientService.Initializer()
+                        var google = new CustomsearchService(new BaseClientService.Initializer
                         {
                             ApiKey = Config.bot.apis.apiGoogleSearchKey,
                             ApplicationName = this.GetType().ToString()
