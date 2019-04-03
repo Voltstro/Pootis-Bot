@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Core;
+using Pootis_Bot.Entities;
 using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules
@@ -54,6 +58,51 @@ namespace Pootis_Bot.Modules
         {
             await Context.Channel.SendMessageAsync($"Ok, i will send you the message '{remindmsg}' in {seconds} seconds.");
             await ReminderService.RemindAsyncSeconds(Context.User, seconds, remindmsg);
+        }
+
+        [Command("top10")]
+        [Summary("Get the top 10 users in the server")]
+        public async Task Top10()
+        {
+            List<GlobalUserAccount> serverUsers = new List<GlobalUserAccount>();
+            foreach(var user in Context.Guild.Users)
+            {
+                if(!user.IsBot && !user.IsWebhook)
+                    serverUsers.Add(UserAccounts.GetAccount(user));
+            }
+
+            serverUsers.Sort(new SortUserAccount());
+            serverUsers.Reverse();
+
+            StringBuilder format = new StringBuilder();
+            format.Append("```csharp\n 📋 Top 10 Server User Postitons\n ========================\n");
+
+            int count = 1;
+            foreach (var user in serverUsers)
+            {
+                if (count > 10)
+                    continue;
+
+                format.Append($"\n [{count}] -- # {Context.Client.GetUser(user.ID)}\n         └ Level: {user.LevelNumber}\n         └ XP: {user.XP}");
+                count++;
+            }
+
+            var userAccount = UserAccounts.GetAccount((SocketGuildUser)Context.User);
+            format.Append($"\n------------------------\n 😊 Your Level: {userAccount.LevelNumber}      Your XP: {userAccount.XP}```");
+            await Context.Channel.SendMessageAsync(format.ToString());
+        }
+
+        private class SortUserAccount : IComparer<GlobalUserAccount>
+        {
+            public int Compare(GlobalUserAccount x, GlobalUserAccount y)
+            {
+                if (x.LevelNumber > y.LevelNumber)
+                    return 1;
+                else if (x.LevelNumber < y.LevelNumber)
+                    return -1;
+                else
+                    return 0;
+            }
         }
     }
 }
