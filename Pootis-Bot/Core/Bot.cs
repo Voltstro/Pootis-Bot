@@ -11,7 +11,6 @@ namespace Pootis_Bot.Core
     {
         public static DiscordSocketClient _client;
         CommandService _commands;
-        CommandHandler _handler;
 
         private bool isBotOn;
 
@@ -54,7 +53,7 @@ namespace Pootis_Bot.Core
             await ConnectBot(bottoken); //Loging into the bot using the token in the config.
 
             await _client.StartAsync();
-            _handler = new CommandHandler(_client, _commands, botprefix);
+            CommandHandler _handler = new CommandHandler(_client, _commands, botprefix);
             await _handler.InstallCommandsAsync();
             await _client.SetGameAsync(gameStatus);
             isBotOn = true;

@@ -11,7 +11,7 @@ namespace Pootis_Bot
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
 
-        public static GlobalConfigFile bot = new GlobalConfigFile();
+        internal static GlobalConfigFile bot = new GlobalConfigFile();
 
         static Config()
         {

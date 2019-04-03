@@ -9,7 +9,7 @@ namespace Pootis_Bot.Services
 {
     public class PermissionService
     {
-        CommandService _service;
+        readonly CommandService _service;
 
         public PermissionService(CommandService commandService)
         {
@@ -24,7 +24,7 @@ namespace Pootis_Bot.Services
                 return;
             }
 
-            CommandInfo cmdinfo = null;
+            CommandInfo cmdinfo;
             bool stopsearch = false;
 
             foreach (var moduel in _service.Modules) //Get the command info
@@ -38,7 +38,6 @@ namespace Pootis_Bot.Services
                     {
                         cmdinfo = command;
                         stopsearch = true;
-                        continue;
                     }
                 }
             }
