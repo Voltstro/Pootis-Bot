@@ -54,6 +54,9 @@ namespace Pootis_Bot.Core
                 WelcomeChannel = 0,
                 WelcomeGoodbyeMessage = "Goodbye [user]. We hope you enjoyed your stay.",
                 WelcomeMessage = "Hello [user]! Thanks for joining [server]. Please check out the rules first then enjoy your stay.",
+                RuleEnabled = false,
+                RuleRole = null,
+                RuleMessageID = 0,
                 AdminRoleName = "Admin",
                 StaffRoleName = "Staff"
             };
