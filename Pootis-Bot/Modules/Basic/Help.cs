@@ -30,7 +30,7 @@ namespace Pootis_Bot.Modules.Basic
             var dm = await Context.User.GetOrCreateDMChannelAsync();
             await Context.Channel.SendMessageAsync("I sent the help info to your dms!");
 
-            await dm.SendMessageAsync("Here is a list of the current commands I can do ! :relieved: (Please note that some commands may note work depending on server settings and your role :dark_sunglasses: ) \n<:GitHub:529571722991763456> Vist <https://creepysin.github.io/Pootis-Bot/commands/> for more info.\n\n");
+            await dm.SendMessageAsync("Here is a list of the current commands I can do ! :relieved: (Please note that some commands may note work depending on server settings and your role :dark_sunglasses: ) \n<:GitHub:529571722991763456> Vist <https://creepysin.github.io/Pootis-Bot/commands/discord-commands/> for more info.\n\n");
             
             List<string> parts = new List<string>();
 

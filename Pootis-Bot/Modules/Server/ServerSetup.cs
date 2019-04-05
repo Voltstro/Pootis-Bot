@@ -27,7 +27,7 @@ namespace Pootis_Bot.Modules
 
             embed.WithTitle("Setup");
             embed.WithColor(new Color(255, 81, 168));
-            embed.WithDescription($"<:Menu:537572055760109568> Here your setup for **{Context.Guild.Name}**.\n\n");
+            embed.WithDescription($"<:Menu:537572055760109568> Here your setup for **{Context.Guild.Name}**.\nSee [here](https://creepysin.github.io/Pootis-Bot/server-setup/) for more help.\n\n");
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
             embed.WithCurrentTimestamp();
 
