@@ -49,14 +49,6 @@ namespace Pootis_Bot.Modules
             }
             embed.AddField(rulereactiontitle, rulereactiondes);
 
-            string admintitle = "Admin Role Name";                                                                // Admin role
-            string admindes = $"Admin role name is set to: {server.AdminRoleName}\n";
-            embed.AddField(admintitle, admindes);
-
-            string stafftitle = "Staff Role Name";                                                                // Staff role
-            string staffdes = $"Staff role name is set to: {server.StaffRoleName}\n";
-            embed.AddField(stafftitle, staffdes);
-
             await dm.SendMessageAsync("", false, embed.Build());
         }
 
@@ -237,30 +229,6 @@ namespace Pootis_Bot.Modules
             else
                 await Context.Channel.SendMessageAsync("That role doesn't exist!");
                 
-        }
-
-        [Command("setupadmin")]
-        [Summary("Sets the admin role")]
-        [RequireOwner]
-        public async Task SetupAdmin(string adminRoleName)
-        {
-            var server = ServerLists.GetServer(Context.Guild);
-            server.AdminRoleName = adminRoleName;
-            ServerLists.SaveServerList();
-
-            await Context.Channel.SendMessageAsync("Admin role was set to " + adminRoleName);
-        }
-
-        [Command("setupstaff")]
-        [Summary("Sets the staff role")]
-        [RequireOwner]
-        public async Task SetupStaff(string staffRoleName)
-        {
-            var server = ServerLists.GetServer(Context.Guild);
-            server.StaffRoleName = staffRoleName;
-            ServerLists.SaveServerList();
-
-            await Context.Channel.SendMessageAsync("Staff role was set to " + staffRoleName);
         }
     }
 }

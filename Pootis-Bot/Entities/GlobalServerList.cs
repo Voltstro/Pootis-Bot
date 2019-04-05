@@ -17,11 +17,6 @@ namespace Pootis_Bot.Entities
         public ulong RuleMessageID { get; set; }
         public string RuleRole { get; set; }
         public string RuleReactionEmoji { get; set; }
-        
-        //Important Roles and permissions
-        //TODO: Update the way how Pootis-Bot handles admin/staff roles
-        public string StaffRoleName { get; set; }
-        public string AdminRoleName { get; set; }
 
         public List<GlobalServerBanedChannelList> banedChannels = new List<GlobalServerBanedChannelList>();
 
