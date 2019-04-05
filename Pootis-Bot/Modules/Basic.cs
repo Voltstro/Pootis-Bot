@@ -26,7 +26,7 @@ namespace Pootis_Bot.Modules
             var embed = new EmbedBuilder();
             embed.WithTitle("Hello!");
             embed.WithDescription("Hello! My name is " + Config.bot.botName + "!\n\n**__Links__**" +
-                "\n:computer: [Commands](https://creepysin.github.io/Pootis-Bot/commands/)" +
+                "\n:computer: [Commands](https://creepysin.github.io/Pootis-Bot/commands/discord-commands/)" +
                 "\n<:GitHub:529571722991763456> [Github Page](https://github.com/Creepysin/Pootis-Bot)" +
                 "\n:bookmark: [Documation](https://creepysin.github.io/Pootis-Bot/)" +
                 "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
