@@ -13,6 +13,8 @@
         <meta name="description" content="Pootis-Bot Documation">
       
       
+        <link rel="canonical" href="https://creepysin.github.io/Pootis-Bot/Docs/server-setup/">
+      
       
         <meta name="author" content="Creepysin">
       
@@ -35,21 +37,21 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="/Pootis-Bot/Docs/assets/images/favicon.png">
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.1.1">
     
     
       
-        <title>Pootis-Bot</title>
+        <title>Server Setup - Pootis-Bot</title>
       
     
     
-      <link rel="stylesheet" href="/Pootis-Bot/Docs/assets/stylesheets/application.3020aac5.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.3020aac5.css">
       
       
     
     
-      <script src="/Pootis-Bot/Docs/assets/javascripts/modernizr.01ccdecf.js"></script>
+      <script src="../assets/javascripts/modernizr.01ccdecf.js"></script>
     
     
       
@@ -58,7 +60,7 @@
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
     
-    <link rel="stylesheet" href="/Pootis-Bot/Docs/assets/fonts/material-icons.css">
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
     
     
     
@@ -119,7 +121,7 @@
               Pootis-Bot
             </span>
             <span class="md-header-nav__topic">
-              
+              Server Setup
             </span>
           
         </div>
@@ -229,7 +231,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/." title="Home" class="md-nav__link">
+    <a href=".." title="Home" class="md-nav__link">
       Home
     </a>
   </li>
@@ -241,7 +243,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/download/" title="Downloads" class="md-nav__link">
+    <a href="../download/" title="Downloads" class="md-nav__link">
       Downloads
     </a>
   </li>
@@ -272,7 +274,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/commands/discord-commands/" title="Discord Commands" class="md-nav__link">
+    <a href="../commands/discord-commands/" title="Discord Commands" class="md-nav__link">
       Discord Commands
     </a>
   </li>
@@ -284,7 +286,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/commands/console-commands/" title="Console Commands" class="md-nav__link">
+    <a href="../commands/console-commands/" title="Console Commands" class="md-nav__link">
       Console Commands
     </a>
   </li>
@@ -299,10 +301,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
     
     <label class="md-nav__link" for="nav-4">
       Server Setup
@@ -318,11 +322,18 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/server-setup/" title="Server Setup" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+    <a href="./" title="Server Setup" class="md-nav__link md-nav__link--active">
       Server Setup
     </a>
+    
   </li>
 
         
@@ -332,7 +343,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/server-setup/rulereaction/" title="Rule Reaction System" class="md-nav__link">
+    <a href="rulereaction/" title="Rule Reaction System" class="md-nav__link">
       Rule Reaction System
     </a>
   </li>
@@ -344,7 +355,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/server-setup/welcomemessage/" title="Welcome & Goodbye Message" class="md-nav__link">
+    <a href="welcomemessage/" title="Welcome & Goodbye Message" class="md-nav__link">
       Welcome & Goodbye Message
     </a>
   </li>
@@ -356,7 +367,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/server-setup/perm-system/" title="Permission System" class="md-nav__link">
+    <a href="perm-system/" title="Permission System" class="md-nav__link">
       Permission System
     </a>
   </li>
@@ -392,7 +403,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/Pootis-Bot/Docs/dev/building/" title="Building Pootis-Bot" class="md-nav__link">
+    <a href="../dev/building/" title="Building Pootis-Bot" class="md-nav__link">
       Building Pootis-Bot
     </a>
   </li>
@@ -414,8 +425,18 @@
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
-
+                
+                
+                  <h1>Server Setup</h1>
+                
+                <p>Everything in the Server Setup section should help you get Pootis-Bot working for your server!</p>
+<p>The Server Setup commands all require that the server's owner runs the commands!</p>
+<p>Use the <code>setup</code> command to get info about your server's setup info!</p>
+<p><strong>REMEMBER TO ADD PERMISSIONS TO THE COMMANDS <code>warn</code>, <code>makewarnable</code> AND <code>makenotwarnable</code>, OTHER WISE MEMBERS WILL ABUSE THIS!</strong></p>
+                
+                  
+                
+              
               
                 
 
@@ -428,6 +449,41 @@
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../commands/console-commands/" title="Console Commands" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Console Commands
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="rulereaction/" title="Rule Reaction System" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Rule Reaction System
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -445,7 +501,7 @@
       </div>
       
   <div class="md-footer-social">
-    <link rel="stylesheet" href="/Pootis-Bot/Docs/assets/fonts/font-awesome.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.css">
     
       <a href="https://github.com/Creepysin" class="md-footer-social__link fa fa-github"></a>
     
@@ -461,9 +517,9 @@
       
     </div>
     
-      <script src="/Pootis-Bot/Docs/assets/javascripts/application.dc02f8ce.js"></script>
+      <script src="../assets/javascripts/application.dc02f8ce.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:"/Pootis-Bot/Docs/"}})</script>
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
     
   </body>
