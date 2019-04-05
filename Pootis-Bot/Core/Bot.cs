@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -86,10 +87,7 @@ namespace Pootis_Bot.Core
 
             foreach(var server in ServerLists.serverLists)
             {
-                if (!server.WelcomeMessageEnabled)
-                    continue;
-
-                if(_client.GetChannel(server.WelcomeChannel) == null)
+                if(_client.GetChannel(server.WelcomeChannel) == null && server.WelcomeMessageEnabled)
                 {
                     somethingChanged = true;
                     changeCount++;
@@ -128,7 +126,24 @@ namespace Pootis_Bot.Core
 
         private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            LevelingSystem.UserSentMessage((SocketGuildUser)reaction.User, (SocketTextChannel)reaction.Channel, 5);
+            var guild = (channel as SocketGuildChannel).Guild;
+            var server = ServerLists.GetServer(guild);
+            
+            if(reaction.MessageId == server.RuleMessageID) //Check to see if the reaction is on the right message
+            {
+                if(server.RuleEnabled) //Check to see if the server even has to rule reaction enabled
+                {
+                    if (reaction.Emote.Name == server.RuleReactionEmoji) //If the person reacted with the right emoji then give them the role
+                    {
+                        var role = guild.Roles.FirstOrDefault(x => x.Name == server.RuleRole);
+
+                        var user = (SocketGuildUser)reaction.User;
+                        user.AddRoleAsync(role);
+                    }
+                }
+            }
+            else
+                LevelingSystem.UserSentMessage((SocketGuildUser)reaction.User, (SocketTextChannel)reaction.Channel, 5);
 
             return Task.CompletedTask;
         }
