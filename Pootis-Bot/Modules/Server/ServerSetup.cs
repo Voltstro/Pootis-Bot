@@ -23,7 +23,7 @@ namespace Pootis_Bot.Modules
             var server = ServerLists.GetServer(Context.Guild);
             var embed = new EmbedBuilder();
 
-            await Context.Channel.SendMessageAsync("Setup status was set to ur dms");
+            await Context.Channel.SendMessageAsync("Setup status was sent to your dms.");
 
             embed.WithTitle("Setup");
             embed.WithColor(new Color(255, 81, 168));
@@ -66,7 +66,7 @@ namespace Pootis_Bot.Modules
             }
             else
             {
-                if(channel == null && Bot._client.GetChannel(server.WelcomeChannel) != null)
+                if(channel == null && Context.Client.GetChannel(server.WelcomeChannel) != null)
                 {
                     server.WelcomeMessageEnabled = true;
                     await Context.Channel.SendMessageAsync("The welcome message was enabled");

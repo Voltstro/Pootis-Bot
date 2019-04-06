@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
 using Discord;
-using Pootis_Bot;
+using Pootis_Bot.Core;
 
 public class AudioDownload
 {
@@ -16,7 +15,7 @@ public class AudioDownload
     {
         channel.SendMessageAsync($"Searching youtube for '{search}'");
 
-        var youtube = new YouTubeService(new BaseClientService.Initializer()
+        var youtube = new YouTubeService(new BaseClientService.Initializer
         {
             ApiKey = Config.bot.apis.apiYoutubeKey,
             ApplicationName = this.GetType().ToString()
@@ -71,7 +70,7 @@ public class AudioDownload
             UseShellExecute = true
         };
 
-        Process proc = new Process()
+        Process proc = new Process
         {
             StartInfo = startinfo
         };

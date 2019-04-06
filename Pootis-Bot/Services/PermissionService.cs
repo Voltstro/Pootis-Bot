@@ -72,7 +72,7 @@ namespace Pootis_Bot.Services
             
             if (server.GetCommandInfo(_command).Command == null)
             {
-                GlobalServerList.CommandInfo item = new GlobalServerList.CommandInfo()
+                GlobalServerList.CommandInfo item = new GlobalServerList.CommandInfo
                 {
                     Command = _command,
                     Role = role

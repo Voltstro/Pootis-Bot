@@ -2,9 +2,9 @@
 
 namespace Pootis_Bot.Core
 {
-    internal class LevelingSystem
+    public static class LevelingSystem
     {
-        internal static async void UserSentMessage(SocketGuildUser user, SocketTextChannel channel, uint amount)
+        public static async void UserSentMessage(SocketGuildUser user, SocketTextChannel channel, uint amount)
         {
             var userAccount = UserAccounts.GetAccount(user);
             uint oldLevel = userAccount.LevelNumber;

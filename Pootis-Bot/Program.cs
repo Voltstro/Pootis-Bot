@@ -76,7 +76,7 @@ namespace Pootis_Bot
                 }
                 else if (string.IsNullOrWhiteSpace( Config.bot.apis.apiYoutubeKey))
                 {
-                    Global.WriteMessage("You need to set a YouTube api key! You can get one from https://console.developers.google.com and greating a new project with the YouTube Data API v3", ConsoleColor.Red);
+                    Global.WriteMessage("You need to set a YouTube api key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3", ConsoleColor.Red);
                     Config.bot.isAudioServiceEnabled = false;
                     Config.SaveConfig();
                     Global.WriteMessage("Audio service was disabled!", ConsoleColor.Red);

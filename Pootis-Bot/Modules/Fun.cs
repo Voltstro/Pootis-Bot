@@ -62,7 +62,7 @@ namespace Pootis_Bot.Modules
                 {
                     try
                     {
-                        var youtube = new YouTubeService(new BaseClientService.Initializer()
+                        var youtube = new YouTubeService(new BaseClientService.Initializer
                         {
                             ApiKey = Config.bot.apis.apiYoutubeKey,
                             ApplicationName = this.GetType().ToString()

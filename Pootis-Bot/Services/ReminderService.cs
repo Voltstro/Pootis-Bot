@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pootis_Bot.Services
 {
-    public class ReminderService
+    public static class ReminderService
     {
         public static async Task RemindAsyncSeconds(SocketUser guild, int time, string msg)
         {

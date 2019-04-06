@@ -10,17 +10,16 @@ namespace Pootis_Bot.Core
 {
     public class Bot
     {
-        public static DiscordSocketClient _client;
-        CommandService _commands;
+        DiscordSocketClient _client;
 
         private bool isBotOn;
 
         private string bottoken;
-        public string botname;
-        public string botprefix;
+        private string botname;
+        private string botprefix;
 
         private string gameStatus = "Use $help for help.";
-        private bool isStreaming = false;
+        private bool isStreaming;
 
         public Bot(string _bottoken, string _botname, string _botprefix)
         {
@@ -49,7 +48,7 @@ namespace Pootis_Bot.Core
             _client.ReactionAdded += ReactionAdded;
             _client.Ready += BotReadyAsync;
 
-            _commands = new CommandService();
+            CommandService _commands = new CommandService();
 
             await ConnectBot(bottoken); //Loging into the bot using the token in the config.
 
@@ -207,13 +206,11 @@ namespace Pootis_Bot.Core
             }
         }
 
-        private async Task ConsoleInput()
+        private async void ConsoleInput()
         {
-            var input = String.Empty;
-            while (input.Trim().ToLower() != "block")
+            while (true)    // Run forever
             {
-                input = Console.ReadLine();
-                input = input.Trim().ToLower();
+                string input = Console.ReadLine().Trim().ToLower();
 
                 if (input == "exit")
                 {
@@ -285,7 +282,6 @@ namespace Pootis_Bot.Core
                     if (Config.bot.isAudioServiceEnabled == true)
                         Program.CheckAudioService();
                 }
-
             }
         }
 
@@ -308,17 +304,15 @@ namespace Pootis_Bot.Core
 
         void BotConfigMain()
         {
-            bool botConfig = true;
 
             string token = Config.bot.botToken;
             string name = Config.bot.botName;
             string prefix = Config.bot.botPrefix;
 
+            bool botConfig = true;
             while (botConfig == true)
             {
-                string input = Console.ReadLine();
-
-                input = input.Trim().ToLower();
+                string input = Console.ReadLine().Trim();
 
                 if (input == "exit")
                 {
@@ -383,8 +377,9 @@ namespace Pootis_Bot.Core
 
             while (setAPIS == false)
             {
-                string input = Console.ReadLine();
-                if (input.Trim().ToLower() == "return")
+                string input = Console.ReadLine().Trim();
+
+                if (input.ToLower() == "return")
                 {
                     Config.bot.apis.apiGiphyKey = giphyAPI;
                     Config.bot.apis.apiYoutubeKey = youtubeAPI;
@@ -395,19 +390,19 @@ namespace Pootis_Bot.Core
                     Console.WriteLine("Exited api configuration");
                     return;
                 }
-                else if (input.Trim().ToLower() == "1")
+                else if (input == "1")
                 {
                     giphyAPI = BotConfigAPIGiphy();
                 }
-                else if (input.Trim().ToLower() == "2")
+                else if (input == "2")
                 {
                     youtubeAPI = BotConfigAPIYoutube();
                 }
-                else if (input.Trim().ToLower() == "3")
+                else if (input == "3")
                 {
                     googleAPI = BotConfigAPIGoogle();
                 }
-                else if (input.Trim().ToLower() == "4")
+                else if (input == "4")
                 {
                     googleSearchID = BotConfigGoogleSearchID();
                 }

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
-using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
 
-namespace Pootis_Bot
+namespace Pootis_Bot.Core
 {
-    class Config
+    static class Config
     {
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
 
-        internal static GlobalConfigFile bot = new GlobalConfigFile();
+        public readonly static GlobalConfigFile bot = new GlobalConfigFile();
 
         static Config()
         {
@@ -26,14 +25,9 @@ namespace Pootis_Bot
             }
             else
             {
-                LoadConfig();
+                string json = File.ReadAllText(configFolder + "/" + configFile); //If it does exist then it continues like normal.
+                bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
             }
-        }
-
-        public static void LoadConfig()
-        {
-            string json = File.ReadAllText(configFolder + "/" + configFile); //If it does exist then it continues like normal.
-            bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
         }
 
         public static void SaveConfig()
