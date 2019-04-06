@@ -13,13 +13,11 @@ namespace Pootis_Bot.Modules.Server
         // Description      - Anything permission related
         // Contributors     - Creepysin, 
 
-        private readonly CommandService _service;
         private readonly PermissionService _perm;
 
         public ServerPermissions(CommandService commandService)
         {
-            _service = commandService;
-            _perm = new PermissionService(_service);
+            _perm = new PermissionService(commandService);
         }
 
         [Command("perm")]

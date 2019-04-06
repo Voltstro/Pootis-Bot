@@ -15,7 +15,7 @@ public class AudioService
     private readonly string ffmpegloc = "external/ffmpeg";
     private readonly string musicdir = "Music/";
 
-    public static List<GlobalServerMusicItem> CurrentChannels = new List<GlobalServerMusicItem>();
+    public readonly static List<GlobalServerMusicItem> CurrentChannels = new List<GlobalServerMusicItem>();
 
     public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel)
     {
