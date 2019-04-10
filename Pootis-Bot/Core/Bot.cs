@@ -65,9 +65,7 @@ namespace Pootis_Bot.Core
         {
             await CheckConnectedServerSettings();
             Global.WriteMessage("Bot is now ready and online");
-#pragma warning disable CS4014 //Ingnore this annoying warning
             ConsoleInput();
-#pragma warning restore CS4014
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -282,6 +280,8 @@ namespace Pootis_Bot.Core
                     if (Config.bot.isAudioServiceEnabled == true)
                         Program.CheckAudioService();
                 }
+                else
+                    Global.WriteMessage("Vist https://creepysin.github.io/Pootis-Bot/commands/console-commands/ for a list of console commands");
             }
         }
 

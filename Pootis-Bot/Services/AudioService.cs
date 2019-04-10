@@ -83,24 +83,24 @@ public class AudioService
             return;
         }
 
-        var searchResults = SearchAudio(search); //Search to see if we might allready have the song
-        string results = "";
+        string fileName = string.Empty;
+        string fileLoc = SearchAudio(search);   //Search for the song in our current music directory
 
-        if (searchResults == null) //If we don't have the song then attempt to download it from youtube
+        if(string.IsNullOrWhiteSpace(fileLoc)) //The search didn't come up with anything, lets attempt to get it from YouTube
         {
-            AudioDownload download = new AudioDownload();
-            string result = download.DownloadAudio(search, channel);
-            if (result == null)
+            AudioDownload audioDownload = new AudioDownload();
+            string result = audioDownload.DownloadAudio(search, channel);
+            if (result != null)
             {
-                await channel.SendMessageAsync($"Failed to download the song '{search}'\n");
-                return;
+                fileLoc = result;
             }
             else
-                results = result;
+                return;
         }
-        else
-            results = searchResults;
 
+        string tempName = Path.GetFileName(fileLoc);
+        fileName = tempName.Replace(".mp3", "");
+        
         if (ServerList.IsPlaying)
         {
             //Kill and dispose of ffmpeg
@@ -114,9 +114,10 @@ public class AudioService
 
         ServerList.IsExit = false;
 
-        var ffmpeg = ServerList.Ffmpeg = GetFfmpeg(results);
+        Console.WriteLine(fileLoc);
+        var ffmpeg = ServerList.Ffmpeg = GetFfmpeg(fileLoc);
 
-        Global.WriteMessage($"The song '{search}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
+        Global.WriteMessage($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
         using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
         {
@@ -130,7 +131,7 @@ public class AudioService
 
                 CancellationToken cancellation = new CancellationToken();
 
-                await channel.SendMessageAsync($":musical_note: Now playing '{search}'");
+                await channel.SendMessageAsync($":musical_note: Now playing **{fileName}**.");
                 
                 while(!fail && !exit)
                 {
@@ -173,7 +174,7 @@ public class AudioService
                 }
 
                 //End
-                Global.WriteMessage($"The song '{search}' on server {guild.Name}({guild.Id}) has stopped.", ConsoleColor.Blue);
+                Global.WriteMessage($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.", ConsoleColor.Blue);
                 await ServerList.Discord.FlushAsync();
                 ServerList.Discord.Dispose();
                 ServerList.IsPlaying = false;
@@ -191,10 +192,10 @@ public class AudioService
         var musicList = GetMusicList(guild.Id);
         if (musicList == null) return; //Check server list if it is null
 
-        musicList.IsPlaying = !musicList.IsPlaying; //Toggel pause status
+        musicList.IsPlaying = !musicList.IsPlaying; //Toggle pause status
 
-        if (musicList.IsPlaying) await channel.SendMessageAsync("Current song has been un-paused");
-        else await channel.SendMessageAsync("Current song has been paused");
+        if (musicList.IsPlaying) await channel.SendMessageAsync(":musical_note: Current song has been un-paused");
+        else await channel.SendMessageAsync(":musical_note: Current song has been paused");
 
     }
 
