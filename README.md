@@ -1,4 +1,4 @@
-<img src="https://github.com/Creepysin/Pootis-Bot/blob/master/Pootis-Bot/bot.png" align="right" />
+![Pootis-Bot](icon.jpg)
 
 # Pootis-Bot 
 

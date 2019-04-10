@@ -6,6 +6,11 @@ namespace Pootis_Bot.Modules.Server
 {
     public class ServerAdminCommands : ModuleBase<SocketCommandContext>
     {
+        // Module Infomation
+        // Orginal Author   - Creepysin
+        // Description      - Commands for admins
+        // Contributors     - Creepysin, 
+
         [Command("kick")]
         [Summary("Kicks a user")]
         [RequireBotPermission(GuildPermission.KickMembers)]
