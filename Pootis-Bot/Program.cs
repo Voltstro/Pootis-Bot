@@ -42,7 +42,10 @@ namespace Pootis_Bot
 
             Console.Title = name + " Console";
 
-            Bot bot = new Bot(token, name, prefix);
+            Bot bot = new Bot();
+            Global.botName = name;
+            Global.botPrefix = prefix;
+            Global.botToken = token;
 
             await bot.StartBot();
         }

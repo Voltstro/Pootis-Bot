@@ -26,11 +26,11 @@ namespace Pootis_Bot.Modules
             var embed = new EmbedBuilder();
             embed.WithTitle("Hello!");
             embed.WithDescription("Hello! My name is " + Config.bot.botName + "!\n\n**__Links__**" +
-                "\n:computer: [Commands](https://creepysin.github.io/Pootis-Bot/commands/discord-commands/)" +
-                "\n<:GitHub:529571722991763456> [Github Page](https://github.com/Creepysin/Pootis-Bot)" +
-                "\n:bookmark: [Documation](https://creepysin.github.io/Pootis-Bot/)" +
-                "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
-                "\n<:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
+                $"\n:computer: [Commands]({Global.websiteCommands})" +
+                $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
+                $"\n:bookmark: [Documation]({Global.websiteHome})" +
+                $"\n<:Discord:529572497130127360> [Creepysin Development Server]({Global.discordServers[1]})" +
+                $"\n<:Discord:529572497130127360> [Creepysin Server]({Global.discordServers[0]})");
             embed.WithColor(new Color(241, 196, 15));
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());
