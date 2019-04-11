@@ -8,13 +8,26 @@ namespace Pootis_Bot.Core
 {
     internal static class Global
     {
+        internal static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot";
+
+        internal static readonly string websiteHome = "https://creepysin.github.io/Pootis-Bot/";
+        internal static readonly string websiteCommands = "https://creepysin.github.io/Pootis-Bot/commands/discord-commands/";
+        internal static readonly string websiteServerSetup = "https://creepysin.github.io/Pootis-Bot/server-setup/";
+
+                                                           // Main Server                -  Development Server
+        internal static readonly string[] discordServers = { "https://discord.gg/m7hg47t", "https://discord.gg/m4YcsUa" };
+
         internal static readonly string version = "0.1 - Early Public Alpha";
         internal static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
-            $"Created by Creepysin licensed under the MIT license. Vist https://github.com/Creepysin/Pootis-Bot/blob/master/LICENSE for more info.\n\n" +
+            $"Created by Creepysin licensed under the MIT license. Vist {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
             $"Pootis Robot icon by Valve\n" +
             $"Created with Discord.NET\n" +
             $"https://github.com/Creepysin/Pootis-Bot \n\n" +
             $"Thank you for using Pootis Bot";
+
+        internal static string botName;
+        internal static string botPrefix;
+        internal static string botToken;
 
         public static void WriteMessage(string msg, ConsoleColor color)
         {

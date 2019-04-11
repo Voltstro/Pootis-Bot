@@ -14,25 +14,14 @@ namespace Pootis_Bot.Core
 
         private bool isBotOn;
 
-        private string bottoken;
-        private string botname;
-        private string botprefix;
-
         private string gameStatus = "Use $help for help.";
         private bool isStreaming;
-
-        public Bot(string _bottoken, string _botname, string _botprefix)
-        {
-            bottoken = _bottoken;
-            botname = _botname;
-            botprefix = _botprefix;
-        }
 
         public async Task StartBot()
         {
             isStreaming = false;
 
-            if (string.IsNullOrEmpty(bottoken))
+            if (string.IsNullOrEmpty(Global.botToken))
             {
                 BotConfigStart();
             }
@@ -50,10 +39,10 @@ namespace Pootis_Bot.Core
 
             CommandService _commands = new CommandService();
 
-            await ConnectBot(bottoken); //Loging into the bot using the token in the config.
+            await ConnectBot(Global.botToken); //Loging into the bot using the token in the config.
 
             await _client.StartAsync();
-            CommandHandler _handler = new CommandHandler(_client, _commands, botprefix);
+            CommandHandler _handler = new CommandHandler(_client, _commands, Global.botPrefix);
             await _handler.InstallCommandsAsync();
             await _client.SetGameAsync(gameStatus);
             isBotOn = true;
@@ -63,6 +52,7 @@ namespace Pootis_Bot.Core
 
         private async Task BotReadyAsync()
         {
+            //Check the current connected server settings
             await CheckConnectedServerSettings();
             Global.WriteMessage("Bot is now ready and online");
             ConsoleInput();
@@ -151,19 +141,25 @@ namespace Pootis_Bot.Core
             ServerLists.GetServer(arg);
 
             EmbedBuilder embed = new EmbedBuilder();
-            embed.WithTitle("Thanks for inviting me!");
-            embed.WithDescription("Hello! My name is " + botname + "!\n\n**__Links__**" +
-                "\n:computer: [Commands](https://creepysin.github.io/Pootis-Bot/commands/)" +
-                "\n<:GitHub:529571722991763456> [Github Page](https://github.com/Creepysin/Pootis-Bot)" +
-                "\n:bookmark: [Documation](https://creepysin.github.io/Pootis-Bot/)" +
-                "\n<:Discord:529572497130127360> [Creepysin Development Server](https://discord.gg/m4YcsUa)" +
-                "\n<:Discord:529572497130127360> [Creepysin Server](https://discord.gg/m7hg47t)");
+            embed.WithTitle("Hey, thanks for adding me to your server.");
+            embed.WithDescription("Hello! My name is " + Global.botName + "!\n\n**__Links__**" +
+                $"\n:computer: [Commands]({Global.websiteCommands})" +
+                $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
+                $"\n:bookmark: [Documation]({Global.websiteHome})" +
+                $"\n<:Discord:529572497130127360> [Creepysin Development Server]({Global.discordServers[1]})" +
+                $"\n<:Discord:529572497130127360> [Creepysin Server]({Global.discordServers[0]})" +
+                "\n\nIf you have any issues the best place to ask for assistance is on the Creepysin Server!");
             embed.WithColor(new Color(241, 196, 15));
 
+            //Send a message to the server's default channel with the hello message
             await arg.DefaultChannel.SendMessageAsync("", false, embed.Build());
+
+            //Send a message to Discord server's owner about seting up the bot
+            var owner = await arg.Owner.GetOrCreateDMChannelAsync();
+            await owner.SendMessageAsync($"Thanks for using {Global.botName}! Check out {Global.websiteServerSetup} on how to setup {Global.botName} for your server.");
         }
 
-        private async Task UserLeft(SocketGuildUser user) //Says goodbye to user.
+        private async Task UserLeft(SocketGuildUser user) //Says goodbye to the user.
         {
             var server = ServerLists.GetServer(user.Guild);
 
@@ -325,9 +321,9 @@ namespace Pootis_Bot.Core
 
                         Config.SaveConfig();
 
-                        bottoken = token;
-                        botname = name;
-                        botprefix = prefix;
+                        Global.botToken = token;
+                        Global.botName = name;
+                        Global.botPrefix = prefix;
 
                         Console.WriteLine("Exited bot configuration");
                         return;
