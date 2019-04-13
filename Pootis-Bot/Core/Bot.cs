@@ -36,13 +36,11 @@ namespace Pootis_Bot.Core
             _client.JoinedGuild += JoinedNewServer;
             _client.ReactionAdded += ReactionAdded;
             _client.Ready += BotReadyAsync;
-
-            CommandService _commands = new CommandService();
-
             await ConnectBot(Global.botToken); //Loging into the bot using the token in the config.
 
             await _client.StartAsync();
-            CommandHandler _handler = new CommandHandler(_client, _commands, Global.botPrefix);
+            CommandService _commands = new CommandService();
+            CommandHandler _handler = new CommandHandler(_client, _commands);
             await _handler.InstallCommandsAsync();
             await _client.SetGameAsync(gameStatus);
             isBotOn = true;
@@ -277,7 +275,7 @@ namespace Pootis_Bot.Core
                         Program.CheckAudioService();
                 }
                 else
-                    Global.WriteMessage("Vist https://creepysin.github.io/Pootis-Bot/commands/console-commands/ for a list of console commands");
+                    Global.WriteMessage($"Unknown command '{input}'. Vist {Global.websiteConsoleCommands} for a list of console commands.", ConsoleColor.Red);
             }
         }
 
@@ -300,13 +298,11 @@ namespace Pootis_Bot.Core
 
         void BotConfigMain()
         {
+            string token = Global.botToken;
+            string name = Global.botName;
+            string prefix = Global.botPrefix;
 
-            string token = Config.bot.botToken;
-            string name = Config.bot.botName;
-            string prefix = Config.bot.botPrefix;
-
-            bool botConfig = true;
-            while (botConfig == true)
+            while (true)
             {
                 string input = Console.ReadLine().Trim();
 
@@ -314,7 +310,6 @@ namespace Pootis_Bot.Core
                 {
                     if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(prefix))
                     {
-                        botConfig = false;
                         Config.bot.botToken = token;
                         Config.bot.botName = name;
                         Config.bot.botPrefix = prefix;
@@ -329,7 +324,7 @@ namespace Pootis_Bot.Core
                         return;
                     }
                     else
-                        Console.WriteLine("You need to set the token the name AND the prefix! One of them are null or empty");
+                        Console.WriteLine("Either the token, name or prefix is null or empty. Make sure to check that the all have data in it.");
                 }
                 else if (input == "1")
                 {
@@ -359,10 +354,8 @@ namespace Pootis_Bot.Core
             string googleAPI = Config.bot.apis.apiGoogleSearchKey;
             string googleSearchID = Config.bot.apis.googleSearchEngineID;
 
-            bool setAPIS = false;
-
-            Console.WriteLine("APIs are needed for such commands as 'google'");
-            Console.WriteLine("It is definitely recommened to set the API keys now.");
+            Console.WriteLine("APIs are needed for commands such as 'google'");
+            Console.WriteLine("It is definitely recommended.");
             Console.WriteLine("");
             Console.WriteLine("1. - Giphy API Key");
             Console.WriteLine("2. - Youtube API Key");
@@ -371,7 +364,7 @@ namespace Pootis_Bot.Core
             Console.WriteLine("");
             Console.WriteLine("At any time type 'return' to return back to the bot configuration menu.");
 
-            while (setAPIS == false)
+            while (true)
             {
                 string input = Console.ReadLine().Trim();
 
@@ -409,13 +402,12 @@ namespace Pootis_Bot.Core
 
         string BotConfigToken()
         {
-            string token = "";
-            bool set = false;
+            string token;
 
             Console.WriteLine($"The current bot token is set to: '{Config.bot.botToken}'");
             Console.WriteLine("Enter in what you want to change the bot token to: ");
 
-            while (set == false)
+            while (true)
             {
                 token = Console.ReadLine();
                 if (token == "")
@@ -425,22 +417,19 @@ namespace Pootis_Bot.Core
                 else
                 {
                     Console.WriteLine($"Bot's token was set to '{token}'");
-                    set = true;
+                    return token;
                 }
             }
-
-            return token;
         }
 
         string BotConfigPrefix()
         {
-            string prefix = "";
-            bool set = false;
+            string prefix;
 
             Console.WriteLine($"The current bot prefix is set to: '{Config.bot.botPrefix}'");
             Console.WriteLine("Enter in what you want to change the bot prefix to: ");
 
-            while (set == false)
+            while (true)
             {
                 prefix = Console.ReadLine();
                 if (prefix == "")
@@ -450,22 +439,21 @@ namespace Pootis_Bot.Core
                 else
                 {
                     Console.WriteLine($"Bot's prefix was set to '{prefix}'");
-                    set = true;
+                    return prefix;
                 }
             }
 
-            return prefix;
+            
         }
 
         string BotConfigName()
         {
-            string name = "";
-            bool set = false;
+            string name;
 
             Console.WriteLine($"The current bot name is set to: '{Config.bot.botName}'");
             Console.WriteLine("Enter in what you want to change the bot name to: ");
 
-            while (set == false)
+            while (true)
             {
                 name = Console.ReadLine();
                 if (name == "")
@@ -475,22 +463,19 @@ namespace Pootis_Bot.Core
                 else
                 {
                     Console.WriteLine($"Bot's name was set to '{name}'");
-                    set = true;
+                    return name;
                 }
             }
-
-            return name;
         }
 
         string BotConfigAPIGiphy()
         {
-            string key = "";
-            bool set = false;
+            string key;
 
             Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.apis.apiGiphyKey}'");
             Console.WriteLine("Enter in what you want to change the bot Giphy key to: ");
 
-            while (set == false)
+            while (true)
             {
                 key = Console.ReadLine();
                 if (key == "")
@@ -500,22 +485,19 @@ namespace Pootis_Bot.Core
                 else
                 {
                     Console.WriteLine($"Bot's Giphy key was set to '{key}'");
-                    set = true;
+                    return key;
                 }
             }
-
-            return key;
         }
 
         string BotConfigAPIYoutube()
         {
-            string key = "";
-            bool set = false;
+            string key;
 
             Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.apis.apiYoutubeKey}'");
             Console.WriteLine("Enter in what you want to change the bot Youtube key to: ");
 
-            while (set == false)
+            while (true)
             {
                 key = Console.ReadLine();
                 if (key == "")
@@ -525,22 +507,19 @@ namespace Pootis_Bot.Core
                 else
                 {
                     Console.WriteLine($"Bot's Youtube key was set to '{key}'");
-                    set = true;
+                    return key;
                 }
             }
-
-            return key;
         }
 
         string BotConfigAPIGoogle()
         {
-            string key = "";
-            bool set = false;
+            string key;
 
             Console.WriteLine($"The current bot Google key is set to: '{Config.bot.apis.apiGoogleSearchKey}'");
             Console.WriteLine("Enter in what you want to change the bot Google key to: ");
 
-            while (set == false)
+            while (true)
             {
                 key = Console.ReadLine();
                 if (key == "")
@@ -550,22 +529,19 @@ namespace Pootis_Bot.Core
                 else
                 {
                     Console.WriteLine($"Bot's Google key was set to '{key}'");
-                    set = true;
+                    return key;
                 }
             }
-
-            return key;
         }
 
         string BotConfigGoogleSearchID()
         {
-            string key = "";
-            bool set = false;
+            string key;
 
             Console.WriteLine($"The current bot Google Search ID is set to: '{Config.bot.apis.googleSearchEngineID}'");
             Console.WriteLine("Enter in what you want to change the bot Google Search ID to: ");
 
-            while (set == false)
+            while (true)
             {
                 key = Console.ReadLine();
                 if (key == "")
@@ -575,11 +551,9 @@ namespace Pootis_Bot.Core
                 else
                 {
                     Console.WriteLine($"Bot's Google Search ID was set to '{key}'");
-                    set = true;
+                    return key;
                 }
             }
-
-            return key;
         }
 
         #endregion

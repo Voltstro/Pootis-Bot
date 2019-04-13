@@ -16,13 +16,10 @@ namespace Pootis_Bot.Core
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
 
-        private readonly string _prefix;
-
-        public CommandHandler(DiscordSocketClient client, CommandService commands, string prefix)
+        public CommandHandler(DiscordSocketClient client, CommandService commands)
         {
             _commands = commands;
             _client = client;
-            _prefix = prefix;
         }    
 
         public async Task InstallCommandsAsync()
@@ -46,7 +43,7 @@ namespace Pootis_Bot.Core
                 if (msg.Channel.Id == item.channelID)
                     return;
             }
-            if (msg.HasStringPrefix(_prefix, ref argPos)
+            if (msg.HasStringPrefix(Global.botPrefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 //Permissions
