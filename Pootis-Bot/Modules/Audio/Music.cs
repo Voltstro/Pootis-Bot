@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules.Audio
@@ -18,8 +16,7 @@ namespace Pootis_Bot.Modules.Audio
 
         public MusicModule()
         {
-            AudioService service = new AudioService();
-            _service = service;
+            _service = new AudioService();
         }
 
         [Command("join", RunMode = RunMode.Async)]

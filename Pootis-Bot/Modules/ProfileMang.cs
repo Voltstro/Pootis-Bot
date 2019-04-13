@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -41,7 +39,7 @@ namespace Pootis_Bot.Modules
         }
 
         [Command("profile")]
-        [Summary("Gets your or other's profile")]
+        [Summary("Gets your")]
         public async Task Profile()
         {
             var userMainRole = (Context.User as IGuildUser).Guild.Roles.FirstOrDefault();
@@ -64,6 +62,9 @@ namespace Pootis_Bot.Modules
             embed.AddField("Account", $"**ID: **{account.ID}\n**Creation Date: **{Context.User.CreatedAt}");
 
             embed.WithColor(userMainRole.Color);
+
+            embed.WithFooter(account.Msg, Context.User.GetAvatarUrl());
+
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
@@ -91,6 +92,9 @@ namespace Pootis_Bot.Modules
             embed.AddField("Account", $"**ID: **{account.ID}\n**Creation Date: **{user.CreatedAt}");
 
             embed.WithColor(userMainRole.Color);
+
+            embed.WithFooter(account.Msg, user.GetAvatarUrl());
+
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
