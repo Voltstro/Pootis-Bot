@@ -15,8 +15,8 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.0.1" />
-    <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.36.1.1369" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.36.1.1226" />
+    <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.38.2.1369" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.38.2.1488" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 

@@ -1,18 +1,18 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
+using Google.Apis.Customsearch.v1;
+using Newtonsoft.Json;
 using Discord.Commands;
 using Discord;
 using Pootis_Bot.Core;
-using Google.Apis.Customsearch.v1;
-using System.Net;
-using Newtonsoft.Json;
 
 namespace Pootis_Bot.Modules
 {
-    public class FunModule : ModuleBase<SocketCommandContext>
+    public class Fun : ModuleBase<SocketCommandContext>
     {
         // Module Infomation
         // Orginal Author   - Creepysin
@@ -58,7 +58,7 @@ namespace Pootis_Bot.Modules
         {
             if (search != "")
             {
-                if (Config.bot.apis.apiYoutubeKey.Trim() != "")
+                if (!string.IsNullOrWhiteSpace(Config.bot.apis.apiYoutubeKey.Trim()))
                 {
                     try
                     {
@@ -85,22 +85,22 @@ namespace Pootis_Bot.Modules
                             switch (searchResult.Id.Kind)
                             {
                                 case "youtube#video":
-                                    videos.Add(String.Format($"{searchResult.Snippet.Title}\n({ytstartLink + searchResult.Id.VideoId})"));
+                                    videos.Add(string.Format($"[{searchResult.Snippet.Title}]({ytstartLink + searchResult.Id.VideoId})\n"));
                                     break;
 
                                 case "youtube#channel":
-                                    channels.Add(String.Format($"{searchResult.Snippet.Title}\n({ytChannelStart + searchResult.Id.ChannelId})"));
+                                    channels.Add(string.Format($"[{searchResult.Snippet.Title}]({ytChannelStart + searchResult.Id.ChannelId})\n"));
                                     break;
                             }
                         }
 
-                        string _videos = String.Format("**Videos:**\n{0}\n", string.Join("\n", videos));
-                        string _channels = String.Format("**Channels:**\n{0}\n", string.Join("\n", channels));
+                        string _videos = string.Format("**Videos:**\n{0}\n", string.Join("\n", videos));
+                        string _channels = string.Format("**Channels:**\n{0}\n", string.Join("\n", channels));
 
                         EmbedBuilder embed = new EmbedBuilder();
                         EmbedFooterBuilder embedfoot = new EmbedFooterBuilder();
                         embed.Title = $"Youtube Search '{search}'";
-                        embed.WithDescription($"{_videos} \n {_channels}");
+                        embed.WithDescription($"{_videos} {_channels}");
 
                         embedfoot.WithIconUrl(Context.User.GetAvatarUrl());
                         embedfoot.WithText("Commanded issued by " + Context.User);
@@ -112,13 +112,13 @@ namespace Pootis_Bot.Modules
                     }
                     catch (Exception ex)
                     {
-                        Global.WriteMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on Youtube. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+                        Global.WriteMessage($"An error occured while user '{Context.User}' tryied searching '{search}' on Youtube. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
                         EmbedBuilder embed = new EmbedBuilder
                         {
                             Title = "Youtube Search Error"
                         };
-                        embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
+                        embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: **\n {ex.Message}");
                         embed.WithColor(youtubeColor);
 
                         return embed;
@@ -153,7 +153,7 @@ namespace Pootis_Bot.Modules
         {
             if (search != "")
             {
-                if (Config.bot.apis.apiGoogleSearchKey.Trim() != "" || Config.bot.apis.googleSearchEngineID.Trim() == "")
+                if (!string.IsNullOrWhiteSpace(Config.bot.apis.apiGoogleSearchKey.Trim()) && !string.IsNullOrWhiteSpace(Config.bot.apis.googleSearchEngineID.Trim()))
                 {
                     try
                     {
@@ -175,7 +175,7 @@ namespace Pootis_Bot.Modules
                         {
                             if (currentresult != 5)
                             {
-                                _search.Add($"**{searchResult.Title}**\n{searchResult.Snippet}\n{searchResult.Link}\n");
+                                _search.Add($"[{searchResult.Title}]({searchResult.Link})\n{searchResult.Snippet}\n");
                                 currentresult += 1;
                             }
                         }
@@ -239,7 +239,7 @@ namespace Pootis_Bot.Modules
         {
             if (search.Trim() != "") //Check to see if search is nothing
             {
-                if (Config.bot.apis.apiGiphyKey.Trim() != "") //Check to see if the bot giphy api is nothing
+                if (!string.IsNullOrWhiteSpace(Config.bot.apis.apiGiphyKey.Trim())) //Check to see if the bot giphy api is nothing
                 {
                     try
                     {
@@ -279,13 +279,13 @@ namespace Pootis_Bot.Modules
                     }
                     catch (Exception ex)
                     {
-                        Global.WriteMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on giphy. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+                        Global.WriteMessage($"An error occured while user '{Context.User}' tryied searching '{search}' on giphy. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
                         EmbedBuilder embed = new EmbedBuilder
                         {
                             Title = "Giphy Search Error"
                         };
-                        embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: ** {ex.Message}");
+                        embed.WithDescription($"An Error Occured. It is best to tell the owner of this bot this error.\n**Error Details: **\n {ex.Message}");
                         embed.WithColor(giphyColor);
 
                         return embed;
