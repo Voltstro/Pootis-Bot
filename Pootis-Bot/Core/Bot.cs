@@ -12,8 +12,6 @@ namespace Pootis_Bot.Core
     {
         DiscordSocketClient _client;
 
-        private bool isBotOn;
-
         private string gameStatus = "Use $help for help.";
         private bool isStreaming;
 
@@ -36,14 +34,13 @@ namespace Pootis_Bot.Core
             _client.JoinedGuild += JoinedNewServer;
             _client.ReactionAdded += ReactionAdded;
             _client.Ready += BotReadyAsync;
-            await ConnectBot(Global.botToken); //Loging into the bot using the token in the config.
+            await _client.LoginAsync(TokenType.Bot, Global.botToken); //Loging into the bot using the token in the config.
 
             await _client.StartAsync();
             CommandService _commands = new CommandService();
             CommandHandler _handler = new CommandHandler(_client, _commands);
             await _handler.InstallCommandsAsync();
             await _client.SetGameAsync(gameStatus);
-            isBotOn = true;
             
             await Task.Delay(-1);
         }
@@ -96,17 +93,6 @@ namespace Pootis_Bot.Core
             }
             else
                 Global.WriteMessage("All servers are good");
-        }
-
-        private async Task ConnectBot(string token)
-        {
-            if (isBotOn == false)
-            {
-                await _client.LoginAsync(TokenType.Bot, token);
-                isBotOn = true;
-            }
-            else
-                Global.WriteMessage("Bot is already connected", ConsoleColor.Yellow);
         }
 
         private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
@@ -343,7 +329,7 @@ namespace Pootis_Bot.Core
                     BotConfigAPIs();
                 }
                 else
-                    Console.WriteLine("Invaild input, you need to either enter '1', '2', '3', '4'. (With out '')");
+                    Console.WriteLine("Invaild input, you need to either enter '1', '2', '3', '4' or 'exit' (With out '')");
             }
         }
 
@@ -395,6 +381,8 @@ namespace Pootis_Bot.Core
                 {
                     googleSearchID = BotConfigGoogleSearchID();
                 }
+                else
+                    Console.WriteLine("You need to either put in '1', '2' ... etc or 'return'. (With out '')");
             }
         }
 
