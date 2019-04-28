@@ -5,6 +5,7 @@
         public string botToken = "";
         public string botPrefix = "$";
         public string botName = "Bot";
+        public string twichStreamingSite = "https://www.twitch.tv/creepysin";
         public bool isAudioServiceEnabled = false;
 
         //Bot APIs

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules
 {
@@ -12,6 +13,13 @@ namespace Pootis_Bot.Modules
         // Orginal Author   - Creepysin
         // Description      - Misc commands
         // Contributors     - Creepysin, 
+
+        VoteGivewayService voteGivewayService;
+
+        public Misc()
+        {
+            voteGivewayService = new VoteGivewayService();
+        }
 
         [Command("pick")]
         [Summary("Picks between two things")]
@@ -67,6 +75,13 @@ namespace Pootis_Bot.Modules
         public async Task Ping()
         {
             await Context.Channel.SendMessageAsync($"Pong! {Context.Client.Latency}ms");
+        }
+
+        [Command("vote")]
+        [Summary("Starts a vote")]
+        public async Task Vote()
+        {
+            await voteGivewayService.StartVote(Context.Guild, Context.Channel, "", "", "", "", "");
         }
 
         #region Functions

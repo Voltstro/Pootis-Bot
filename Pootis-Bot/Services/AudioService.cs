@@ -83,7 +83,7 @@ public class AudioService
             return;
         }
 
-        string fileName = string.Empty;
+        string fileName;
         string fileLoc = SearchAudio(search);   //Search for the song in our current music directory
 
         if(string.IsNullOrWhiteSpace(fileLoc)) //The search didn't come up with anything, lets attempt to get it from YouTube

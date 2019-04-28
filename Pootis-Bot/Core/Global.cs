@@ -11,10 +11,10 @@ namespace Pootis_Bot.Core
         //Here is a list of sites that Pootis-Bot can refer to, if your hosting your own version of the documentation you might wanna change it.
         internal static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot"; //Main github page
 
-        internal static readonly string websiteHome = "https://creepysin.github.io/Pootis-Bot/"; //Main docs page
-        internal static readonly string websiteCommands = "https://creepysin.github.io/Pootis-Bot/commands/discord-commands/"; //Main Discord commands list
-        internal static readonly string websiteServerSetup = "https://creepysin.github.io/Pootis-Bot/server-setup/"; //Main server-setup page
-        internal static readonly string websiteConsoleCommands = "https://creepysin.github.io/Pootis-Bot/commands/console-commands/";
+        internal static readonly string websiteHome = "https://pootis-bot.creepysin.com"; //Main docs page
+        internal static readonly string websiteCommands = "https://pootis-bot.creepysin.com/commands/discord-commands/"; //Main Discord commands list
+        internal static readonly string websiteServerSetup = "https://pootis-bot.creepysin.com/server-setup/"; //Main server-setup page
+        internal static readonly string websiteConsoleCommands = "https://pootis-bot.creepysin.com/commands/console-commands/";
 
         //An array of Discord servers, add as many as you want and use it throught the bot.
                                                            // Main Server                -  Development Server
