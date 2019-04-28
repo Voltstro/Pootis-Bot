@@ -214,9 +214,14 @@ namespace Pootis_Bot.Core
                     Console.WriteLine(Global.version);
                 else if (input == "setgame")
                 {
-                    Global.WriteMessage("Enter in what you want to set the bot's game to.");
+                    Console.WriteLine("Enter in what you want to set the bot's game to: ");
                     gameStatus = Console.ReadLine();
-                    await _client.SetGameAsync(gameStatus);
+
+                    ActivityType activity = ActivityType.Playing;
+                    if (isStreaming)
+                        activity = ActivityType.Streaming;
+
+                    await _client.SetGameAsync(gameStatus, Config.bot.twichStreamingSite, activity);
 
                     Global.WriteMessage($"Bot's game was set to '{gameStatus}'");
                 }
@@ -231,7 +236,7 @@ namespace Pootis_Bot.Core
                     else
                     {
                         isStreaming = true;
-                        await _client.SetGameAsync(gameStatus, "https://www.twitch.tv/creepysin", ActivityType.Streaming);
+                        await _client.SetGameAsync(gameStatus, Config.bot.twichStreamingSite, ActivityType.Streaming);
                         Global.WriteMessage("Bot is streaming");
                     }
                 }
