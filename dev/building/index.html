@@ -10,10 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="Pootis-Bot Documation">
+        <meta name="description" content="Pootis-Bot's main site. Everything you need to know about Pootis-Bot should be here!">
       
       
-        <link rel="canonical" href="https://creepysin.github.io/Pootis-Bot/Docs/dev/building/">
+        <link rel="canonical" href="https://pootis-bot.creepysin.com/dev/building/">
       
       
         <meta name="author" content="Creepysin">
@@ -37,7 +37,7 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <link rel="shortcut icon" href="../../assets/images/favicon.ico">
       <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.1.1">
     
     
@@ -109,9 +109,9 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="https://creepysin.github.io/Pootis-Bot/Docs/" title="Pootis-Bot" class="md-header-nav__button md-logo">
+        <a href="https://pootis-bot.creepysin.com" title="Pootis-Bot" class="md-header-nav__button md-logo">
           
-            <i class="md-icon"></i>
+            <img src="../../assets/images/logo.png" width="24" height="24">
           
         </a>
       </div>
@@ -199,9 +199,9 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="https://creepysin.github.io/Pootis-Bot/Docs/" title="Pootis-Bot" class="md-nav__button md-logo">
+    <a href="https://pootis-bot.creepysin.com" title="Pootis-Bot" class="md-nav__button md-logo">
       
-        <i class="md-icon"></i>
+        <img src="../../assets/images/logo.png" width="48" height="48">
       
     </a>
     Pootis-Bot
@@ -536,26 +536,39 @@
                 
                 
                 <h1 id="building-pootis-bot">Building Pootis-Bot</h1>
+<p>These instructions should help you build Pootis-Bot. If already know how to build for dotnet core then you should be fine and probably don't have to read this. </p>
 <h3 id="prerequisites">Prerequisites</h3>
 <pre><code>.NET Core 2.2
 </code></pre>
 
 <h2 id="building-for-windows">Building For Windows</h2>
 <p>To build for windows you first need to navigate were the <code>Pootis-Bot.csproj</code> file is. Then open the command prompt. (Tip: In the navigation bar were it says <code>c:\</code> type in <code>cmd</code> to open the command line there)</p>
-<p>Once at the command line type in <code>dotnet publish -c Release -r win-x64</code>. This will build Pootis-Bot for Windows x64. If you want it for Windows 32bit, you would replace <code>win-x64</code> with <code>win-x86</code>.</p>
+<p>Once at the command line type in:</p>
+<pre><code>dotnet publish -c Release -r win-x64
+</code></pre>
+
+<p>This will build Pootis-Bot for Windows x64. If you want it for Windows 32bit, you would replace <code>win-x64</code> with <code>win-x86</code>.</p>
 <p>Once it is complete, head into <code>bin\Release\netcoreapp2.2\win-x64\publish\</code>. You can copy everything in the <code>publish</code> folder to were you like. <strong>DO NOT USE THE EXE IN THE <code>\win-x64\</code> FOLDER.</strong> They may look correct but it isn't correct. If you try to run it on a seprate computer it won't work. Just use the exe in the <code>publish</code> folder.</p>
 <p>You can now run Pootis-Bot from the <code>Pootis-Bot.exe</code> file. Everything should work fine as it was developed on Windows for Windows.</p>
 <h2 id="building-for-linux">Building For Linux</h2>
 <p>Quick Note. I am not really a Linux user, I use Windows but I have used Linux in the past. Another note is that, yes, Pootis-Bot runs on the Rasberry Pi.</p>
 <p>To building Pootis-Bot for Linux is very similar to Windows. Open the terminal and navigate to were <code>Pootis-Bot.csproj</code> file is.</p>
-<p>Once at the directory were <code>Pootis-Bot.csproj</code> file is, type in the following command <code>dotnet publish -c Release -r linux-x64</code>. This will build Pootis-Bot for Linux 64bit, currently .NET Core doesn't support Linux 32bit.</p>
+<p>Once at the directory were <code>Pootis-Bot.csproj</code> file is, type in the following command:</p>
+<pre><code>dotnet publish -c Release -r linux-x64`
+</code></pre>
+
+<p>This will build Pootis-Bot for Linux 64bit, currently .NET Core doesn't support Linux 32bit.</p>
 <p>Once done, the files should be located in <code>bin\Release\netcoreapp2.2\linux-x64\publish\</code>. Once again, use the files in the <code>publish</code> folder.</p>
 <p>If using the Linux version, audio service wll <strong>NOT</strong> work! This is due to that ffmpeg and youtube-dl are a windows version, if you replace this with Linux versions and made sure there main part is in the <code>External</code> folder it should work but is untested!</p>
 <h2 id="building-for-macos">Building For MacOS</h2>
 <p>Ok, so I don't use MacOs, at all. I only used it in for 1 term at school and that was for a music project.</p>
 <p>Everything here is untested!</p>
 <p>To building Pootis-Bot for Mac it should be very similar to Windows and Linux. Open the terminal and navigate to were <code>Pootis-Bot.csproj</code> file is.</p>
-<p>Once at the directory were <code>Pootis-Bot.csproj</code> file is, type in the following command <code>dotnet publish -c Release -r osx-x64</code>. This will build Pootis-Bot for MacOS 64bit, currently .NET Core doesn't support MacOS 32bit. The minimum OS version is MacOs 10.12 Sierra!</p>
+<p>Once at the directory were <code>Pootis-Bot.csproj</code> file is, type in the following command:</p>
+<pre><code>dotnet publish -c Release -r osx-x64
+</code></pre>
+
+<p>This will build Pootis-Bot for MacOS 64bit, currently .NET Core doesn't support MacOS 32bit. The minimum OS version is MacOs 10.12 Sierra!</p>
 <p>Once done, the files should be located in <code>bin\Release\netcoreapp2.2\osx-x64\publish\</code>. Once again, use the files in the <code>publish</code> folder.</p>
 <p>If using the MacOS version, audio service wll <strong>NOT</strong> work! Its the exact same issue with Linux.</p>
                 
