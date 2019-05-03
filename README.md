@@ -42,7 +42,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 2. Download it
 
-You can vist the [Pootis-Bot Documation](https://creepysin.github.io/Pootis-Bot/dev/building/) on how to build Pootis-Bot.
+You can vist the [Pootis-Bot Documation](https://pootis-bot.creepysin.com/dev/building/) on how to build Pootis-Bot.
 
 ## Authors
 
