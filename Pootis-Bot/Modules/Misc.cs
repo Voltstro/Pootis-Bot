@@ -14,7 +14,7 @@ namespace Pootis_Bot.Modules
         // Description      - Misc commands
         // Contributors     - Creepysin, 
 
-        VoteGivewayService voteGivewayService;
+        private readonly VoteGivewayService voteGivewayService;
 
         public Misc()
         {
@@ -77,11 +77,11 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync($"Pong! {Context.Client.Latency}ms");
         }
 
-        [Command("vote")]
+        [Command("vote", RunMode = RunMode.Async)]
         [Summary("Starts a vote")]
-        public async Task Vote()
+        public async Task Vote(string time, string title, string description, string yesEmoji, string noEmoji)
         {
-            await voteGivewayService.StartVote(Context.Guild, Context.Channel, "", "", "", "", "");
+            await voteGivewayService.StartVote(Context.Guild, Context.Channel, Context.User, time, title, description, yesEmoji, noEmoji);
         }
 
         #region Functions
