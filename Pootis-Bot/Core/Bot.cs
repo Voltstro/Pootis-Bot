@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Core
 {
@@ -114,7 +115,31 @@ namespace Pootis_Bot.Core
                 }
             }
             else
-                LevelingSystem.UserSentMessage((SocketGuildUser)reaction.User, (SocketTextChannel)reaction.Channel, 5);
+            {
+                if(VoteGivewayService.isVoteRunning) // If there is a vote going on then check to make sure the reaction doesn't have anything to do with that.
+                {
+                    foreach (var vote in VoteGivewayService.votes)
+                    {
+                        if(reaction.MessageId == vote.VoteMessageID)
+                        {
+                            if(reaction.Emote.Name == vote.YesEmoji)
+                            {
+                                vote.YesCount++;
+                            }
+                                
+                            else if(reaction.Emote.Name == vote.NoEmoji)
+                            {
+                                vote.NoCount++;
+                            }  
+                        }
+                    }
+                }
+                else
+                {
+                    if (!((SocketGuildUser)reaction.User).IsBot)
+                        LevelingSystem.UserSentMessage((SocketGuildUser)reaction.User, (SocketTextChannel)reaction.Channel, 5);
+                }
+            }
 
             return Task.CompletedTask;
         }
