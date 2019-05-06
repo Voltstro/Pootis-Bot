@@ -74,7 +74,7 @@ namespace Pootis_Bot.Modules
         [Summary("Ping Pong!")]
         public async Task Ping()
         {
-            await Context.Channel.SendMessageAsync($"Pong! {Context.Client.Latency}ms");
+            await Context.Channel.SendMessageAsync($"Pong! **{Context.Client.Latency}**ms");
         }
 
         [Command("vote", RunMode = RunMode.Async)]

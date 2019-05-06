@@ -199,7 +199,7 @@ namespace Pootis_Bot.Modules
 
                             ServerLists.SaveServerList();
 
-                            await Context.Channel.SendMessageAsync("The rule reaction feature is enabled. Make sure that the @ everyone can't access the channels that you want people who reacted can and also that @ everyone can react in that channel.");
+                            await Context.Channel.SendMessageAsync("The rule reaction feature is enabled.");
                         }
                         else
                             await Context.Channel.SendMessageAsync("The emoji isn't set or is incorrect, use the command `setupruleemoji` to set the emoji.");

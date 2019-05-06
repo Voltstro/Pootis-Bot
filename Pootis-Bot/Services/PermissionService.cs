@@ -80,14 +80,14 @@ namespace Pootis_Bot.Services
                 server.commandInfos.Add(item); //Create and set the permission
                 ServerLists.SaveServerList();
 
-                await channel.SendMessageAsync($"The command '{_command}' had it permission set the role '{role}'");
+                await channel.SendMessageAsync($"The command '**{_command}**' had its permission set to the role '**{role}**'");
             }
             else
             {
                 var command = server.GetCommandInfo(_command);
                 command.Role = role;    //Set the permission
                 ServerLists.SaveServerList();
-                await channel.SendMessageAsync($"The command '{_command}' had it permission set the role '{role}'");
+                await channel.SendMessageAsync($"The command '**{_command}**' had it permission set to the role '**{role}**'");
             }
         }
 

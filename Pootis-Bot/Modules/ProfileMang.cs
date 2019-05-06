@@ -16,14 +16,14 @@ namespace Pootis_Bot.Modules
 
         [Command("makenotwarnable")]
         [Summary("Makes the user not warnable")]
-        public async Task NotWarnable(IGuildUser user)
+        public async Task NotWarnable([Remainder] IGuildUser user = null)
         {
             await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser)user));  
         }
     
         [Command("makewarnable")]
         [Summary("Makes the user warnable.")]
-        public async Task MakeWarnable(IGuildUser user)
+        public async Task MakeWarnable([Remainder] IGuildUser user = null)
         {           
             await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser)user));            
         }
@@ -112,36 +112,46 @@ namespace Pootis_Bot.Modules
 
         string MakeNotWarnable(SocketUser user)
         {
+            if(user == null)
+            {
+                return "That user doesn't exist!";
+            }
+
             SocketGuildUser userguild = (SocketGuildUser)user;
             var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 
             if (userAccount.IsAccountNotWarnable == true)
             {
-                return $"The user {user} is already not warnable.";
+                return $"**{user}** is already not warnable.";
             }
             else
             {
                 userAccount.IsAccountNotWarnable = true;
                 userAccount.Warnings = 0;
                 UserAccounts.SaveAccounts();
-                return $"The user {user} was made not warnable.";
+                return $"**{user}** was made not warnable.";
             }
         }
 
         string MakeWarnable(SocketUser user)
         {
+            if (user == null)
+            {
+                return "That user doesn't exist!";
+            }
+
             SocketGuildUser userguild = (SocketGuildUser)user;
 
             var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
             if (userAccount.IsAccountNotWarnable == false)
             {
-                return $"The user {user} is already warnable.";
+                return $"**{user}** is already warnable.";
             }
             else
             {
                 userAccount.IsAccountNotWarnable = false;
                 UserAccounts.SaveAccounts();
-                return $"The user {user} was made warnable.";
+                return $"**{user}** was made warnable.";
             }
         }
 
