@@ -1,0 +1,30 @@
+{
+  "YouTubeDlApiUrl": "https://api.github.com/repos/ytdl-org/youtube-dl/releases",
+  "AudioDllsUrl" : "https://pootis-bot.creepysin.com/download/AudioDlls.zip",
+  "data": [
+    {
+      "OsName": "Windows",
+      "IsOsSupported": true,
+      "Ffmpeg32Url": "https://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.zip",
+      "Ffmpeg64Url": "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip",
+      "Python32Url": "https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-win32.zip",
+      "Python64Url": "https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-amd64.zip"
+    },
+    {
+      "OsName": "Linux",
+      "IsOsSupported": false,
+      "Ffmpeg32Url": null,
+      "Ffmpeg64Url": null,
+      "Python32Url": null,
+      "Python64Url": null
+    },
+    {
+      "OsName": "OSX",
+      "IsOsSupported": false,
+      "Ffmpeg32Url": null,
+      "Ffmpeg64Url": null,
+      "Python32Url": null,
+      "Python64Url": null
+    }
+  ]
+}
