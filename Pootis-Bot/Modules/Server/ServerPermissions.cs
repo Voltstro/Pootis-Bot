@@ -34,7 +34,7 @@ namespace Pootis_Bot.Modules.Server
             ServerLists.GetServer(Context.Guild).GetOrCreateBanedChannel(channel.Id);
             ServerLists.SaveServerList();
 
-            await Context.Channel.SendMessageAsync($"Channel {channel.Name} has been added to the baned channels for your server");
+            await Context.Channel.SendMessageAsync($"Channel **{channel.Name}** has been added to the baned channels list for your server.");
         }
 
         [Command("removebanedchannel")]
@@ -44,7 +44,7 @@ namespace Pootis_Bot.Modules.Server
             ServerLists.GetServer(Context.Guild).DeleteChannel(channel.Id);
             ServerLists.SaveServerList();
 
-            await Context.Channel.SendMessageAsync($"Channel {channel.Name} was removed from your server's baned channel list");
+            await Context.Channel.SendMessageAsync($"Channel **{channel.Name}** was removed from your server's baned channel list.");
         }
     }
 }
