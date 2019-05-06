@@ -162,13 +162,13 @@ namespace Pootis_Bot.Modules
 
             if (userAccount.IsAccountNotWarnable == true)
             {
-                return $"A warning cannot be given to {user}. That person's account is set to not warnable.";
+                return $"A warning cannot be given to **{user}**. That person's account is set to not warnable.";
             }
             else
             {
                 userAccount.Warnings++;
                 UserAccounts.SaveAccounts();
-                return $"A warning was given to {user}";
+                return $"A warning was given to **{user}**";
             }
         }
 
