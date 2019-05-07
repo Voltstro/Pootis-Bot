@@ -1,5 +1,5 @@
 {
-  "YouTubeDlApiUrl": "https://api.github.com/repos/ytdl-org/youtube-dl/releases",
+  "YouTubeDlUrl": "https://github.com/ytdl-org/youtube-dl/archive/master.zip",
   "AudioDllsUrl" : "https://pootis-bot.creepysin.com/download/AudioDlls.zip",
   "data": [
     {
