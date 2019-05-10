@@ -112,7 +112,7 @@ namespace Pootis_Bot.Modules
                     }
                     catch (Exception ex)
                     {
-                        Global.WriteMessage($"An error occured while user '{Context.User}' tryied searching '{search}' on Youtube. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+                        Global.Log($"An error occured while user '{Context.User}' tryied searching '{search}' on Youtube. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
                         EmbedBuilder embed = new EmbedBuilder
                         {
@@ -198,7 +198,7 @@ namespace Pootis_Bot.Modules
                     }
                     catch (Exception ex)
                     {
-                        Global.WriteMessage($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on google. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+                        Global.Log($"[{Global.TimeNow()}] An error occured while user '{Context.User}' tryied searching '{search}' on google. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
                         EmbedBuilder embed = new EmbedBuilder
                         {
@@ -279,7 +279,7 @@ namespace Pootis_Bot.Modules
                     }
                     catch (Exception ex)
                     {
-                        Global.WriteMessage($"An error occured while user '{Context.User}' tryied searching '{search}' on giphy. \nError Details: \n{ex.Message}", ConsoleColor.Red);
+                        Global.Log($"An error occured while user '{Context.User}' tryied searching '{search}' on giphy. \nError Details: \n{ex.Message}", ConsoleColor.Red);
 
                         EmbedBuilder embed = new EmbedBuilder
                         {

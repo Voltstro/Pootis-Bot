@@ -21,7 +21,7 @@ namespace Pootis_Bot.Core
             {
                 SaveConfig();
 
-                Global.WriteMessage("Config.json was created. Is this your first time runing?", ConsoleColor.Yellow);
+                Global.Log("Config.json was created. Is this your first time runing?", ConsoleColor.Yellow);
             }
             else
             {

@@ -114,10 +114,9 @@ public class AudioService
 
         ServerList.IsExit = false;
 
-        Console.WriteLine(fileLoc);
         var ffmpeg = ServerList.Ffmpeg = GetFfmpeg(fileLoc);
 
-        Global.WriteMessage($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
+        Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
         using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
         {
@@ -174,7 +173,7 @@ public class AudioService
                 }
 
                 //End
-                Global.WriteMessage($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.", ConsoleColor.Blue);
+                Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.", ConsoleColor.Blue);
                 await ServerList.Discord.FlushAsync();
                 ServerList.Discord.Dispose();
                 ServerList.IsPlaying = false;

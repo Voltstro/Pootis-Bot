@@ -107,7 +107,7 @@ namespace Pootis_Bot.Services
 
             votes.Add(vote);
 
-            Global.WriteMessage($"A vote has started on the guild {guild.Name}({guild.Id})", ConsoleColor.Green);
+            Global.Log($"A vote has started on the guild {guild.Name}({guild.Id})", ConsoleColor.Green);
 
             await Task.Delay(totalTime); // Wait for the vote to finish
 
@@ -121,7 +121,7 @@ namespace Pootis_Bot.Services
 
             votes.Remove(vote);
 
-            Global.WriteMessage($"The vote on {guild.Name}({guild.Id}) has finished.", ConsoleColor.Green);
+            Global.Log($"The vote on {guild.Name}({guild.Id}) has finished.", ConsoleColor.Green);
 
             //Check to make sure no other votes are running.
             if (votes.Count == 0)
