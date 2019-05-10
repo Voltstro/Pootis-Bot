@@ -13,7 +13,7 @@ namespace Pootis_Bot.Core
     {
         DiscordSocketClient _client;
 
-        private string gameStatus = "Use $help for help.";
+        private string gameStatus = Config.bot.gameMessage;
         private bool isStreaming;
 
         public async Task StartBot()
@@ -50,20 +50,20 @@ namespace Pootis_Bot.Core
         {
             //Check the current connected server settings
             await CheckConnectedServerSettings();
-            Global.WriteMessage("Bot is now ready and online");
+            Global.Log("Bot is now ready and online");
             ConsoleInput();
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async Task Log(LogMessage msg)
         {
-            Global.WriteMessage(msg.Message);
+            Global.Log(msg.Message);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         private async Task CheckConnectedServerSettings()
         {
-            Global.WriteMessage("Checking pre-connected server settings...");
+            Global.Log("Checking pre-connected server settings...");
 
             bool somethingChanged = false;
             int changeCount = 0;
@@ -90,10 +90,10 @@ namespace Pootis_Bot.Core
             if (somethingChanged)
             {
                 ServerLists.SaveServerList();
-                Global.WriteMessage(changeCount + " server settings are no longer vaild, there owners have been notified.");
+                Global.Log(changeCount + " server settings are no longer vaild, there owners have been notified.");
             }
             else
-                Global.WriteMessage("All servers are good");
+                Global.Log("All servers are good");
         }
 
         private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
@@ -146,7 +146,7 @@ namespace Pootis_Bot.Core
 
         private async Task JoinedNewServer(SocketGuild arg)
         {
-            Global.WriteMessage("Joining server " + arg, ConsoleColor.Blue);
+            Global.Log("Joining server " + arg, ConsoleColor.Blue);
             ServerLists.GetServer(arg);
 
             EmbedBuilder embed = new EmbedBuilder();
@@ -187,7 +187,7 @@ namespace Pootis_Bot.Core
 
         private async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
         {
-            Global.WriteMessage($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})", ConsoleColor.White);
+            Global.Log($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})", ConsoleColor.White);
 
             var server = ServerLists.GetServer(user.Guild);
 
@@ -217,7 +217,7 @@ namespace Pootis_Bot.Core
 
                 if (input == "exit")
                 {
-                    Global.WriteMessage("Shutting down...");
+                    Global.Log("Shutting down...");
                     await _client.SetGameAsync("Bot shutting down");
                     foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
                     {
@@ -231,7 +231,7 @@ namespace Pootis_Bot.Core
                 else if (input == "config")
                 {
                     BotConfigStart();
-                    Global.WriteMessage("Restart the bot to apply the settings");
+                    Global.Log("Restart the bot to apply the settings");
                 }
                 else if (input == "about")
                     Console.WriteLine(Global.aboutMessage);
@@ -243,12 +243,16 @@ namespace Pootis_Bot.Core
                     gameStatus = Console.ReadLine();
 
                     ActivityType activity = ActivityType.Playing;
+                    string twich = null;
                     if (isStreaming)
+                    {
                         activity = ActivityType.Streaming;
+                        twich = Config.bot.twichStreamingSite;
+                    }  
 
-                    await _client.SetGameAsync(gameStatus, Config.bot.twichStreamingSite, activity);
+                    await _client.SetGameAsync(gameStatus, twich, activity);
 
-                    Global.WriteMessage($"Bot's game was set to '{gameStatus}'");
+                    Global.Log($"Bot's game was set to '{gameStatus}'");
                 }
                 else if (input == "togglestream")
                 {
@@ -256,13 +260,13 @@ namespace Pootis_Bot.Core
                     {
                         isStreaming = false;
                         await _client.SetGameAsync(gameStatus, null, ActivityType.Playing);
-                        Global.WriteMessage("Bot is no longer streaming");
+                        Global.Log("Bot is no longer streaming");
                     }
                     else
                     {
                         isStreaming = true;
                         await _client.SetGameAsync(gameStatus, Config.bot.twichStreamingSite, ActivityType.Streaming);
-                        Global.WriteMessage("Bot is streaming");
+                        Global.Log("Bot is streaming");
                     }
                 }
                 else if (input == "deletemusic")
@@ -272,26 +276,46 @@ namespace Pootis_Bot.Core
                         channel.AudioClient.Dispose();
                     }
 
-                    Global.WriteMessage("Deleting music directory...", ConsoleColor.Blue);
+                    Global.Log("Deleting music directory...", ConsoleColor.Blue);
                     if (System.IO.Directory.Exists("Music/"))
                     {
                         System.IO.Directory.Delete("Music/", true);
-                        Global.WriteMessage("Done!", ConsoleColor.Blue);
+                        Global.Log("Done!", ConsoleColor.Blue);
                     }
                     else
-                        Global.WriteMessage("The music directory doesn't exist!", ConsoleColor.Blue);
+                        Global.Log("The music directory doesn't exist!", ConsoleColor.Blue);
                 }
                 else if (input == "toggleaudio")
                 {
                     Config.bot.isAudioServiceEnabled = !Config.bot.isAudioServiceEnabled;
                     Config.SaveConfig();
 
-                    Global.WriteMessage($"The audio service was set to {Config.bot.isAudioServiceEnabled}", ConsoleColor.Blue);
+                    Global.Log($"The audio service was set to {Config.bot.isAudioServiceEnabled}", ConsoleColor.Blue);
                     if (Config.bot.isAudioServiceEnabled == true)
                         Program.CheckAudioService();
                 }
+                else if (input == "forceaudioupdate")
+                {
+                    Global.Log("Updating audio files.", ConsoleColor.Blue);
+                    foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+                    {
+                        channel.AudioClient.Dispose();
+                    }
+
+                    //Delete old files first
+                    System.IO.Directory.Delete("External/", true);
+                    System.IO.File.Delete("libsodium.dll");
+                    System.IO.File.Delete("opus.dll");
+
+                    Program.UpdateAudioFiles();
+                    Global.Log("Audio files were updated.", ConsoleColor.Blue);
+                }
+                else if (input == "clear" || input == "cls")
+                {
+                    Console.Clear();
+                }
                 else
-                    Global.WriteMessage($"Unknown command '{input}'. Vist {Global.websiteConsoleCommands} for a list of console commands.", ConsoleColor.Red);
+                    Global.Log($"Unknown command '{input}'. Vist {Global.websiteConsoleCommands} for a list of console commands.", ConsoleColor.Red);
             }
         }
 

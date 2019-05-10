@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,41 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="External\libsodium.dll" />
-    <None Remove="External\opus.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.0.1" />
-    <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.38.2.1369" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.38.2.1488" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.39.0.1369" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.39.0.1572" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="External\ffmpeg.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="External\ffplay.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="External\ffprobe.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="External\youtube-dl.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <ContentWithTargetPath Include="External/libsodium.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>libsodium.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="External\opus.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>opus.dll</TargetPath>
-    </ContentWithTargetPath>
   </ItemGroup>
 
 </Project>
