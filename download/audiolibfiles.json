@@ -13,8 +13,8 @@
     {
       "OsName": "Linux",
       "IsOsSupported": true,
-      "Ffmpeg32Url": "https://pootis-bot.creepysin.com/download/ffmpeg/linux/ffmpeg-linux-64.zip",
-      "Ffmpeg64Url": "https://pootis-bot.creepysin.com/download/ffmpeg/linux/ffmpeg-linux-86.zip",
+      "Ffmpeg32Url": "https://pootis-bot.creepysin.com/download/ffmpeg/linux/ffmpeg-linux-86.zip",
+      "Ffmpeg64Url": "https://pootis-bot.creepysin.com/download/ffmpeg/linux/ffmpeg-linux-64.zip",
       "Python32Url": null,
       "Python64Url": null
     },
