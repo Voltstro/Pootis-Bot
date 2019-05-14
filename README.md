@@ -32,7 +32,7 @@ Some current features that the bot can do. More feature are planed to be added
 
 ### If you just want to download the bot
 
-Currently the bot as a compiled version is not out (yet).
+You can download a compiled version [here](https://pootis-bot.creepysin.com/download/all)!
 
 ### Contributing or compiling the bot your self
 
