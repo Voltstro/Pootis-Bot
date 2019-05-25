@@ -50,7 +50,6 @@ namespace Pootis_Bot.Core
             var newAccount = new GlobalUserAccount
             {
                 ID = id,
-                Points = 10,
                 XP = 0
             };
 

@@ -79,7 +79,7 @@ namespace Pootis_Bot.Core
                     var ownerDM = await guild.Owner.GetOrCreateDMChannelAsync();
 
                     await ownerDM.SendMessageAsync($"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +
-                        $"You can enable it again with `{Config.bot.botPrefix}setupwelcome` command and your existing message should stay. ");
+                        $"You can enable it again with `{Global.botPrefix}setupwelcomemessage` command and your existing message should stay.");
 
                     server.WelcomeMessageEnabled = false;
                     server.WelcomeChannel = 0;
@@ -93,7 +93,7 @@ namespace Pootis_Bot.Core
                 Global.Log(changeCount + " server settings are no longer vaild, there owners have been notified.");
             }
             else
-                Global.Log("All servers are good");
+                Global.Log("All servers are good!");
         }
 
         private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
