@@ -27,16 +27,16 @@ namespace Pootis_Bot.Modules
 
             embed.WithTitle("Setup");
             embed.WithColor(new Color(255, 81, 168));
-            embed.WithDescription($"<:Menu:537572055760109568> Here your setup for **{Context.Guild.Name}**.\nSee [here](https://creepysin.github.io/Pootis-Bot/server-setup/) for more help.\n\n");
+            embed.WithDescription($"<:Menu:537572055760109568> Here your setup for **{Context.Guild.Name}**.\nSee [here]({Global.websiteServerSetup}) for more help.\n\n");
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
             embed.WithCurrentTimestamp();
 
             string welcometitle = "<:Cross:537572008574189578> Welcome Channel Disabled";                           // Welcome Message and channel
             string welocmedes = "Welcome channel is disabled\n";
-            if(server.WelcomeMessageEnabled == true && server.WelcomeChannel != 0)
+            if(server.WelcomeMessageEnabled)
             {
                 welcometitle = "<:Check:537572054266806292> Welcome Channel Enabled";
-                welocmedes = $"Welcome channel is enabled and is set to channel: {server.WelcomeChannel}\n";
+                welocmedes = $"Welcome channel is enabled and is set to the channel **{((SocketTextChannel)Context.Client.GetChannel(server.WelcomeChannel)).Name}**\n";
             }
             embed.AddField(welcometitle, welocmedes);
 
@@ -59,30 +59,44 @@ namespace Pootis_Bot.Modules
         {
             var server = ServerLists.GetServer(Context.Guild);
 
-            if (server.WelcomeMessageEnabled)
+            if(server.WelcomeMessageEnabled && channel == null)
             {
+                //Disable the welcome message
                 server.WelcomeMessageEnabled = false;
-                await Context.Channel.SendMessageAsync("The welcome message was disabled");
+
+                ServerLists.SaveServerList();
+
+                await Context.Channel.SendMessageAsync("The welcome message was disabled.");
             }
-            else
+            else if(!server.WelcomeMessageEnabled)
             {
-                if(channel == null && Context.Client.GetChannel(server.WelcomeChannel) != null)
+                if(channel == null)
                 {
-                    server.WelcomeMessageEnabled = true;
-                    await Context.Channel.SendMessageAsync("The welcome message was enabled");
-                }
-                else if(channel != null)
-                {
-                    server.WelcomeMessageEnabled = true;
-                    await Context.Channel.SendMessageAsync($"The welcome message was enabled and set the channel to **{channel.Name}**");
+                    if(Context.Client.GetChannel(server.WelcomeChannel) != null)
+                    {
+                        server.WelcomeMessageEnabled = true;
+                        await Context.Channel.SendMessageAsync($"The welcome channel was enabled and set to {((SocketTextChannel)Context.Client.GetChannel(server.WelcomeChannel)).Mention}");
+
+                        ServerLists.SaveServerList();
+                    }
+                    else
+                    {
+                        await channel.SendMessageAsync($"You need to input a channel name! E.G: `{Global.botPrefix}togglewelcomemessage welcome`");
+                        return;
+                    }
                 }
                 else
                 {
-                    await Context.Channel.SendMessageAsync("You need to input a channel");
-                }
-            }
+                    //Set the welcome channel to the inputed one
+                    server.WelcomeMessageEnabled = true;
+                    server.WelcomeChannel = channel.Id;
 
-            ServerLists.SaveServerList();
+                    ServerLists.SaveServerList();
+
+                    await Context.Channel.SendMessageAsync($"The welcome channel was enabled and set to {channel.Mention}");
+                }
+
+            }
         }
         
         [Command("setupwelcomemessage")]
