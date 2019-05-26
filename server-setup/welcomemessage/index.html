@@ -389,8 +389,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enabling-disabling-welcome-message-and-setting-the-channel" title="Enabling / Disabling welcome message and setting the channel" class="md-nav__link">
-    Enabling / Disabling welcome message and setting the channel
+  <a href="#setting-the-channel" title="Setting the channel" class="md-nav__link">
+    Setting the channel
   </a>
   
 </li>
@@ -492,8 +492,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enabling-disabling-welcome-message-and-setting-the-channel" title="Enabling / Disabling welcome message and setting the channel" class="md-nav__link">
-    Enabling / Disabling welcome message and setting the channel
+  <a href="#setting-the-channel" title="Setting the channel" class="md-nav__link">
+    Setting the channel
   </a>
   
 </li>
@@ -519,7 +519,12 @@
                 
                 <p>Pootis-Bot can have a custom welcome and goodbye message.</p>
 <h2 id="setting-welcome-message">Setting welcome message</h2>
-<p>To set the welcome message use the command <code>setupwelcomemessage [message]</code>. </p>
+<p>The welcome message is a message that is sent to a specific channel everytime a new user joins the server.</p>
+<p>To set the welcome message use the command:</p>
+<pre><code>setupwelcomemessage [message]
+</code></pre>
+
+<p>You would set the <code>[message]</code> part to your message you want to greet new users with.</p>
 <p>Example:</p>
 <pre><code>setupwelcomemessage Hello and welcome!
 </code></pre>
@@ -532,7 +537,11 @@
 <p>This would produce something that looks like this:</p>
 <p><img alt="Welcome Message Example" src="../../assets/images/welcomeexample.png" /></p>
 <h2 id="setting-goodbye-message">Setting goodbye message</h2>
-<p>To set the goodbye message use the command <code>setupgoodbyemessage [message]</code></p>
+<p>The goodbye message is basically exactly the same as the welcome message, except it is sent when a user leaves.</p>
+<p>To set the goodbye message use the command:</p>
+<pre><code>setupgoodbyemessage [message]
+</code></pre>
+
 <p>Example:</p>
 <pre><code>setupgoodbyemessage Goodbye!
 </code></pre>
@@ -544,22 +553,19 @@
 
 <p>This would produce something that looks like this:</p>
 <p><img alt="Welcome Message Example" src="../../assets/images/goodbyeexample.png" /></p>
-<h2 id="enabling-disabling-welcome-message-and-setting-the-channel">Enabling / Disabling welcome message and setting the channel</h2>
-<p>To enable the welcome message you need to use the command <code>togglewelcomemessage [channel]</code>.</p>
-<p>If you haven't added a channel yet you will need to enter a channel name. If you have allready added a channel it will use that assuming that channel still exist.</p>
+<h2 id="setting-the-channel">Setting the channel</h2>
+<p>Once you have your messages set its now time to set the channel they will be sent to!</p>
+<p>The base command for this is:</p>
+<pre><code>togglewelcomemessage [channel]
+</code></pre>
+
+<p>If this is your first time setting a welcome channel then you have to input a name.</p>
 <p>Example:</p>
-<p>If current the messages are <strong>DISABLED</strong> and no channel has been added then you would do:</p>
 <pre><code>togglewelcomemessage welcome
 </code></pre>
 
-<p>This would enable it and set it to the channel to <code>welcome</code></p>
-<p>If I wanted to disable it then I would do:</p>
-<pre><code>togglewelcomemessage
-</code></pre>
-
-<p>But if wanted to enable it again and set to the same channel all I would have to do is:</p>
-<pre><code>togglewelcomemessage
-</code></pre>
+<p>This would enable the welcome and goodbye messages and set it to the channel <strong>#welcome</strong></p>
+<p>Disabling it would also be easy, just re-run the same command but without a channel name.</p>
                 
                   
                 
@@ -617,7 +623,7 @@
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            Copyright (c) 2019 Creepysin
+            Copyright &copy; 2019 Creepysin. MIT License
           </div>
         
         powered by

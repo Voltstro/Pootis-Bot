@@ -100,7 +100,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#setup" tabindex="1" class="md-skip">
+      <a href="#rule-reaction-system" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -348,59 +348,9 @@
       
     
     
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Rule Reaction System
-      </label>
-    
     <a href="./" title="Rule Reaction System" class="md-nav__link md-nav__link--active">
       Rule Reaction System
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#message" title="Message" class="md-nav__link">
-    Message
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#choosing-an-emoji" title="Choosing an emoji" class="md-nav__link">
-    Choosing an emoji
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up-an-role" title="Setting up an role" class="md-nav__link">
-    Setting up an role
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#enabling-disabling-rule-reaction" title="Enabling / Disabling rule reaction" class="md-nav__link">
-    Enabling / Disabling rule reaction
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
     
   </li>
 
@@ -487,43 +437,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#message" title="Message" class="md-nav__link">
-    Message
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#choosing-an-emoji" title="Choosing an emoji" class="md-nav__link">
-    Choosing an emoji
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setting-up-an-role" title="Setting up an role" class="md-nav__link">
-    Setting up an role
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#enabling-disabling-rule-reaction" title="Enabling / Disabling rule reaction" class="md-nav__link">
-    Enabling / Disabling rule reaction
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -535,16 +448,19 @@
               
                 
                 
-                <p>Pootis-Bot comes with a rule reaction system.</p>
+                <h1 id="rule-reaction-system">Rule Reaction System</h1>
+<p>Pootis-Bot comes with a rule reaction system.</p>
 <p>Example:</p>
 <p>A new user would join your server but they would have to first react to a message with a spefic emoji.</p>
 <h1 id="setup">Setup</h1>
 <h2 id="message">Message</h2>
-<p>First off you would need a message. This message can be from anyone in anyware. It can even be a embed message say from the command <code>embed</code> that bot features.</p>
-<p>It is recommand to have this message in its own channel say maybe, I don't A #rules channel that basiclly any public server has, with permission that no on (except you of course) can write to it, but can still react in it (important).</p>
+<p>First off you would need a message. This message can be from anyone in any channel. It can even be a embed message say from the command <code>embed</code> that bot features.</p>
+<p>It is recommand to have this message in its own channel such as a <strong>#rules</strong> channel that basiclly any public server has, with permission that no on (except you of course) can write to it, but can still react in it (important).</p>
 <p>Now you need to get the message ID. Follow <a href="https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-">this guide</a> to learn how get into developer mode.</p>
-<p>Once you have done that, go to the top-right corner and see were the reaction symbol is, next to it there is those 3 little dots, click on them then click on Copy ID.</p>
-<p>Once you got that ID run the command:</p>
+<p>Hover over the message you want to get the ID of, then next to were you would react to a message, click on on the three little dots <strong>-&gt;</strong> Copy ID.</p>
+<p><img alt="Copy Message ID" src="../../assets/images/copymessageid.png" />
+Here what it should look like.</p>
+<p>Once you got that ID of the message you want to use, run the command:</p>
 <pre><code>setuprulesmessage [ID]
 </code></pre>
 
@@ -568,26 +484,26 @@
 <p>It is allso a good idea to put in that message that you need to react to this message with this emoji.</p>
 <p>E.G: <code>React with 😄 to gain access to the server once you have read the rules!</code></p>
 <h2 id="setting-up-an-role">Setting up an role</h2>
-<p>The second last thing is to set up a role.</p>
-<p>Create a new role like normal, but make it like a generic role. So you know something like that normally only normal people get.</p>
-<p>Now save that and change the @everyone role to only access certain channels, say only the #welcome channel and the #rules channel (The one with the message) and allow them to react in the #rules channel(or whatever its called for you)</p>
-<p>Make sure to allow the new role to access the channel you want them to!</p>
+<p>The second last thing is to set up a role. This role should be your <em>base</em> role.</p>
+<p>Create a new role like normal, but make it like a generic role. A standard role for new users.</p>
+<p>Give it permissions to access the channels that people who have reacted to the message can access.</p>
+<p>Once you have done that change the @everyone role to only have access to the channel that the message is contained in and that they can react to the message.</p>
 <p>This example it will be called <code>Member</code></p>
-<p>Once you have your role done that do the command:</p>
+<p>Once you have your role done that, do the command:</p>
 <pre><code>setuprulerole [role]
 </code></pre>
 
-<p>Example:</p>
+<p>So for our example it would be:</p>
 <pre><code>setuprulerole Member
 </code></pre>
 
 <h2 id="enabling-disabling-rule-reaction">Enabling / Disabling rule reaction</h2>
-<p>To enable the rule reaction feature, you need to have done the previous steps, after that do the command:</p>
+<p>To enable the rule reaction feature, you must have done the previous steps, after that do the command:</p>
 <pre><code>togglerulereaction
 </code></pre>
 
 <p>Assuming everything is correct it all should work. If a new user joins that should only have access to the channels that you specified until they react on that message with that specific emoji.</p>
-<p>If you want to disable this feature just run the same command again. </p>
+<p>If you want to disable this feature just re-run the same command again and it will be disabled!</p>
                 
                   
                 
@@ -645,7 +561,7 @@
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            Copyright (c) 2019 Creepysin
+            Copyright &copy; 2019 Creepysin. MIT License
           </div>
         
         powered by

@@ -404,6 +404,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#commands-you-cant-add" title="Commands you can't add" class="md-nav__link">
+    Commands you can't add
+  </a>
+  
+</li>
+      
       
       
       
@@ -490,6 +497,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#commands-you-cant-add" title="Commands you can't add" class="md-nav__link">
+    Commands you can't add
+  </a>
+  
+</li>
+      
       
       
       
@@ -508,16 +522,33 @@
                 
                 
                 <h1 id="permission-system">Permission System</h1>
-<p>Pootis Bot includes a permission system.</p>
+<p>Pootis Bot includes a permission system that allows you to have a specific role for a command.</p>
+<blockquote>
+<p>Currently you can only have one role per command!</p>
+<p>This should hopefully get fixed soon.</p>
+</blockquote>
 <h2 id="setting-a-permission">Setting a permission</h2>
-<p>Set a permission for a command using these command:</p>
-<p><code>perm [Command] [Role]</code></p>
-<p>The command must be the exact spelling of the command and same goes for the role, exempt that must be a role that exist on your server.</p>
-<p>EG: <code>perm youtube Admin</code></p>
+<p>You can set a permission for a command using this command:</p>
+<pre><code>perm [Command] [Role]
+</code></pre>
+
+<p>The <code>[Command]</code> part can be any command that is not on <a href="#commands-you-cant-add">this list</a>.</p>
+<p>Example</p>
+<pre><code>perm youtube Admin
+</code></pre>
+
 <h2 id="removing-a-permission">Removing a permission</h2>
 <p>Removing a permission is simple, type:</p>
-<p><code>perm [Command] Remove</code></p>
+<pre><code>perm [Command] Remove
+</code></pre>
+
 <p>This will remove the permission.</p>
+<h2 id="commands-you-cant-add">Commands you can't add</h2>
+<p>Currently you cannot add a role to these commands:</p>
+<ul>
+<li><code>profile</code></li>
+<li><code>profilemsg</code></li>
+</ul>
                 
                   
                 
@@ -575,7 +606,7 @@
       <div class="md-footer-copyright">
         
           <div class="md-footer-copyright__highlight">
-            Copyright (c) 2019 Creepysin
+            Copyright &copy; 2019 Creepysin. MIT License
           </div>
         
         powered by
