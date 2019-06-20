@@ -15,6 +15,7 @@ namespace Pootis_Bot.Core
 
         private string gameStatus = Config.bot.gameMessage;
         private bool isStreaming;
+        private bool isShuttingDown;
 
         public async Task StartBot()
         {
@@ -224,6 +225,8 @@ namespace Pootis_Bot.Core
                         channel.AudioClient.Dispose();
                     }
 
+                    isShuttingDown = true;
+
                     await _client.LogoutAsync();
                     _client.Dispose();
                     Environment.Exit(0);
@@ -309,6 +312,10 @@ namespace Pootis_Bot.Core
 
                     Program.UpdateAudioFiles();
                     Global.Log("Audio files were updated.", ConsoleColor.Blue);
+                }
+                else if(input == "status")
+                {
+                    Global.Log($"Bot status: {_client.ConnectionState.ToString()}\nServer count: {_client.Guilds.Count}\nLatency: {_client.Latency}");
                 }
                 else if (input == "clear" || input == "cls")
                 {
