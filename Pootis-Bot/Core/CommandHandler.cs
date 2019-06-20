@@ -38,7 +38,7 @@ namespace Pootis_Bot.Core
                 return;
             LevelingSystem.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel, 10);
 
-            foreach (var item in ServerLists.GetServer(context.Guild).GetAllBanedChannels())//Check to channel, make sure its not on the baned list
+            foreach (var item in ServerLists.GetServer(context.Guild).GetAllBanedChannels()) //Check to channel, make sure its not on the baned list
             {
                 if (msg.Channel.Id == item.channelID)
                     return;

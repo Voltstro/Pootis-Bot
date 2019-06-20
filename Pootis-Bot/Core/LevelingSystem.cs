@@ -13,7 +13,7 @@ namespace Pootis_Bot.Core
 
             if (oldLevel != userAccount.LevelNumber)
             {
-                await channel.SendMessageAsync($"{user.Mention} leved up! Now on level on **{userAccount.LevelNumber}!**");
+                await channel.SendMessageAsync($"{user.Mention} leved up! Now on level on **{userAccount.LevelNumber}**!");
             }
         }
     }
