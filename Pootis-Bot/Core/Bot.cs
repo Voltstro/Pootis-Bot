@@ -15,11 +15,13 @@ namespace Pootis_Bot.Core
 
         private string gameStatus = Config.bot.gameMessage;
         private bool isStreaming;
-        private bool isShuttingDown;
+
+        private bool isRunning;
 
         public async Task StartBot()
         {
             isStreaming = false;
+            isRunning = true;
 
             if (string.IsNullOrEmpty(Global.botToken))
             {
@@ -43,8 +45,8 @@ namespace Pootis_Bot.Core
             CommandHandler _handler = new CommandHandler(_client, _commands);
             await _handler.InstallCommandsAsync();
             await _client.SetGameAsync(gameStatus);
-            
-            await Task.Delay(-1);
+
+            await CheckConnectionStatus();
         }
 
         private async Task BotReadyAsync()
@@ -52,6 +54,7 @@ namespace Pootis_Bot.Core
             //Check the current connected server settings
             await CheckConnectedServerSettings();
             Global.Log("Bot is now ready and online");
+
             ConsoleInput();
         }
 
@@ -61,6 +64,26 @@ namespace Pootis_Bot.Core
             Global.Log(msg.Message);
         }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
+        private async Task CheckConnectionStatus()
+        {
+            while(isRunning)
+            {
+                if (Config.bot.checkConnectionStatus) // It is enabled then check the connection status ever so milliseconds
+                {
+                    await Task.Delay(Config.bot.checkConnectionStatusInterval);
+                    if (_client.ConnectionState == ConnectionState.Disconnected || _client.ConnectionState == ConnectionState.Disconnecting && isRunning)
+                    {
+                        Global.Log("The bot had disconnect for some reason, reconnecting...", ConsoleColor.Yellow);
+
+                        await _client.LogoutAsync();
+                        await _client.LoginAsync(TokenType.Bot, Global.botToken);
+                    }
+                } 
+                else
+                    await Task.Delay(-1); // Just run forever
+            }
+        }
 
         private async Task CheckConnectedServerSettings()
         {
@@ -145,10 +168,10 @@ namespace Pootis_Bot.Core
             return Task.CompletedTask;
         }
 
-        private async Task JoinedNewServer(SocketGuild arg)
+        private async Task JoinedNewServer(SocketGuild guild)
         {
-            Global.Log("Joining server " + arg, ConsoleColor.Blue);
-            ServerLists.GetServer(arg);
+            Global.Log("Joined server " + guild, ConsoleColor.Blue);
+            ServerLists.GetServer(guild);
 
             EmbedBuilder embed = new EmbedBuilder();
             embed.WithTitle("Hey, thanks for adding me to your server.");
@@ -162,10 +185,10 @@ namespace Pootis_Bot.Core
             embed.WithColor(new Color(241, 196, 15));
 
             //Send a message to the server's default channel with the hello message
-            await arg.DefaultChannel.SendMessageAsync("", false, embed.Build());
+            await guild.DefaultChannel.SendMessageAsync("", false, embed.Build());
 
             //Send a message to Discord server's owner about seting up the bot
-            var owner = await arg.Owner.GetOrCreateDMChannelAsync();
+            var owner = await guild.Owner.GetOrCreateDMChannelAsync();
             await owner.SendMessageAsync($"Thanks for using {Global.botName}! Check out {Global.websiteServerSetup} on how to setup {Global.botName} for your server.");
         }
 
@@ -218,14 +241,14 @@ namespace Pootis_Bot.Core
 
                 if (input == "exit")
                 {
+                    isRunning = false;
+
                     Global.Log("Shutting down...");
                     await _client.SetGameAsync("Bot shutting down");
                     foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
                     {
                         channel.AudioClient.Dispose();
                     }
-
-                    isShuttingDown = true;
 
                     await _client.LogoutAsync();
                     _client.Dispose();

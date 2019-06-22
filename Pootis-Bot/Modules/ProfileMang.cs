@@ -42,16 +42,17 @@ namespace Pootis_Bot.Modules
         [Summary("Gets your")]
         public async Task Profile()
         {
-            var userMainRole = (Context.User as IGuildUser).Guild.Roles.FirstOrDefault();
+            var roles = (Context.User as SocketGuildUser).Roles;
+            var sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
+            var userMainRole = sortedRoles.First();
+
             var account = UserAccounts.GetAccount((SocketGuildUser)Context.User);
             var accountserver = account.GetOrCreateServer(Context.Guild.Id);
             var embed = new EmbedBuilder();
 
             string warningText = $"Yes";
             if (accountserver.IsAccountNotWarnable == true)
-            {
                 warningText = $"No :sunglasses:";
-            }
 
             embed.WithCurrentTimestamp();
             embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
@@ -72,16 +73,23 @@ namespace Pootis_Bot.Modules
         [Summary("Gets a person's profile")]
         public async Task Profile(SocketGuildUser user)
         {
-            var userMainRole = (user as IGuildUser).Guild.Roles.FirstOrDefault();
+            var roles = (Context.User as SocketGuildUser).Roles;
+            var sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
+            var userMainRole = sortedRoles.First();
+
+            if(user.IsBot)
+            {
+                await Context.Channel.SendMessageAsync("You can not get a profile of a bot!");
+                return;
+            }
+
             var account = UserAccounts.GetAccount(user);
             var accountserver = account.GetOrCreateServer(Context.Guild.Id);
             var embed = new EmbedBuilder();
 
             string warningText = $"Yes";
             if (accountserver.IsAccountNotWarnable == true)
-            {
                 warningText = $"No :sunglasses:";
-            }
 
             embed.WithCurrentTimestamp();
             embed.WithThumbnailUrl(user.GetAvatarUrl());
@@ -113,9 +121,10 @@ namespace Pootis_Bot.Modules
         string MakeNotWarnable(SocketUser user)
         {
             if(user == null)
-            {
                 return "That user doesn't exist!";
-            }
+
+            if (user.IsBot)
+                return "You can not change the warnable status of a bot!";
 
             SocketGuildUser userguild = (SocketGuildUser)user;
             var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
@@ -136,9 +145,10 @@ namespace Pootis_Bot.Modules
         string MakeWarnable(SocketUser user)
         {
             if (user == null)
-            {
                 return "That user doesn't exist!";
-            }
+
+            if (user.IsBot)
+                return "You can not change the warnable status of a bot!";
 
             SocketGuildUser userguild = (SocketGuildUser)user;
 
@@ -157,6 +167,9 @@ namespace Pootis_Bot.Modules
 
         string Warn(SocketUser user)
         {
+            if (user.IsBot)
+                return "You cannot give a warning to a bot!";
+
             SocketGuildUser userguild = (SocketGuildUser)user;
             var userAccount = UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 
@@ -174,6 +187,9 @@ namespace Pootis_Bot.Modules
 
         async Task CheckWarnStatus(SocketGuildUser user)
         {
+            if (user.IsBot)
+                return;
+
             var userAccount = UserAccounts.GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
             if (userAccount.Warnings >= 3)
