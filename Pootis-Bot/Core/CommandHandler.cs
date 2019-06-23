@@ -10,8 +10,6 @@ namespace Pootis_Bot.Core
 {
     public class CommandHandler
     {
-        //https://docs.stillu.cc/guides/commands/intro.html
-        //For helping me updated the old commandhandler to discord.net 2.0
 
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
@@ -51,12 +49,20 @@ namespace Pootis_Bot.Core
                 if (!cmdSearchResult.IsSuccess) return;
 
                 var perm = ServerLists.GetServer(context.Guild).GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
-                if(perm.Command != null)
+                if(perm != null)
                 {
-                    var _role = (context.User as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == perm.Role);
-                    var user = (SocketGuildUser)context.User;
+                    bool doesUserHaveARole = false;
+                    
+                    foreach (var role in perm.Roles)
+                    {
+                        var _role = (context.User as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == role);
+                        if ((context.User as SocketGuildUser).Roles.Contains(_role))
+                        {
+                            doesUserHaveARole = true;
+                        }
+                    }
 
-                    if (!user.Roles.Contains(_role))
+                    if (!doesUserHaveARole)
                         return;
                 }
 
