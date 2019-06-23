@@ -22,10 +22,10 @@ namespace Pootis_Bot.Entities
 
         public List<CommandInfo> commandInfos = new List<CommandInfo>();
 
-        public struct CommandInfo
+        public class CommandInfo
         {
             public string Command { get; set; }
-            public string Role { get; set; }
+            public List<string> Roles = new List<string>();
         }
 
         public class GlobalServerBanedChannelList

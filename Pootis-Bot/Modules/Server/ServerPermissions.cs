@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
@@ -22,9 +24,30 @@ namespace Pootis_Bot.Modules.Server
 
         [Command("perm")]
         [RequireOwner]
-        public async Task Permission(string command, string role)
+        public async Task Permission(string command, string subCmd, string role)
         {
-            await _perm.SetPermission(command, role, Context.Channel, Context.Guild);
+            //await _perm.SetPermission(command, role, Context.Channel, Context.Guild);
+
+            if (subCmd == "add")
+                await _perm.AddPerm(command, role, Context.Channel, Context.Guild);
+            else if (subCmd == "remove")
+                await _perm.RemovePerm(command, role, Context.Channel, Context.Guild);
+        }
+
+        [Command("getbannedchannels")]
+        [RequireOwner]
+        public async Task GetBanedChannels()
+        {
+            var server = ServerLists.GetServer(Context.Guild);
+            StringBuilder final = new StringBuilder();
+            final.Append("**All banned channels**: \n");
+
+            foreach(var channel in server.banedChannels)
+            {
+                final.Append($"<#{channel.channelID}> (**ID**: {channel.channelID})\n");
+            }
+
+            await Context.Channel.SendMessageAsync(final.ToString());
         }
 
         [Command("addbanedchannel")]

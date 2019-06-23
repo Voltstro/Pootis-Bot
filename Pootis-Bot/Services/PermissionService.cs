@@ -11,19 +11,134 @@ namespace Pootis_Bot.Services
     {
         readonly CommandService _service;
 
+        private string[] blockedCmds = { "profile", "profilemsg", "hello", "ping" };
+
         public PermissionService(CommandService commandService)
         {
             _service = commandService;
         }
 
-        public async Task SetPermission(string _command, string role, IMessageChannel channel, SocketGuild guild)
+        public async Task AddPerm(string command, string role, IMessageChannel channel, SocketGuild guild)
         {
-            if (_command == "profile" || _command == "profilemsg") //Check to see if the inputed command isn't invaild
+            if(!CanModifyPerm(command))
             {
-                await channel.SendMessageAsync($"Cannot set the permission of {_command}");
+                await channel.SendMessageAsync($"Cannot set the permission of **{command}**");
                 return;
             }
 
+            if (!DoesCmdExist(command))
+            {
+                await channel.SendMessageAsync($"The command **{command}** doesn't exist!");
+                return;
+            }
+
+            var server = ServerLists.GetServer(guild);
+
+            //Check too see if role exist
+            if(Global.CheckIfRoleExist(guild, role) != null)
+            {
+                if(server.GetCommandInfo(command) == null) // Command doesn't exist, add it
+                {
+                    GlobalServerList.CommandInfo item = new GlobalServerList.CommandInfo
+                    {
+                        Command = command
+                    };
+                    item.Roles.Add(role);
+
+                    server.commandInfos.Add(item);
+                    
+                    await channel.SendMessageAsync($"The role **{role}** was added to the command **{command}**.");
+                }
+                else // The command already exist, add it to the list of roles.
+                {
+                    server.GetCommandInfo(command).Roles.Add(role);
+
+                    await channel.SendMessageAsync($"The role **{role}** was added to the command **{command}**.");
+                }
+
+                ServerLists.SaveServerList();
+            }
+            else
+            {
+                await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
+            }
+        }
+
+        public async Task RemovePerm(string command, string role, IMessageChannel channel, SocketGuild guild)
+        {
+            if (!CanModifyPerm(command))
+            {
+                await channel.SendMessageAsync($"Cannot set the permission of **{command}**");
+                return;
+            }
+
+            if (!DoesCmdExist(command))
+            {
+                await channel.SendMessageAsync($"The command **{command}** doesn't exist!");
+                return;
+            }
+
+            var server = ServerLists.GetServer(guild);
+
+            //Check too see if role exist
+            if (Global.CheckIfRoleExist(guild, role) != null)
+            {
+                if (server.GetCommandInfo(command) == null) // Command already has no permissions
+                {
+                    await channel.SendMessageAsync($"The command **{command}** already has no permissions added to it!");
+                    return;
+                }
+                else // Remove the role
+                {
+                    bool roleRemoved = false;
+                    foreach(var _role in server.GetCommandInfo(command).Roles.ToArray())
+                    {
+                        if (roleRemoved)
+                            continue;
+
+                        if(role == _role)
+                        {
+                            server.GetCommandInfo(command).Roles.Remove(role);
+                            roleRemoved = true;
+
+                            await channel.SendMessageAsync($"The role **{role}** was removed from the command **{command}**.");
+                        }
+                    }
+
+                    if (!roleRemoved)
+                        await channel.SendMessageAsync($"The command **{command}** didn't had the role **{role}** on it!");
+
+                    if(server.GetCommandInfo(command).Roles.Count == 0)
+                    {
+                        server.commandInfos.Remove(server.GetCommandInfo(command));
+                    }
+
+                }
+
+                ServerLists.SaveServerList();
+            }
+            else
+            {
+                await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
+            }
+        }
+
+        private bool CanModifyPerm(string command)
+        {
+            bool isModifyable = true;
+            foreach(string cmd in blockedCmds)
+            {
+                if(command == cmd)
+                {
+                    isModifyable = false;
+                }
+            }
+
+            return isModifyable;
+        }
+
+        private bool DoesCmdExist(string command)
+        {
             CommandInfo cmdinfo;
             bool stopsearch = false;
 
@@ -32,11 +147,11 @@ namespace Pootis_Bot.Services
                 if (stopsearch)
                     continue;
 
-                foreach (var command in moduel.Commands)
+                foreach (var _command in moduel.Commands)
                 {
-                    if (command.Name == _command)
+                    if (_command.Name == command)
                     {
-                        cmdinfo = command;
+                        cmdinfo = _command;
                         stopsearch = true;
                     }
                 }
@@ -44,66 +159,10 @@ namespace Pootis_Bot.Services
 
             if (!stopsearch)
             {
-                await channel.SendMessageAsync($"Cannot find the command {_command}");
-                return;
-            }
-
-            var server = ServerLists.GetServer(guild);
-
-            if (Global.CheckIfRoleExist(guild, role) == null) //Check to see if the inputed role exist
-            {
-                if (role == "remove") //If the role = remove then remove the permission
-                {
-                    if (RemovePermission(_command, server, channel) == true)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        await channel.SendMessageAsync("That command alreadys has no permission");
-                        return;
-                    }
-                }
-                else
-                {
-                    await channel.SendMessageAsync("That role doesn't exist");
-                }
-            }
-            
-            if (server.GetCommandInfo(_command).Command == null)
-            {
-                GlobalServerList.CommandInfo item = new GlobalServerList.CommandInfo
-                {
-                    Command = _command,
-                    Role = role
-                };
-                server.commandInfos.Add(item); //Create and set the permission
-                ServerLists.SaveServerList();
-
-                await channel.SendMessageAsync($"The command '**{_command}**' had its permission set to the role '**{role}**'");
-            }
-            else
-            {
-                var command = server.GetCommandInfo(_command);
-                command.Role = role;    //Set the permission
-                ServerLists.SaveServerList();
-                await channel.SendMessageAsync($"The command '**{_command}**' had it permission set to the role '**{role}**'");
-            }
-        }
-
-        private bool RemovePermission(string command, GlobalServerList _server, IMessageChannel _channel)
-        {
-            var commandInfo = _server.GetCommandInfo(command);
-            if(commandInfo.Command == null)
                 return false;
-            else
-            {
-                _server.commandInfos.Remove(commandInfo);
-                ServerLists.SaveServerList();
-                _channel.SendMessageAsync($"Permmsions for {command} was removed");
-
-                return true;
             }
+
+            return true;
         }
     }
 }

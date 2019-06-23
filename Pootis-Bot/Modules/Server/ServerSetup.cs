@@ -49,6 +49,24 @@ namespace Pootis_Bot.Modules
             }
             embed.AddField(rulereactiontitle, rulereactiondes);
 
+            string warningTitle = "Warnings";                                                                       // Warnings
+            string warningDes = "";
+            if (server.GetCommandInfo("warn") == null)
+                warningDes += "<:Cross:537572008574189578> The command `warn` doesn't have a permission added to it!\n";
+            if (server.GetCommandInfo("makewarnable") == null)
+                warningDes += "<:Cross:537572008574189578> The command `makewarnable` doesn't have a permission added to it!\n";
+            if (server.GetCommandInfo("makenotwarnable") == null)
+                warningDes += "<:Cross:537572008574189578> The command `makenotwarnable` doesn't have a permission added to it!\n";
+            if (server.GetCommandInfo("ban") == null)
+                warningDes += "<:Cross:537572008574189578> The command `ban` doesn't have a permission added to it!\n";
+            if (server.GetCommandInfo("kick") == null)
+                warningDes += "<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
+            else
+                warningDes = "You have no warnings! :smile:";
+            embed.AddField(warningTitle, warningDes);
+
+            embed.WithFooter($"For support see {Global.websiteHome}", Context.Client.CurrentUser.GetAvatarUrl());
+
             await dm.SendMessageAsync("", false, embed.Build());
         }
 
