@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,7 @@ namespace Pootis_Bot.Entities
 
         public string Msg { get; set; }
 
+        [JsonIgnore]
         public uint LevelNumber
         {
             get
