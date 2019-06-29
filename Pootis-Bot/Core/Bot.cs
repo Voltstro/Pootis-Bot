@@ -15,7 +15,6 @@ namespace Pootis_Bot.Core
 
         private string gameStatus = Config.bot.gameMessage;
         private bool isStreaming;
-
         private bool isRunning;
 
         public async Task StartBot()
@@ -53,17 +52,16 @@ namespace Pootis_Bot.Core
         {
             //Check the current connected server settings
             await CheckConnectedServerSettings();
-            Global.Log("Bot is now ready and online");
+            Global.Log("Bot is now ready and online!");
 
             ConsoleInput();
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        private async Task Log(LogMessage msg)
+        private Task Log(LogMessage msg)
         {
             Global.Log(msg.Message);
+            return Task.CompletedTask;
         }
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
         private async Task CheckConnectionStatus()
         {
@@ -129,7 +127,7 @@ namespace Pootis_Bot.Core
             {
                 if(server.RuleEnabled) //Check to see if the server even has to rule reaction enabled
                 {
-                    if (reaction.Emote.Name == server.RuleReactionEmoji) //If the person reacted with the right emoji then give them the role
+                    if(reaction.Emote.Name == server.RuleReactionEmoji) //If the person reacted with the right emoji then give them the role
                     {
                         var role = guild.Roles.FirstOrDefault(x => x.Name == server.RuleRole);
 
@@ -202,9 +200,13 @@ namespace Pootis_Bot.Core
                 {
                     var channel = _client.GetChannel(server.WelcomeChannel) as SocketTextChannel; //gets channel to send message in
 
-                    string addUserMetion = server.WelcomeGoodbyeMessage.Replace("[user]", user.Mention);
+                    string addUserMetion = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
 
                     await channel.SendMessageAsync(addUserMetion); //Says goodbye.  
+
+                    //Remove server data from account
+                    var account = UserAccounts.GetAccount(user);
+                    account.servers.Remove(account.GetOrCreateServer(user.Guild.Id));
                 }
             }
         }

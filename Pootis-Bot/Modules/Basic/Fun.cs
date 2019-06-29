@@ -246,9 +246,9 @@ namespace Pootis_Bot.Modules
                         string input = search.Replace(" ", "+");
 
                         string json = "";
-                        using (WebClient client = new WebClient()) //Search the term using the giphy api; More about the api here: https://developers.giphy.com/docs/
+                        using (WebClient client = new WebClient()) //Search the term using the giphy api. More about the api here: https://developers.giphy.com/docs/
                         {
-                            json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key=" + Config.bot.apis.apiGiphyKey);
+                            json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.apis.apiGiphyKey}");
                         }
 
                         var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
@@ -271,11 +271,10 @@ namespace Pootis_Bot.Modules
                         embedfoot.WithText("Commanded issued by " + Context.User);
 
                         embed.WithFooter(embedfoot);
-                        embed.WithDescription($"BY: {author}\nURL: {shorturl}");
+                        embed.WithDescription($"**By**: {author}\n**URL**: {shorturl}");
                         embed.WithColor(giphyColor);
 
                         return embed;
-
                     }
                     catch (Exception ex)
                     {
