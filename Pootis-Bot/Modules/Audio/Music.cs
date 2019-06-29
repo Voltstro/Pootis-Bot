@@ -5,7 +5,7 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules.Audio
 {
-    public class MusicModule : ModuleBase<ICommandContext>
+    public class Music : ModuleBase<ICommandContext>
     {
         // Module Infomation
         // Orginal Author   - Creepysin
@@ -14,7 +14,7 @@ namespace Pootis_Bot.Modules.Audio
 
         private readonly AudioService _service;
 
-        public MusicModule()
+        public Music()
         {
             _service = new AudioService();
         }

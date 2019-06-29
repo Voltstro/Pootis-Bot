@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -8,7 +6,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules
 {
@@ -38,73 +35,25 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
-        [Command("hasrole")]
-        [Summary("Check if user has a role")]
-        public async Task HasRole(string role, SocketGuildUser user)
+        [Command("server")]
+        [Summary("Gets details about the server you are in")]
+        public async Task ServerGuild()
         {
-            var _role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == role);
-            if (user.Roles.Contains(_role))
-            {
-                await Context.Channel.SendMessageAsync(user + " has the role '" + _role + "'");
-            }
-            else
-            {
-                await Context.Channel.SendMessageAsync(user + " Doesn't have the role '" + _role + "'");
-            }
-        }
+            var guilduser = (SocketGuildUser)Context.User;
 
-        [Command("alluserroles")]
-        [Summary("Gets all of a user's roles")]
-        public async Task AllUserRoles(SocketGuildUser user)
-        {
-            var roles = user.Roles;
-            StringBuilder allRoles = new StringBuilder();
-            allRoles.Append($"{user.Username}'s roles: \n");
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.WithTitle("Server Details");
+            embed.WithDescription($"**__Server__**" +
+                $"\n**Server Name:** {guilduser.Guild}" +
+                $"\n**Server ID:** {guilduser.Guild.Id}" +
+                $"\n**Server Member Count:** {guilduser.Guild.MemberCount}" +
+                $"\n\n**__Server Owner__**" +
+                $"\n**Owner Name: **{guilduser.Guild.Owner.Username}" +
+                $"\n**Owner ID: ** {guilduser.Guild.OwnerId}");
+            embed.WithThumbnailUrl(guilduser.Guild.IconUrl);
+            embed.WithColor(new Color(241, 196, 15));
 
-            var sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
-
-            foreach (var role in sortedRoles)
-            {
-                string roleName = role.Name;
-                if (role.Position == 0)
-                    roleName = "Default";
-
-                allRoles.Append($"{roleName} | ");
-            }
-
-            await Context.Channel.SendMessageAsync(allRoles.ToString());
-        }
-
-        [Command("reminds")]
-        [Summary("Reminds you, duh (In Seconds)")]
-        [Alias("res")]
-        public async Task Remind(int seconds, [Remainder] string remindmsg)
-        {
-            await Context.Channel.SendMessageAsync($"Ok, i will send you the message '{remindmsg}' in {seconds} seconds.");
-            await ReminderService.RemindAsyncSeconds(Context.User, seconds, remindmsg);
-        }
-
-        [Command("allroles")]
-        [Summary("Gets all roles on the server")]
-        public async Task GetAllRoles()
-        {
-            var roles = (Context.User as IGuildUser).Guild.Roles;
-            StringBuilder allRoles = new StringBuilder();
-
-            allRoles.Append($"All roles on this server: \n");
-
-            var sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
-
-            foreach(var role in sortedRoles)
-            {
-                string roleName = role.Name;
-                if (role.Position == 0)
-                    roleName = "Default";
-
-                allRoles.Append($"{roleName} | ");
-            }
-
-            await Context.Channel.SendMessageAsync(allRoles.ToString());
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
         [Command("top10")]
