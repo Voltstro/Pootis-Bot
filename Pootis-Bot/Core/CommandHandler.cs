@@ -10,7 +10,6 @@ namespace Pootis_Bot.Core
 {
     public class CommandHandler
     {
-
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
 

@@ -10,7 +10,7 @@ namespace Pootis_Bot.Core
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
 
-        private const string configVersion = "1";
+        private const string configVersion = "2";
 
         public readonly static GlobalConfigFile bot = new GlobalConfigFile();
 
@@ -22,6 +22,8 @@ namespace Pootis_Bot.Core
             if (!File.Exists(configFolder + "/" + configFile))   //If the config.json file doesn't exist it creats a new one.
             {
                 bot.configVersion = configVersion;
+                AddHelpModuleDefaults();
+
                 SaveConfig();
 
                 Global.Log("Config.json was created. Is this your first time runing?", ConsoleColor.Yellow);
@@ -36,8 +38,7 @@ namespace Pootis_Bot.Core
                     bot.configVersion = configVersion;
                     SaveConfig();
                     Global.Log("Updated config to version " + configVersion, ConsoleColor.Yellow);
-                }
-                    
+                }  
             }
         }
 
@@ -45,6 +46,42 @@ namespace Pootis_Bot.Core
         {
             string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
             File.WriteAllText(configFolder + "/" + configFile, json);
+        }
+
+        private static void AddHelpModuleDefaults()
+        {
+            var basic = new GlobalConfigFile.HelpModules
+            {
+                group = "Basic"
+            };
+            basic.modules.Add("BasicCommands");
+            basic.modules.Add("Misc");
+
+            bot.helpModules.Add(basic);
+
+            var utils = new GlobalConfigFile.HelpModules
+            {
+                group = "Utils"
+            };
+            utils.modules.Add("Utils");
+
+            bot.helpModules.Add(utils);
+
+            var fun = new GlobalConfigFile.HelpModules
+            {
+                group = "Fun"
+            };
+            fun.modules.Add("Fun");
+
+            bot.helpModules.Add(fun);
+
+            var audio = new GlobalConfigFile.HelpModules
+            {
+                group = "Audio"
+            };
+            audio.modules.Add("Music");
+
+            bot.helpModules.Add(audio);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Pootis_Bot.Entities
+﻿using System.Collections.Generic;
+
+namespace Pootis_Bot.Entities
 {
     public class GlobalConfigFile
     {
@@ -17,12 +19,21 @@
         //Bot APIs
         public ConfigApis apis;
 
+        //Help modules
+        public List<HelpModules> helpModules = new List<HelpModules>();
+
         public struct ConfigApis
         {
             public string apiGiphyKey;
             public string apiYoutubeKey;
             public string apiGoogleSearchKey;
             public string googleSearchEngineID;
+        }
+
+        public class HelpModules
+        {
+            public string group;
+            public List<string> modules = new List<string>();
         }
     }
 }

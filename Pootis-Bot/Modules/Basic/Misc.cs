@@ -41,42 +41,6 @@ namespace Pootis_Bot.Modules
             await Context.Channel.SendMessageAsync("The number was: " + random);
         }
 
-        [Command("embedmessage")]
-        [Alias("embed")]
-        [Summary("Displays your message in an embed message")]
-        public async Task CmdEmbedMessage(string title = "", [Remainder]string msg = "")
-        {
-            await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
-        }
-
-        [Command("server")]
-        [Summary("Gets details about the server you are in")]
-        public async Task ServerGuild()
-        {
-            var guilduser = (SocketGuildUser)Context.User;            
-
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.WithTitle("Server Details");
-            embed.WithDescription($"**__Server__**" +
-                $"\n**Server Name:** {guilduser.Guild}" +
-                $"\n**Server ID:** {guilduser.Guild.Id}" +
-                $"\n**Server Member Count:** {guilduser.Guild.MemberCount}" +
-                $"\n\n**__Server Owner__**" +
-                $"\n**Owner Name: **{guilduser.Guild.Owner.Username}" +
-                $"\n**Owner ID: ** {guilduser.Guild.OwnerId}");
-            embed.WithThumbnailUrl(guilduser.Guild.IconUrl);
-            embed.WithColor(new Color(241, 196, 15));
-
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
-        }
-
-        [Command("ping")]
-        [Summary("Ping Pong!")]
-        public async Task Ping()
-        {
-            await Context.Channel.SendMessageAsync($"Pong! **{Context.Client.Latency}**ms");
-        }
-
         [Command("vote", RunMode = RunMode.Async)]
         [Summary("Starts a vote")]
         public async Task Vote(string time, string title, string description, string yesEmoji, string noEmoji)
@@ -84,17 +48,13 @@ namespace Pootis_Bot.Modules
             await voteGivewayService.StartVote(Context.Guild, Context.Channel, Context.User, time, title, description, yesEmoji, noEmoji);
         }
 
-        #region Functions
-
-        EmbedBuilder EmbedMessage(string title, string msg)
+        [Command("reminds")]
+        [Summary("Reminds you, duh (In Seconds)")]
+        [Alias("res")]
+        public async Task Remind(int seconds, [Remainder] string remindmsg)
         {
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.WithTitle(title);
-            embed.WithDescription(msg);
-
-            return embed;
+            await Context.Channel.SendMessageAsync($"Ok, i will send you the message '{remindmsg}' in {seconds} seconds.");
+            await ReminderService.RemindAsyncSeconds(Context.User, seconds, remindmsg);
         }
-
-        #endregion
     }
 }

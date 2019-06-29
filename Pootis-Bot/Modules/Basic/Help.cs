@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Pootis_Bot.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,97 +9,42 @@ using System.Threading.Tasks;
 
 namespace Pootis_Bot.Modules.Basic
 {
-    public class HelpModule : ModuleBase<SocketCommandContext>
+    public class Help : ModuleBase<SocketCommandContext>
     {
         // Module Infomation
         // Orginal Author   - Creepysin
         // Description      - The two help commands
         // Contributors     - Creepysin, 
 
-        private readonly CommandService _service;
+        private readonly CommandService cmdService;
 
-        public HelpModule(CommandService commandService)
+        public Help(CommandService commandService)
         {
-            _service = commandService;
+            cmdService = commandService;
         }
 
         [Command("help")]
         [Alias("h")]
         [Summary("Gets help")]
-        public async Task Help()
+        public async Task HelpCmd()
         {
-            var dm = await Context.User.GetOrCreateDMChannelAsync();
-            await Context.Channel.SendMessageAsync("I sent the help info to your dms!");
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.botPrefix}help [command]`.\n");
 
-            await dm.SendMessageAsync("Here is a list of the current commands I can do ! :relieved: (Please note that some commands may note work depending on server settings and your role :dark_sunglasses: ) \n<:GitHub:529571722991763456> Vist <https://creepysin.github.io/Pootis-Bot/commands/discord-commands/> for more info.\n\n");
-            
-            List<string> parts = new List<string>();
-
-            foreach(var moduel in _service.Modules) //Get a list of all the modules
+            //Basic Commands
+            foreach(var helpModule in Config.bot.helpModules)
             {
-                StringBuilder cmd = new StringBuilder();
-                cmd.Append("```diff\n+ " + moduel.Name);
-
-                var commands = moduel.Commands;
-                foreach(var command in commands)
+                builder.Append($"\n**{helpModule.group}** - ");
+                foreach(var module in helpModule.modules)
                 {
-                    cmd.Append($"\n- {command.Name} \n  └ Summary: {command.Summary}\n  └ Alias: {FormatAliases(command)}\n  └ Usage: `{command.Name} {FormatParms(command)}`");
-                }
-
-                cmd.Append("\n```");
-
-                parts.Add(cmd.ToString());
-            }
-
-            int currentmod = 0;
-            int maxmod = parts.Count();
-            var desarray = parts.ToArray();
-
-            while (currentmod != maxmod) //Go through all moduels
-            {
-                //string item = "";
-                StringBuilder mod = new StringBuilder();
-
-                if (desarray[currentmod].Count() < 1400)
-                {
-                    int count = 0;
-                    try
+                    foreach(var cmd in GetModule(module).Commands)
                     {
-                        while (count < 1400)
-                        {
-                            if (desarray[currentmod].Count() + desarray[currentmod + 1].Count() < 1400)
-                            {
-                                if (currentmod >= maxmod)
-                                {
-                                    count = 1400;
-                                    mod.Append(desarray[currentmod]);
-                                    currentmod += 1;
-                                }
-                                else
-                                {
-                                    count += desarray[currentmod].Count() + desarray[currentmod + 1].Count();
-                                    mod.Append(desarray[currentmod] + desarray[currentmod + 1]);
-                                    currentmod += 2;
-                                }
-                            }
-                            else
-                            {
-                                mod.Append( desarray[currentmod]);
-                                currentmod += 1;
-                                count = 1400;
-                            }
-                        }
-                    }
-                    catch (IndexOutOfRangeException) //Last module
-                    {
-                        mod.Append(desarray[currentmod]);
-                        currentmod = maxmod;
-                        count = 1400;
+                        builder.Append($"`{cmd.Name}` ");
                     }
                 }
-
-                await dm.SendMessageAsync(mod.ToString());
             }
+
+            await Context.Channel.SendMessageAsync(builder.ToString());
         }
 
         [Command("help")]
@@ -110,10 +56,10 @@ namespace Pootis_Bot.Modules.Basic
             embed.WithTitle($"Help for {query}");
             embed.WithColor(new Color(241, 196, 15));
 
-            var result = _service.Search(Context, query);
-            if(result.IsSuccess)
+            var result = cmdService.Search(Context, query);
+            if (result.IsSuccess)
             {
-                foreach(var command in result.Commands)
+                foreach (var command in result.Commands)
                 {
                     embed.AddField(command.Command.Name, $"Summary: {command.Command.Summary}\nAlias: {FormatAliases(command.Command)}\nUsage: `{command.Command.Name} {FormatParms(command.Command)}`");
                 }
@@ -125,15 +71,15 @@ namespace Pootis_Bot.Modules.Basic
         }
 
         private string FormatAliases(CommandInfo commandinfo)
-        {          
+        {
             var aliases = commandinfo.Aliases;
 
             StringBuilder format = new StringBuilder();
-            
+
             int count = aliases.Count;
             int currentCount = 1;
-            foreach(var alias in aliases)
-            {      
+            foreach (var alias in aliases)
+            {
                 format.Append(alias);
 
                 if (currentCount != count)
@@ -165,6 +111,16 @@ namespace Pootis_Bot.Modules.Basic
             if (count != 0) format.Append("]");
 
             return format.ToString();
+        }
+
+        private ModuleInfo GetModule(string moduleName)
+        {
+            var result = from a in cmdService.Modules
+                         where a.Name == moduleName
+                         select a;
+
+            var module = result.FirstOrDefault();
+            return module;
         }
     }
 }
