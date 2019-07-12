@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.IO;
+using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.IO;
 using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Core

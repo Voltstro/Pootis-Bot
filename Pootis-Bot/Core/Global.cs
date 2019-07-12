@@ -19,9 +19,9 @@ namespace Pootis_Bot.Core
 
         //An array of Discord servers, add as many as you want and use it throught the bot.
                                                            // Main Server                -  Development Server
-        internal static readonly string[] discordServers = { "https://discord.gg/m7hg47t", "https://discord.gg/m4YcsUa" };
+        internal static readonly string[] discordServers = { "https://discord.creepysin.com", "https://discord.gg/m4YcsUa" };
 
-        internal static readonly string version = "0.2.4";
+        internal static readonly string version = "0.2.5";
         internal static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
             $"Created by Creepysin licensed under the MIT license. Vist {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
             $"Pootis Robot icon by Valve\n" +
