@@ -5,7 +5,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 
-namespace Pootis_Bot.Modules
+namespace Pootis_Bot.Modules.Basic
 {
     public class ProfileMang : ModuleBase<SocketCommandContext>
     {
