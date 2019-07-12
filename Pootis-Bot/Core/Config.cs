@@ -71,7 +71,10 @@ namespace Pootis_Bot.Core
             {
                 group = "Fun"
             };
-            fun.modules.Add("Fun");
+            fun.modules.Add("GiphySearch");
+            fun.modules.Add("GoogleSearch");
+            fun.modules.Add("YoutubeSearch");
+            fun.modules.Add("TronaldDump");
 
             bot.helpModules.Add(fun);
 
