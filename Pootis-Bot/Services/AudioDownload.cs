@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Web;
 using System.Diagnostics;
 using Discord;
 using Pootis_Bot.Modules.Fun;
@@ -20,7 +21,7 @@ public class AudioDownload
             try
             {
                 string videoUrl = FunCmdsConfig.ytstartLink + searchListResponse.Items[0].Id.VideoId;
-                string videoTitle = searchListResponse.Items[0].Snippet.Title;
+                string videoTitle = HttpUtility.HtmlDecode(searchListResponse.Items[0].Snippet.Title);
                 string videoLoc = "Music/" + videoTitle + ".mp3";
 
                 channel.SendMessageAsync($":musical_note: Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**");
