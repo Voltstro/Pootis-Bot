@@ -77,7 +77,11 @@ namespace Pootis_Bot
                     Global.Log("Audio service was disabled!", ConsoleColor.Red);
                 }
                 else
-                    Global.Log("Audio services are ready", ConsoleColor.Blue);
+                {
+                    if(Config.bot.isAudioServiceEnabled)
+                        Global.Log("Audio services are ready", ConsoleColor.Blue);
+                }
+                    
             }
         }
 
@@ -148,13 +152,23 @@ namespace Pootis_Bot
                         Global.Log("Done!", ConsoleColor.Blue);
                     }
                 }
-                else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) == true && data.data[windowsIndex].IsOsSupported == true)
+                else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    //Linux audio serivces are not supported at the moment
+                    //Linux audio serivces are not supported
+                    Global.Log("Linux is not supported for the audio services", ConsoleColor.Blue);
+                    Config.bot.isAudioServiceEnabled = false;
+                    Config.SaveConfig();
+                    Global.Log("Audio service was disabled!", ConsoleColor.Red);
+                    return;
                 }
-                else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX) == true && data.data[windowsIndex].IsOsSupported == true)
+                else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    //OSX audio serivces are not supported at the moment
+                    //OSX audio serivces are not supported
+                    Global.Log("MACOSX is not supported for the audio services", ConsoleColor.Blue);
+                    Config.bot.isAudioServiceEnabled = false;
+                    Config.SaveConfig();
+                    Global.Log("Audio service was disabled!", ConsoleColor.Red);
+                    return;
                 }
 
                 Global.Log($"Downloading Youtube-Dl {data.YouTubeDlUrl.ToString()}", ConsoleColor.Blue);

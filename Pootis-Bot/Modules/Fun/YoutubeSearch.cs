@@ -44,8 +44,10 @@ namespace Pootis_Bot.Modules.Fun
                     channels.Append($"[{result.Snippet.Title}]({FunCmdsConfig.ytstartLink}{result.Id.ChannelId})\n{result.Snippet.Description}\n");
             }
 
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.Title = $"Youtube Search '{search}'";
+            EmbedBuilder embed = new EmbedBuilder
+            {
+                Title = $"Youtube Search '{search}'"
+            };
             embed.WithDescription($"**Videos**\n{videos.ToString()}\n\n**Channels**\n{channels.ToString()}");
             embed.WithFooter($"Search by {Context.User} @ ", Context.User.GetAvatarUrl());
             embed.WithCurrentTimestamp();

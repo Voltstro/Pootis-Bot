@@ -12,7 +12,7 @@ namespace Pootis_Bot.Modules.Fun
         // Description      - Uses the tronaldump api to get Tronal Dump quotes
         // Contributors     - Creepysin, 
 
-        string trumpImageUrl = "https://assets.tronalddump.io/img/tronalddump_850x850.png";
+        readonly string trumpImageUrl = "https://assets.tronalddump.io/img/tronalddump_850x850.png";
 
         [Command("tronald")]
         [Summary("Search Donald Trump quotes")]
