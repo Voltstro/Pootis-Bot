@@ -1,5 +1,7 @@
-﻿using Discord.Audio;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Threading;
+using Discord.Audio;
+using Discord.WebSocket;
 
 namespace Pootis_Bot.Entities
 {
@@ -11,7 +13,10 @@ namespace Pootis_Bot.Entities
 
         public bool IsExit { get; set; }
 
+        public CancellationTokenSource CancellationSource { get; set; }
         public IAudioClient AudioClient { get; set; }
+        public SocketVoiceChannel AudioChannel { get; set; }
+        public ISocketMessageChannel StartChannel { get; set; }
         public AudioOutStream Discord { get; set; } 
         public Process Ffmpeg { get; set; }
     }

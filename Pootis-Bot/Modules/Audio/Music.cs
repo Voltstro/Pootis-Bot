@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
+using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules.Audio
 {
@@ -61,7 +62,7 @@ namespace Pootis_Bot.Modules.Audio
             await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
         }
 
-        [Command("stop")]
+        [Command("stop", RunMode = RunMode.Async)]
         [Summary("Stops the current playing song")]
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task StopCmd()

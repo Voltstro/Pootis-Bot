@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -36,6 +37,7 @@ namespace Pootis_Bot.Core
             _client.UserLeft += UserLeft;
             _client.JoinedGuild += JoinedNewServer;
             _client.ReactionAdded += ReactionAdded;
+            _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated;
             _client.Ready += BotReadyAsync;
             await _client.LoginAsync(TokenType.Bot, Global.botToken); //Loging into the bot using the token in the config.
 
@@ -46,6 +48,41 @@ namespace Pootis_Bot.Core
             await _client.SetGameAsync(gameStatus);
 
             await CheckConnectionStatus();
+        }
+
+        private Task _client_UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
+        {
+            //Only check channel user count if the audio services are enabled.
+            if(!Config.bot.isAudioServiceEnabled)
+            {
+                List<GlobalServerMusicItem> toRemove = new List<GlobalServerMusicItem>();
+
+                foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+                {
+                    if (channel.AudioChannel.Users.Count == 1)
+                    {
+                        channel.Ffmpeg.Dispose();
+
+                        //Leave the audio channel
+                        channel.AudioClient.StopAsync();
+
+                        channel.StartChannel.SendMessageAsync(":musical_note: Left the audio channel due to there being no one ther :(");
+
+                        toRemove.Add(channel);
+                    }
+                }
+
+                //To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
+                if (toRemove.Count != 0)
+                {
+                    foreach (var channel in toRemove)
+                    {
+                        AudioService.CurrentChannels.Remove(channel);
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
         }
 
         private async Task BotReadyAsync()
