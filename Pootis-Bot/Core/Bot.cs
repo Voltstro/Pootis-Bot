@@ -37,7 +37,7 @@ namespace Pootis_Bot.Core
             _client.UserLeft += UserLeft;
             _client.JoinedGuild += JoinedNewServer;
             _client.ReactionAdded += ReactionAdded;
-            _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated;
+            _client.UserVoiceStateUpdated += UserVoiceStateUpdated;
             _client.Ready += BotReadyAsync;
             await _client.LoginAsync(TokenType.Bot, Global.botToken); //Loging into the bot using the token in the config.
 
@@ -50,7 +50,7 @@ namespace Pootis_Bot.Core
             await CheckConnectionStatus();
         }
 
-        private Task _client_UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
+        private Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
         {
             //Only check channel user count if the audio services are enabled.
             if(!Config.bot.isAudioServiceEnabled)

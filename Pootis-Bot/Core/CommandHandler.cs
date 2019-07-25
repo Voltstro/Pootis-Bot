@@ -37,7 +37,7 @@ namespace Pootis_Bot.Core
 
             foreach (var item in ServerLists.GetServer(context.Guild).GetAllBanedChannels()) //Check to channel, make sure its not on the baned list
             {
-                if (msg.Channel.Id == item.channelID)
+                if (msg.Channel.Id == item)
                     return;
             }
             if (msg.HasStringPrefix(Global.botPrefix, ref argPos)
