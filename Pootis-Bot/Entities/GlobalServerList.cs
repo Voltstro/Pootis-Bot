@@ -1,5 +1,4 @@
-﻿using Discord.WebSocket;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Pootis_Bot.Entities
@@ -18,7 +17,7 @@ namespace Pootis_Bot.Entities
         public string RuleRole { get; set; }
         public string RuleReactionEmoji { get; set; }
 
-        public List<GlobalServerBanedChannelList> banedChannels = new List<GlobalServerBanedChannelList>();
+        public List<ulong> banedChannels = new List<ulong>();
 
         public List<CommandInfo> commandInfos = new List<CommandInfo>();
 
@@ -28,19 +27,14 @@ namespace Pootis_Bot.Entities
             public List<string> Roles = new List<string>();
         }
 
-        public class GlobalServerBanedChannelList
-        {
-            public ulong channelID;
-        }
-
-        public GlobalServerBanedChannelList GetOrCreateBanedChannel(ulong id)
+        public ulong GetOrCreateBanedChannel(ulong id)
         {
             var result = from a in banedChannels
-                         where a.channelID == id
+                         where a == id
                          select a;
 
             var channel = result.FirstOrDefault();
-            if (channel == null) channel = CreateBanedChannel(id);
+            if (channel == 0) channel = CreateBanedChannel(id);
             return channel;
         }
 
@@ -54,20 +48,15 @@ namespace Pootis_Bot.Entities
             return commandInfo;
         }
 
-        GlobalServerBanedChannelList CreateBanedChannel(ulong _channelID)
+        ulong CreateBanedChannel(ulong _channelID)
         {
-            var banedchannelitem = new GlobalServerBanedChannelList
-            {
-                channelID = _channelID
-            };
-
-            banedChannels.Add(banedchannelitem);
-            return banedchannelitem;
+            banedChannels.Add(_channelID);
+            return _channelID;
         }
 
-        public GlobalServerBanedChannelList[] GetAllBanedChannels()
+        public ulong[] GetAllBanedChannels()
         {
-            GlobalServerBanedChannelList[] convert = banedChannels.ToArray();
+            ulong[] convert = banedChannels.ToArray();
             return convert;
         }
 

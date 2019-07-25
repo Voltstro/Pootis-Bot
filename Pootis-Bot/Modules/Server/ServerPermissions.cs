@@ -44,7 +44,7 @@ namespace Pootis_Bot.Modules.Server
 
             foreach(var channel in server.banedChannels)
             {
-                final.Append($"<#{channel.channelID}> (**ID**: {channel.channelID})\n");
+                final.Append($"<#{channel}> (**ID**: {channel})\n");
             }
 
             await Context.Channel.SendMessageAsync(final.ToString());
