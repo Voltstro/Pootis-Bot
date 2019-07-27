@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
+using Discord.Rest;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services;
+using System.Diagnostics;
 
 namespace Pootis_Bot.Core
 {
@@ -23,6 +24,7 @@ namespace Pootis_Bot.Core
             isStreaming = false;
             isRunning = true;
 
+            //Make sure the token isn't null or empty, if so start the bot's config menu.
             if (string.IsNullOrEmpty(Global.botToken))
             {
                 BotConfigStart();
@@ -32,28 +34,92 @@ namespace Pootis_Bot.Core
             {
                 LogLevel = LogSeverity.Verbose
             });
+
+            //Setup client events
             _client.Log += Log;
             _client.UserJoined += AnnounceJoinedUser;
             _client.UserLeft += UserLeft;
             _client.JoinedGuild += JoinedNewServer;
             _client.ReactionAdded += ReactionAdded;
             _client.UserVoiceStateUpdated += UserVoiceStateUpdated;
+            _client.ChannelDestroyed += ChannelDestroyed;
             _client.Ready += BotReadyAsync;
+
             await _client.LoginAsync(TokenType.Bot, Global.botToken); //Loging into the bot using the token in the config.
+            await _client.StartAsync(); //Start the client
+            CommandHandler _handler = new CommandHandler(_client);
 
-            await _client.StartAsync();
-            CommandService _commands = new CommandService();
-            CommandHandler _handler = new CommandHandler(_client, _commands);
+            //Install all the modules
             await _handler.InstallCommandsAsync();
-            await _client.SetGameAsync(gameStatus);
 
+            //Set the bot's status to the default game status
+            await _client.SetGameAsync(gameStatus);
             await CheckConnectionStatus();
         }
 
-        private Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
+        private Task ChannelDestroyed(SocketChannel channel)
         {
+            GlobalServerList serverList = ServerLists.GetServer((channel as SocketGuildChannel).Guild);
+            GlobalServerList.VoiceChannel voiceChannel = serverList.GetVoiceChannel(channel.Id);
+
+            //If the channel deleted was an auto voice channel, remove it from the list.
+            if(voiceChannel.Name != null)
+            {
+                serverList.VoiceChannels.Remove(voiceChannel);
+                ServerLists.SaveServerList();
+            }  
+
+            return Task.CompletedTask;
+        }
+
+        private async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
+        {
+            GlobalServerList server = ServerLists.GetServer((user as SocketGuildUser).Guild);
+
+            //If we are adding an auto voice channel
+            if (after.VoiceChannel != null)
+            {
+                GlobalServerList.VoiceChannel voiceChannel = server.GetVoiceChannel(after.VoiceChannel.Id);
+                if (voiceChannel.Name != null)
+                {
+                    RestVoiceChannel createdChannel = await after.VoiceChannel.Guild.CreateVoiceChannelAsync($"New {voiceChannel.Name} chat");
+
+                    int count = server.ActiveAutoVoiceChannels.Count + 1;
+                    await createdChannel.ModifyAsync(x =>
+                    {
+                        x.Bitrate = after.VoiceChannel.Bitrate;
+                        x.Name = voiceChannel.Name + " #" + count;
+                        x.CategoryId = after.VoiceChannel.CategoryId;
+                    });
+
+                    await (user as SocketGuildUser).ModifyAsync(x =>
+                    {
+                        x.ChannelId = createdChannel.Id;
+                    });
+
+                    server.ActiveAutoVoiceChannels.Add(createdChannel.Id);
+                    ServerLists.SaveServerList();
+                }
+            }
+
+            //If we are removing an auto voice channel
+            if(before.VoiceChannel != null)
+            {
+                ulong activeChannel = server.GetActiveVoiceChannel(before.VoiceChannel.Id);
+                if (activeChannel != 0)
+                {
+                    //There are no user on the active auto voice channel
+                    if (before.VoiceChannel.Users.Count == 0)
+                    {
+                        await before.VoiceChannel.DeleteAsync();
+                        server.ActiveAutoVoiceChannels.Remove(before.VoiceChannel.Id);
+                        ServerLists.SaveServerList();
+                    }
+                }
+            }
+
             //Only check channel user count if the audio services are enabled.
-            if(!Config.bot.isAudioServiceEnabled)
+            if (Config.bot.isAudioServiceEnabled)
             {
                 List<GlobalServerMusicItem> toRemove = new List<GlobalServerMusicItem>();
 
@@ -61,12 +127,14 @@ namespace Pootis_Bot.Core
                 {
                     if (channel.AudioChannel.Users.Count == 1)
                     {
-                        channel.Ffmpeg.Dispose();
+                        //Stop ffmpeg if it is running
+                        if(channel.Ffmpeg != null)
+                            channel.Ffmpeg.Dispose();
 
                         //Leave the audio channel
-                        channel.AudioClient.StopAsync();
+                        await channel.AudioClient.StopAsync();
 
-                        channel.StartChannel.SendMessageAsync(":musical_note: Left the audio channel due to there being no one ther :(");
+                        await channel.StartChannel.SendMessageAsync(":musical_note: Left the audio channel due to there being no one there :(");
 
                         toRemove.Add(channel);
                     }
@@ -81,8 +149,6 @@ namespace Pootis_Bot.Core
                     }
                 }
             }
-
-            return Task.CompletedTask;
         }
 
         private async Task BotReadyAsync()
@@ -109,10 +175,18 @@ namespace Pootis_Bot.Core
                     await Task.Delay(Config.bot.checkConnectionStatusInterval);
                     if (_client.ConnectionState == ConnectionState.Disconnected || _client.ConnectionState == ConnectionState.Disconnecting && isRunning)
                     {
-                        Global.Log("The bot had disconnect for some reason, reconnecting...", ConsoleColor.Yellow);
+                        Global.Log("The bot had disconnect for some reason, restarting...", ConsoleColor.Yellow);
 
                         await _client.LogoutAsync();
-                        await _client.LoginAsync(TokenType.Bot, Global.botToken);
+                        _client.Dispose();
+
+                        ProcessStartInfo newPootisStart = new ProcessStartInfo("dotnet", "Pootis-Bot.dll");
+                        Process newPootis = new Process
+                        {
+                            StartInfo = newPootisStart
+                        };
+                        newPootis.Start();
+                        Environment.Exit(0);
                     }
                 } 
                 else
@@ -143,13 +217,47 @@ namespace Pootis_Bot.Core
                     server.WelcomeMessageEnabled = false;
                     server.WelcomeChannel = 0;
                 }
+
+                //Check to see if all the active channels don't have someone in it.
+                List<ulong> deleteActiveChannels = new List<ulong>();
+
+                foreach(var activeChannel in server.ActiveAutoVoiceChannels)
+                {
+                    if(_client.GetChannel(activeChannel).Users.Count == 0)
+                    {
+                        await (_client.GetChannel(activeChannel) as SocketVoiceChannel).DeleteAsync();
+                        deleteActiveChannels.Add(activeChannel);
+                        somethingChanged = true;
+                    }
+                }
+
+                //Check to see if all the auto voice channels are there
+                List<GlobalServerList.VoiceChannel> deleteAutoChannels = new List<GlobalServerList.VoiceChannel>();
+                foreach(var autoChannel in server.VoiceChannels)
+                {
+                    if (_client.GetChannel(autoChannel.ID) == null)
+                    {
+                        deleteAutoChannels.Add(autoChannel);
+                        somethingChanged = true;
+                    }
+                }
+
+                //To avoid System.InvalidOperationException remove all of the objects from the list after
+                foreach (var activeChannel in deleteActiveChannels)
+                {
+                    server.ActiveAutoVoiceChannels.Remove(activeChannel);
+                }
+
+                foreach(var autoChannel in deleteAutoChannels)
+                {
+                    server.VoiceChannels.Remove(autoChannel);
+                }
             }
 
             //If a server was updated then save the serverlist file
             if (somethingChanged)
             {
                 ServerLists.SaveServerList();
-                Global.Log(changeCount + " server settings are no longer vaild, there owners have been notified.");
             }
             else
                 Global.Log("All servers are good!");
@@ -230,40 +338,39 @@ namespace Pootis_Bot.Core
         private async Task UserLeft(SocketGuildUser user) //Says goodbye to the user.
         {
             var server = ServerLists.GetServer(user.Guild);
-
-            if (server.WelcomeMessageEnabled)
+            if (!user.IsBot)
             {
-                if (!user.IsBot)
+                //Remove server data from account
+                var account = UserAccounts.GetAccount(user);
+                account.servers.Remove(account.GetOrCreateServer(user.Guild.Id));
+                UserAccounts.SaveAccounts();
+
+                if (server.WelcomeMessageEnabled)
                 {
                     var channel = _client.GetChannel(server.WelcomeChannel) as SocketTextChannel; //gets channel to send message in
 
                     string addUserMetion = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
 
                     await channel.SendMessageAsync(addUserMetion); //Says goodbye.  
-
-                    //Remove server data from account
-                    var account = UserAccounts.GetAccount(user);
-                    account.servers.Remove(account.GetOrCreateServer(user.Guild.Id));
                 }
             }
         }
 
         private async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
         {
-            Global.Log($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})", ConsoleColor.White);
+            Global.Log($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})");
 
             var server = ServerLists.GetServer(user.Guild);
 
-            if (server.WelcomeMessageEnabled == true)
+            if (!user.IsBot)
             {
-                if (!user.IsBot)
+                //Pre create the user account
+                UserAccounts.GetAccount(user);
+                UserAccounts.SaveAccounts();
+                if (server.WelcomeMessageEnabled)
                 {
-                    UserAccounts.GetAccount(user);
-                    if (server.WelcomeMessageEnabled == false)
-                        return;
-
                     var channel = (ISocketMessageChannel)_client.GetChannel(server.WelcomeChannel);
-                
+
                     string addUserMetion = server.WelcomeMessage.Replace("[user]", user.Mention);
                     string addServerName = addUserMetion.Replace("[server]", user.Guild.Name);
 

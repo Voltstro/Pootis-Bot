@@ -45,7 +45,7 @@ namespace Pootis_Bot.Services
                     };
                     item.Roles.Add(role);
 
-                    server.commandInfos.Add(item);
+                    server.CommandInfos.Add(item);
                     
                     await channel.SendMessageAsync($"The role **{role}** was added to the command **{command}**.");
                 }
@@ -110,7 +110,7 @@ namespace Pootis_Bot.Services
 
                     if(server.GetCommandInfo(command).Roles.Count == 0)
                     {
-                        server.commandInfos.Remove(server.GetCommandInfo(command));
+                        server.CommandInfos.Remove(server.GetCommandInfo(command));
                     }
 
                 }
