@@ -24,7 +24,7 @@ Some current features that the bot can do. More feature are planed to be added
 
 - Rule reaction feature
 
-- [Auto Voice Channels](https://pootis-bot.creepysin.com/server-setup/auto-vc-channels/)
+- [Auto Voice Channels](https://pootis-bot.creepysin.com/server-setup/auto-vc/)
 
 ## Getting Started
 
