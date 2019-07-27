@@ -13,9 +13,9 @@ namespace Pootis_Bot.Core
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
 
-        public CommandHandler(DiscordSocketClient client, CommandService commands)
+        public CommandHandler(DiscordSocketClient client)
         {
-            _commands = commands;
+            _commands = new CommandService();
             _client = client;
         }    
 
@@ -35,7 +35,7 @@ namespace Pootis_Bot.Core
                 return;
             LevelingSystem.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel, 10);
 
-            foreach (var item in ServerLists.GetServer(context.Guild).GetAllBanedChannels()) //Check to channel, make sure its not on the baned list
+            foreach (var item in ServerLists.GetServer(context.Guild).BanedChannels) //Check to channel, make sure its not on the baned list
             {
                 if (msg.Channel.Id == item)
                     return;

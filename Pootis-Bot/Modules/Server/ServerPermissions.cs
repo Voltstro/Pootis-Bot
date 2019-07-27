@@ -26,8 +26,6 @@ namespace Pootis_Bot.Modules.Server
         [RequireOwner]
         public async Task Permission(string command, string subCmd, string role)
         {
-            //await _perm.SetPermission(command, role, Context.Channel, Context.Guild);
-
             if (subCmd == "add")
                 await _perm.AddPerm(command, role, Context.Channel, Context.Guild);
             else if (subCmd == "remove")
@@ -42,7 +40,7 @@ namespace Pootis_Bot.Modules.Server
             StringBuilder final = new StringBuilder();
             final.Append("**All banned channels**: \n");
 
-            foreach(var channel in server.banedChannels)
+            foreach(var channel in server.BanedChannels)
             {
                 final.Append($"<#{channel}> (**ID**: {channel})\n");
             }
@@ -64,7 +62,7 @@ namespace Pootis_Bot.Modules.Server
         [RequireOwner]
         public async Task RemoveBanedChannel(SocketTextChannel channel)
         {
-            ServerLists.GetServer(Context.Guild).DeleteChannel(channel.Id);
+            ServerLists.GetServer(Context.Guild).BanedChannels.Remove(channel.Id);
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Channel **{channel.Name}** was removed from your server's baned channel list.");

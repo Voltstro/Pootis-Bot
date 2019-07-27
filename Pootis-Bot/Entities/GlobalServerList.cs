@@ -17,9 +17,19 @@ namespace Pootis_Bot.Entities
         public string RuleRole { get; set; }
         public string RuleReactionEmoji { get; set; }
 
-        public List<ulong> banedChannels = new List<ulong>();
+        public List<ulong> BanedChannels = new List<ulong>();
 
-        public List<CommandInfo> commandInfos = new List<CommandInfo>();
+        public List<CommandInfo> CommandInfos = new List<CommandInfo>();
+
+        public List<VoiceChannel> VoiceChannels = new List<VoiceChannel>();
+
+        public List<ulong> ActiveAutoVoiceChannels = new List<ulong>();
+
+        public struct VoiceChannel
+        {
+            public ulong ID { get; set; }
+            public string Name { get; set;}
+        }
 
         public class CommandInfo
         {
@@ -29,7 +39,7 @@ namespace Pootis_Bot.Entities
 
         public ulong GetOrCreateBanedChannel(ulong id)
         {
-            var result = from a in banedChannels
+            var result = from a in BanedChannels
                          where a == id
                          select a;
 
@@ -38,9 +48,30 @@ namespace Pootis_Bot.Entities
             return channel;
         }
 
+        public VoiceChannel GetVoiceChannel(ulong id)
+        {
+            var result = from a in VoiceChannels
+                         where a.ID == id
+                         select a;
+
+            var channel = result.FirstOrDefault();
+            return channel;
+        }
+
+        public ulong GetActiveVoiceChannel(ulong id)
+        {
+            var result = from a in ActiveAutoVoiceChannels
+                         where a == id
+                         select a;
+
+            var channel = result.FirstOrDefault();
+            if (channel == 0) channel = 0;
+            return channel;
+        }
+
         public CommandInfo GetCommandInfo(string command)
         {
-            var result = from a in commandInfos
+            var result = from a in CommandInfos
                          where a.Command == command
                          select a;
 
@@ -50,20 +81,8 @@ namespace Pootis_Bot.Entities
 
         ulong CreateBanedChannel(ulong _channelID)
         {
-            banedChannels.Add(_channelID);
+            BanedChannels.Add(_channelID);
             return _channelID;
-        }
-
-        public ulong[] GetAllBanedChannels()
-        {
-            ulong[] convert = banedChannels.ToArray();
-            return convert;
-        }
-
-        public void DeleteChannel(ulong id)
-        {
-            var channel = GetOrCreateBanedChannel(id);
-            banedChannels.Remove(channel);         
         }
     }
 }
