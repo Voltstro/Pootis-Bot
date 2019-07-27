@@ -11,7 +11,7 @@ namespace Pootis_Bot.Services
     {
         readonly CommandService _service;
 
-        private string[] blockedCmds = { "profile", "profilemsg", "hello", "ping" };
+        private readonly string[] blockedCmds = { "profile", "profilemsg", "hello", "ping", "perm" };
 
         public PermissionService(CommandService commandService)
         {
