@@ -1,30 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules.Server
 {
-    public class ServerPermissions : ModuleBase<SocketCommandContext>
-    {
-        // Module Infomation
-        // Orginal Author   - Creepysin
-        // Description      - Anything permission related
-        // Contributors     - Creepysin, 
+	public class ServerPermissions : ModuleBase<SocketCommandContext>
+	{
+		// Module Infomation
+		// Orginal Author   - Creepysin
+		// Description      - Anything permission related
+		// Contributors     - Creepysin, 
 
-        private readonly PermissionService _perm;
+		private readonly PermissionService _perm;
 
-        public ServerPermissions(CommandService commandService)
-        {
-            _perm = new PermissionService(commandService);
-        }
+		public ServerPermissions(CommandService commandService)
+		{
+			_perm = new PermissionService(commandService);
+		}
 
-        [Command("perm")]
-        [RequireOwner]
-        public async Task Permission(string command, string subCmd, string role)
+		[Command("perm")]
+		[RequireGuildOwner]
+		public async Task Permission(string command, string subCmd, string role)
         {
             if (subCmd == "add")
                 await _perm.AddPerm(command, role, Context.Channel, Context.Guild);
@@ -33,8 +33,8 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("getbannedchannels")]
-        [RequireOwner]
-        public async Task GetBanedChannels()
+		[RequireGuildOwner]
+		public async Task GetBanedChannels()
         {
             var server = ServerLists.GetServer(Context.Guild);
             StringBuilder final = new StringBuilder();
@@ -49,8 +49,8 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("addbanedchannel")]
-        [RequireOwner]
-        public async Task AddBanedChannel(SocketTextChannel channel)
+		[RequireGuildOwner]
+		public async Task AddBanedChannel(SocketTextChannel channel)
         {
             ServerLists.GetServer(Context.Guild).GetOrCreateBanedChannel(channel.Id);
             ServerLists.SaveServerList();
@@ -59,8 +59,8 @@ namespace Pootis_Bot.Modules.Server
         }
 
         [Command("removebanedchannel")]
-        [RequireOwner]
-        public async Task RemoveBanedChannel(SocketTextChannel channel)
+		[RequireGuildOwner]
+		public async Task RemoveBanedChannel(SocketTextChannel channel)
         {
             ServerLists.GetServer(Context.Guild).BanedChannels.Remove(channel.Id);
             ServerLists.SaveServerList();

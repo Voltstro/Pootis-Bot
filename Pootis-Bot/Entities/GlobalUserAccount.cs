@@ -29,6 +29,9 @@ namespace Pootis_Bot.Entities
             public ulong ServerID { get; set; }
             public int Warnings { get; set; }
             public bool IsAccountNotWarnable { get; set; }
+
+            [JsonIgnore]
+            public DateTime LastLevelUpTime { get; set; }
         }
 
         public GlobalUserAccountServer GetOrCreateServer(ulong id)

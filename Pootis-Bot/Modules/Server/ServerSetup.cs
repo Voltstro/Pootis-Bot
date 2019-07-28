@@ -1,9 +1,10 @@
-﻿using Discord;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
-using System.Linq;
-using System.Threading.Tasks;
+using Pootis_Bot.Preconditions;
 
 namespace Pootis_Bot.Modules
 {
@@ -16,7 +17,7 @@ namespace Pootis_Bot.Modules
 
         [Command("setup")]
         [Summary("Displays setup info")]
-        [RequireOwner]
+        [RequireGuildOwner]
         public async Task Setup()
         {
             var dm = await Context.User.GetOrCreateDMChannelAsync();
@@ -72,7 +73,7 @@ namespace Pootis_Bot.Modules
 
         [Command("togglewelcomemessage")]
         [Summary("Enables / Disabled the welcome and goodbye message")]
-        [RequireOwner]
+        [RequireGuildOwner]
         public async Task ToggleWelcomeMessage([Remainder]SocketTextChannel channel = null)
         {
             var server = ServerLists.GetServer(Context.Guild);
@@ -119,7 +120,7 @@ namespace Pootis_Bot.Modules
         
         [Command("setupwelcomemessage")]
         [Summary("Setups the welcome message and channel. Use [user] to mention the user. User [server] to insert the server name.")]
-        [RequireOwner]
+        [RequireGuildOwner]
         public async Task SetupWelcomeMessage([Remainder]string message = "")
         {
             var server = ServerLists.GetServer(Context.Guild);
@@ -132,7 +133,7 @@ namespace Pootis_Bot.Modules
 
         [Command("setupgoodbyemessage")]
         [Summary("Sets up the goodbye message")]
-        [RequireOwner]
+        [RequireGuildOwner]
         public async Task SetupGoodbyeMessage([Remainder]string message = "")
         {
             var server = ServerLists.GetServer(Context.Guild);
@@ -147,7 +148,7 @@ namespace Pootis_Bot.Modules
 
         [Command("setuprulesmessage")]
         [Summary("Sets the rules message by the message id. Needs to be in the same channel with the message!")]
-        [RequireOwner]
+        [RequireGuildOwner]
         public async Task SetupRuleMessage(ulong id = 0)
         {
             if (id != 0)
@@ -187,7 +188,7 @@ namespace Pootis_Bot.Modules
 
         [Command("setupruleemoji")]
         [Summary("Sets the rule reaction emoji. MUST BE UNICODE. Refer to here for more details. https://unicode.org/emoji/charts/full-emoji-list.html")]
-        [RequireOwner]
+        [RequireGuildOwner]
         public async Task SetupRuleEmoji(string emoji)
         {
             if(!Global.ContainsUnicodeCharacter(emoji))
@@ -206,7 +207,7 @@ namespace Pootis_Bot.Modules
 
         [Command("togglerulereaction")]
         [Summary("Enables or disables the rule reaction feature is on or off")]
-        [RequireOwner]
+        [RequireGuildOwner]
         [RequireBotPermission(GuildPermission.ManageRoles)]
         public async Task ToggleRuleReaction()
         {
@@ -246,7 +247,7 @@ namespace Pootis_Bot.Modules
 
         [Command("setuprulerole")]
         [Summary("Sets the role to give to the user after they have reacted")]
-        [RequireOwner]
+        [RequireGuildOwner]
         public async Task SetupRuleRole([Remainder] string role)
         {
             if (Context.Guild.Roles.FirstOrDefault(x => x.Name == role) != null)

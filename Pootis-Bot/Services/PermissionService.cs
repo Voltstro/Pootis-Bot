@@ -1,9 +1,9 @@
-﻿using Discord;
+﻿using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
-using System.Threading.Tasks;
 
 namespace Pootis_Bot.Services
 {

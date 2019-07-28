@@ -419,7 +419,7 @@ namespace Pootis_Bot.Core
                     if (isStreaming)
                     {
                         activity = ActivityType.Streaming;
-                        twich = Config.bot.twichStreamingSite;
+                        twich = Config.bot.twitchStreamingSite;
                     }  
 
                     await _client.SetGameAsync(gameStatus, twich, activity);
@@ -437,7 +437,7 @@ namespace Pootis_Bot.Core
                     else
                     {
                         isStreaming = true;
-                        await _client.SetGameAsync(gameStatus, Config.bot.twichStreamingSite, ActivityType.Streaming);
+                        await _client.SetGameAsync(gameStatus, Config.bot.twitchStreamingSite, ActivityType.Streaming);
                         Global.Log("Bot is streaming");
                     }
                 }
