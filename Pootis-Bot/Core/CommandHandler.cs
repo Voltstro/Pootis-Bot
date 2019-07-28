@@ -60,7 +60,7 @@ namespace Pootis_Bot.Core
                         }
                     }
 
-                    if (!doesUserHaveARole && context.User != context.Guild.Owner)
+                    if (!doesUserHaveARole && context.User.Id != context.Guild.Owner.Id)
                         return;
                 }
 
