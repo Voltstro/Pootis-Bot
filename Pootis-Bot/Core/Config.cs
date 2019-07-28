@@ -10,7 +10,7 @@ namespace Pootis_Bot.Core
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
 
-        private const string configVersion = "2";
+        private const string configVersion = "3";
 
         public readonly static GlobalConfigFile bot = new GlobalConfigFile();
 
