@@ -67,6 +67,8 @@ namespace Pootis_Bot.Core
                 var result = await _commands.ExecuteAsync(context, argPos, services: null);
 				if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
 					await context.Channel.SendMessageAsync($"The command `{msg.Content.Replace(Global.botPrefix, "")}` either has too many or too little arguments!");
+				else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
+					await context.Channel.SendMessageAsync(result.ErrorReason);
 				else if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
 					Global.Log(result.ErrorReason, ConsoleColor.Red);
             }
