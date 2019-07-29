@@ -1,14 +1,16 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
-using Pootis_Bot.Entities;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Services.Fun
 {
     public static class GiphyService
     {
-        public static GiphyData Search(string search)
+        public static GiphySearchResult Search(string search)
         {
+			GiphySearchResult searchResult = new GiphySearchResult();
+
             try
             {
                 //Check to see if the token is null or white space
@@ -34,16 +36,23 @@ namespace Pootis_Bot.Services.Fun
                         GifLink = dataObject.data[choose].bitly_gif_url.ToString()
                     };
 
-                    return item;
+					searchResult.IsSuccessfull = true;
+					searchResult.Data = item;
+					return searchResult;
                 }
-                else
-                    return null;
+				else
+				{
+					searchResult.IsSuccessfull = false;
+					searchResult.ErrorReason = ErrorReason.NoAPIKey;
+					return searchResult;
+				}
             }
             catch
             {
-                return null;
-            }
-            
+				searchResult.IsSuccessfull = false;
+				searchResult.ErrorReason = ErrorReason.Error;
+				return searchResult;
+            } 
         }
     }
 }
