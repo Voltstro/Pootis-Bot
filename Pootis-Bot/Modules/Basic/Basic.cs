@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Preconditions;
 using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Modules.Basic
@@ -18,6 +19,7 @@ namespace Pootis_Bot.Modules.Basic
 
         [Command("hello")]
         [Summary("Displays the 'hello' message")]
+		[Cooldown(5)]
         public async Task Hello()
         {
             var embed = new EmbedBuilder();
@@ -37,6 +39,7 @@ namespace Pootis_Bot.Modules.Basic
 
         [Command("server")]
         [Summary("Gets details about the server you are in")]
+		[Cooldown(5)]
         public async Task ServerGuild()
         {
             var guilduser = (SocketGuildUser)Context.User;

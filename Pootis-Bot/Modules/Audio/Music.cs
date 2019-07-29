@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
+using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules.Audio
@@ -22,6 +23,7 @@ namespace Pootis_Bot.Modules.Audio
 
         [Command("join", RunMode = RunMode.Async)]
         [Summary("Joins in the current voice channel you are in")]
+		[Cooldown(5)]
         [RequireBotPermission(GuildPermission.Connect)]
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task JoinCmd()
@@ -50,6 +52,7 @@ namespace Pootis_Bot.Modules.Audio
 
         [Command("play", RunMode = RunMode.Async)]
         [Summary("Plays a song")]
+		[Cooldown(5)]
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task PlayCmd([Remainder] string song = "")
         {

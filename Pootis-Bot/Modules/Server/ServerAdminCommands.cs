@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System.Threading.Tasks;
 
 namespace Pootis_Bot.Modules.Server
@@ -30,5 +31,20 @@ namespace Pootis_Bot.Modules.Server
             await user.BanAsync(days, reason);
             await Context.Channel.SendMessageAsync($"The user {user.Username} was banned");
         }
+
+		[Command("purge", RunMode = RunMode.Async)]
+		[Summary("Deletes bulk messages")]
+		[RequireBotPermission(GuildPermission.ManageMessages)]
+		[RequireUserPermission(GuildPermission.ManageMessages)]
+		public async Task Purge(int messageCount = 10)
+		{
+			var messages = Context.Channel.GetMessagesAsync(messageCount + 1).FlattenAsync();
+
+			await (Context.Channel as SocketTextChannel).DeleteMessagesAsync(messages.Result);
+
+			var message = await Context.Channel.SendMessageAsync($"{messageCount} message were deleted, the message will be deleted in a moment.");
+			await Task.Delay(3000);
+			await message.DeleteAsync();
+		}
     }
 }
