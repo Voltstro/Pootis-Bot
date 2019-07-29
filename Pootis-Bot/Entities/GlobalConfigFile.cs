@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Entities
 {
@@ -23,14 +24,6 @@ namespace Pootis_Bot.Entities
 
         //Help modules
         public List<HelpModules> helpModules = new List<HelpModules>();
-
-        public struct ConfigApis
-        {
-            public string apiGiphyKey;
-            public string apiYoutubeKey;
-            public string apiGoogleSearchKey;
-            public string googleSearchEngineID;
-        }
 
         public class HelpModules
         {

@@ -1,6 +1,6 @@
-﻿namespace Pootis_Bot.Entities
+﻿namespace Pootis_Bot.Structs
 {
-    public class GiphyData
+    public struct GiphyData
     {
         public string gifUrl;
         public string gifTitle;

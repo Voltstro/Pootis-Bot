@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Discord;
 using Discord.WebSocket;
 using Discord.Rest;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services;
-using System.Diagnostics;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Core
 {
@@ -60,7 +61,7 @@ namespace Pootis_Bot.Core
         private Task ChannelDestroyed(SocketChannel channel)
         {
             GlobalServerList serverList = ServerLists.GetServer((channel as SocketGuildChannel).Guild);
-            GlobalServerList.VoiceChannel voiceChannel = serverList.GetVoiceChannel(channel.Id);
+            var voiceChannel = serverList.GetVoiceChannel(channel.Id);
 
             //If the channel deleted was an auto voice channel, remove it from the list.
             if(voiceChannel.Name != null)
@@ -79,7 +80,7 @@ namespace Pootis_Bot.Core
             //If we are adding an auto voice channel
             if (after.VoiceChannel != null)
             {
-                GlobalServerList.VoiceChannel voiceChannel = server.GetVoiceChannel(after.VoiceChannel.Id);
+                var voiceChannel = server.GetVoiceChannel(after.VoiceChannel.Id);
                 if (voiceChannel.Name != null)
                 {
                     RestVoiceChannel createdChannel = await after.VoiceChannel.Guild.CreateVoiceChannelAsync($"New {voiceChannel.Name} chat");
@@ -232,7 +233,7 @@ namespace Pootis_Bot.Core
                 }
 
                 //Check to see if all the auto voice channels are there
-                List<GlobalServerList.VoiceChannel> deleteAutoChannels = new List<GlobalServerList.VoiceChannel>();
+                List<VoiceChannel> deleteAutoChannels = new List<VoiceChannel>();
                 foreach(var autoChannel in server.VoiceChannels)
                 {
                     if (_client.GetChannel(autoChannel.ID) == null)

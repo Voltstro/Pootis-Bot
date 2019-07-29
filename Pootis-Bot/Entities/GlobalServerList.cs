@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Entities
 {
@@ -24,18 +25,6 @@ namespace Pootis_Bot.Entities
         public List<VoiceChannel> VoiceChannels = new List<VoiceChannel>();
 
         public List<ulong> ActiveAutoVoiceChannels = new List<ulong>();
-
-        public struct VoiceChannel
-        {
-            public ulong ID { get; set; }
-            public string Name { get; set;}
-
-			public VoiceChannel(ulong id, string name)
-			{
-				ID = id;
-				Name = name;
-			}
-        }
 
         public class CommandInfo
         {
