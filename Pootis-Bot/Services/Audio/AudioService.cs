@@ -11,7 +11,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
 
-namespace Pootis_Bot.Services
+namespace Pootis_Bot.Services.Audio
 {
     public class AudioService
     {

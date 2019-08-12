@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Discord.Rest;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services;
+using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Core
@@ -465,7 +466,7 @@ namespace Pootis_Bot.Core
 
                     Global.Log($"The audio service was set to {Config.bot.isAudioServiceEnabled}", ConsoleColor.Blue);
                     if (Config.bot.isAudioServiceEnabled == true)
-                        Program.CheckAudioService();
+						AudioCheckService.CheckAudioService();
                 }
                 else if (input == "forceaudioupdate")
                 {
@@ -480,7 +481,7 @@ namespace Pootis_Bot.Core
                     System.IO.File.Delete("libsodium.dll");
                     System.IO.File.Delete("opus.dll");
 
-                    Program.UpdateAudioFiles();
+					AudioCheckService.UpdateAudioFiles();
                     Global.Log("Audio files were updated.", ConsoleColor.Blue);
                 }
                 else if(input == "status")
