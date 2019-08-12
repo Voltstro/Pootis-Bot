@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Discord.Commands;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Preconditions
 {
@@ -13,18 +14,6 @@ namespace Pootis_Bot.Preconditions
 		public CooldownAttribute(int seconds)
 		{
 			CooldownLength = TimeSpan.FromSeconds(seconds);
-		}
-
-		public struct CooldownInfo
-		{
-			public ulong UserId { get; }
-			public int CommandHashCode { get; }
-
-			public CooldownInfo(ulong userId, int commandHashCode)
-			{
-				UserId = userId;
-				CommandHashCode = commandHashCode;
-			}
 		}
 
 		public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)

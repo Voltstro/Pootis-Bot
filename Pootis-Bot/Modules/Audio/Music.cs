@@ -3,7 +3,7 @@ using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
 using Pootis_Bot.Preconditions;
-using Pootis_Bot.Services;
+using Pootis_Bot.Services.Audio;
 
 namespace Pootis_Bot.Modules.Audio
 {

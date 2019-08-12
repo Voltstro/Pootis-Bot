@@ -26,13 +26,15 @@ namespace Pootis_Bot.Entities
 
         public List<ulong> ActiveAutoVoiceChannels = new List<ulong>();
 
-        public class CommandInfo
+		public class CommandInfo
         {
             public string Command { get; set; }
             public List<string> Roles = new List<string>();
         }
 
-        public ulong GetOrCreateBanedChannel(ulong id)
+		#region Functions
+
+		public ulong GetOrCreateBanedChannel(ulong id)
         {
             var result = from a in BanedChannels
                          where a == id
@@ -79,5 +81,7 @@ namespace Pootis_Bot.Entities
             BanedChannels.Add(_channelID);
             return _channelID;
         }
-    }
+
+		#endregion
+	}
 }
