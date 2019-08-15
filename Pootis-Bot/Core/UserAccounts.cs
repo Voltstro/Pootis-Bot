@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
 
@@ -59,5 +60,23 @@ namespace Pootis_Bot.Core
             SaveAccounts();
             return newAccount;
         }
-    }
+
+		public static async Task CheckUserWarnStatus(SocketGuildUser user)
+		{
+			if (user.IsBot)
+				return;
+
+			var userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
+
+			if (userAccount.Warnings >= 3)
+			{
+				await user.KickAsync("Was kicked due to having 3 warnings.");
+			}
+
+			if (userAccount.Warnings >= 4)
+			{
+				await user.Guild.AddBanAsync(user, 5, "Was baned due to having 4 warnings.");
+			}
+		}
+	}
 }

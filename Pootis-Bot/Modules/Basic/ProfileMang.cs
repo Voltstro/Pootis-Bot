@@ -35,7 +35,7 @@ namespace Pootis_Bot.Modules.Basic
         public async Task WarnUser(IGuildUser user)
         {
             await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
-            await CheckWarnStatus((SocketGuildUser)user);
+            await UserAccounts.CheckUserWarnStatus((SocketGuildUser)user);
         }
 
         [Command("profile")]
@@ -182,24 +182,6 @@ namespace Pootis_Bot.Modules.Basic
                 userAccount.Warnings++;
                 UserAccounts.SaveAccounts();
                 return $"A warning was given to **{user}**";
-            }
-        }
-
-        async Task CheckWarnStatus(SocketGuildUser user)
-        {
-            if (user.IsBot)
-                return;
-
-            var userAccount = UserAccounts.GetAccount(user).GetOrCreateServer(user.Guild.Id);
-
-            if (userAccount.Warnings >= 3)
-            {
-                await user.KickAsync("Was kicked due to having 3 warnings.");
-            }
-
-            if (userAccount.Warnings >= 4)
-            {
-                await user.Guild.AddBanAsync(user, 5, "Was baned due to having 4 warnings.");
             }
         }
 
