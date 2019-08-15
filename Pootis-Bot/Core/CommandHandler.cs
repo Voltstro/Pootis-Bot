@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Services.AntiSpam;
 
 namespace Pootis_Bot.Core
 {
@@ -12,11 +13,13 @@ namespace Pootis_Bot.Core
     {
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
+		private readonly AntiSpamService antiSpam;
 
         public CommandHandler(DiscordSocketClient client)
         {
             _commands = new CommandService();
-            _client = client;
+			antiSpam = new AntiSpamService();
+			_client = client;
         }    
 
         public async Task InstallCommandsAsync()
@@ -31,7 +34,15 @@ namespace Pootis_Bot.Core
             if (!(messageParam is SocketUserMessage msg)) return;
             var context = new SocketCommandContext(_client, msg);
             int argPos = 0;
-            if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
+
+			//Someone has mention more than 2 users, check with the anti-spam
+			if (msg.MentionedUsers.Count >= 2)
+			{
+				if (antiSpam.CheckMentionUsers(msg, context.Guild) == true)
+					return;
+			}	
+
+			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
                 return;
 
             foreach (var item in ServerLists.GetServer(context.Guild).BanedChannels) //Check to channel, make sure its not on the baned list
