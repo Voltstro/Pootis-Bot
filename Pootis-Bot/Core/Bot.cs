@@ -15,19 +15,19 @@ namespace Pootis_Bot.Core
 {
     public class Bot
     {
-        DiscordSocketClient _client;
+        private DiscordSocketClient _client;
 
-        private string gameStatus = Config.bot.gameMessage;
-        private bool isStreaming;
-        private bool isRunning;
+        private string _gameStatus = Config.bot.GameMessage;
+        private bool _isStreaming;
+        private bool _isRunning;
 
         public async Task StartBot()
         {
-            isStreaming = false;
-            isRunning = true;
+            _isStreaming = false;
+            _isRunning = true;
 
-            //Make sure the token isn't null or empty, if so start the bot's config menu.
-            if (string.IsNullOrEmpty(Global.botToken))
+            //Make sure the token isn't null or empty, if so open the bot config menu.
+            if (string.IsNullOrEmpty(Global.BotToken))
             {
                 BotConfigStart();
             }
@@ -47,21 +47,21 @@ namespace Pootis_Bot.Core
             _client.ChannelDestroyed += ChannelDestroyed;
             _client.Ready += BotReadyAsync;
 
-            await _client.LoginAsync(TokenType.Bot, Global.botToken); //Loging into the bot using the token in the config.
+            await _client.LoginAsync(TokenType.Bot, Global.BotToken); //Logging into the bot using the token in the config.
             await _client.StartAsync(); //Start the client
             CommandHandler _handler = new CommandHandler(_client);
 
-            //Install all the modules
+            //Install all the Modules
             await _handler.InstallCommandsAsync();
 
-            //Set the bot's status to the default game status
-            await _client.SetGameAsync(gameStatus);
+            //Set the bot status to the default game status
+            await _client.SetGameAsync(_gameStatus);
             await CheckConnectionStatus();
         }
 
         private Task ChannelDestroyed(SocketChannel channel)
         {
-            GlobalServerList serverList = ServerLists.GetServer((channel as SocketGuildChannel).Guild);
+            var serverList = ServerLists.GetServer((channel as SocketGuildChannel).Guild);
             var voiceChannel = serverList.GetVoiceChannel(channel.Id);
 
             //If the channel deleted was an auto voice channel, remove it from the list.
@@ -121,7 +121,7 @@ namespace Pootis_Bot.Core
             }
 
             //Only check channel user count if the audio services are enabled.
-            if (Config.bot.isAudioServiceEnabled)
+            if (Config.bot.IsAudioServiceEnabled)
             {
                 List<GlobalServerMusicItem> toRemove = new List<GlobalServerMusicItem>();
 
@@ -130,8 +130,8 @@ namespace Pootis_Bot.Core
                     if (channel.AudioChannel.Users.Count == 1)
                     {
                         //Stop ffmpeg if it is running
-                        if(channel.Ffmpeg != null)
-                            channel.Ffmpeg.Dispose();
+                        if(channel.FFmpeg != null)
+                            channel.FFmpeg.Dispose();
 
                         //Leave the audio channel
                         await channel.AudioClient.StopAsync();
@@ -170,12 +170,12 @@ namespace Pootis_Bot.Core
 
         private async Task CheckConnectionStatus()
         {
-            while(isRunning)
+            while(_isRunning)
             {
-                if (Config.bot.checkConnectionStatus) // It is enabled then check the connection status ever so milliseconds
+                if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
                 {
-                    await Task.Delay(Config.bot.checkConnectionStatusInterval);
-                    if (_client.ConnectionState == ConnectionState.Disconnected || _client.ConnectionState == ConnectionState.Disconnecting && isRunning)
+                    await Task.Delay(Config.bot.CheckConnectionStatusInterval);
+                    if (_client.ConnectionState == ConnectionState.Disconnected || _client.ConnectionState == ConnectionState.Disconnecting && _isRunning)
                     {
                         Global.Log("The bot had disconnect for some reason, restarting...", ConsoleColor.Yellow);
 
@@ -211,10 +211,10 @@ namespace Pootis_Bot.Core
                     changeCount++;
 
                     var guild = _client.GetGuild(server.ServerID);
-                    var ownerDM = await guild.Owner.GetOrCreateDMChannelAsync();
+                    var ownerDm = await guild.Owner.GetOrCreateDMChannelAsync();
 
-                    await ownerDM.SendMessageAsync($"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +
-                        $"You can enable it again with `{Global.botPrefix}setupwelcomemessage` command and your existing message should stay.");
+                    await ownerDm.SendMessageAsync($"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +
+                        $"You can enable it again with `{Global.BotPrefix}setupwelcomemessage` command and your existing message should stay.");
 
                     server.WelcomeMessageEnabled = false;
                     server.WelcomeChannel = 0;
@@ -256,7 +256,7 @@ namespace Pootis_Bot.Core
                 }
             }
 
-            //If a server was updated then save the serverlist file
+            //If a server was updated then save the ServerList.json file
             if (somethingChanged)
             {
                 ServerLists.SaveServerList();
@@ -270,7 +270,7 @@ namespace Pootis_Bot.Core
             var guild = (channel as SocketGuildChannel).Guild;
             var server = ServerLists.GetServer(guild);
             
-            if(reaction.MessageId == server.RuleMessageID) //Check to see if the reaction is on the right message
+            if(reaction.MessageId == server.RuleMessageId) //Check to see if the reaction is on the right message
             {
                 if(server.RuleEnabled) //Check to see if the server even has to rule reaction enabled
                 {
@@ -320,7 +320,7 @@ namespace Pootis_Bot.Core
 
             EmbedBuilder embed = new EmbedBuilder();
             embed.WithTitle("Hey, thanks for adding me to your server.");
-            embed.WithDescription("Hello! My name is " + Global.botName + "!\n\n**__Links__**" +
+            embed.WithDescription("Hello! My name is " + Global.BotName + "!\n\n**__Links__**" +
                 $"\n:computer: [Commands]({Global.websiteCommands})" +
                 $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
                 $"\n:bookmark: [Documation]({Global.websiteHome})" +
@@ -332,9 +332,9 @@ namespace Pootis_Bot.Core
             //Send a message to the server's default channel with the hello message
             await guild.DefaultChannel.SendMessageAsync("", false, embed.Build());
 
-            //Send a message to Discord server's owner about seting up the bot
+            //Send a message to Discord server's owner about setting up the bot
             var owner = await guild.Owner.GetOrCreateDMChannelAsync();
-            await owner.SendMessageAsync($"Thanks for using {Global.botName}! Check out {Global.websiteServerSetup} on how to setup {Global.botName} for your server.");
+            await owner.SendMessageAsync($"Thanks for using {Global.BotName}! Check out {Global.websiteServerSetup} on how to setup {Global.BotName} for your server.");
         }
 
         private async Task UserLeft(SocketGuildUser user) //Says goodbye to the user.
@@ -351,9 +351,9 @@ namespace Pootis_Bot.Core
                 {
                     var channel = _client.GetChannel(server.WelcomeChannel) as SocketTextChannel; //gets channel to send message in
 
-                    string addUserMetion = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
+                    string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
 
-                    await channel.SendMessageAsync(addUserMetion); //Says goodbye.  
+                    await channel.SendMessageAsync(addUserMention); //Says goodbye.  
                 }
             }
         }
@@ -389,7 +389,7 @@ namespace Pootis_Bot.Core
 
                 if (input == "exit")
                 {
-                    isRunning = false;
+                    _isRunning = false;
 
                     Global.Log("Shutting down...");
                     await _client.SetGameAsync("Bot shutting down");
@@ -414,32 +414,32 @@ namespace Pootis_Bot.Core
                 else if (input == "setgame")
                 {
                     Console.WriteLine("Enter in what you want to set the bot's game to: ");
-                    gameStatus = Console.ReadLine();
+                    _gameStatus = Console.ReadLine();
 
                     ActivityType activity = ActivityType.Playing;
                     string twich = null;
-                    if (isStreaming)
+                    if (_isStreaming)
                     {
                         activity = ActivityType.Streaming;
-                        twich = Config.bot.twitchStreamingSite;
+                        twich = Config.bot.TwitchStreamingSite;
                     }  
 
-                    await _client.SetGameAsync(gameStatus, twich, activity);
+                    await _client.SetGameAsync(_gameStatus, twich, activity);
 
-                    Global.Log($"Bot's game was set to '{gameStatus}'");
+                    Global.Log($"Bot's game was set to '{_gameStatus}'");
                 }
                 else if (input == "togglestream")
                 {
-                    if (isStreaming)
+                    if (_isStreaming)
                     {
-                        isStreaming = false;
-                        await _client.SetGameAsync(gameStatus, null, ActivityType.Playing);
+                        _isStreaming = false;
+                        await _client.SetGameAsync(_gameStatus, null, ActivityType.Playing);
                         Global.Log("Bot is no longer streaming");
                     }
                     else
                     {
-                        isStreaming = true;
-                        await _client.SetGameAsync(gameStatus, Config.bot.twitchStreamingSite, ActivityType.Streaming);
+                        _isStreaming = true;
+                        await _client.SetGameAsync(_gameStatus, Config.bot.TwitchStreamingSite, ActivityType.Streaming);
                         Global.Log("Bot is streaming");
                     }
                 }
@@ -461,11 +461,11 @@ namespace Pootis_Bot.Core
                 }
                 else if (input == "toggleaudio")
                 {
-                    Config.bot.isAudioServiceEnabled = !Config.bot.isAudioServiceEnabled;
+                    Config.bot.IsAudioServiceEnabled = !Config.bot.IsAudioServiceEnabled;
                     Config.SaveConfig();
 
-                    Global.Log($"The audio service was set to {Config.bot.isAudioServiceEnabled}", ConsoleColor.Blue);
-                    if (Config.bot.isAudioServiceEnabled == true)
+                    Global.Log($"The audio service was set to {Config.bot.IsAudioServiceEnabled}", ConsoleColor.Blue);
+                    if (Config.bot.IsAudioServiceEnabled == true)
 						AudioCheckService.CheckAudioService();
                 }
                 else if (input == "forceaudioupdate")
@@ -516,9 +516,9 @@ namespace Pootis_Bot.Core
 
         void BotConfigMain()
         {
-            string token = Global.botToken;
-            string name = Global.botName;
-            string prefix = Global.botPrefix;
+            string token = Global.BotToken;
+            string name = Global.BotName;
+            string prefix = Global.BotPrefix;
 
             while (true)
             {
@@ -528,15 +528,15 @@ namespace Pootis_Bot.Core
                 {
                     if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(prefix))
                     {
-                        Config.bot.botToken = token;
-                        Config.bot.botName = name;
-                        Config.bot.botPrefix = prefix;
+                        Config.bot.BotToken = token;
+                        Config.bot.BotName = name;
+                        Config.bot.BotPrefix = prefix;
 
                         Config.SaveConfig();
 
-                        Global.botToken = token;
-                        Global.botName = name;
-                        Global.botPrefix = prefix;
+                        Global.BotToken = token;
+                        Global.BotName = name;
+                        Global.BotPrefix = prefix;
 
                         Console.WriteLine("Exited bot configuration");
                         return;
@@ -567,10 +567,10 @@ namespace Pootis_Bot.Core
 
         void BotConfigAPIs()
         {
-            string giphyAPI = Config.bot.apis.apiGiphyKey;
-            string youtubeAPI = Config.bot.apis.apiYoutubeKey;
-            string googleAPI = Config.bot.apis.apiGoogleSearchKey;
-            string googleSearchID = Config.bot.apis.googleSearchEngineID;
+            string giphyAPI = Config.bot.Apis.apiGiphyKey;
+            string youtubeAPI = Config.bot.Apis.apiYoutubeKey;
+            string googleAPI = Config.bot.Apis.apiGoogleSearchKey;
+            string googleSearchID = Config.bot.Apis.googleSearchEngineID;
 
             Console.WriteLine("APIs are needed for commands such as 'google'");
             Console.WriteLine("It is definitely recommended.");
@@ -588,10 +588,10 @@ namespace Pootis_Bot.Core
 
                 if (input.ToLower() == "return")
                 {
-                    Config.bot.apis.apiGiphyKey = giphyAPI;
-                    Config.bot.apis.apiYoutubeKey = youtubeAPI;
-                    Config.bot.apis.apiGoogleSearchKey = googleAPI;
-                    Config.bot.apis.googleSearchEngineID = googleSearchID;
+                    Config.bot.Apis.apiGiphyKey = giphyAPI;
+                    Config.bot.Apis.apiYoutubeKey = youtubeAPI;
+                    Config.bot.Apis.apiGoogleSearchKey = googleAPI;
+                    Config.bot.Apis.googleSearchEngineID = googleSearchID;
 
                     Config.SaveConfig();
                     Console.WriteLine("Exited api configuration");
@@ -624,7 +624,7 @@ namespace Pootis_Bot.Core
         {
             string token;
 
-            Console.WriteLine($"The current bot token is set to: '{Config.bot.botToken}'");
+            Console.WriteLine($"The current bot token is set to: '{Config.bot.BotToken}'");
             Console.WriteLine("Enter in what you want to change the bot token to: ");
 
             while (true)
@@ -646,7 +646,7 @@ namespace Pootis_Bot.Core
         {
             string prefix;
 
-            Console.WriteLine($"The current bot prefix is set to: '{Config.bot.botPrefix}'");
+            Console.WriteLine($"The current bot prefix is set to: '{Config.bot.BotPrefix}'");
             Console.WriteLine("Enter in what you want to change the bot prefix to: ");
 
             while (true)
@@ -670,7 +670,7 @@ namespace Pootis_Bot.Core
         {
             string name;
 
-            Console.WriteLine($"The current bot name is set to: '{Config.bot.botName}'");
+            Console.WriteLine($"The current bot name is set to: '{Config.bot.BotName}'");
             Console.WriteLine("Enter in what you want to change the bot name to: ");
 
             while (true)
@@ -692,7 +692,7 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.apis.apiGiphyKey}'");
+            Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.Apis.apiGiphyKey}'");
             Console.WriteLine("Enter in what you want to change the bot Giphy key to: ");
 
             while (true)
@@ -714,7 +714,7 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.apis.apiYoutubeKey}'");
+            Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.Apis.apiYoutubeKey}'");
             Console.WriteLine("Enter in what you want to change the bot Youtube key to: ");
 
             while (true)
@@ -736,7 +736,7 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Google key is set to: '{Config.bot.apis.apiGoogleSearchKey}'");
+            Console.WriteLine($"The current bot Google key is set to: '{Config.bot.Apis.apiGoogleSearchKey}'");
             Console.WriteLine("Enter in what you want to change the bot Google key to: ");
 
             while (true)
@@ -758,7 +758,7 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Google Search ID is set to: '{Config.bot.apis.googleSearchEngineID}'");
+            Console.WriteLine($"The current bot Google Search ID is set to: '{Config.bot.Apis.googleSearchEngineID}'");
             Console.WriteLine("Enter in what you want to change the bot Google Search ID to: ");
 
             while (true)

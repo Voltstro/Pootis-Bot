@@ -9,16 +9,16 @@ namespace Pootis_Bot.Modules.Basic
 {
     public class Misc : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Misc commands
         // Contributors     - Creepysin, 
 
-        private readonly VoteGivewayService voteGivewayService;
+        private readonly VoteGivewayService _voteGivewayService;
 
         public Misc()
         {
-            voteGivewayService = new VoteGivewayService();
+            _voteGivewayService = new VoteGivewayService();
         }
 
         [Command("pick")]
@@ -28,8 +28,8 @@ namespace Pootis_Bot.Modules.Basic
             string[] options = message.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
             Random r = new Random();
-            string seletion = options[r.Next(0, options.Length)];
-            await Context.Channel.SendMessageAsync("Choice for " + Context.Message.Author.Mention + "\nI Choose: " + seletion);
+            string selection = options[r.Next(0, options.Length)];
+            await Context.Channel.SendMessageAsync("Choice for " + Context.Message.Author.Mention + "\nI Choose: " + selection);
         }
 
         [Command("roll")]
@@ -45,7 +45,7 @@ namespace Pootis_Bot.Modules.Basic
         [Summary("Starts a vote")]
         public async Task Vote(string time, string title, string description, string yesEmoji, string noEmoji)
         {
-            await voteGivewayService.StartVote(Context.Guild, Context.Channel, Context.User, time, title, description, yesEmoji, noEmoji);
+            await _voteGivewayService.StartVote(Context.Guild, Context.Channel, Context.User, time, title, description, yesEmoji, noEmoji);
         }
 
         [Command("reminds")]

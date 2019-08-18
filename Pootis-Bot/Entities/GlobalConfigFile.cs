@@ -5,30 +5,30 @@ namespace Pootis_Bot.Entities
 {
     public class GlobalConfigFile
     {
-        public string configVersion;
+        public string ConfigVersion;
 
-        public string botToken = "";
-        public string botPrefix = "$";
-        public string botName = "Bot";
-        public string twitchStreamingSite = "https://www.twitch.tv/creepysin";
-        public string gameMessage = "Use $help for help.";
-        public bool isAudioServiceEnabled = false;
+        public string BotToken = "";
+        public string BotPrefix = "$";
+        public string BotName = "Bot";
+        public string TwitchStreamingSite = "https://www.twitch.tv/creepysin";
+        public string GameMessage = "Use $help for help.";
+        public bool IsAudioServiceEnabled = false;
 
-        public bool checkConnectionStatus = true;
-        public int checkConnectionStatusInterval = 60000;
+        public bool CheckConnectionStatus = true;
+        public int CheckConnectionStatusInterval = 60000;
 
-		public int levelUpCooldown = 15;
+		public int LevelUpCooldown = 15;
 
         //Bot APIs
-        public ConfigApis apis;
+        public ConfigApis Apis;
 
-        //Help modules
-        public List<HelpModules> helpModules = new List<HelpModules>();
+        //Help Modules
+        public List<HelpModule> HelpModules = new List<HelpModule>();
 
-        public class HelpModules
+        public class HelpModule
         {
-            public string group;
-            public List<string> modules = new List<string>();
+            public string Group;
+            public List<string> Modules = new List<string>();
         }
     }
 }

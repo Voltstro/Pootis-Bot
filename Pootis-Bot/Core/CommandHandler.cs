@@ -13,12 +13,12 @@ namespace Pootis_Bot.Core
     {
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
-		private readonly AntiSpamService antiSpam;
+		private readonly AntiSpamService _antiSpam;
 
         public CommandHandler(DiscordSocketClient client)
         {
             _commands = new CommandService();
-			antiSpam = new AntiSpamService();
+			_antiSpam = new AntiSpamService();
 			_client = client;
         }    
 
@@ -38,19 +38,19 @@ namespace Pootis_Bot.Core
 			//Someone has mention more than 2 users, check with the anti-spam
 			if (msg.MentionedUsers.Count >= 2)
 			{
-				if (antiSpam.CheckMentionUsers(msg, context.Guild) == true)
+				if (_antiSpam.CheckMentionUsers(msg, context.Guild) == true)
 					return;
 			}	
 
 			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
                 return;
 
-            foreach (var item in ServerLists.GetServer(context.Guild).BanedChannels) //Check to channel, make sure its not on the baned list
+            foreach (var item in ServerLists.GetServer(context.Guild).BannedChannels) //Check to channel, make sure its not on the baned list
             {
                 if (msg.Channel.Id == item)
                     return;
             }
-            if (msg.HasStringPrefix(Global.botPrefix, ref argPos)
+            if (msg.HasStringPrefix(Global.BotPrefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 //Permissions
@@ -64,8 +64,8 @@ namespace Pootis_Bot.Core
                     
                     foreach (var role in perm.Roles)
                     {
-                        var _role = (context.User as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == role);
-                        if ((context.User as SocketGuildUser).Roles.Contains(_role))
+                        var guildRole = (context.User as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == role);
+                        if ((context.User as SocketGuildUser).Roles.Contains(guildRole))
                         {
                             doesUserHaveARole = true;
                         }
@@ -77,7 +77,7 @@ namespace Pootis_Bot.Core
 
                 var result = await _commands.ExecuteAsync(context, argPos, services: null);
 				if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
-					await context.Channel.SendMessageAsync($"The command `{msg.Content.Replace(Global.botPrefix, "")}` either has too many or too little arguments!");
+					await context.Channel.SendMessageAsync($"The command `{msg.Content.Replace(Global.BotPrefix, "")}` either has too many or too little arguments!");
 				else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
 					await context.Channel.SendMessageAsync(result.ErrorReason);
 				else if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
@@ -89,11 +89,11 @@ namespace Pootis_Bot.Core
                 DateTime now = DateTime.Now;
                 
                 //Only level it up if the last message was the level up cooldown.
-                if(account.LastLevelUpTime.Subtract(now).TotalSeconds == Config.bot.levelUpCooldown || account.LastLevelUpTime.Second == 0)
+                if(account.LastLevelUpTime.Subtract(now).TotalSeconds == Config.bot.LevelUpCooldown || account.LastLevelUpTime.Second == 0)
                 {
                     LevelingSystem.UserSentMessage((SocketGuildUser)context.User, (SocketTextChannel)context.Channel, 10);
 
-                    //We dont need to save the accounts file
+                    //We don't need to save the accounts file
                     account.LastLevelUpTime = now;
                 }
             }

@@ -2,7 +2,6 @@
 using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
-using Pootis_Bot.Entities;
 using Pootis_Bot.Structs;
 using Pootis_Bot.Services.Fun;
 
@@ -10,8 +9,8 @@ namespace Pootis_Bot.Modules.Fun
 {
     public class GiphySearch : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Searches Giphy
         // Contributors     - Creepysin, 
 
@@ -22,7 +21,7 @@ namespace Pootis_Bot.Modules.Fun
         [RequireBotPermission(GuildPermission.AttachFiles)]
         public async Task CmdGiphySearch([Remainder] string search = "")
         {
-            if (string.IsNullOrWhiteSpace(Config.bot.apis.apiGiphyKey))
+            if (string.IsNullOrWhiteSpace(Config.bot.Apis.apiGiphyKey))
             {
                 await Context.Channel.SendMessageAsync("Giphy search is disabled by the bot owner.");
                 return;

@@ -10,8 +10,8 @@ namespace Pootis_Bot.Modules
 {
     public class ServerSetup : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Helps the server owner set up the bot for use
         // Contributors     - Creepysin, 
 
@@ -46,7 +46,7 @@ namespace Pootis_Bot.Modules
             if(server.RuleEnabled)
             {
                 rulereactiontitle = "<:Check:537572054266806292> Rule Reaction Enabled";
-                rulereactiondes = $"The rule reaction feature is enabled and is set to the message id '{server.RuleMessageID}' with the emoji '{server.RuleReactionEmoji}'";
+                rulereactiondes = $"The rule reaction feature is enabled and is set to the message id '{server.RuleMessageId}' with the emoji '{server.RuleReactionEmoji}'";
             }
             embed.AddField(rulereactiontitle, rulereactiondes);
 
@@ -100,7 +100,7 @@ namespace Pootis_Bot.Modules
                     }
                     else
                     {
-                        await channel.SendMessageAsync($"You need to input a channel name! E.G: `{Global.botPrefix}togglewelcomemessage welcome`");
+                        await channel.SendMessageAsync($"You need to input a channel name! E.G: `{Global.BotPrefix}togglewelcomemessage welcome`");
                         return;
                     }
                 }
@@ -156,7 +156,7 @@ namespace Pootis_Bot.Modules
                 if (Context.Channel.GetMessageAsync(id) != null)
                 {
                     var server = ServerLists.GetServer(Context.Guild);
-                    server.RuleMessageID = id;
+                    server.RuleMessageId = id;
 
                     ServerLists.SaveServerList();
 
@@ -175,7 +175,7 @@ namespace Pootis_Bot.Modules
             {
                 var message = await Context.Channel.SendMessageAsync("The rules message was disabled");
                 var server = ServerLists.GetServer(Context.Guild);
-                server.RuleMessageID = 0;
+                server.RuleMessageId = 0;
 
                 ServerLists.SaveServerList();
 
@@ -224,7 +224,7 @@ namespace Pootis_Bot.Modules
             {
                 if(Context.Guild.Roles.FirstOrDefault(x => x.Name == server.RuleRole) != null) //Check to see if the role exist and is not null
                 {
-                    if (server.RuleMessageID != 0)
+                    if (server.RuleMessageId != 0)
                     {
                         if(Global.ContainsUnicodeCharacter(server.RuleReactionEmoji))
                         {

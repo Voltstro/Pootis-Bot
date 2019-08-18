@@ -4,7 +4,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Discord.Rest;
 using Pootis_Bot.Core;
-using Pootis_Bot.Entities;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Structs;
 

@@ -5,7 +5,7 @@ using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Core
 {
-    static class Config
+    public static class Config
     {
         private const string configFolder = "Resources";
         private const string configFile = "config.json";
@@ -21,7 +21,7 @@ namespace Pootis_Bot.Core
 
             if (!File.Exists(configFolder + "/" + configFile))   //If the config.json file doesn't exist it creats a new one.
             {
-                bot.configVersion = configVersion;
+                bot.ConfigVersion = configVersion;
                 AddHelpModuleDefaults();
 
                 SaveConfig();
@@ -33,9 +33,9 @@ namespace Pootis_Bot.Core
                 string json = File.ReadAllText(configFolder + "/" + configFile); //If it does exist then it continues like normal.
                 bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
 
-                if (string.IsNullOrWhiteSpace(bot.configVersion) || bot.configVersion != configVersion)
+                if (string.IsNullOrWhiteSpace(bot.ConfigVersion) || bot.ConfigVersion != configVersion)
                 {
-                    bot.configVersion = configVersion;
+                    bot.ConfigVersion = configVersion;
                     SaveConfig();
                     Global.Log("Updated config to version " + configVersion, ConsoleColor.Yellow);
                 }  

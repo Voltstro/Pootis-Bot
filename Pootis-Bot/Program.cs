@@ -32,9 +32,9 @@ namespace Pootis_Bot
                 if (args.Length == 3)
                     name = args[2];
             }
-            if (name == null) name = Config.bot.botName;
-            if (token == null) token = Config.bot.botToken;
-            if (prefix == null) prefix = Config.bot.botPrefix;
+            if (name == null) name = Config.bot.BotName;
+            if (token == null) token = Config.bot.BotToken;
+            if (prefix == null) prefix = Config.bot.BotPrefix;
 
 			#endregion
 
@@ -45,9 +45,9 @@ namespace Pootis_Bot
 
 			//Setup the bot, put in the name, prefix and token
             Bot bot = new Bot();
-            Global.botName = name;
-            Global.botPrefix = prefix;
-            Global.botToken = token;
+            Global.BotName = name;
+            Global.BotPrefix = prefix;
+            Global.BotToken = token;
 
             await bot.StartBot();
         }

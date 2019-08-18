@@ -14,7 +14,7 @@ namespace Pootis_Bot.Core
 
         static UserAccounts()
         {
-            if (DataStorage.SaveExisits(accountsFile))
+            if (DataStorage.SaveExists(accountsFile))
             {
                 accounts = DataStorage.LoadUserAccounts(accountsFile).ToList();
             }

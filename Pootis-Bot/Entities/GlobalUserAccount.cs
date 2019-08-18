@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Pootis_Bot.Entities
 {
@@ -45,18 +45,17 @@ namespace Pootis_Bot.Entities
             return server;
         }
 
-        GlobalUserAccountServer CreateServer(ulong _serverID)
+        private GlobalUserAccountServer CreateServer(ulong serverId)
         {
-            var serveritem = new GlobalUserAccountServer
-            {
-                ServerID = _serverID,
-                IsAccountNotWarnable = false,
-                Warnings = 0
-            };
+	        var serverItem = new GlobalUserAccountServer
+	        {
+		        ServerID = serverId,
+		        IsAccountNotWarnable = false,
+		        Warnings = 0
+	        };
 
-            servers.Add(serveritem);
-            return serveritem;
+	        servers.Add(serverItem);
+	        return serverItem;
         }
-
     }
 }

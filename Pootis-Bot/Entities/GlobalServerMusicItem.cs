@@ -18,6 +18,6 @@ namespace Pootis_Bot.Entities
         public SocketVoiceChannel AudioChannel { get; set; }
         public ISocketMessageChannel StartChannel { get; set; }
         public AudioOutStream Discord { get; set; } 
-        public Process Ffmpeg { get; set; }
+        public Process FFmpeg { get; set; }
     }
 }
