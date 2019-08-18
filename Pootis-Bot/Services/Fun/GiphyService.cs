@@ -14,14 +14,14 @@ namespace Pootis_Bot.Services.Fun
             try
             {
                 //Check to see if the token is null or white space
-                if (!string.IsNullOrWhiteSpace(Config.bot.apis.apiGiphyKey))
+                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.apiGiphyKey))
                 {
                     string input = search.Replace(" ", "+");
 
                     string json = "";
                     using (WebClient client = new WebClient()) //Search the term using the giphy api. More about the api here: https://developers.giphy.com/docs/
                     {
-                        json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.apis.apiGiphyKey}");
+                        json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.apiGiphyKey}");
                     }
 
                     var dataObject = JsonConvert.DeserializeObject<dynamic>(json);

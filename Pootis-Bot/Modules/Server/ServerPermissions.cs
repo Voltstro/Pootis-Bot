@@ -10,8 +10,8 @@ namespace Pootis_Bot.Modules.Server
 {
 	public class ServerPermissions : ModuleBase<SocketCommandContext>
 	{
-		// Module Infomation
-		// Orginal Author   - Creepysin
+		// Module Information
+		// Original Author   - Creepysin
 		// Description      - Anything permission related
 		// Contributors     - Creepysin, 
 
@@ -34,13 +34,13 @@ namespace Pootis_Bot.Modules.Server
 
         [Command("getbannedchannels")]
 		[RequireGuildOwner]
-		public async Task GetBanedChannels()
+		public async Task GetBannedChannels()
         {
             var server = ServerLists.GetServer(Context.Guild);
             StringBuilder final = new StringBuilder();
             final.Append("**All banned channels**: \n");
 
-            foreach(var channel in server.BanedChannels)
+            foreach(var channel in server.BannedChannels)
             {
                 final.Append($"<#{channel}> (**ID**: {channel})\n");
             }
@@ -50,9 +50,9 @@ namespace Pootis_Bot.Modules.Server
 
         [Command("addbanedchannel")]
 		[RequireGuildOwner]
-		public async Task AddBanedChannel(SocketTextChannel channel)
+		public async Task AddBannedChannel(SocketTextChannel channel)
         {
-            ServerLists.GetServer(Context.Guild).GetOrCreateBanedChannel(channel.Id);
+            ServerLists.GetServer(Context.Guild).GetOrCreateBannedChannel(channel.Id);
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Channel **{channel.Name}** has been added to the baned channels list for your server.");
@@ -60,9 +60,9 @@ namespace Pootis_Bot.Modules.Server
 
         [Command("removebanedchannel")]
 		[RequireGuildOwner]
-		public async Task RemoveBanedChannel(SocketTextChannel channel)
+		public async Task RemoveBannedChannel(SocketTextChannel channel)
         {
-            ServerLists.GetServer(Context.Guild).BanedChannels.Remove(channel.Id);
+            ServerLists.GetServer(Context.Guild).BannedChannels.Remove(channel.Id);
             ServerLists.SaveServerList();
 
             await Context.Channel.SendMessageAsync($"Channel **{channel.Name}** was removed from your server's baned channel list.");

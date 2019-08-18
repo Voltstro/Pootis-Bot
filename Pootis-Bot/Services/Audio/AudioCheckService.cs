@@ -15,26 +15,26 @@ namespace Pootis_Bot.Services.Audio
 
 		public static void CheckAudioService()
 		{
-			if (Config.bot.isAudioServiceEnabled)
+			if (Config.bot.IsAudioServiceEnabled)
 			{
 				Global.Log("Checking audio services...", ConsoleColor.Blue);
 
-				//Check to see if all the nessary files are here.
+				//Check to see if all the necessary files are here.
 				if (!File.Exists("external/python.exe") || !File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") || !File.Exists("external/ffprobe.exe") || !Directory.Exists("external/youtube_dl"))
 				{
 					UpdateAudioFiles();
 				}
 
-				if (string.IsNullOrWhiteSpace(Config.bot.apis.apiYoutubeKey))
+				if (string.IsNullOrWhiteSpace(Config.bot.Apis.apiYoutubeKey))
 				{
 					Global.Log("You need to set a YouTube api key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3", ConsoleColor.Red);
-					Config.bot.isAudioServiceEnabled = false;
+					Config.bot.IsAudioServiceEnabled = false;
 					Config.SaveConfig();
 					Global.Log("Audio service was disabled!", ConsoleColor.Red);
 				}
 				else
 				{
-					if (Config.bot.isAudioServiceEnabled)
+					if (Config.bot.IsAudioServiceEnabled)
 						Global.Log("Audio services are ready", ConsoleColor.Blue);
 				}
 
@@ -112,7 +112,7 @@ namespace Pootis_Bot.Services.Audio
 				{
 					//Linux audio serivces are not supported
 					Global.Log("Linux is not supported for the audio services", ConsoleColor.Blue);
-					Config.bot.isAudioServiceEnabled = false;
+					Config.bot.IsAudioServiceEnabled = false;
 					Config.SaveConfig();
 					Global.Log("Audio service was disabled!", ConsoleColor.Red);
 					return;
@@ -121,7 +121,7 @@ namespace Pootis_Bot.Services.Audio
 				{
 					//OSX audio serivces are not supported
 					Global.Log("MACOSX is not supported for the audio services", ConsoleColor.Blue);
-					Config.bot.isAudioServiceEnabled = false;
+					Config.bot.IsAudioServiceEnabled = false;
 					Config.SaveConfig();
 					Global.Log("Audio service was disabled!", ConsoleColor.Red);
 					return;
@@ -140,7 +140,7 @@ namespace Pootis_Bot.Services.Audio
 			ZipFile.ExtractToDirectory("temp/audiodlls.zip", "./", true);
 			Global.Log("Done!", ConsoleColor.Blue);
 
-			//Ffmpeg
+			//FFmpeg
 			Global.Log("Extracting ffmpeg...", ConsoleColor.Blue);
 			Directory.CreateDirectory("temp/ffmpeg");
 			ZipFile.ExtractToDirectory("temp/ffmpeg-latest.zip", "temp/ffmpeg/", true);
@@ -163,7 +163,7 @@ namespace Pootis_Bot.Services.Audio
 			Global.Log("----==== Copying Files ====----", ConsoleColor.Blue);
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == true)
 			{
-				Global.Log("Copying Ffmpeg...", ConsoleColor.Blue);
+				Global.Log("Copying FFmpeg...", ConsoleColor.Blue);
 				if (Environment.Is64BitProcess)
 				{
 					Global.DirectoryCopy("temp/ffmpeg/ffmpeg-latest-win64-static/bin/", "External/", true);

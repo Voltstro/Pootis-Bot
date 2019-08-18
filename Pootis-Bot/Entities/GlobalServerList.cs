@@ -14,11 +14,11 @@ namespace Pootis_Bot.Entities
         public string WelcomeGoodbyeMessage { get; set; }
 
         public bool RuleEnabled { get; set; }
-        public ulong RuleMessageID { get; set; }
+        public ulong RuleMessageId { get; set; }
         public string RuleRole { get; set; }
         public string RuleReactionEmoji { get; set; }
 
-        public List<ulong> BanedChannels = new List<ulong>();
+        public List<ulong> BannedChannels = new List<ulong>();
 
         public List<CommandInfo> CommandInfos = new List<CommandInfo>();
 
@@ -34,9 +34,9 @@ namespace Pootis_Bot.Entities
 
 		#region Functions
 
-		public ulong GetOrCreateBanedChannel(ulong id)
+		public ulong GetOrCreateBannedChannel(ulong id)
         {
-            var result = from a in BanedChannels
+            var result = from a in BannedChannels
                          where a == id
                          select a;
 
@@ -78,7 +78,7 @@ namespace Pootis_Bot.Entities
 
         ulong CreateBanedChannel(ulong _channelID)
         {
-            BanedChannels.Add(_channelID);
+            BannedChannels.Add(_channelID);
             return _channelID;
         }
 

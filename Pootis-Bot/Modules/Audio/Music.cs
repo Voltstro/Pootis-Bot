@@ -9,8 +9,8 @@ namespace Pootis_Bot.Modules.Audio
 {
     public class Music : ModuleBase<ICommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - To run audio commands
         // Contributors     - Creepysin, 
 
@@ -28,7 +28,7 @@ namespace Pootis_Bot.Modules.Audio
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task JoinCmd()
         {
-            if(!Config.bot.isAudioServiceEnabled) //Check to see if the audio service is enabled 
+            if(!Config.bot.IsAudioServiceEnabled) //Check to see if the audio service is enabled 
             {
                 await Context.Channel.SendMessageAsync(":musical_note: Sorry, but audio services are disabled. :disappointed:");
                 return;
@@ -41,7 +41,7 @@ namespace Pootis_Bot.Modules.Audio
         [Summary("Leaves the current voice channel thats it in")]
         public async Task LeaveCmd()
         {
-            if (!Config.bot.isAudioServiceEnabled) //Check to see if the audio service is enabled 
+            if (!Config.bot.IsAudioServiceEnabled) //Check to see if the audio service is enabled 
             {
                 await Context.Channel.SendMessageAsync(":musical_note: Sorry, but audio services are disabled. :disappointed:");
                 return;
@@ -56,7 +56,7 @@ namespace Pootis_Bot.Modules.Audio
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task PlayCmd([Remainder] string song = "")
         {
-            if (!Config.bot.isAudioServiceEnabled) //Check to see if the audio service is enabled 
+            if (!Config.bot.IsAudioServiceEnabled) //Check to see if the audio service is enabled 
             {
                 await Context.Channel.SendMessageAsync(":musical_note: Sorry, but audio services are disabled. :disappointed:");
                 return;
@@ -70,7 +70,7 @@ namespace Pootis_Bot.Modules.Audio
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task StopCmd()
         {
-            if (!Config.bot.isAudioServiceEnabled) //Check to see if the audio service is enabled 
+            if (!Config.bot.IsAudioServiceEnabled) //Check to see if the audio service is enabled 
             {
                 await Context.Channel.SendMessageAsync(":musical_note: Sorry, but audio services are disabled. :disappointed:");
                 return;
@@ -84,7 +84,7 @@ namespace Pootis_Bot.Modules.Audio
         [RequireBotPermission(GuildPermission.Speak)]
         public async Task PauseCmd()
         {
-            if (!Config.bot.isAudioServiceEnabled) //Check to see if the audio service is enabled 
+            if (!Config.bot.IsAudioServiceEnabled) //Check to see if the audio service is enabled 
             {
                 await Context.Channel.SendMessageAsync(":musical_note: Sorry, but audio services are disabled. :disappointed:");
                 return;

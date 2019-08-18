@@ -9,8 +9,8 @@ namespace Pootis_Bot.Modules.Fun
 {
     public class GoogleSearch : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Searches Google
         // Contributors     - Creepysin, 
 
@@ -20,8 +20,8 @@ namespace Pootis_Bot.Modules.Fun
         [RequireBotPermission(GuildPermission.EmbedLinks)]
         public async Task CmdGoogleSearch([Remainder]string search = "")
         {
-            if (string.IsNullOrWhiteSpace(Config.bot.apis.apiGoogleSearchKey) || 
-                string.IsNullOrWhiteSpace(Config.bot.apis.googleSearchEngineID))
+            if (string.IsNullOrWhiteSpace(Config.bot.Apis.apiGoogleSearchKey) || 
+                string.IsNullOrWhiteSpace(Config.bot.Apis.googleSearchEngineID))
             {
                 await Context.Channel.SendMessageAsync("Google search is disabled by the bot owner.");
                 return;

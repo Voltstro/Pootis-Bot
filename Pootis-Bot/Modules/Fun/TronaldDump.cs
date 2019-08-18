@@ -7,8 +7,8 @@ namespace Pootis_Bot.Modules.Fun
 {
     public class TronaldDump : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Uses the tronaldump api to get Tronal Dump quotes
         // Contributors     - Creepysin, 
 

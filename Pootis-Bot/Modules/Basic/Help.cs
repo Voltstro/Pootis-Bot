@@ -11,8 +11,8 @@ namespace Pootis_Bot.Modules.Basic
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - The two help commands
         // Contributors     - Creepysin, 
 
@@ -29,7 +29,7 @@ namespace Pootis_Bot.Modules.Basic
         public async Task HelpCmd()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.botPrefix}help [command]`.\n");
+            builder.Append($"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
 
             //Basic Commands
             foreach(var helpModule in Config.bot.helpModules)
@@ -70,9 +70,9 @@ namespace Pootis_Bot.Modules.Basic
             await Context.Channel.SendMessageAsync("", false, embed.Build());
         }
 
-        private string FormatAliases(CommandInfo commandinfo)
+        private string FormatAliases(CommandInfo commandInfo)
         {
-            var aliases = commandinfo.Aliases;
+            var aliases = commandInfo.Aliases;
 
             StringBuilder format = new StringBuilder();
 
@@ -92,9 +92,9 @@ namespace Pootis_Bot.Modules.Basic
             return format.ToString();
         }
 
-        private string FormatParms(CommandInfo commandinfo)
+        private string FormatParms(CommandInfo commandInfo)
         {
-            var parms = commandinfo.Parameters;
+            var parms = commandInfo.Parameters;
 
             StringBuilder format = new StringBuilder();
             int count = parms.Count;

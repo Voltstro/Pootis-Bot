@@ -9,8 +9,8 @@ namespace Pootis_Bot.Modules.Basic
 {
     public class ProfileMang : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Handles anything to do with profile managment
         // Contributors     - Creepysin, 
 
@@ -47,11 +47,11 @@ namespace Pootis_Bot.Modules.Basic
             var userMainRole = sortedRoles.First();
 
             var account = UserAccounts.GetAccount((SocketGuildUser)Context.User);
-            var accountserver = account.GetOrCreateServer(Context.Guild.Id);
+            var accountServer = account.GetOrCreateServer(Context.Guild.Id);
             var embed = new EmbedBuilder();
 
             string warningText = $"Yes";
-            if (accountserver.IsAccountNotWarnable == true)
+            if (accountServer.IsAccountNotWarnable == true)
                 warningText = $"No :sunglasses:";
 
             embed.WithCurrentTimestamp();
@@ -84,11 +84,11 @@ namespace Pootis_Bot.Modules.Basic
             }
 
             var account = UserAccounts.GetAccount(user);
-            var accountserver = account.GetOrCreateServer(Context.Guild.Id);
+            var accountServer = account.GetOrCreateServer(Context.Guild.Id);
             var embed = new EmbedBuilder();
 
             string warningText = $"Yes";
-            if (accountserver.IsAccountNotWarnable == true)
+            if (accountServer.IsAccountNotWarnable == true)
                 warningText = $"No :sunglasses:";
 
             embed.WithCurrentTimestamp();

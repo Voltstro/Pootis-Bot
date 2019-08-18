@@ -7,31 +7,31 @@ using System.Linq;
 
 namespace Pootis_Bot.Core
 {
-    internal static class Global
+	public static class Global
     {
         //Here is a list of sites that Pootis-Bot can refer to, if your hosting your own version of the documentation you might wanna change it.
-        internal static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot"; //Main github page
+        public static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot"; //Main github page
 
-        internal static readonly string websiteHome = "https://pootis-bot.creepysin.com"; //Main docs page
-        internal static readonly string websiteCommands = "https://pootis-bot.creepysin.com/commands/discord-commands/"; //Main Discord commands list
-        internal static readonly string websiteServerSetup = "https://pootis-bot.creepysin.com/server-setup/"; //Main server-setup page
-        internal static readonly string websiteConsoleCommands = "https://pootis-bot.creepysin.com/commands/console-commands/";
+        public static readonly string websiteHome = "https://pootis-bot.creepysin.com"; //Main docs page
+        public static readonly string websiteCommands = "https://pootis-bot.creepysin.com/commands/discord-commands/"; //Main Discord commands list
+        public static readonly string websiteServerSetup = "https://pootis-bot.creepysin.com/server-setup/"; //Main server-setup page
+        public static readonly string websiteConsoleCommands = "https://pootis-bot.creepysin.com/commands/console-commands/";
 
-        //An array of Discord servers, add as many as you want and use it throught the bot.
-                                                           // Main Server                -  Development Server
-        internal static readonly string[] discordServers = { "https://discord.creepysin.com", "https://discord.gg/m4YcsUa" };
+		//An array of Discord servers, add as many as you want and use it throughout the bot.
+		//                                                  Main Server                -  Development Server
+		public static readonly string[] discordServers = { "https://discord.creepysin.com", "https://discord.gg/m4YcsUa" };
 
-        internal static readonly string version = "0.2.9";
-        internal static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
+		public static readonly string version = "0.3.0";
+		public static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
             $"Created by Creepysin licensed under the MIT license. Vist {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
             $"Pootis Robot icon by Valve\n" +
             $"Created with Discord.NET\n" +
             $"https://github.com/Creepysin/Pootis-Bot \n\n" +
             $"Thank you for using Pootis Bot";
 
-        internal static string botName;
-        internal static string botPrefix;
-        internal static string botToken;
+		public static string BotName;
+		public static string BotPrefix;
+		public static string BotToken;
 
         public static void Log(string msg, ConsoleColor color)
         {
@@ -130,19 +130,11 @@ namespace Pootis_Bot.Core
             return role;
         }
 
-        public static GlobalServerList.CommandInfo CheckCommand(string command, SocketGuild guild)
-        {
-            var server = ServerLists.GetServer(guild);
-            var cmdinfo = server.GetCommandInfo(command);
-
-            return cmdinfo;
-        }
-
         public static bool ContainsUnicodeCharacter(string input)
         {
-            const int MaxAnsiCode = 255;
+            const int maxAnsiCode = 255;
 
-            return input.Any(c => c > MaxAnsiCode);
+            return input.Any(c => c > maxAnsiCode);
         }
     }
 }

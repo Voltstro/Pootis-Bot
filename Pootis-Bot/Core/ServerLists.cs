@@ -13,7 +13,7 @@ namespace Pootis_Bot.Core
 
         static ServerLists()
         {
-            if (DataStorage.SaveExisits(serverListFile))
+            if (DataStorage.SaveExists(serverListFile))
             {
                 serverLists = DataStorage.LoadServerList(serverListFile).ToList();
             }
@@ -56,7 +56,7 @@ namespace Pootis_Bot.Core
                 WelcomeMessage = "Hello [user]! Thanks for joining **[server]**. Please check out the rules first then enjoy your stay.",
                 RuleEnabled = false,
                 RuleRole = null,
-                RuleMessageID = 0
+                RuleMessageId = 0
             };
 
             serverLists.Add(newServer);

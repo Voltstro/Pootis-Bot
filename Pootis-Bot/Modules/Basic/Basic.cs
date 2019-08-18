@@ -12,8 +12,8 @@ namespace Pootis_Bot.Modules.Basic
 {
     public class BasicCommands : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Basic, simple commands
         // Contributors     - Creepysin, 
 
@@ -24,7 +24,7 @@ namespace Pootis_Bot.Modules.Basic
         {
             var embed = new EmbedBuilder();
             embed.WithTitle("Hello!");
-            embed.WithDescription("Hello! My name is " + Config.bot.botName + "!\n\n**__Links__**" +
+            embed.WithDescription("Hello! My name is " + Config.bot.BotName + "!\n\n**__Links__**" +
                 $"\n:computer: [Commands]({Global.websiteCommands})" +
                 $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
                 $"\n:bookmark: [Documation]({Global.websiteHome})" +
@@ -42,18 +42,18 @@ namespace Pootis_Bot.Modules.Basic
 		[Cooldown(5)]
         public async Task ServerGuild()
         {
-            var guilduser = (SocketGuildUser)Context.User;
+            var guildUser = (SocketGuildUser)Context.User;
 
             EmbedBuilder embed = new EmbedBuilder();
             embed.WithTitle("Server Details");
             embed.WithDescription($"**__Server__**" +
-                $"\n**Server Name:** {guilduser.Guild}" +
-                $"\n**Server ID:** {guilduser.Guild.Id}" +
-                $"\n**Server Member Count:** {guilduser.Guild.MemberCount}" +
+                $"\n**Server Name:** {guildUser.Guild}" +
+                $"\n**Server ID:** {guildUser.Guild.Id}" +
+                $"\n**Server Member Count:** {guildUser.Guild.MemberCount}" +
                 $"\n\n**__Server Owner__**" +
-                $"\n**Owner Name: **{guilduser.Guild.Owner.Username}" +
-                $"\n**Owner ID: ** {guilduser.Guild.OwnerId}");
-            embed.WithThumbnailUrl(guilduser.Guild.IconUrl);
+                $"\n**Owner Name: **{guildUser.Guild.Owner.Username}" +
+                $"\n**Owner ID: ** {guildUser.Guild.OwnerId}");
+            embed.WithThumbnailUrl(guildUser.Guild.IconUrl);
             embed.WithColor(new Color(241, 196, 15));
 
             await Context.Channel.SendMessageAsync("", false, embed.Build());
@@ -74,7 +74,7 @@ namespace Pootis_Bot.Modules.Basic
             serverUsers.Reverse();
 
             StringBuilder format = new StringBuilder();
-            format.Append("```csharp\n 📋 Top 10 Server User Postitons\n ========================\n");
+            format.Append("```csharp\n 📋 Top 10 Server User Position\n ========================\n");
 
             int count = 1;
             foreach (var user in serverUsers)

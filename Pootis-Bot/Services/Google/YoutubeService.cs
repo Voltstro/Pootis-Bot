@@ -22,11 +22,11 @@ namespace Pootis_Bot.Services.Google
             try
             {
                 //Check to see if the token is null or white space
-                if (!string.IsNullOrWhiteSpace(Config.bot.apis.apiYoutubeKey))
+                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.apiYoutubeKey))
                 {
                     var youtube = new YouTubeService(new BaseClientService.Initializer
                     {
-                        ApiKey = Config.bot.apis.apiYoutubeKey,
+                        ApiKey = Config.bot.Apis.apiYoutubeKey,
                         ApplicationName = appName
                     });
 

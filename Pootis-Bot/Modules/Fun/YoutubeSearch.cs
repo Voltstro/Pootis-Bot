@@ -10,8 +10,8 @@ namespace Pootis_Bot.Modules.Fun
 {
     public class YoutubeSearch : ModuleBase<SocketCommandContext>
     {
-        // Module Infomation
-        // Orginal Author   - Creepysin
+        // Module Information
+        // Original Author   - Creepysin
         // Description      - Searches YouTube
         // Contributors     - Creepysin, 
 
@@ -21,7 +21,7 @@ namespace Pootis_Bot.Modules.Fun
         [RequireBotPermission(GuildPermission.EmbedLinks)]
         public async Task CmdYoutubeSearch([Remainder] string search = "")
         {
-            if (string.IsNullOrWhiteSpace(Config.bot.apis.apiYoutubeKey))
+            if (string.IsNullOrWhiteSpace(Config.bot.Apis.apiYoutubeKey))
             {
                 await Context.Channel.SendMessageAsync("YouTube search is disabled by the bot owner.");
                 return;

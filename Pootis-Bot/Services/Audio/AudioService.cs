@@ -114,8 +114,8 @@ namespace Pootis_Bot.Services.Audio
                 ServerList.CancellationSource.Cancel();
 
                 //Kill and dispose of ffmpeg
-                ServerList.Ffmpeg.Kill();
-                ServerList.Ffmpeg.Dispose();
+                ServerList.FFmpeg.Kill();
+                ServerList.FFmpeg.Dispose();
 
                 await ServerList.Discord.FlushAsync();
 
@@ -128,7 +128,7 @@ namespace Pootis_Bot.Services.Audio
             }
 
             var client = ServerList.AudioClient;
-            var ffmpeg = ServerList.Ffmpeg = GetFfmpeg(fileLoc);
+            var ffmpeg = ServerList.FFmpeg = GetFfmpeg(fileLoc);
 
             Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 

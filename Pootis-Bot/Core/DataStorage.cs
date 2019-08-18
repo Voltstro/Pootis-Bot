@@ -22,18 +22,18 @@ namespace Pootis_Bot.Core
             return JsonConvert.DeserializeObject<List<GlobalUserAccount>>(json);
         }
 
-        public static bool SaveExisits(string filePath)
+        public static bool SaveExists(string filePath)
         {
             return File.Exists(filePath);
         }
 
-        public static void SaveServerList(IEnumerable<Entities.GlobalServerList> serverLists, string filePath)
+        public static void SaveServerList(IEnumerable<GlobalServerList> serverLists, string filePath)
         {
             string json = JsonConvert.SerializeObject(serverLists, Formatting.Indented);
             File.WriteAllText(filePath, json);
         }
 
-        public static IEnumerable<Entities.GlobalServerList> LoadServerList(string filePath)
+        public static IEnumerable<GlobalServerList> LoadServerList(string filePath)
         {
             if (!File.Exists(filePath)) return null;
             string json = File.ReadAllText(filePath);
