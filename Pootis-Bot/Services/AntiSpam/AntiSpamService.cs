@@ -15,17 +15,25 @@ namespace Pootis_Bot.Services.AntiSpam
 
 			var serverAccount = UserAccounts.GetAccount(user).GetOrCreateServer(guild.Id);
 
-			//If it is the owner of the Discord server or if the user is warnable, its probs safe to ignore
-			if (user.Id == guild.OwnerId || !serverAccount.IsAccountNotWarnable)
+			if (serverAccount.IsAccountNotWarnable)
+				return false;
+
+			//If it is the owner of the Discord server, ignore
+			if (user.Id == guild.OwnerId)
 				return false;
 
 			int guildMemberCount = guild.Users.Count;
 			int mentionCount = message.MentionedUsers.Count;
 
-			if ((mentionCount / guildMemberCount) * 100 <= 45)
+			int percentage = (mentionCount / guildMemberCount) * 100;
+			Console.WriteLine(percentage.ToString());
+
+			if (percentage <= 45)
 			{
+				Console.WriteLine("Was more than 45 percent");
+
 				message.DeleteAsync();
-				message.Channel.SendMessageAsync($"Hey {message.Author.Mention}, saying a list of all the members is not allowed!");
+				message.Channel.SendMessageAsync($"Hey {message.Author.Mention}, saying a list of all the members of this Discord server is not allowed!");
 
 				serverAccount.Warnings++;
 
