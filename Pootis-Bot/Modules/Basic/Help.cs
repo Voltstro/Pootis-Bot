@@ -32,10 +32,10 @@ namespace Pootis_Bot.Modules.Basic
             builder.Append($"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
 
             //Basic Commands
-            foreach(var helpModule in Config.bot.helpModules)
+            foreach(var helpModule in Config.bot.HelpModules)
             {
-                builder.Append($"\n**{helpModule.group}** - ");
-                foreach(var module in helpModule.modules)
+                builder.Append($"\n**{helpModule.Group}** - ");
+                foreach(var module in helpModule.Modules)
                 {
                     foreach(var cmd in GetModule(module).Commands)
                     {

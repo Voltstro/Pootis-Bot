@@ -50,41 +50,41 @@ namespace Pootis_Bot.Core
 
         private static void AddHelpModuleDefaults()
         {
-            var basic = new GlobalConfigFile.HelpModules
+            var basic = new GlobalConfigFile.HelpModule
             {
-                group = "Basic"
+                Group = "Basic"
             };
-            basic.modules.Add("BasicCommands");
-            basic.modules.Add("Misc");
+            basic.Modules.Add("BasicCommands");
+            basic.Modules.Add("Misc");
 
-            bot.helpModules.Add(basic);
+            bot.HelpModules.Add(basic);
 
-            var utils = new GlobalConfigFile.HelpModules
+            var utils = new GlobalConfigFile.HelpModule
             {
-                group = "Utils"
+                Group = "Utils"
             };
-            utils.modules.Add("Utils");
+            utils.Modules.Add("Utils");
 
-            bot.helpModules.Add(utils);
+            bot.HelpModules.Add(utils);
 
-            var fun = new GlobalConfigFile.HelpModules
+            var fun = new GlobalConfigFile.HelpModule
             {
-                group = "Fun"
+	            Group = "Fun"
             };
-            fun.modules.Add("GiphySearch");
-            fun.modules.Add("GoogleSearch");
-            fun.modules.Add("YoutubeSearch");
-            fun.modules.Add("TronaldDump");
+            fun.Modules.Add("GiphySearch");
+            fun.Modules.Add("GoogleSearch");
+            fun.Modules.Add("YoutubeSearch");
+            fun.Modules.Add("TronaldDump");
 
-            bot.helpModules.Add(fun);
+            bot.HelpModules.Add(fun);
 
-            var audio = new GlobalConfigFile.HelpModules
+            var audio = new GlobalConfigFile.HelpModule
             {
-                group = "Audio"
+	            Group = "Audio"
             };
-            audio.modules.Add("Music");
+            audio.Modules.Add("Music");
 
-            bot.helpModules.Add(audio);
+            bot.HelpModules.Add(audio);
         }
     }
 }
