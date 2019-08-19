@@ -22,7 +22,7 @@ namespace Pootis_Bot.Entities
             }
         }
 
-        public List<GlobalUserAccountServer> servers = new List<GlobalUserAccountServer>();
+        public List<GlobalUserAccountServer> Servers = new List<GlobalUserAccountServer>();
 
         public class GlobalUserAccountServer
         {
@@ -36,7 +36,7 @@ namespace Pootis_Bot.Entities
 
         public GlobalUserAccountServer GetOrCreateServer(ulong id)
         {
-            var result = from a in servers
+            var result = from a in Servers
                          where a.ServerID == id
                          select a;
 
@@ -54,7 +54,7 @@ namespace Pootis_Bot.Entities
 		        Warnings = 0
 	        };
 
-	        servers.Add(serverItem);
+	        Servers.Add(serverItem);
 	        return serverItem;
         }
     }
