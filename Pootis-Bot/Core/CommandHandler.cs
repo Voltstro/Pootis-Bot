@@ -35,17 +35,17 @@ namespace Pootis_Bot.Core
             var context = new SocketCommandContext(_client, msg);
             int argPos = 0;
 
+			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
+                return;
+
 			//Someone has mention more than 2 users, check with the anti-spam
 			if (msg.MentionedUsers.Count >= 2)
 			{
 				if (_antiSpam.CheckMentionUsers(msg, context.Guild) == true)
 					return;
-			}	
+			}
 
-			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
-                return;
-
-            foreach (var item in ServerLists.GetServer(context.Guild).BannedChannels) //Check to channel, make sure its not on the baned list
+			foreach (var item in ServerLists.GetServer(context.Guild).BannedChannels) //Check to channel, make sure its not on the baned list
             {
                 if (msg.Channel.Id == item)
                     return;

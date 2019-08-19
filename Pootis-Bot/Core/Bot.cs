@@ -344,7 +344,7 @@ namespace Pootis_Bot.Core
             {
                 //Remove server data from account
                 var account = UserAccounts.GetAccount(user);
-                account.servers.Remove(account.GetOrCreateServer(user.Guild.Id));
+                account.Servers.Remove(account.GetOrCreateServer(user.Guild.Id));
                 UserAccounts.SaveAccounts();
 
                 if (server.WelcomeMessageEnabled)
