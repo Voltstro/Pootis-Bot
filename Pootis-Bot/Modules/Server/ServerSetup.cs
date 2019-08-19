@@ -6,7 +6,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Preconditions;
 
-namespace Pootis_Bot.Modules
+namespace Pootis_Bot.Modules.Server
 {
     public class ServerSetup : ModuleBase<SocketCommandContext>
     {
