@@ -32,6 +32,9 @@ namespace Pootis_Bot.Entities
 
             [JsonIgnore]
             public DateTime LastLevelUpTime { get; set; }
+
+			[JsonIgnore]
+			public int RoleToRoleMentionWarnings { get; set; }
         }
 
         public GlobalUserAccountServer GetOrCreateServer(ulong id)

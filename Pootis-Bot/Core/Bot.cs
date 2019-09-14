@@ -49,10 +49,10 @@ namespace Pootis_Bot.Core
 
             await _client.LoginAsync(TokenType.Bot, Global.BotToken); //Logging into the bot using the token in the config.
             await _client.StartAsync(); //Start the client
-            CommandHandler _handler = new CommandHandler(_client);
+            CommandHandler handler = new CommandHandler(_client);
 
             //Install all the Modules
-            await _handler.InstallCommandsAsync();
+            await handler.InstallCommandsAsync();
 
             //Set the bot status to the default game status
             await _client.SetGameAsync(_gameStatus);
@@ -162,7 +162,7 @@ namespace Pootis_Bot.Core
             ConsoleInput();
         }
 
-        private Task Log(LogMessage msg)
+        private static Task Log(LogMessage msg)
         {
             Global.Log(msg.Message);
             return Task.CompletedTask;

@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Entities;
 using Pootis_Bot.Preconditions;
 
 namespace Pootis_Bot.Modules.Server
@@ -20,15 +21,15 @@ namespace Pootis_Bot.Modules.Server
         [RequireGuildOwner]
         public async Task Setup()
         {
-            var dm = await Context.User.GetOrCreateDMChannelAsync();
-            var server = ServerLists.GetServer(Context.Guild);
-            var embed = new EmbedBuilder();
+            IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
+            GlobalServerList server = ServerLists.GetServer(Context.Guild);
+            EmbedBuilder embed = new EmbedBuilder();
 
             await Context.Channel.SendMessageAsync("Setup status was sent to your dms.");
 
-            embed.WithTitle("Setup");
+            embed.WithTitle("Setup Status");
             embed.WithColor(new Color(255, 81, 168));
-            embed.WithDescription($"<:Menu:537572055760109568> Here your setup for **{Context.Guild.Name}**.\nSee [here]({Global.websiteServerSetup}) for more help.\n\n");
+            embed.WithDescription($"<:Menu:537572055760109568> Here is your setup status for **{Context.Guild.Name}**.\nSee [here]({Global.websiteServerSetup}) for more help.\n\n");
             embed.WithThumbnailUrl(Context.Guild.IconUrl);
             embed.WithCurrentTimestamp();
 
@@ -71,12 +72,67 @@ namespace Pootis_Bot.Modules.Server
             await dm.SendMessageAsync("", false, embed.Build());
         }
 
-        [Command("togglewelcomemessage")]
+        [Command("setup spam")]
+        [Summary("Shows setup info regarding the server's anti-spam settings")]
+        [RequireGuildOwner]
+        public async Task SetupSpam()
+        {
+	        IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
+	        GlobalServerList server = ServerLists.GetServer(Context.Guild);
+	        EmbedBuilder embed = new EmbedBuilder();
+
+	        await Context.Channel.SendMessageAsync("Setup anti-spam status was sent to your dms.");
+
+	        embed.WithTitle("Anti-Spam Setup Status");
+	        embed.WithColor(new Color(255, 81, 168));
+	        embed.WithDescription($"<:Menu:537572055760109568> Here is your anti-spam setup status for **{Context.Guild.Name}**.\nSee [here]({Global.websiteServerSetup}) for more help.\n\n");
+	        embed.WithThumbnailUrl(Context.Guild.IconUrl);
+	        embed.WithCurrentTimestamp();
+
+	        string mentionUserTitle = "<:Cross:537572008574189578> Mention user spam is disabled!";
+	        string mentionUserDes = $"If a user with more then {server.AntiSpamSettings.MentionUsersPercentage}% of the server's users are mentioned, they will be warned.";
+	        if (server.AntiSpamSettings.MentionUserEnabled)
+		        mentionUserTitle = "<:Check:537572054266806292> Mention user spam is enabled!";
+
+	        embed.AddField(mentionUserTitle, mentionUserDes);
+	        embed.AddField("Role to Role mention",
+		        $"{server.AntiSpamSettings.RoleToRoleMentionWarnings} mentions of the same user will result in one warning");
+
+	        await dm.SendMessageAsync("", false, embed.Build());
+        }
+
+        [Command("togglementionuser")]
+        [Summary("Enables / Disables the mention user anti-spam feature")]
+        [RequireGuildOwner]
+        public async Task ToggleMentionUserSpam()
+        {
+	        GlobalServerList server = ServerLists.GetServer(Context.Guild);
+	        server.AntiSpamSettings.MentionUserEnabled = !server.AntiSpamSettings.MentionUserEnabled;
+
+			ServerLists.SaveServerList();
+			await Context.Channel.SendMessageAsync(
+				$"Mention user anti-spam was set to {server.AntiSpamSettings.MentionUserEnabled}.");
+        }
+
+        [Command("setmentionuserthreshold")]
+        [Summary("Set how much of a percentage of a servers users need to be mention before it is considered spam")]
+        [RequireGuildOwner]
+        public async Task SetMentionUserThreshold(int threshold)
+        {
+	        GlobalServerList server = ServerLists.GetServer(Context.Guild);
+	        server.AntiSpamSettings.MentionUsersPercentage = threshold;
+
+			ServerLists.SaveServerList();
+
+	        await Context.Channel.SendMessageAsync($"The threshold was set to {threshold}.");
+        }
+
+		[Command("togglewelcomemessage")]
         [Summary("Enables / Disabled the welcome and goodbye message")]
         [RequireGuildOwner]
         public async Task ToggleWelcomeMessage([Remainder]SocketTextChannel channel = null)
         {
-            var server = ServerLists.GetServer(Context.Guild);
+            GlobalServerList server = ServerLists.GetServer(Context.Guild);
 
             if(server.WelcomeMessageEnabled && channel == null)
             {

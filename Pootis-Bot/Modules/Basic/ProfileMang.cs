@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Modules.Basic
 {
@@ -36,6 +38,23 @@ namespace Pootis_Bot.Modules.Basic
         {
             await Context.Channel.SendMessageAsync(Warn((SocketUser)user));
             await UserAccounts.CheckUserWarnStatus((SocketGuildUser)user);
+        }
+
+        [Command("getnotwarnable")]
+        [Summary("Gets a list of people in the server who are not warnable")]
+        public async Task GetNotWarnable()
+        {
+			StringBuilder builder = new StringBuilder();
+			builder.Append("__**Users who are not warnable**__\n");
+
+	        foreach (SocketGuildUser user in Context.Guild.Users)
+	        {
+		        GlobalUserAccount userAccount = UserAccounts.GetAccount(user);
+		        if (userAccount.GetOrCreateServer(Context.Guild.Id).IsAccountNotWarnable)
+			        builder.Append(user.Username + "\n");
+	        }
+
+	        await Context.Channel.SendMessageAsync(builder.ToString());
         }
 
         [Command("profile")]

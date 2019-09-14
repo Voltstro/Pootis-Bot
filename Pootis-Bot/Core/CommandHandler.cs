@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Entities;
 using Pootis_Bot.Services.AntiSpam;
 
 namespace Pootis_Bot.Core
@@ -32,7 +33,8 @@ namespace Pootis_Bot.Core
         private async Task HandleCommandAsync(SocketMessage messageParam)
         {
             if (!(messageParam is SocketUserMessage msg)) return;
-            var context = new SocketCommandContext(_client, msg);
+            SocketCommandContext context = new SocketCommandContext(_client, msg);
+            GlobalServerList server = ServerLists.GetServer(context.Guild);
             int argPos = 0;
 
 			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
@@ -41,11 +43,18 @@ namespace Pootis_Bot.Core
 			//Someone has mention more than 2 users, check with the anti-spam
 			if (msg.MentionedUsers.Count >= 2)
 			{
-				if (_antiSpam.CheckMentionUsers(msg, context.Guild) == true)
+				if (_antiSpam.CheckMentionUsers(msg, context.Guild))
 					return;
 			}
 
-			foreach (var item in ServerLists.GetServer(context.Guild).BannedChannels) //Check to channel, make sure its not on the baned list
+			//There are role mentions
+			if(msg.MentionedRoles.Count >= 1)
+			{
+				if (_antiSpam.CheckRoleMentions(msg, (SocketGuildUser)msg.Author))
+					return;
+			}
+
+			foreach (var item in server.BannedChannels) //Check to channel, make sure its not on the baned list
             {
                 if (msg.Channel.Id == item)
                     return;
@@ -57,7 +66,7 @@ namespace Pootis_Bot.Core
                 var cmdSearchResult = _commands.Search(context, argPos);
                 if (!cmdSearchResult.IsSuccess) return;
 
-                var perm = ServerLists.GetServer(context.Guild).GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
+                var perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
                 if(perm != null)
                 {
                     bool doesUserHaveARole = false;

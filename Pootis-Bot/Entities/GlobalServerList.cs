@@ -18,6 +18,8 @@ namespace Pootis_Bot.Entities
         public string RuleRole { get; set; }
         public string RuleReactionEmoji { get; set; }
 
+		public AntiSpamSettingsInfo AntiSpamSettings { get; set; }
+
         public List<ulong> BannedChannels = new List<ulong>();
 
         public List<CommandInfo> CommandInfos = new List<CommandInfo>();
@@ -26,11 +28,22 @@ namespace Pootis_Bot.Entities
 
         public List<ulong> ActiveAutoVoiceChannels = new List<ulong>();
 
+		public List<RoleToRoleMention> RoleToRoleMentions = new List<RoleToRoleMention>();
+
 		public class CommandInfo
         {
             public string Command { get; set; }
             public List<string> Roles = new List<string>();
         }
+
+		public class AntiSpamSettingsInfo
+		{
+			public  bool MentionUserEnabled { get; set; }
+
+			public int MentionUsersPercentage { get; set; }
+
+			public int RoleToRoleMentionWarnings { get; set; }
+		}
 
 		#region Functions
 
@@ -81,6 +94,24 @@ namespace Pootis_Bot.Entities
             BannedChannels.Add(_channelID);
             return _channelID;
         }
+
+		public List<RoleToRoleMention> GetRoleToRoleMention(string role)
+		{
+			var result = from a in RoleToRoleMentions
+						 where a.Role == role
+						 select a;
+
+			
+			var roleToRoleMention = result.ToList();
+			return roleToRoleMention;
+		}
+
+		public RoleToRoleMention CreateRoleToRoleMention(string roleNotMention, string role)
+		{
+			var roleToRole = new RoleToRoleMention(roleNotMention, role);
+			RoleToRoleMentions.Add(roleToRole);
+			return roleToRole;
+		}
 
 		#endregion
 	}
