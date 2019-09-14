@@ -7,7 +7,7 @@ namespace Pootis_Bot
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         => new Program().StartAsync(args).GetAwaiter().GetResult();
 
         public async Task StartAsync(string[] args)

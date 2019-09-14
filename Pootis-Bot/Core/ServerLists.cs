@@ -59,6 +59,13 @@ namespace Pootis_Bot.Core
                 RuleMessageId = 0
             };
 
+			newServer.AntiSpamSettings = new GlobalServerList.AntiSpamSettingsInfo
+			{
+				RoleToRoleMentionWarnings = 3,
+				MentionUsersPercentage = 45,
+				MentionUserEnabled = true
+			};
+
             serverLists.Add(newServer);
             SaveServerList();
             return newServer;
