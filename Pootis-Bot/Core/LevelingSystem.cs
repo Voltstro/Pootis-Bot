@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Core
 {
@@ -6,7 +7,7 @@ namespace Pootis_Bot.Core
     {
         public static async void UserSentMessage(SocketGuildUser user, SocketTextChannel channel, uint amount)
         {
-            var userAccount = UserAccounts.GetAccount(user);
+            GlobalUserAccount userAccount = UserAccounts.GetAccount(user);
             uint oldLevel = userAccount.LevelNumber;
             userAccount.XP += amount;
             UserAccounts.SaveAccounts();

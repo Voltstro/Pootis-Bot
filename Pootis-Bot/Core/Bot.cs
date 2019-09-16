@@ -201,16 +201,14 @@ namespace Pootis_Bot.Core
             Global.Log("Checking pre-connected server settings...");
 
             bool somethingChanged = false;
-            int changeCount = 0;
 
-            foreach(var server in ServerLists.serverLists)
+            foreach(var server in ServerLists.Servers)
             {
                 if(_client.GetChannel(server.WelcomeChannel) == null && server.WelcomeMessageEnabled)
                 {
                     somethingChanged = true;
-                    changeCount++;
 
-                    var guild = _client.GetGuild(server.ServerID);
+                    var guild = _client.GetGuild(server.ServerId);
                     var ownerDm = await guild.Owner.GetOrCreateDMChannelAsync();
 
                     await ownerDm.SendMessageAsync($"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +

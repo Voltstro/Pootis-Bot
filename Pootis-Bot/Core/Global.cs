@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Pootis_Bot.Entities;
 using System;
 using System.IO;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace Pootis_Bot.Core
 		//                                                  Main Server                -  Development Server
 		public static readonly string[] discordServers = { "https://discord.creepysin.com", "https://discord.gg/m4YcsUa" };
 
-		public static readonly string version = "0.3.1";
+		public static readonly string version = "0.3.2";
 		public static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
             $"Created by Creepysin licensed under the MIT license. Vist {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
             $"Pootis Robot icon by Valve\n" +
@@ -83,7 +82,7 @@ namespace Pootis_Bot.Core
                 foreach (DirectoryInfo subdir in dirs)
                 {
                     string temppath = Path.Combine(destDirName, subdir.Name);
-                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                    DirectoryCopy(subdir.FullName, temppath, true);
                 }
             }
         }
