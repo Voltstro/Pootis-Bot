@@ -6,7 +6,7 @@ namespace Pootis_Bot.Entities
 {
     public class GlobalServerList
     {
-        public ulong ServerID { get; set; }
+        public ulong ServerId { get; set; }
 
         public ulong WelcomeChannel { get; set; }
         public bool WelcomeMessageEnabled { get; set; }
@@ -54,7 +54,7 @@ namespace Pootis_Bot.Entities
                          select a;
 
             var channel = result.FirstOrDefault();
-            if (channel == 0) channel = CreateBanedChannel(id);
+            if (channel == 0) channel = CreateBannedChannel(id);
             return channel;
         }
 
@@ -89,10 +89,10 @@ namespace Pootis_Bot.Entities
             return commandInfo;
         }
 
-        ulong CreateBanedChannel(ulong _channelID)
+        private ulong CreateBannedChannel(ulong channelId)
         {
-            BannedChannels.Add(_channelID);
-            return _channelID;
+            BannedChannels.Add(channelId);
+            return channelId;
         }
 
 		public List<RoleToRoleMention> GetRoleToRoleMention(string role)

@@ -22,7 +22,7 @@ namespace Pootis_Bot.Services.Audio
 			{
 				try
 				{
-					string videoUrl = FunCmdsConfig.ytstartLink + searchListResponse.Items[0].Id.VideoId;
+					string videoUrl = FunCmdsConfig.ytStartLink + searchListResponse.Items[0].Id.VideoId;
 					string videoTitle = HttpUtility.HtmlDecode(searchListResponse.Items[0].Snippet.Title);
 					string videoLoc = "Music/" + videoTitle + ".mp3";
 

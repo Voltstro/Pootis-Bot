@@ -13,7 +13,7 @@ namespace Pootis_Bot.Modules.Basic
     {
         // Module Information
         // Original Author   - Creepysin
-        // Description      - Handles anything to do with profile managment
+        // Description      - Handles anything to do with profile management
         // Contributors     - Creepysin, 
 
         [Command("makenotwarnable")]

@@ -7,21 +7,21 @@ namespace Pootis_Bot.Core
 {
     public static class Config
     {
-        private const string configFolder = "Resources";
-        private const string configFile = "config.json";
+        private const string ConfigFolder = "Resources";
+        private const string ConfigFile = "config.json";
 
-        private const string configVersion = "3";
+        private const string ConfigVersion = "3";
 
-        public readonly static GlobalConfigFile bot = new GlobalConfigFile();
+        public static readonly GlobalConfigFile bot = new GlobalConfigFile();
 
         static Config()
         {
-            if (!Directory.Exists(configFolder))        //Creates the Resources folder if it doesn't exist.
-                Directory.CreateDirectory(configFolder);
+            if (!Directory.Exists(ConfigFolder))        //Creates the Resources folder if it doesn't exist.
+                Directory.CreateDirectory(ConfigFolder);
 
-            if (!File.Exists(configFolder + "/" + configFile))   //If the config.json file doesn't exist it creats a new one.
+            if (!File.Exists(ConfigFolder + "/" + ConfigFile))   //If the config.json file doesn't exist it creats a new one.
             {
-                bot.ConfigVersion = configVersion;
+                bot.ConfigVersion = ConfigVersion;
                 AddHelpModuleDefaults();
 
                 SaveConfig();
@@ -30,14 +30,14 @@ namespace Pootis_Bot.Core
             }
             else
             {
-                string json = File.ReadAllText(configFolder + "/" + configFile); //If it does exist then it continues like normal.
+                string json = File.ReadAllText(ConfigFolder + "/" + ConfigFile); //If it does exist then it continues like normal.
                 bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
 
-                if (string.IsNullOrWhiteSpace(bot.ConfigVersion) || bot.ConfigVersion != configVersion)
+                if (string.IsNullOrWhiteSpace(bot.ConfigVersion) || bot.ConfigVersion != ConfigVersion)
                 {
-                    bot.ConfigVersion = configVersion;
+                    bot.ConfigVersion = ConfigVersion;
                     SaveConfig();
-                    Global.Log("Updated config to version " + configVersion, ConsoleColor.Yellow);
+                    Global.Log("Updated config to version " + ConfigVersion, ConsoleColor.Yellow);
                 }  
             }
         }
@@ -45,7 +45,7 @@ namespace Pootis_Bot.Core
         public static void SaveConfig()
         {
             string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
-            File.WriteAllText(configFolder + "/" + configFile, json);
+            File.WriteAllText(ConfigFolder + "/" + ConfigFile, json);
         }
 
         private static void AddHelpModuleDefaults()

@@ -8,26 +8,26 @@ namespace Pootis_Bot.Core
 {
     public static class UserAccounts
     {
-        private static readonly List<GlobalUserAccount> accounts;
+        private static readonly List<GlobalUserAccount> Accounts;
 
-        private static readonly string accountsFile = "Resources/accounts.json";
+        private const string AccountsFile = "Resources/accounts.json";
 
         static UserAccounts()
         {
-            if (DataStorage.SaveExists(accountsFile))
+            if (DataStorage.SaveExists(AccountsFile))
             {
-                accounts = DataStorage.LoadUserAccounts(accountsFile).ToList();
+                Accounts = DataStorage.LoadUserAccounts(AccountsFile).ToList();
             }
             else
             {
-                accounts = new List<GlobalUserAccount>();
+                Accounts = new List<GlobalUserAccount>();
                 SaveAccounts();
             }
         }
 
         public static void SaveAccounts()
         {
-            DataStorage.SaveUserAccounts(accounts, accountsFile);
+            DataStorage.SaveUserAccounts(Accounts, AccountsFile);
         }
 
         public static GlobalUserAccount GetAccount(SocketGuildUser user)
@@ -37,7 +37,7 @@ namespace Pootis_Bot.Core
 
         private static GlobalUserAccount GetOrCreateAccount(ulong id, SocketGuildUser user)
         {
-            var result = from a in accounts
+            var result = from a in Accounts
                          where a.ID == id
                          select a;
 
@@ -56,7 +56,7 @@ namespace Pootis_Bot.Core
 
             newAccount.GetOrCreateServer(user.Guild.Id);
 
-            accounts.Add(newAccount);
+            Accounts.Add(newAccount);
             SaveAccounts();
             return newAccount;
         }

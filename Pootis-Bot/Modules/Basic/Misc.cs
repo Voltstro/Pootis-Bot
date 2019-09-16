@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Modules.Basic
@@ -14,11 +12,11 @@ namespace Pootis_Bot.Modules.Basic
         // Description      - Misc commands
         // Contributors     - Creepysin, 
 
-        private readonly VoteGivewayService _voteGivewayService;
+        private readonly VoteGivewayService _voteGiveawayService;
 
         public Misc()
         {
-            _voteGivewayService = new VoteGivewayService();
+            _voteGiveawayService = new VoteGivewayService();
         }
 
         [Command("pick")]
@@ -45,7 +43,7 @@ namespace Pootis_Bot.Modules.Basic
         [Summary("Starts a vote")]
         public async Task Vote(string time, string title, string description, string yesEmoji, string noEmoji)
         {
-            await _voteGivewayService.StartVote(Context.Guild, Context.Channel, Context.User, time, title, description, yesEmoji, noEmoji);
+            await _voteGiveawayService.StartVote(Context.Guild, Context.Channel, Context.User, time, title, description, yesEmoji, noEmoji);
         }
 
         [Command("reminds")]

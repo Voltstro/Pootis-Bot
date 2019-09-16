@@ -37,7 +37,7 @@ namespace Pootis_Bot.Core
         {
             if (!File.Exists(filePath)) return null;
             string json = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<List<Entities.GlobalServerList>>(json);
+            return JsonConvert.DeserializeObject<List<GlobalServerList>>(json);
         }
     }
 }

@@ -7,26 +7,26 @@ namespace Pootis_Bot.Core
 {
     public class ServerLists
     {
-        internal static List<GlobalServerList> serverLists;
+        public static List<GlobalServerList> Servers;
 
-        private readonly static string serverListFile = "Resources/serverlist.json";
+        private const string ServerListFile = "Resources/serverlist.json";
 
         static ServerLists()
         {
-            if (DataStorage.SaveExists(serverListFile))
+            if (DataStorage.SaveExists(ServerListFile))
             {
-                serverLists = DataStorage.LoadServerList(serverListFile).ToList();
+                Servers = DataStorage.LoadServerList(ServerListFile).ToList();
             }
             else
             {
-                serverLists = new List<GlobalServerList>();
+                Servers = new List<GlobalServerList>();
                 SaveServerList();
             }
         }
 
         public static void SaveServerList()
         {
-            DataStorage.SaveServerList(serverLists, serverListFile);
+            DataStorage.SaveServerList(Servers, ServerListFile);
         }
 
         public static GlobalServerList GetServer(SocketGuild server)
@@ -36,8 +36,8 @@ namespace Pootis_Bot.Core
 
         private static GlobalServerList GetOrCreateServer(ulong id)
         {
-            var result = from a in serverLists
-                         where a.ServerID == id
+            var result = from a in Servers
+                         where a.ServerId == id
                          select a;
 
             var server = result.FirstOrDefault();
@@ -49,7 +49,7 @@ namespace Pootis_Bot.Core
         {
             var newServer = new GlobalServerList()
             {
-                ServerID = id,
+                ServerId = id,
                 WelcomeMessageEnabled = false,
                 WelcomeChannel = 0,
                 WelcomeGoodbyeMessage = "Goodbye [user]. We hope you enjoyed your stay.",
@@ -66,7 +66,7 @@ namespace Pootis_Bot.Core
 				MentionUserEnabled = true
 			};
 
-            serverLists.Add(newServer);
+            Servers.Add(newServer);
             SaveServerList();
             return newServer;
         }
