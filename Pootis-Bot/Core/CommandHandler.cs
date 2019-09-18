@@ -54,7 +54,7 @@ namespace Pootis_Bot.Core
 					return;
 			}
 
-			foreach (var item in server.BannedChannels) //Check to channel, make sure its not on the baned list
+			foreach (var item in server.BannedChannels) //Check to channel, make sure its not on the banned list
             {
                 if (msg.Channel.Id == item)
                     return;
@@ -63,18 +63,18 @@ namespace Pootis_Bot.Core
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 //Permissions
-                var cmdSearchResult = _commands.Search(context, argPos);
+                SearchResult cmdSearchResult = _commands.Search(context, argPos);
                 if (!cmdSearchResult.IsSuccess) return;
 
-                var perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
+                GlobalServerList.CommandInfo perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
                 if(perm != null)
                 {
                     bool doesUserHaveARole = false;
                     
-                    foreach (var role in perm.Roles)
+                    foreach (string role in perm.Roles)
                     {
-                        var guildRole = (context.User as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == role);
-                        if ((context.User as SocketGuildUser).Roles.Contains(guildRole))
+                        IRole guildRole = ((IGuildUser) context.User).Guild.Roles.FirstOrDefault(x => x.Name == role);
+                        if (((SocketGuildUser) context.User).Roles.Contains(guildRole))
                         {
                             doesUserHaveARole = true;
                         }

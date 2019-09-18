@@ -38,7 +38,7 @@ namespace Pootis_Bot.Core
         private static GlobalUserAccount GetOrCreateAccount(ulong id, SocketGuildUser user)
         {
             var result = from a in Accounts
-                         where a.ID == id
+                         where a.Id == id
                          select a;
 
             var account = result.FirstOrDefault();
@@ -50,8 +50,8 @@ namespace Pootis_Bot.Core
         {
             var newAccount = new GlobalUserAccount
             {
-                ID = id,
-                XP = 0
+                Id = id,
+                Xp = 0
             };
 
             newAccount.GetOrCreateServer(user.Guild.Id);

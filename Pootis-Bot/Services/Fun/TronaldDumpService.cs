@@ -11,7 +11,7 @@ namespace Pootis_Bot.Services.Fun
         {
             try
             {
-                string json = "";
+                string json;
                 using (WebClient client = new WebClient()) //Tronald Dump API
                 {
                     json = client.DownloadString($"https://api.tronalddump.io/random/quote");
@@ -32,7 +32,7 @@ namespace Pootis_Bot.Services.Fun
         {
             try
             {
-                string json = "";
+	            string json;
                 using (WebClient client = new WebClient()) //Tronald Dump API
                 {
                     json = client.DownloadString($"https://api.tronalddump.io/search/quote?query={search}");

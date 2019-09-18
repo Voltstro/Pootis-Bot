@@ -14,14 +14,14 @@ namespace Pootis_Bot.Services.Fun
             try
             {
                 //Check to see if the token is null or white space
-                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.apiGiphyKey))
+                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGiphyKey))
                 {
                     string input = search.Replace(" ", "+");
 
-                    string json = "";
+                    string json;
                     using (WebClient client = new WebClient()) //Search the term using the giphy api. More about the api here: https://developers.giphy.com/docs/
                     {
-                        json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.apiGiphyKey}");
+                        json = client.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.ApiGiphyKey}");
                     }
 
                     var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
@@ -30,26 +30,26 @@ namespace Pootis_Bot.Services.Fun
 
                     GiphyData item = new GiphyData
                     {
-                        gifUrl = dataObject.data[choose].images.fixed_height.url.ToString(),
-                        gifTitle = dataObject.data[choose].title.ToString(),
-                        gifAuthor = dataObject.data[choose].username.ToString(),
+                        GifUrl = dataObject.data[choose].images.fixed_height.url.ToString(),
+                        GifTitle = dataObject.data[choose].title.ToString(),
+                        GifAuthor = dataObject.data[choose].username.ToString(),
                         GifLink = dataObject.data[choose].bitly_gif_url.ToString()
                     };
 
-					searchResult.IsSuccessfull = true;
+					searchResult.IsSuccessful = true;
 					searchResult.Data = item;
 					return searchResult;
                 }
 				else
 				{
-					searchResult.IsSuccessfull = false;
-					searchResult.ErrorReason = ErrorReason.NoAPIKey;
+					searchResult.IsSuccessful = false;
+					searchResult.ErrorReason = ErrorReason.NoApiKey;
 					return searchResult;
 				}
             }
             catch
             {
-				searchResult.IsSuccessfull = false;
+				searchResult.IsSuccessful = false;
 				searchResult.ErrorReason = ErrorReason.Error;
 				return searchResult;
             } 

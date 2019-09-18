@@ -48,11 +48,11 @@ namespace Pootis_Bot.Modules.Basic
             embed.WithTitle("Server Details");
             embed.WithDescription($"**__Server__**" +
                 $"\n**Server Name:** {guildUser.Guild}" +
-                $"\n**Server ID:** {guildUser.Guild.Id}" +
+                $"\n**Server Id:** {guildUser.Guild.Id}" +
                 $"\n**Server Member Count:** {guildUser.Guild.MemberCount}" +
                 $"\n\n**__Server Owner__**" +
                 $"\n**Owner Name: **{guildUser.Guild.Owner.Username}" +
-                $"\n**Owner ID: ** {guildUser.Guild.OwnerId}");
+                $"\n**Owner Id: ** {guildUser.Guild.OwnerId}");
             embed.WithThumbnailUrl(guildUser.Guild.IconUrl);
             embed.WithColor(new Color(241, 196, 15));
 
@@ -82,12 +82,12 @@ namespace Pootis_Bot.Modules.Basic
                 if (count > 10)
                     continue;
 
-                format.Append($"\n [{count}] -- # {Context.Client.GetUser(user.ID)}\n         └ Level: {user.LevelNumber}\n         └ XP: {user.XP}");
+                format.Append($"\n [{count}] -- # {Context.Client.GetUser(user.Id)}\n         └ Level: {user.LevelNumber}\n         └ Xp: {user.Xp}");
                 count++;
             }
 
             var userAccount = UserAccounts.GetAccount((SocketGuildUser)Context.User);
-            format.Append($"\n------------------------\n 😊 Your Level: {userAccount.LevelNumber}      Your XP: {userAccount.XP}```");
+            format.Append($"\n------------------------\n 😊 Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
             await Context.Channel.SendMessageAsync(format.ToString());
         }
 
@@ -95,9 +95,9 @@ namespace Pootis_Bot.Modules.Basic
         {
             public int Compare(GlobalUserAccount x, GlobalUserAccount y)
             {
-                if (x.LevelNumber > y.LevelNumber)
+                if (y != null && (x != null && x.LevelNumber > y.LevelNumber))
                     return 1;
-                else if (x.LevelNumber < y.LevelNumber)
+                else if (y != null && (x != null && x.LevelNumber < y.LevelNumber))
                     return -1;
                 else
                     return 0;

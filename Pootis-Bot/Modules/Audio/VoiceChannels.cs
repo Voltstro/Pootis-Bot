@@ -18,7 +18,7 @@ namespace Pootis_Bot.Modules.Audio
 		[Cooldown(5)]
         public async Task AddVoiceChannel(string baseName)
         {
-            RestVoiceChannel channel = await (Context.Guild as SocketGuild).CreateVoiceChannelAsync($"➕ New {baseName} VC");
+            RestVoiceChannel channel = await ((SocketGuild) Context.Guild).CreateVoiceChannelAsync($"➕ New {baseName} VC");
 
             await Context.Channel.SendMessageAsync($"Added {baseName} as an auto voice channel.");
 

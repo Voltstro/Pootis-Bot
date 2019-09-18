@@ -21,17 +21,17 @@ namespace Pootis_Bot.Modules.Fun
         [RequireBotPermission(GuildPermission.AttachFiles)]
         public async Task CmdGiphySearch([Remainder] string search = "")
         {
-            if (string.IsNullOrWhiteSpace(Config.bot.Apis.apiGiphyKey))
+            if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGiphyKey))
             {
                 await Context.Channel.SendMessageAsync("Giphy search is disabled by the bot owner.");
                 return;
             }
 
             var results = GiphyService.Search(search);
-			if (!results.IsSuccessfull)
+			if (!results.IsSuccessful)
 			{
 				//This should never happen, since we check it at the start!
-				if(results.ErrorReason == ErrorReason.NoAPIKey)
+				if(results.ErrorReason == ErrorReason.NoApiKey)
 					return;
 				if(results.ErrorReason == ErrorReason.Error)
 				{
@@ -41,9 +41,9 @@ namespace Pootis_Bot.Modules.Fun
 			}
 
             EmbedBuilder embed = new EmbedBuilder();
-            embed.WithTitle("Giphy Search: " + Global.Title(results.Data.gifTitle));
-            embed.WithDescription($"**By**: {results.Data.gifAuthor}\n**URL**: {results.Data.GifLink}");
-            embed.WithImageUrl(results.Data.gifUrl);
+            embed.WithTitle("Giphy Search: " + Global.Title(results.Data.GifTitle));
+            embed.WithDescription($"**By**: {results.Data.GifAuthor}\n**URL**: {results.Data.GifLink}");
+            embed.WithImageUrl(results.Data.GifUrl);
             embed.WithFooter($"Search by {Context.User} @ ", Context.User.GetAvatarUrl());
             embed.WithCurrentTimestamp();
             embed.WithColor(FunCmdsConfig.giphyColor);

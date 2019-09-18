@@ -12,18 +12,18 @@ namespace Pootis_Bot.Modules.Basic
         // Description      - Misc commands
         // Contributors     - Creepysin, 
 
-        private readonly VoteGivewayService _voteGiveawayService;
+        private readonly VoteGiveawayService _voteGiveawayService;
 
         public Misc()
         {
-            _voteGiveawayService = new VoteGivewayService();
+            _voteGiveawayService = new VoteGiveawayService();
         }
 
         [Command("pick")]
         [Summary("Picks between two things")]
         public async Task PickOne([Remainder]string message)
         {
-            string[] options = message.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] options = message.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
             Random r = new Random();
             string selection = options[r.Next(0, options.Length)];

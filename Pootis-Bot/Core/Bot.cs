@@ -59,29 +59,28 @@ namespace Pootis_Bot.Core
             await CheckConnectionStatus();
         }
 
-        private Task ChannelDestroyed(SocketChannel channel)
+        private static Task ChannelDestroyed(SocketChannel channel)
         {
-            var serverList = ServerLists.GetServer((channel as SocketGuildChannel).Guild);
-            var voiceChannel = serverList.GetVoiceChannel(channel.Id);
+            GlobalServerList serverList = ServerLists.GetServer(((SocketGuildChannel) channel).Guild);
+            VoiceChannel voiceChannel = serverList.GetVoiceChannel(channel.Id);
 
             //If the channel deleted was an auto voice channel, remove it from the list.
-            if(voiceChannel.Name != null)
-            {
-                serverList.VoiceChannels.Remove(voiceChannel);
-                ServerLists.SaveServerList();
-            }  
+            if (voiceChannel.Name == null) return Task.CompletedTask;
+
+            serverList.VoiceChannels.Remove(voiceChannel);
+            ServerLists.SaveServerList();
 
             return Task.CompletedTask;
         }
 
-        private async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
+        private static async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
         {
-            GlobalServerList server = ServerLists.GetServer((user as SocketGuildUser).Guild);
+            GlobalServerList server = ServerLists.GetServer(((SocketGuildUser) user).Guild);
 
             //If we are adding an auto voice channel
             if (after.VoiceChannel != null)
             {
-                var voiceChannel = server.GetVoiceChannel(after.VoiceChannel.Id);
+                VoiceChannel voiceChannel = server.GetVoiceChannel(after.VoiceChannel.Id);
                 if (voiceChannel.Name != null)
                 {
                     RestVoiceChannel createdChannel = await after.VoiceChannel.Guild.CreateVoiceChannelAsync($"New {voiceChannel.Name} chat");
@@ -94,7 +93,8 @@ namespace Pootis_Bot.Core
                         x.CategoryId = after.VoiceChannel.CategoryId;
                     });
 
-                    await (user as SocketGuildUser).ModifyAsync(x =>
+					//Move the user who created the channel to the new channel
+                    await ((SocketGuildUser) user).ModifyAsync(x =>
                     {
                         x.ChannelId = createdChannel.Id;
                     });
@@ -125,27 +125,23 @@ namespace Pootis_Bot.Core
             {
                 List<GlobalServerMusicItem> toRemove = new List<GlobalServerMusicItem>();
 
-                foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+                foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels.Where(channel => channel.AudioChannel.Users.Count == 1))
                 {
-                    if (channel.AudioChannel.Users.Count == 1)
-                    {
-                        //Stop ffmpeg if it is running
-                        if(channel.FFmpeg != null)
-                            channel.FFmpeg.Dispose();
+	                //Stop ffmpeg if it is running
+	                channel.FfMpeg?.Dispose();
 
-                        //Leave the audio channel
-                        await channel.AudioClient.StopAsync();
+	                //Leave the audio channel
+	                await channel.AudioClient.StopAsync();
 
-                        await channel.StartChannel.SendMessageAsync(":musical_note: Left the audio channel due to there being no one there :(");
+	                await channel.StartChannel.SendMessageAsync(":musical_note: Left the audio channel due to there being no one there :(");
 
-                        toRemove.Add(channel);
-                    }
+	                toRemove.Add(channel);
                 }
 
                 //To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
                 if (toRemove.Count != 0)
                 {
-                    foreach (var channel in toRemove)
+                    foreach (GlobalServerMusicItem channel in toRemove)
                     {
                         AudioService.CurrentChannels.Remove(channel);
                     }
@@ -219,36 +215,30 @@ namespace Pootis_Bot.Core
                 }
 
                 //Check to see if all the active channels don't have someone in it.
-                List<ulong> deleteActiveChannels = new List<ulong>();
+                var deleteActiveChannels = new List<ulong>();
 
-                foreach(var activeChannel in server.ActiveAutoVoiceChannels)
+                foreach (ulong activeChannel in server.ActiveAutoVoiceChannels.Where(activeChannel => _client.GetChannel(activeChannel).Users.Count == 0))
                 {
-                    if(_client.GetChannel(activeChannel).Users.Count == 0)
-                    {
-                        await (_client.GetChannel(activeChannel) as SocketVoiceChannel).DeleteAsync();
-                        deleteActiveChannels.Add(activeChannel);
-                        somethingChanged = true;
-                    }
+	                await ((SocketVoiceChannel) _client.GetChannel(activeChannel)).DeleteAsync();
+	                deleteActiveChannels.Add(activeChannel);
+	                somethingChanged = true;
                 }
 
                 //Check to see if all the auto voice channels are there
-                List<VoiceChannel> deleteAutoChannels = new List<VoiceChannel>();
-                foreach(var autoChannel in server.VoiceChannels)
+                var deleteAutoChannels = new List<VoiceChannel>();
+                foreach (VoiceChannel autoChannel in server.VoiceChannels.Where(autoChannel => _client.GetChannel(autoChannel.Id) == null))
                 {
-                    if (_client.GetChannel(autoChannel.ID) == null)
-                    {
-                        deleteAutoChannels.Add(autoChannel);
-                        somethingChanged = true;
-                    }
+	                deleteAutoChannels.Add(autoChannel);
+	                somethingChanged = true;
                 }
 
                 //To avoid System.InvalidOperationException remove all of the objects from the list after
-                foreach (var activeChannel in deleteActiveChannels)
+                foreach (ulong activeChannel in deleteActiveChannels)
                 {
                     server.ActiveAutoVoiceChannels.Remove(activeChannel);
                 }
 
-                foreach(var autoChannel in deleteAutoChannels)
+                foreach(VoiceChannel autoChannel in deleteAutoChannels)
                 {
                     server.VoiceChannels.Remove(autoChannel);
                 }
@@ -263,43 +253,36 @@ namespace Pootis_Bot.Core
                 Global.Log("All servers are good!");
         }
 
-        private Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
+        private static Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            var guild = (channel as SocketGuildChannel).Guild;
-            var server = ServerLists.GetServer(guild);
+            SocketGuild guild = ((SocketGuildChannel) channel).Guild;
+            GlobalServerList server = ServerLists.GetServer(guild);
             
             if(reaction.MessageId == server.RuleMessageId) //Check to see if the reaction is on the right message
             {
-                if(server.RuleEnabled) //Check to see if the server even has to rule reaction enabled
-                {
-                    if(reaction.Emote.Name == server.RuleReactionEmoji) //If the person reacted with the right emoji then give them the role
-                    {
-                        var role = guild.Roles.FirstOrDefault(x => x.Name == server.RuleRole);
+	            if (!server.RuleEnabled) return Task.CompletedTask;
+	            if (reaction.Emote.Name != server.RuleReactionEmoji) return Task.CompletedTask;
+	            SocketRole role = guild.Roles.FirstOrDefault(x => x.Name == server.RuleRole);
 
-                        var user = (SocketGuildUser)reaction.User;
-                        user.AddRoleAsync(role);
-                    }
-                }
+	            SocketGuildUser user = (SocketGuildUser)reaction.User;
+	            user.AddRoleAsync(role);
             }
             else
             {
-                if(VoteGivewayService.isVoteRunning) // If there is a vote going on then check to make sure the reaction doesn't have anything to do with that.
+                if(VoteGiveawayService.isVoteRunning) // If there is a vote going on then check to make sure the reaction doesn't have anything to do with that.
                 {
-                    foreach (var vote in VoteGivewayService.votes)
-                    {
-                        if(reaction.MessageId == vote.VoteMessageID)
-                        {
-                            if(reaction.Emote.Name == vote.YesEmoji)
-                            {
-                                vote.YesCount++;
-                            }
+	                foreach (VoteGiveawayService.Vote vote in VoteGiveawayService.votes.Where(vote => reaction.MessageId == vote.VoteMessageID))
+	                {
+		                if(reaction.Emote.Name == vote.YesEmoji)
+		                {
+			                vote.YesCount++;
+		                }
                                 
-                            else if(reaction.Emote.Name == vote.NoEmoji)
-                            {
-                                vote.NoCount++;
-                            }  
-                        }
-                    }
+		                else if(reaction.Emote.Name == vote.NoEmoji)
+		                {
+			                vote.NoCount++;
+		                }
+	                }
                 }
                 else
                 {
@@ -311,10 +294,11 @@ namespace Pootis_Bot.Core
             return Task.CompletedTask;
         }
 
-        private async Task JoinedNewServer(SocketGuild guild)
+        private static async Task JoinedNewServer(SocketGuild guild)
         {
-            Global.Log("Joined server " + guild, ConsoleColor.Blue);
+			//Add the new server to the server list
             ServerLists.GetServer(guild);
+			ServerLists.SaveServerList();
 
             EmbedBuilder embed = new EmbedBuilder();
             embed.WithTitle("Hey, thanks for adding me to your server.");
@@ -331,50 +315,50 @@ namespace Pootis_Bot.Core
             await guild.DefaultChannel.SendMessageAsync("", false, embed.Build());
 
             //Send a message to Discord server's owner about setting up the bot
-            var owner = await guild.Owner.GetOrCreateDMChannelAsync();
+            IDMChannel owner = await guild.Owner.GetOrCreateDMChannelAsync();
             await owner.SendMessageAsync($"Thanks for using {Global.BotName}! Check out {Global.websiteServerSetup} on how to setup {Global.BotName} for your server.");
         }
 
         private async Task UserLeft(SocketGuildUser user) //Says goodbye to the user.
         {
-            var server = ServerLists.GetServer(user.Guild);
+            GlobalServerList server = ServerLists.GetServer(user.Guild);
             if (!user.IsBot)
             {
                 //Remove server data from account
-                var account = UserAccounts.GetAccount(user);
+                GlobalUserAccount account = UserAccounts.GetAccount(user);
                 account.Servers.Remove(account.GetOrCreateServer(user.Guild.Id));
                 UserAccounts.SaveAccounts();
 
                 if (server.WelcomeMessageEnabled)
                 {
-                    var channel = _client.GetChannel(server.WelcomeChannel) as SocketTextChannel; //gets channel to send message in
+					//Format the message
+	                string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
 
-                    string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
-
-                    await channel.SendMessageAsync(addUserMention); //Says goodbye.  
+					//Get the welcome channel and send the message
+					if (_client.GetChannel(server.WelcomeChannel) is SocketTextChannel channel) await channel.SendMessageAsync(addUserMention); 
                 }
             }
         }
 
-        private async Task AnnounceJoinedUser(SocketGuildUser user) //welcomes New Players
+        private async Task AnnounceJoinedUser(SocketGuildUser user)
         {
-            Global.Log($"User {user} has joined the server {user.Guild.Name}({user.Guild.Id})");
-
-            var server = ServerLists.GetServer(user.Guild);
+	        GlobalServerList server = ServerLists.GetServer(user.Guild);
 
             if (!user.IsBot)
             {
                 //Pre create the user account
                 UserAccounts.GetAccount(user);
                 UserAccounts.SaveAccounts();
+
+				//If the server has welcome messages enabled then we give them a warm welcome UwU
                 if (server.WelcomeMessageEnabled)
                 {
-                    var channel = (ISocketMessageChannel)_client.GetChannel(server.WelcomeChannel);
+					//Format the message to include username and the server name
+	                string addUserMention = server.WelcomeMessage.Replace("[user]", user.Mention);
+                    string addServerName = addUserMention.Replace("[server]", user.Guild.Name);
 
-                    string addUserMetion = server.WelcomeMessage.Replace("[user]", user.Mention);
-                    string addServerName = addUserMetion.Replace("[server]", user.Guild.Name);
-
-                    await channel.SendMessageAsync(addServerName); //Welcomes the new user with the server's message
+                    //Welcomes the new user with the server's message
+                    if(_client.GetChannel(server.WelcomeChannel) is SocketTextChannel channel) await channel.SendMessageAsync(addServerName);
                 }
             }
         }
@@ -383,115 +367,122 @@ namespace Pootis_Bot.Core
         {
             while (true)    // Run forever
             {
-                string input = Console.ReadLine().Trim().ToLower();
+	            // ReSharper disable once PossibleNullReferenceException
+	            string input = Console.ReadLine().Trim().ToLower();
 
-                if (input == "exit")
-                {
-                    _isRunning = false;
+	            switch (input)
+	            {
+		            case "exit":
+		            {
+			            _isRunning = false;
 
-                    Global.Log("Shutting down...");
-                    await _client.SetGameAsync("Bot shutting down");
-                    foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
-                    {
-                        channel.AudioClient.Dispose();
-                    }
+			            Global.Log("Shutting down...");
+			            await _client.SetGameAsync("Bot shutting down");
+			            foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+			            {
+				            channel.AudioClient.Dispose();
+			            }
 
-                    await _client.LogoutAsync();
-                    _client.Dispose();
-                    Environment.Exit(0);
-                }
-                else if (input == "config")
-                {
-                    BotConfigStart();
-                    Global.Log("Restart the bot to apply the settings");
-                }
-                else if (input == "about")
-                    Console.WriteLine(Global.aboutMessage);
-                else if (input == "version")
-                    Console.WriteLine(Global.version);
-                else if (input == "setgame")
-                {
-                    Console.WriteLine("Enter in what you want to set the bot's game to: ");
-                    _gameStatus = Console.ReadLine();
+			            await _client.LogoutAsync();
+			            _client.Dispose();
+			            Environment.Exit(0);
 
-                    ActivityType activity = ActivityType.Playing;
-                    string twich = null;
-                    if (_isStreaming)
-                    {
-                        activity = ActivityType.Streaming;
-                        twich = Config.bot.TwitchStreamingSite;
-                    }  
+						return;
+		            }
+		            case "config":
+			            BotConfigStart();
+			            Global.Log("Restart the bot to apply the settings");
+			            break;
+		            case "about":
+			            Console.WriteLine(Global.aboutMessage);
+			            break;
+		            case "version":
+			            Console.WriteLine(Global.version);
+			            break;
+		            case "setgame":
+		            {
+			            Console.WriteLine("Enter in what you want to set the bot's game to: ");
+			            _gameStatus = Console.ReadLine();
 
-                    await _client.SetGameAsync(_gameStatus, twich, activity);
+			            ActivityType activity = ActivityType.Playing;
+			            string twich = null;
+			            if (_isStreaming)
+			            {
+				            activity = ActivityType.Streaming;
+				            twich = Config.bot.TwitchStreamingSite;
+			            }  
 
-                    Global.Log($"Bot's game was set to '{_gameStatus}'");
-                }
-                else if (input == "togglestream")
-                {
-                    if (_isStreaming)
-                    {
-                        _isStreaming = false;
-                        await _client.SetGameAsync(_gameStatus, null, ActivityType.Playing);
-                        Global.Log("Bot is no longer streaming");
-                    }
-                    else
-                    {
-                        _isStreaming = true;
-                        await _client.SetGameAsync(_gameStatus, Config.bot.TwitchStreamingSite, ActivityType.Streaming);
-                        Global.Log("Bot is streaming");
-                    }
-                }
-                else if (input == "deletemusic")
-                {
-                    foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
-                    {
-                        channel.AudioClient.Dispose();
-                    }
+			            await _client.SetGameAsync(_gameStatus, twich, activity);
 
-                    Global.Log("Deleting music directory...", ConsoleColor.Blue);
-                    if (System.IO.Directory.Exists("Music/"))
-                    {
-                        System.IO.Directory.Delete("Music/", true);
-                        Global.Log("Done!", ConsoleColor.Blue);
-                    }
-                    else
-                        Global.Log("The music directory doesn't exist!", ConsoleColor.Blue);
-                }
-                else if (input == "toggleaudio")
-                {
-                    Config.bot.IsAudioServiceEnabled = !Config.bot.IsAudioServiceEnabled;
-                    Config.SaveConfig();
+			            Global.Log($"Bot's game was set to '{_gameStatus}'");
+			            break;
+		            }
+		            case "togglestream" when _isStreaming:
+			            _isStreaming = false;
+			            await _client.SetGameAsync(_gameStatus, "");
+			            Global.Log("Bot is no longer streaming");
+			            break;
+		            case "togglestream":
+			            _isStreaming = true;
+			            await _client.SetGameAsync(_gameStatus, Config.bot.TwitchStreamingSite, ActivityType.Streaming);
+			            Global.Log("Bot is streaming");
+			            break;
+		            case "deletemusic":
+		            {
+			            foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+			            {
+				            channel.AudioClient.Dispose();
+			            }
 
-                    Global.Log($"The audio service was set to {Config.bot.IsAudioServiceEnabled}", ConsoleColor.Blue);
-                    if (Config.bot.IsAudioServiceEnabled == true)
-						AudioCheckService.CheckAudioService();
-                }
-                else if (input == "forceaudioupdate")
-                {
-                    Global.Log("Updating audio files.", ConsoleColor.Blue);
-                    foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
-                    {
-                        channel.AudioClient.Dispose();
-                    }
+			            Global.Log("Deleting music directory...", ConsoleColor.Blue);
+			            if (System.IO.Directory.Exists("Music/"))
+			            {
+				            System.IO.Directory.Delete("Music/", true);
+				            Global.Log("Done!", ConsoleColor.Blue);
+			            }
+			            else
+				            Global.Log("The music directory doesn't exist!", ConsoleColor.Blue);
 
-                    //Delete old files first
-                    System.IO.Directory.Delete("External/", true);
-                    System.IO.File.Delete("libsodium.dll");
-                    System.IO.File.Delete("opus.dll");
+			            break;
+		            }
+		            case "toggleaudio":
+		            {
+			            Config.bot.IsAudioServiceEnabled = !Config.bot.IsAudioServiceEnabled;
+			            Config.SaveConfig();
 
-					AudioCheckService.UpdateAudioFiles();
-                    Global.Log("Audio files were updated.", ConsoleColor.Blue);
-                }
-                else if(input == "status")
-                {
-                    Global.Log($"Bot status: {_client.ConnectionState.ToString()}\nServer count: {_client.Guilds.Count}\nLatency: {_client.Latency}");
-                }
-                else if (input == "clear" || input == "cls")
-                {
-                    Console.Clear();
-                }
-                else
-                    Global.Log($"Unknown command '{input}'. Vist {Global.websiteConsoleCommands} for a list of console commands.", ConsoleColor.Red);
+			            Global.Log($"The audio service was set to {Config.bot.IsAudioServiceEnabled}", ConsoleColor.Blue);
+			            if (Config.bot.IsAudioServiceEnabled)
+				            AudioCheckService.CheckAudioService();
+			            break;
+		            }
+		            case "forceaudioupdate":
+		            {
+			            Global.Log("Updating audio files.", ConsoleColor.Blue);
+			            foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+			            {
+				            channel.AudioClient.Dispose();
+			            }
+
+			            //Delete old files first
+			            System.IO.Directory.Delete("External/", true);
+			            System.IO.File.Delete("libsodium.dll");
+			            System.IO.File.Delete("opus.dll");
+
+			            AudioCheckService.UpdateAudioFiles();
+			            Global.Log("Audio files were updated.", ConsoleColor.Blue);
+			            break;
+		            }
+		            case "status":
+			            Global.Log($"Bot status: {_client.ConnectionState.ToString()}\nServer count: {_client.Guilds.Count}\nLatency: {_client.Latency}");
+			            break;
+		            case "clear":
+		            case "cls":
+			            Console.Clear();
+			            break;
+		            default:
+			            Global.Log($"Unknown command '{input}'. Vist {Global.websiteConsoleCommands} for a list of console commands.", ConsoleColor.Red);
+			            break;
+	            }
             }
         }
 
@@ -512,7 +503,7 @@ namespace Pootis_Bot.Core
             BotConfigMain();
         }
 
-        void BotConfigMain()
+        private void BotConfigMain()
         {
             string token = Global.BotToken;
             string name = Global.BotName;
@@ -520,55 +511,52 @@ namespace Pootis_Bot.Core
 
             while (true)
             {
-                string input = Console.ReadLine().Trim();
+	            // ReSharper disable once PossibleNullReferenceException
+	            string input = Console.ReadLine().Trim();
 
-                if (input == "exit")
-                {
-                    if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(prefix))
-                    {
-                        Config.bot.BotToken = token;
-                        Config.bot.BotName = name;
-                        Config.bot.BotPrefix = prefix;
+	            switch (input)
+	            {
+		            case "exit" when !string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(prefix):
+			            Config.bot.BotToken = token;
+			            Config.bot.BotName = name;
+			            Config.bot.BotPrefix = prefix;
 
-                        Config.SaveConfig();
+			            Config.SaveConfig();
 
-                        Global.BotToken = token;
-                        Global.BotName = name;
-                        Global.BotPrefix = prefix;
+			            Global.BotToken = token;
+			            Global.BotName = name;
+			            Global.BotPrefix = prefix;
 
-                        Console.WriteLine("Exited bot configuration");
-                        return;
-                    }
-                    else
-                        Console.WriteLine("Either the token, name or prefix is null or empty. Make sure to check that the all have data in it.");
-                }
-                else if (input == "1")
-                {
-                    token = BotConfigToken();
-                }
-                else if (input == "2")
-                {
-                    prefix = BotConfigPrefix();
-                }
-                else if (input == "3")
-                {
-                    name = BotConfigName();
-                }
-                else if (input == "4")
-                {
-                    BotConfigAPIs();
-                }
-                else
-                    Console.WriteLine("Invaild input, you need to either enter '1', '2', '3', '4' or 'exit' (With out '')");
+			            Console.WriteLine("Exited bot configuration");
+			            return;
+		            case "exit":
+			            Console.WriteLine("Either the token, name or prefix is null or empty. Make sure to check that the all have data in it.");
+			            break;
+		            case "1":
+			            token = BotConfigToken();
+			            break;
+		            case "2":
+			            prefix = BotConfigPrefix();
+			            break;
+		            case "3":
+			            name = BotConfigName();
+			            break;
+		            case "4":
+			            BotConfigApis();
+			            break;
+		            default:
+			            Console.WriteLine("Invaild input, you need to either enter '1', '2', '3', '4' or 'exit' (With out '')");
+			            break;
+	            }
             }
         }
 
-        void BotConfigAPIs()
+        private void BotConfigApis()
         {
-            string giphyAPI = Config.bot.Apis.apiGiphyKey;
-            string youtubeAPI = Config.bot.Apis.apiYoutubeKey;
-            string googleAPI = Config.bot.Apis.apiGoogleSearchKey;
-            string googleSearchID = Config.bot.Apis.googleSearchEngineID;
+            string giphyApi = Config.bot.Apis.ApiGiphyKey;
+            string youTubeApi = Config.bot.Apis.ApiYoutubeKey;
+            string googleApi = Config.bot.Apis.ApiGoogleSearchKey;
+            string googleSearchApi = Config.bot.Apis.GoogleSearchEngineId;
 
             Console.WriteLine("APIs are needed for commands such as 'google'");
             Console.WriteLine("It is definitely recommended.");
@@ -576,43 +564,44 @@ namespace Pootis_Bot.Core
             Console.WriteLine("1. - Giphy API Key");
             Console.WriteLine("2. - Youtube API Key");
             Console.WriteLine("3. - Google API Key");
-            Console.WriteLine("4. - Google Search ID");
+            Console.WriteLine("4. - Google Search Id");
             Console.WriteLine("");
             Console.WriteLine("At any time type 'return' to return back to the bot configuration menu.");
 
             while (true)
             {
-                string input = Console.ReadLine().Trim();
+	            // ReSharper disable once PossibleNullReferenceException
+	            string input = Console.ReadLine().Trim();
 
                 if (input.ToLower() == "return")
                 {
-                    Config.bot.Apis.apiGiphyKey = giphyAPI;
-                    Config.bot.Apis.apiYoutubeKey = youtubeAPI;
-                    Config.bot.Apis.apiGoogleSearchKey = googleAPI;
-                    Config.bot.Apis.googleSearchEngineID = googleSearchID;
+                    Config.bot.Apis.ApiGiphyKey = giphyApi;
+                    Config.bot.Apis.ApiYoutubeKey = youTubeApi;
+                    Config.bot.Apis.ApiGoogleSearchKey = googleApi;
+                    Config.bot.Apis.GoogleSearchEngineId = googleSearchApi;
 
                     Config.SaveConfig();
                     Console.WriteLine("Exited api configuration");
                     return;
                 }
-                else if (input == "1")
+                else switch (input)
                 {
-                    giphyAPI = BotConfigAPIGiphy();
+	                case "1":
+		                giphyApi = BotConfigAPIGiphy();
+		                break;
+	                case "2":
+		                youTubeApi = BotConfigAPIYoutube();
+		                break;
+	                case "3":
+		                googleApi = BotConfigAPIGoogle();
+		                break;
+	                case "4":
+		                googleSearchApi = BotConfigGoogleSearchID();
+		                break;
+	                default:
+		                Console.WriteLine("You need to either put in '1', '2' ... etc or 'return'. (With out '')");
+		                break;
                 }
-                else if (input == "2")
-                {
-                    youtubeAPI = BotConfigAPIYoutube();
-                }
-                else if (input == "3")
-                {
-                    googleAPI = BotConfigAPIGoogle();
-                }
-                else if (input == "4")
-                {
-                    googleSearchID = BotConfigGoogleSearchID();
-                }
-                else
-                    Console.WriteLine("You need to either put in '1', '2' ... etc or 'return'. (With out '')");
             }
         }
 
@@ -690,7 +679,7 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.Apis.apiGiphyKey}'");
+            Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.Apis.ApiGiphyKey}'");
             Console.WriteLine("Enter in what you want to change the bot Giphy key to: ");
 
             while (true)
@@ -712,7 +701,7 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.Apis.apiYoutubeKey}'");
+            Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.Apis.ApiYoutubeKey}'");
             Console.WriteLine("Enter in what you want to change the bot Youtube key to: ");
 
             while (true)
@@ -734,7 +723,7 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Google key is set to: '{Config.bot.Apis.apiGoogleSearchKey}'");
+            Console.WriteLine($"The current bot Google key is set to: '{Config.bot.Apis.ApiGoogleSearchKey}'");
             Console.WriteLine("Enter in what you want to change the bot Google key to: ");
 
             while (true)
@@ -756,19 +745,19 @@ namespace Pootis_Bot.Core
         {
             string key;
 
-            Console.WriteLine($"The current bot Google Search ID is set to: '{Config.bot.Apis.googleSearchEngineID}'");
-            Console.WriteLine("Enter in what you want to change the bot Google Search ID to: ");
+            Console.WriteLine($"The current bot Google Search Id is set to: '{Config.bot.Apis.GoogleSearchEngineId}'");
+            Console.WriteLine("Enter in what you want to change the bot Google Search Id to: ");
 
             while (true)
             {
                 key = Console.ReadLine();
                 if (key == "")
                 {
-                    Console.WriteLine("You cannot set the bot Google Search ID to blank!");
+                    Console.WriteLine("You cannot set the bot Google Search Id to blank!");
                 }
                 else
                 {
-                    Console.WriteLine($"Bot's Google Search ID was set to '{key}'");
+                    Console.WriteLine($"Bot's Google Search Id was set to '{key}'");
                     return key;
                 }
             }

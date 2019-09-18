@@ -11,16 +11,22 @@ namespace Pootis_Bot.Modules.Basic
     {
         [Command("hasrole")]
         [Summary("Check if user has a role")]
-        public async Task HasRole(string role, SocketGuildUser user)
+        public async Task HasRole(string roleName, SocketGuildUser user)
         {
-            var _role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == role);
-            if (user.Roles.Contains(_role))
+            IRole role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == roleName);
+            if (role == null)
             {
-                await Context.Channel.SendMessageAsync(user + " has the role '" + _role + "'");
+	            await Context.Channel.SendMessageAsync("That role doesn't exist!");
+				return;
+            }
+
+            if (user.Roles.Contains(role))
+            {
+                await Context.Channel.SendMessageAsync($"**{user.Username}** has the role **{role.Name}**.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(user + " Doesn't have the role '" + _role + "'");
+                await Context.Channel.SendMessageAsync($"**{user.Username}** doesn't have the role **{role}**.");
             }
         }
 
@@ -50,7 +56,7 @@ namespace Pootis_Bot.Modules.Basic
         [Summary("Gets all roles on the server")]
         public async Task GetAllRoles()
         {
-            var roles = (Context.User as IGuildUser).Guild.Roles;
+            var roles = ((IGuildUser) Context.User).Guild.Roles;
             StringBuilder allRoles = new StringBuilder();
 
             allRoles.Append($"All roles on this server: \n");

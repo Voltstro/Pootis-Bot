@@ -25,7 +25,7 @@ namespace Pootis_Bot.Services.Audio
 					UpdateAudioFiles();
 				}
 
-				if (string.IsNullOrWhiteSpace(Config.bot.Apis.apiYoutubeKey))
+				if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
 				{
 					Global.Log("You need to set a YouTube api key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3", ConsoleColor.Red);
 					Config.bot.IsAudioServiceEnabled = false;
@@ -140,7 +140,7 @@ namespace Pootis_Bot.Services.Audio
 			ZipFile.ExtractToDirectory("temp/audiodlls.zip", "./", true);
 			Global.Log("Done!", ConsoleColor.Blue);
 
-			//FFmpeg
+			//FfMpeg
 			Global.Log("Extracting ffmpeg...", ConsoleColor.Blue);
 			Directory.CreateDirectory("temp/ffmpeg");
 			ZipFile.ExtractToDirectory("temp/ffmpeg-latest.zip", "temp/ffmpeg/", true);
@@ -163,7 +163,7 @@ namespace Pootis_Bot.Services.Audio
 			Global.Log("----==== Copying Files ====----", ConsoleColor.Blue);
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == true)
 			{
-				Global.Log("Copying FFmpeg...", ConsoleColor.Blue);
+				Global.Log("Copying FfMpeg...", ConsoleColor.Blue);
 				if (Environment.Is64BitProcess)
 				{
 					Global.DirectoryCopy("temp/ffmpeg/ffmpeg-latest-win64-static/bin/", "External/", true);
