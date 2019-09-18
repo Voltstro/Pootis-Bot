@@ -32,7 +32,7 @@ namespace Pootis_Bot.Services.Audio
 
             var item = new GlobalServerMusicItem //Added it to the CurrentChannels list
             {
-                GuildID = guild.Id,
+                GuildId = guild.Id,
                 IsPlaying = false,
                 IsExit = false,
                 AudioClient = audio,
@@ -114,8 +114,8 @@ namespace Pootis_Bot.Services.Audio
                 ServerList.CancellationSource.Cancel();
 
                 //Kill and dispose of ffmpeg
-                ServerList.FFmpeg.Kill();
-                ServerList.FFmpeg.Dispose();
+                ServerList.FfMpeg.Kill();
+                ServerList.FfMpeg.Dispose();
 
                 await ServerList.Discord.FlushAsync();
 
@@ -128,7 +128,7 @@ namespace Pootis_Bot.Services.Audio
             }
 
             var client = ServerList.AudioClient;
-            var ffmpeg = ServerList.FFmpeg = GetFfmpeg(fileLoc);
+            var ffmpeg = ServerList.FfMpeg = GetFfmpeg(fileLoc);
 
             Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
@@ -255,7 +255,7 @@ namespace Pootis_Bot.Services.Audio
         private GlobalServerMusicItem GetMusicList(ulong guildid)
         {
             var result = from a in CurrentChannels
-                         where a.GuildID == guildid
+                         where a.GuildId == guildid
                          select a;
 
             var list = result.FirstOrDefault();

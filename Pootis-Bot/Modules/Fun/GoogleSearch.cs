@@ -20,8 +20,8 @@ namespace Pootis_Bot.Modules.Fun
         [RequireBotPermission(GuildPermission.EmbedLinks)]
         public async Task CmdGoogleSearch([Remainder]string search = "")
         {
-            if (string.IsNullOrWhiteSpace(Config.bot.Apis.apiGoogleSearchKey) || 
-                string.IsNullOrWhiteSpace(Config.bot.Apis.googleSearchEngineID))
+            if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGoogleSearchKey) || 
+                string.IsNullOrWhiteSpace(Config.bot.Apis.GoogleSearchEngineId))
             {
                 await Context.Channel.SendMessageAsync("Google search is disabled by the bot owner.");
                 return;
@@ -41,9 +41,11 @@ namespace Pootis_Bot.Modules.Fun
                 }
             }
 
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.Title = $"Google Search For '{search}'";
-            embed.WithDescription(results.ToString());
+			EmbedBuilder embed = new EmbedBuilder
+			{
+				Title = $"Google Search For '{search}'"
+			};
+			embed.WithDescription(results.ToString());
             embed.WithFooter($"Search by {Context.User} @ ", Context.User.GetAvatarUrl());
             embed.WithColor(FunCmdsConfig.googleColor);
             embed.WithCurrentTimestamp();

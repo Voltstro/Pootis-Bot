@@ -61,7 +61,7 @@ namespace Pootis_Bot.Entities
         public VoiceChannel GetVoiceChannel(ulong id)
         {
             var result = from a in VoiceChannels
-                         where a.ID == id
+                         where a.Id == id
                          select a;
 
             var channel = result.FirstOrDefault();

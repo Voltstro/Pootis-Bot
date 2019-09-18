@@ -2,12 +2,12 @@
 {
 	public struct VoiceChannel
 	{
-		public ulong ID { get; set; }
+		public ulong Id { get; set; }
 		public string Name { get; set; }
 
 		public VoiceChannel(ulong id, string name)
 		{
-			ID = id;
+			Id = id;
 			Name = name;
 		}
 	}

@@ -22,15 +22,15 @@ namespace Pootis_Bot.Services.Google
             try
             {
                 //Check to see if the token is null or white space
-                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.apiYoutubeKey))
+                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
                 {
-                    var youtube = new YouTubeService(new BaseClientService.Initializer
+                    YouTubeService youtube = new YouTubeService(new BaseClientService.Initializer
                     {
-                        ApiKey = Config.bot.Apis.apiYoutubeKey,
+                        ApiKey = Config.bot.Apis.ApiYoutubeKey,
                         ApplicationName = appName
                     });
 
-                    var searchListRequest = youtube.Search.List("snippet");
+                    SearchResource.ListRequest searchListRequest = youtube.Search.List("snippet");
                     searchListRequest.Q = search;
                     searchListRequest.MaxResults = maxResults;
 

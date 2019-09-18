@@ -9,7 +9,7 @@ namespace Pootis_Bot.Core
         {
             GlobalUserAccount userAccount = UserAccounts.GetAccount(user);
             uint oldLevel = userAccount.LevelNumber;
-            userAccount.XP += amount;
+            userAccount.Xp += amount;
             UserAccounts.SaveAccounts();
 
             if (oldLevel != userAccount.LevelNumber)

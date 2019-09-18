@@ -2,9 +2,9 @@
 {
     public struct GiphyData
     {
-        public string gifUrl;
-        public string gifTitle;
-        public string gifAuthor;
-        public string GifLink;
+        public string GifUrl { get; set; }
+        public string GifTitle { get; set; }
+        public string GifAuthor { get; set; }
+        public string GifLink { get; set; }
     }
 }

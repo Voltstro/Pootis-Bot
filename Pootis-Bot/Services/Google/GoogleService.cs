@@ -11,17 +11,17 @@ namespace Pootis_Bot.Services.Google
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.apiGoogleSearchKey) &&
-                !string.IsNullOrWhiteSpace(Config.bot.Apis.googleSearchEngineID))
+                if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGoogleSearchKey) &&
+                !string.IsNullOrWhiteSpace(Config.bot.Apis.GoogleSearchEngineId))
                 {
-                    var google = new CustomsearchService(new BaseClientService.Initializer
+                    CustomsearchService google = new CustomsearchService(new BaseClientService.Initializer
                     {
-                        ApiKey = Config.bot.Apis.apiGoogleSearchKey,
+                        ApiKey = Config.bot.Apis.ApiGoogleSearchKey,
                         ApplicationName = appName
                     });
 
                     var searchListRequest = google.Cse.List(search);
-                    searchListRequest.Cx = Config.bot.Apis.googleSearchEngineID;
+                    searchListRequest.Cx = Config.bot.Apis.GoogleSearchEngineId;
 
                     return searchListRequest.Execute();
                 }

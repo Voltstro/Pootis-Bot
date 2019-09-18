@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Threading.Tasks;
+using Discord.Rest;
 
 namespace Pootis_Bot.Modules.Server
 {
@@ -40,9 +41,9 @@ namespace Pootis_Bot.Modules.Server
 		{
 			var messages = Context.Channel.GetMessagesAsync(messageCount + 1).FlattenAsync();
 
-			await (Context.Channel as SocketTextChannel).DeleteMessagesAsync(messages.Result);
+			await ((SocketTextChannel) Context.Channel).DeleteMessagesAsync(messages.Result);
 
-			var message = await Context.Channel.SendMessageAsync($"{messageCount} message were deleted, the message will be deleted in a moment.");
+			RestUserMessage message = await Context.Channel.SendMessageAsync($"{messageCount} message were deleted, this message will be deleted in a moment.");
 			await Task.Delay(3000);
 			await message.DeleteAsync();
 		}

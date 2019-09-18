@@ -12,7 +12,17 @@ namespace Pootis_Bot
 
         public async Task StartAsync(string[] args)
         {
-            Global.Log($"Starting...", ConsoleColor.White);
+			//Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
+			Console.WriteLine(@"__________              __  .__                 __________        __   ");
+			Console.WriteLine(@"\______   \____   _____/  |_|__| ______         \______   \ _____/  |_ ");
+			Console.WriteLine(@" |     ___/  _ \ /  _ \   __\  |/  ___/  ______  |    |  _//  _ \   __\");
+			Console.WriteLine(@" |    |  (  <_> |  <_> )  | |  |\___ \  /_____/  |    |   (  <_> )  |  ");
+			Console.WriteLine(@" |____|   \____/ \____/|__| |__/____  >          |______  /\____/|__|  ");
+			Console.WriteLine(@"                                    \/                  \/             ");
+			Console.WriteLine($"			Version: {Global.version}");
+			Console.WriteLine();
+
+            Global.Log($"Starting...");
 
             string name = null, token = null, prefix = null;
 
@@ -49,6 +59,7 @@ namespace Pootis_Bot
             Global.BotPrefix = prefix;
             Global.BotToken = token;
 
+			//Start her up!
             await bot.StartBot();
         }
     }

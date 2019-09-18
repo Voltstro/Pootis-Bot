@@ -7,26 +7,20 @@ namespace Pootis_Bot.Entities
 {
     public class GlobalUserAccount
     {
-        public ulong ID { get; set; }
+        public ulong Id { get; set; }
 
-        public uint XP { get; set; }
+        public uint Xp { get; set; }
 
         public string Msg { get; set; }
 
         [JsonIgnore]
-        public uint LevelNumber
-        {
-            get
-            {
-                return (uint)Math.Sqrt(XP / 30);
-            }
-        }
+        public uint LevelNumber => (uint)Math.Sqrt(Xp / 30);
 
         public List<GlobalUserAccountServer> Servers = new List<GlobalUserAccountServer>();
 
         public class GlobalUserAccountServer
         {
-            public ulong ServerID { get; set; }
+            public ulong ServerId { get; set; }
             public int Warnings { get; set; }
             public bool IsAccountNotWarnable { get; set; }
 
@@ -40,7 +34,7 @@ namespace Pootis_Bot.Entities
         public GlobalUserAccountServer GetOrCreateServer(ulong id)
         {
             var result = from a in Servers
-                         where a.ServerID == id
+                         where a.ServerId == id
                          select a;
 
             var server = result.FirstOrDefault();
@@ -52,7 +46,7 @@ namespace Pootis_Bot.Entities
         {
 	        var serverItem = new GlobalUserAccountServer
 	        {
-		        ServerID = serverId,
+		        ServerId = serverId,
 		        IsAccountNotWarnable = false,
 		        Warnings = 0
 	        };

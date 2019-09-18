@@ -8,7 +8,7 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Services
 {
-    public class VoteGivewayService
+    public class VoteGiveawayService
     {
         private enum TimeType { Days, Hours, Secs}
 

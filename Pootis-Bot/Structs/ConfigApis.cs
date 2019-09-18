@@ -2,9 +2,9 @@
 {
 	public struct ConfigApis
 	{
-		public string apiGiphyKey;
-		public string apiYoutubeKey;
-		public string apiGoogleSearchKey;
-		public string googleSearchEngineID;
+		public string ApiGiphyKey;
+		public string ApiYoutubeKey;
+		public string ApiGoogleSearchKey;
+		public string GoogleSearchEngineId;
 	}
 }

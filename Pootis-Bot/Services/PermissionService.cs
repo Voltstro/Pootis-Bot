@@ -11,7 +11,7 @@ namespace Pootis_Bot.Services
     {
         readonly CommandService _service;
 
-        private readonly string[] blockedCmds = { "profile", "profilemsg", "hello", "ping", "perm" };
+        private readonly string[] _blockedCmds = { "profile", "profilemsg", "hello", "ping", "perm" };
 
         public PermissionService(CommandService commandService)
         {
@@ -91,18 +91,16 @@ namespace Pootis_Bot.Services
                 else // Remove the role
                 {
                     bool roleRemoved = false;
-                    foreach(var _role in server.GetCommandInfo(command).Roles.ToArray())
+                    foreach(string cmdRole in server.GetCommandInfo(command).Roles.ToArray())
                     {
                         if (roleRemoved)
                             continue;
 
-                        if(role == _role)
-                        {
-                            server.GetCommandInfo(command).Roles.Remove(role);
-                            roleRemoved = true;
+                        if (role != cmdRole) continue;
+                        server.GetCommandInfo(command).Roles.Remove(role);
+                        roleRemoved = true;
 
-                            await channel.SendMessageAsync($"The role **{role}** was removed from the command **{command}**.");
-                        }
+                        await channel.SendMessageAsync($"The role **{role}** was removed from the command **{command}**.");
                     }
 
                     if (!roleRemoved)
@@ -126,7 +124,7 @@ namespace Pootis_Bot.Services
         private bool CanModifyPerm(string command)
         {
             bool isModifyable = true;
-            foreach(string cmd in blockedCmds)
+            foreach(string cmd in _blockedCmds)
             {
                 if(command == cmd)
                 {

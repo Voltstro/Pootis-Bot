@@ -7,7 +7,7 @@ namespace Pootis_Bot.Entities
 {
     public class GlobalServerMusicItem
     {
-        public ulong GuildID { get; set; }
+        public ulong GuildId { get; set; }
 
         public bool IsPlaying { get; set; }
 
@@ -18,6 +18,6 @@ namespace Pootis_Bot.Entities
         public SocketVoiceChannel AudioChannel { get; set; }
         public ISocketMessageChannel StartChannel { get; set; }
         public AudioOutStream Discord { get; set; } 
-        public Process FFmpeg { get; set; }
+        public Process FfMpeg { get; set; }
     }
 }

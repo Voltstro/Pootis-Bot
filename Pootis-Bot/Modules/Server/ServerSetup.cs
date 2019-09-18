@@ -162,7 +162,7 @@ namespace Pootis_Bot.Modules.Server
                 }
                 else
                 {
-                    //Set the welcome channel to the inputed one
+                    //Set the welcome channel to the imputed one
                     server.WelcomeMessageEnabled = true;
                     server.WelcomeChannel = channel.Id;
 
