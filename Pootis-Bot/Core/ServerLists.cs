@@ -47,26 +47,25 @@ namespace Pootis_Bot.Core
 
         private static GlobalServerList CreateServer(ulong id)
         {
-            var newServer = new GlobalServerList()
-            {
-                ServerId = id,
-                WelcomeMessageEnabled = false,
-                WelcomeChannel = 0,
-                WelcomeGoodbyeMessage = "Goodbye [user]. We hope you enjoyed your stay.",
-                WelcomeMessage = "Hello [user]! Thanks for joining **[server]**. Please check out the rules first then enjoy your stay.",
-                RuleEnabled = false,
-                RuleRole = null,
-                RuleMessageId = 0
-            };
+	        GlobalServerList newServer = new GlobalServerList
+	        {
+		        ServerId = id,
+		        WelcomeMessageEnabled = false,
+		        WelcomeChannel = 0,
+		        WelcomeGoodbyeMessage = "Goodbye [user]. We hope you enjoyed your stay.",
+		        WelcomeMessage =
+			        "Hello [user]! Thanks for joining **[server]**. Please check out the rules first then enjoy your stay.",
+		        RuleEnabled = false,
+		        RuleRole = null,
+		        RuleMessageId = 0,
+		        AntiSpamSettings = new GlobalServerList.AntiSpamSettingsInfo
+		        {
+			        RoleToRoleMentionWarnings = 3, MentionUsersPercentage = 45, MentionUserEnabled = true
+		        }
+	        };
 
-			newServer.AntiSpamSettings = new GlobalServerList.AntiSpamSettingsInfo
-			{
-				RoleToRoleMentionWarnings = 3,
-				MentionUsersPercentage = 45,
-				MentionUserEnabled = true
-			};
 
-            Servers.Add(newServer);
+	        Servers.Add(newServer);
             SaveServerList();
             return newServer;
         }

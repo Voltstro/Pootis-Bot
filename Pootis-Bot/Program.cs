@@ -22,7 +22,7 @@ namespace Pootis_Bot
 			Console.WriteLine($"			Version: {Global.version}");
 			Console.WriteLine();
 
-            Global.Log($"Starting...");
+            Global.Log("Starting...");
 
             string name = null, token = null, prefix = null;
 
