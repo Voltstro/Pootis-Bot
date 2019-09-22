@@ -7,12 +7,12 @@
       "IsOsSupported": true,
       "Ffmpeg32Url": "https://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.zip",
       "Ffmpeg64Url": "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip",
-      "Python32Url": "https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-win32.zip",
-      "Python64Url": "https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-amd64.zip"
+      "Python32Url": "https://www.python.org/ftp/python/3.7.4/python-3.7.4-embed-win32.zip",
+      "Python64Url": "https://www.python.org/ftp/python/3.7.4/python-3.7.4-embed-amd64.zip"
     },
     {
       "OsName": "Linux",
-      "IsOsSupported": true,
+      "IsOsSupported": false,
       "Ffmpeg32Url": "https://pootis-bot.creepysin.com/download/ffmpeg/linux/ffmpeg-linux-86.zip",
       "Ffmpeg64Url": "https://pootis-bot.creepysin.com/download/ffmpeg/linux/ffmpeg-linux-64.zip",
       "Python32Url": null,
