@@ -15,10 +15,10 @@ namespace Pootis_Bot.Services.Audio
 {
     public class AudioService
     {
-        private readonly string ffmpegloc = "external/ffmpeg";
-        private readonly string musicdir = "Music/";
+	    private const string FfmpegLocation = "external/ffmpeg";
+	    private const string MusicDir = "Music/";
 
-        public readonly static List<GlobalServerMusicItem> CurrentChannels = new List<GlobalServerMusicItem>();
+	    public static readonly List<GlobalServerMusicItem> currentChannels = new List<GlobalServerMusicItem>();
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel)
         {
@@ -28,9 +28,9 @@ namespace Pootis_Bot.Services.Audio
                 return;
             }
 
-            var audio = await target.ConnectAsync(); //Connect to the voice channel
+            IAudioClient audio = await target.ConnectAsync(); //Connect to the voice channel
 
-            var item = new GlobalServerMusicItem //Added it to the CurrentChannels list
+            GlobalServerMusicItem item = new GlobalServerMusicItem //Added it to the currentChannels list
             {
                 GuildId = guild.Id,
                 IsPlaying = false,
@@ -38,58 +38,69 @@ namespace Pootis_Bot.Services.Audio
                 AudioClient = audio,
                 AudioChannel = (SocketVoiceChannel)target,
                 StartChannel = (ISocketMessageChannel)channel,
-                CancellationSource = new CancellationTokenSource()
             };
 
-            CurrentChannels.Add(item);
+            currentChannels.Add(item);
         }
 
         public async Task LeaveAudio(IGuild guild, IMessageChannel channel)
         {
             if (guild == null) return; //Check if guild is null
-            var ServerList = GetMusicList(guild.Id);
-            if (ServerList == null)
+            GlobalServerMusicItem serverList = GetMusicList(guild.Id);
+            if (serverList == null)
             {
                 await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
                 return;
             }
 
-            await ServerList.AudioClient.StopAsync(); //Stop the audio client
-            ServerList.IsPlaying = false;
+            serverList.IsExit = true;
 
-            CurrentChannels.Remove(GetMusicList(guild.Id)); //Remove it from the CurrentChannels list
+            if (serverList.FfMpeg != null)
+            {
+				serverList.FfMpeg.Kill();
+				serverList.FfMpeg.Dispose();
+            }
+
+            await Task.Delay(100);
+
+            //await serverList.AudioClient.StopAsync(); //Stop the audio client
+			serverList.AudioClient.Dispose();
+
+            serverList.IsPlaying = false;
+
+            currentChannels.Remove(GetMusicList(guild.Id)); //Remove it from the currentChannels list
         }
 
         public async Task StopAudioAsync(IGuild guild, IMessageChannel channel)
         {
-            var ServerList = GetMusicList(guild.Id);
+            GlobalServerMusicItem serverList = GetMusicList(guild.Id);
 
-            if (ServerList == null)
+            if (serverList == null)
             {
-                await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
+	            await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
                 return;
             }
 
-            if (ServerList.IsPlaying == false)
+            if (serverList.IsPlaying == false)
             {
                 await channel.SendMessageAsync(":musical_note: No audio is playing.");
             }
 
-            ServerList.IsExit = true;
+            serverList.IsExit = true;
             await channel.SendMessageAsync(":musical_note: Stopping current playing song.");
         }
 
-        public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string search)
+        public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, IVoiceChannel target, string search)
         {
-            var ServerList = GetMusicList(guild.Id);
+            GlobalServerMusicItem serverList = GetMusicList(guild.Id);
 
-            if (ServerList == null)
+            if (serverList == null)
             {
-                await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
-                return;
+	            await JoinAudio(guild, target, channel);
+
+	            serverList = GetMusicList(guild.Id);
             }
 
-            string fileName;
             string fileLoc = SearchAudio(search);   //Search for the song in our current music directory
 
             if (string.IsNullOrWhiteSpace(fileLoc)) //The search didn't come up with anything, lets attempt to get it from YouTube
@@ -107,47 +118,44 @@ namespace Pootis_Bot.Services.Audio
             fileLoc = fileLoc.Replace("\"", "'");
 
             string tempName = Path.GetFileName(fileLoc);
-            fileName = tempName.Replace(".mp3", "");
+            string fileName = tempName.Replace(".mp3", "");
 
-            if (ServerList.IsPlaying)
+            if (serverList.IsPlaying)
             {
-                ServerList.CancellationSource.Cancel();
+	            //Kill and dispose of ffmpeg
+                serverList.FfMpeg.Kill();
+                serverList.FfMpeg.Dispose();
 
-                //Kill and dispose of ffmpeg
-                ServerList.FfMpeg.Kill();
-                ServerList.FfMpeg.Dispose();
+                await serverList.Discord.FlushAsync();
 
-                await ServerList.Discord.FlushAsync();
-
-                while(ServerList.CancellationSource.IsCancellationRequested == true)
-                {
-                    await Task.Delay(100);
-                    ServerList.CancellationSource.Dispose();
-                    ServerList.CancellationSource = new CancellationTokenSource();
-                }
+				//Wait a moment
+                await Task.Delay(1000);
             }
 
-            var client = ServerList.AudioClient;
-            var ffmpeg = ServerList.FfMpeg = GetFfmpeg(fileLoc);
+            IAudioClient client = serverList.AudioClient;
+            Process ffmpeg = serverList.FfMpeg = GetFfmpeg(fileLoc);
 
             Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
             using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
             {
-                using (ServerList.Discord = client.CreatePCMStream(AudioApplication.Music))
+                using (serverList.Discord = client.CreatePCMStream(AudioApplication.Music))
                 {
-                    ServerList.IsPlaying = true;
+                    serverList.IsPlaying = true;
                     bool fail = false;
                     bool exit = false;
                     int bufferSize = 1024;
                     byte[] buffer = new byte[bufferSize];
 
-                    CancellationToken cancellation = ServerList.CancellationSource.Token;
+                    CancellationToken cancellation = new CancellationToken();
 
                     await channel.SendMessageAsync($":musical_note: Now playing **{fileName}**.");
 
-                    ServerList.IsExit = false;
+                    serverList.IsExit = false;
 
+					//To be completely honest, I don't understand much of this.
+					//Pootis-Bot and the audio services have always been difficult for me.
+					//If anyone could improve upon this I would gladly accept it!
                     while (!fail && !exit)
                     {
                         try
@@ -158,7 +166,7 @@ namespace Pootis_Bot.Services.Audio
                                 break;
                             }
 
-                            if (ServerList.IsExit == true)
+                            if (serverList.IsExit)
                             {
                                 exit = true;
                                 break;
@@ -171,15 +179,15 @@ namespace Pootis_Bot.Services.Audio
                                 break;
                             }
 
-                            await ServerList.Discord.WriteAsync(buffer, 0, read, cancellation);
+                            await serverList.Discord.WriteAsync(buffer, 0, read, cancellation);
 
-                            if (ServerList.IsPlaying == false)
+                            if (serverList.IsPlaying == false)
                             {
                                 do
                                 {
-                                    //Do nothing, wait till isplaying is true
-                                    await Task.Delay(100);
-                                } while (ServerList.IsPlaying == false);
+                                    //Do nothing, wait till is playing is true
+                                    await Task.Delay(100, cancellation);
+                                } while (serverList.IsPlaying == false);
                             }
                         }
                         catch (OperationCanceledException)
@@ -196,12 +204,11 @@ namespace Pootis_Bot.Services.Audio
                     //End
                     Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.", ConsoleColor.Blue);
 
-                    await ServerList.Discord.FlushAsync();
-                    ServerList.Discord.Dispose();
-                    ServerList.IsPlaying = false;
+                    await serverList.Discord.FlushAsync(cancellation);
+                    serverList.Discord.Dispose();
+                    serverList.IsPlaying = false;
 
-                    if(!ServerList.CancellationSource.IsCancellationRequested)
-                        await channel.SendMessageAsync($":musical_note: The song has finished.");
+                    await channel.SendMessageAsync($":musical_note: The song has finished.");
 
                     //Check to make sure that ffmpeg was disposed
                     ffmpeg.Dispose();
@@ -223,27 +230,21 @@ namespace Pootis_Bot.Services.Audio
 
         }
 
-        private string SearchAudio(string search)
+        public static string SearchAudio(string search)
         {
-            if (!Directory.Exists(musicdir)) Directory.CreateDirectory(musicdir);
+            if (!Directory.Exists(MusicDir)) Directory.CreateDirectory(MusicDir);
 
-            DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(musicdir);
+            DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(MusicDir);
             FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles("*" + search + "*.mp3");
 
-            foreach (FileInfo foundFile in filesInDir)
-            {
-                string fullName = foundFile.FullName;
-                return fullName;
-            }
-
-            return null;
+            return filesInDir.Select(foundFile => foundFile.FullName).FirstOrDefault();
         }
 
-        private Process GetFfmpeg(string path)
+        private static Process GetFfmpeg(string path)
         {
             return Process.Start(new ProcessStartInfo
             {
-                FileName = ffmpegloc,
+                FileName = FfmpegLocation,
                 Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
                 UseShellExecute = false,
                 RedirectStandardOutput = true
@@ -254,7 +255,7 @@ namespace Pootis_Bot.Services.Audio
 
         private GlobalServerMusicItem GetMusicList(ulong guildid)
         {
-            var result = from a in CurrentChannels
+            var result = from a in currentChannels
                          where a.GuildId == guildid
                          select a;
 

@@ -13,7 +13,6 @@ namespace Pootis_Bot.Entities
 
         public bool IsExit { get; set; }
 
-        public CancellationTokenSource CancellationSource { get; set; }
         public IAudioClient AudioClient { get; set; }
         public SocketVoiceChannel AudioChannel { get; set; }
         public ISocketMessageChannel StartChannel { get; set; }

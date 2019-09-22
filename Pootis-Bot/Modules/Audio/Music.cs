@@ -62,7 +62,7 @@ namespace Pootis_Bot.Modules.Audio
                 return;
             }
 
-            await _service.SendAudioAsync(Context.Guild, Context.Channel, song);
+            await _service.SendAudioAsync(Context.Guild, Context.Channel, ((IVoiceState) Context.User).VoiceChannel, song);
         }
 
         [Command("stop", RunMode = RunMode.Async)]

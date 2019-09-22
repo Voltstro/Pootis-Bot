@@ -125,7 +125,7 @@ namespace Pootis_Bot.Core
             {
                 List<GlobalServerMusicItem> toRemove = new List<GlobalServerMusicItem>();
 
-                foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels.Where(channel => channel.AudioChannel.Users.Count == 1))
+                foreach (GlobalServerMusicItem channel in AudioService.currentChannels.Where(channel => channel.AudioChannel.Users.Count == 1))
                 {
 	                //Stop ffmpeg if it is running
 	                channel.FfMpeg?.Dispose();
@@ -143,7 +143,7 @@ namespace Pootis_Bot.Core
                 {
                     foreach (GlobalServerMusicItem channel in toRemove)
                     {
-                        AudioService.CurrentChannels.Remove(channel);
+                        AudioService.currentChannels.Remove(channel);
                     }
                 }
             }
@@ -378,7 +378,7 @@ namespace Pootis_Bot.Core
 
 			            Global.Log("Shutting down...");
 			            await _client.SetGameAsync("Bot shutting down");
-			            foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+			            foreach (GlobalServerMusicItem channel in AudioService.currentChannels)
 			            {
 				            channel.AudioClient.Dispose();
 			            }
@@ -429,7 +429,7 @@ namespace Pootis_Bot.Core
 			            break;
 		            case "deletemusic":
 		            {
-			            foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+			            foreach (GlobalServerMusicItem channel in AudioService.currentChannels)
 			            {
 				            channel.AudioClient.Dispose();
 			            }
@@ -458,7 +458,7 @@ namespace Pootis_Bot.Core
 		            case "forceaudioupdate":
 		            {
 			            Global.Log("Updating audio files.", ConsoleColor.Blue);
-			            foreach (GlobalServerMusicItem channel in AudioService.CurrentChannels)
+			            foreach (GlobalServerMusicItem channel in AudioService.currentChannels)
 			            {
 				            channel.AudioClient.Dispose();
 			            }
