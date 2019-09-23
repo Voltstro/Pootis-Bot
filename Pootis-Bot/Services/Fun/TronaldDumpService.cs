@@ -5,55 +5,55 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Services.Fun
 {
-    public class TronaldDumpService
-    {
-        public static string GetRandomQuote()
-        {
-            try
-            {
-                string json;
-                using (WebClient client = new WebClient()) //Tronald Dump API
-                {
-                    json = client.DownloadString($"https://api.tronalddump.io/random/quote");
-                }
+	public class TronaldDumpService
+	{
+		/// <summary>
+		/// Gets a random donald trump quote
+		/// </summary>
+		/// <returns></returns>
+		public static string GetRandomQuote()
+		{
+			try
+			{
+				string json;
+				using (WebClient client = new WebClient()) //Tronald Dump API
+				{
+					json = client.DownloadString("https://api.tronalddump.io/random/quote");
+				}
 
-                var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
+				dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 
-                return dataObject.value.ToString();
-                
-            }
-            catch (Exception ex)
-            {
-                return "**ERROR**: " + ex.Message;
-            }
-        }
+				return dataObject.value.ToString();
+			}
+			catch (Exception ex)
+			{
+				return "**ERROR**: " + ex.Message;
+			}
+		}
 
-        public static string GetQuote(string search)
-        {
-            try
-            {
-	            string json;
-                using (WebClient client = new WebClient()) //Tronald Dump API
-                {
-                    json = client.DownloadString($"https://api.tronalddump.io/search/quote?query={search}");
-                }
+		public static string GetQuote(string search)
+		{
+			try
+			{
+				string json;
+				using (WebClient client = new WebClient()) //Tronald Dump API
+				{
+					json = client.DownloadString($"https://api.tronalddump.io/search/quote?query={search}");
+				}
 
-                var dataObject = JsonConvert.DeserializeObject<dynamic>(json);
-                if(dataObject._embedded.quotes.Count == 0)
-                {
-                    return "No quotes found for that search!";
-                }
+				dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
+				if (dataObject._embedded.quotes.Count == 0) return "No quotes found for that search!";
 
-                int index = Global.RandomNumber(0, dataObject._embedded.quotes.Count);
+				int index = Global.RandomNumber(0, dataObject._embedded.quotes.Count);
 
-                string quote = dataObject._embedded.quotes[index].value.ToString();
+				string quote = dataObject._embedded.quotes[index].value.ToString();
 
-                return quote;
-            }
-            catch (Exception ex)
-            {
-                return "**ERROR**: " + ex.Message;
-            }
-        }
-    }
+				return quote;
+			}
+			catch (Exception ex)
+			{
+				return "**ERROR**: " + ex.Message;
+			}
+		}
+	}
 }
