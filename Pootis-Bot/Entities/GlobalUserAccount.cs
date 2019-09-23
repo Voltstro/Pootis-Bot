@@ -5,54 +5,57 @@ using Newtonsoft.Json;
 
 namespace Pootis_Bot.Entities
 {
-    public class GlobalUserAccount
-    {
-        public ulong Id { get; set; }
+	public class GlobalUserAccount
+	{
+		public List<GlobalUserAccountServer> Servers = new List<GlobalUserAccountServer>();
+		public ulong Id { get; set; }
 
-        public uint Xp { get; set; }
+		public uint Xp { get; set; }
 
-        public string Msg { get; set; }
+		public string Msg { get; set; }
 
-        [JsonIgnore]
-        public uint LevelNumber => (uint)Math.Sqrt(Xp / 30);
+		/// <summary>
+		/// What level is the user on?
+		/// </summary>
+		[JsonIgnore] internal uint LevelNumber => (uint) Math.Sqrt(Xp / 30f);
 
-        public List<GlobalUserAccountServer> Servers = new List<GlobalUserAccountServer>();
+		/// <summary>
+		/// Gets or creates a server from an ID
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		internal GlobalUserAccountServer GetOrCreateServer(ulong id)
+		{
+			IEnumerable<GlobalUserAccountServer> result = from a in Servers
+				where a.ServerId == id
+				select a;
 
-        public class GlobalUserAccountServer
-        {
-            public ulong ServerId { get; set; }
-            public int Warnings { get; set; }
-            public bool IsAccountNotWarnable { get; set; }
+			GlobalUserAccountServer server = result.FirstOrDefault() ?? CreateServer(id);
+			return server;
+		}
 
-            [JsonIgnore]
-            public DateTime LastLevelUpTime { get; set; }
+		private GlobalUserAccountServer CreateServer(ulong serverId)
+		{
+			GlobalUserAccountServer serverItem = new GlobalUserAccountServer
+			{
+				ServerId = serverId,
+				IsAccountNotWarnable = false,
+				Warnings = 0
+			};
 
-			[JsonIgnore]
-			public int RoleToRoleMentionWarnings { get; set; }
-        }
+			Servers.Add(serverItem);
+			return serverItem;
+		}
 
-        public GlobalUserAccountServer GetOrCreateServer(ulong id)
-        {
-            var result = from a in Servers
-                         where a.ServerId == id
-                         select a;
+		public class GlobalUserAccountServer
+		{
+			public ulong ServerId { get; set; }
+			public int Warnings { get; set; }
+			public bool IsAccountNotWarnable { get; set; }
 
-            var server = result.FirstOrDefault();
-            if (server == null) server = CreateServer(id);
-            return server;
-        }
+			[JsonIgnore] public DateTime LastLevelUpTime { get; set; }
 
-        private GlobalUserAccountServer CreateServer(ulong serverId)
-        {
-	        var serverItem = new GlobalUserAccountServer
-	        {
-		        ServerId = serverId,
-		        IsAccountNotWarnable = false,
-		        Warnings = 0
-	        };
-
-	        Servers.Add(serverItem);
-	        return serverItem;
-        }
-    }
+			[JsonIgnore] public int RoleToRoleMentionWarnings { get; set; }
+		}
+	}
 }

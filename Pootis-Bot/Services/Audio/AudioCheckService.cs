@@ -11,8 +11,12 @@ namespace Pootis_Bot.Services.Audio
 	public static class AudioCheckService
 	{
 		//Downloads a .json file that has were to get some needed libs from
-		private static readonly string audioLibFileJsonUrl = "https://pootis-bot.creepysin.com/download/audiolibfiles.json";
+		private static readonly string audioLibFileJsonUrl =
+			"https://pootis-bot.creepysin.com/download/audiolibfiles.json";
 
+		/// <summary>
+		/// Checks the audio service
+		/// </summary>
 		public static void CheckAudioService()
 		{
 			if (Config.bot.IsAudioServiceEnabled)
@@ -20,14 +24,15 @@ namespace Pootis_Bot.Services.Audio
 				Global.Log("Checking audio services...", ConsoleColor.Blue);
 
 				//Check to see if all the necessary files are here.
-				if (!File.Exists("external/python.exe") || !File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") || !File.Exists("external/ffprobe.exe") || !Directory.Exists("external/youtube_dl"))
-				{
-					UpdateAudioFiles();
-				}
+				if (!File.Exists("external/python.exe") || !File.Exists("external/ffmpeg.exe") ||
+				    !File.Exists("external/ffplay.exe") || !File.Exists("external/ffprobe.exe") ||
+				    !Directory.Exists("external/youtube_dl")) UpdateAudioFiles();
 
 				if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
 				{
-					Global.Log("You need to set a YouTube api key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3", ConsoleColor.Red);
+					Global.Log(
+						"You need to set a YouTube api key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3",
+						ConsoleColor.Red);
 					Config.bot.IsAudioServiceEnabled = false;
 					Config.SaveConfig();
 					Global.Log("Audio service was disabled!", ConsoleColor.Red);
@@ -37,19 +42,18 @@ namespace Pootis_Bot.Services.Audio
 					if (Config.bot.IsAudioServiceEnabled)
 						Global.Log("Audio services are ready", ConsoleColor.Blue);
 				}
-
 			}
 		}
 
+		/// <summary>
+		/// Updates all files related to audio
+		/// </summary>
 		public static void UpdateAudioFiles()
 		{
 			Global.Log("Downloading required files for audio services...", ConsoleColor.Blue);
 
 			//If the temp directory doesn't exist, create a new one.
-			if (!Directory.Exists("temp/"))
-			{
-				Directory.CreateDirectory("temp/");
-			}
+			if (!Directory.Exists("temp/")) Directory.CreateDirectory("temp/");
 
 			//Download files
 			using (WebClient client = new WebClient())
@@ -57,7 +61,7 @@ namespace Pootis_Bot.Services.Audio
 				//Get the audiolibfiles.json from the pootis-bot website and deserialize it.
 				Global.Log($"Gathering base data from {audioLibFileJsonUrl}", ConsoleColor.Blue);
 				string json = client.DownloadString(audioLibFileJsonUrl);
-				var data = JsonConvert.DeserializeObject<dynamic>(json);
+				dynamic data = JsonConvert.DeserializeObject<dynamic>(json);
 				Global.Log("Done!", ConsoleColor.Blue);
 
 				Global.Log("----==== Downloading Files ====----", ConsoleColor.Blue);
@@ -68,25 +72,27 @@ namespace Pootis_Bot.Services.Audio
 				Global.Log("Done!", ConsoleColor.Blue);
 
 				int windowsIndex = 0;
+				// ReSharper disable NotAccessedVariable
 				int linuxIndex = 0;
 				int macOsIndex = 0;
+				// ReSharper restore NotAccessedVariable
 
 				for (int i = 0; i < data.data.Count; i++)
-				{
 					if (data.data[i].OsName == "Windows")
 						windowsIndex = i;
 					else if (data.data[i].OsName == "Linux")
 						linuxIndex = i;
 					else
 						macOsIndex = i;
-				}
 
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == true && data.data[windowsIndex].IsOsSupported == true)
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) &&
+				    (data.data[windowsIndex].IsOsSupported == true))
 				{
 					if (Environment.Is64BitProcess)
 					{
 						//Download ffmpeg 64 bit
-						Global.Log($"Downloading ffmpeg from {data.data[windowsIndex].Ffmpeg64Url.ToString()}", ConsoleColor.Blue);
+						Global.Log($"Downloading ffmpeg from {data.data[windowsIndex].Ffmpeg64Url.ToString()}",
+							ConsoleColor.Blue);
 						client.DownloadFile(data.data[windowsIndex].Ffmpeg64Url.ToString(), "temp/ffmpeg-latest.zip");
 						Global.Log("Done!", ConsoleColor.Blue);
 
@@ -98,7 +104,8 @@ namespace Pootis_Bot.Services.Audio
 					else
 					{
 						//Download ffmpeg 32 bit
-						Global.Log($"Downloading ffmpeg from {data.data[windowsIndex].Ffmpeg32Url.ToString()}", ConsoleColor.Blue);
+						Global.Log($"Downloading ffmpeg from {data.data[windowsIndex].Ffmpeg32Url.ToString()}",
+							ConsoleColor.Blue);
 						client.DownloadFile(data.data[windowsIndex].Ffmpeg64Url.ToString(), "temp/ffmpeg-latest.zip");
 						Global.Log("Done!", ConsoleColor.Blue);
 
@@ -161,17 +168,13 @@ namespace Pootis_Bot.Services.Audio
 
 			//Copy files to there needed directory
 			Global.Log("----==== Copying Files ====----", ConsoleColor.Blue);
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == true)
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
 				Global.Log("Copying FfMpeg...", ConsoleColor.Blue);
 				if (Environment.Is64BitProcess)
-				{
 					Global.DirectoryCopy("temp/ffmpeg/ffmpeg-latest-win64-static/bin/", "External/", true);
-				}
 				else
-				{
 					Global.DirectoryCopy("temp/ffmpeg/ffmpeg-latest-win32-static/bin/", "External/", true);
-				}
 				Global.Log("Done!", ConsoleColor.Blue);
 
 				Global.Log("Copying python...", ConsoleColor.Blue);
