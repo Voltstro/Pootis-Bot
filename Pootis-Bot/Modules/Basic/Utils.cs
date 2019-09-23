@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -7,100 +8,96 @@ using Discord.WebSocket;
 
 namespace Pootis_Bot.Modules.Basic
 {
-    public class Utils : ModuleBase<SocketCommandContext>
-    {
-        [Command("hasrole")]
-        [Summary("Check if user has a role")]
-        public async Task HasRole(string roleName, SocketGuildUser user)
-        {
-            IRole role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == roleName);
-            if (role == null)
-            {
-	            await Context.Channel.SendMessageAsync("That role doesn't exist!");
+	public class Utils : ModuleBase<SocketCommandContext>
+	{
+		[Command("hasrole")]
+		[Summary("Check if user has a role")]
+		public async Task HasRole(string roleName, SocketGuildUser user)
+		{
+			IRole role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == roleName);
+			if (role == null)
+			{
+				await Context.Channel.SendMessageAsync("That role doesn't exist!");
 				return;
-            }
+			}
 
-            if (user.Roles.Contains(role))
-            {
-                await Context.Channel.SendMessageAsync($"**{user.Username}** has the role **{role.Name}**.");
-            }
-            else
-            {
-                await Context.Channel.SendMessageAsync($"**{user.Username}** doesn't have the role **{role}**.");
-            }
-        }
+			if (user.Roles.Contains(role))
+				await Context.Channel.SendMessageAsync($"**{user.Username}** has the role **{role.Name}**.");
+			else
+				await Context.Channel.SendMessageAsync($"**{user.Username}** doesn't have the role **{role}**.");
+		}
 
-        [Command("alluserroles")]
-        [Summary("Gets all of a user's roles")]
-        public async Task AllUserRoles(SocketGuildUser user)
-        {
-            var roles = user.Roles;
-            StringBuilder allRoles = new StringBuilder();
-            allRoles.Append($"{user.Username}'s roles: \n");
+		[Command("alluserroles")]
+		[Summary("Gets all of a user's roles")]
+		public async Task AllUserRoles(SocketGuildUser user)
+		{
+			IReadOnlyCollection<SocketRole> roles = user.Roles;
+			StringBuilder allRoles = new StringBuilder();
+			allRoles.Append($"{user.Username}'s roles: \n");
 
-            var sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
+			List<SocketRole> sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
 
-            foreach (var role in sortedRoles)
-            {
-                string roleName = role.Name;
-                if (role.Position == 0)
-                    roleName = "Default";
+			foreach (SocketRole role in sortedRoles)
+			{
+				string roleName = role.Name;
+				if (role.Position == 0)
+					roleName = "Default";
 
-                allRoles.Append($"{roleName} | ");
-            }
+				allRoles.Append($"{roleName} | ");
+			}
 
-            await Context.Channel.SendMessageAsync(allRoles.ToString());
-        }
+			await Context.Channel.SendMessageAsync(allRoles.ToString());
+		}
 
-        [Command("allroles")]
-        [Summary("Gets all roles on the server")]
-        public async Task GetAllRoles()
-        {
-            var roles = ((IGuildUser) Context.User).Guild.Roles;
-            StringBuilder allRoles = new StringBuilder();
+		[Command("allroles")]
+		[Summary("Gets all roles on the server")]
+		public async Task GetAllRoles()
+		{
+			IReadOnlyCollection<IRole> roles = ((IGuildUser) Context.User).Guild.Roles;
+			StringBuilder allRoles = new StringBuilder();
 
-            allRoles.Append($"All roles on this server: \n");
+			allRoles.Append("All roles on this server: \n");
 
-            var sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
+			List<IRole> sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
 
-            foreach (var role in sortedRoles)
-            {
-                string roleName = role.Name;
-                if (role.Position == 0)
-                    roleName = "Default";
+			foreach (IRole role in sortedRoles)
+			{
+				string roleName = role.Name;
+				if (role.Position == 0)
+					roleName = "Default";
 
-                allRoles.Append($"{roleName} | ");
-            }
+				allRoles.Append($"{roleName} | ");
+			}
 
-            await Context.Channel.SendMessageAsync(allRoles.ToString());
-        }
+			await Context.Channel.SendMessageAsync(allRoles.ToString());
+		}
 
-        [Command("embedmessage")]
-        [Alias("embed")]
-        [Summary("Displays your message in an embed message")]
-        public async Task CmdEmbedMessage(string title = "", [Remainder]string msg = "")
-        {
-            await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
-        }
+		[Command("embedmessage")]
+		[Alias("embed")]
+		[Summary("Displays your message in an embed message")]
+		public async Task CmdEmbedMessage(string title = "", [Remainder] string msg = "")
+		{
+			await Context.Channel.SendMessageAsync("", false, EmbedMessage(title, msg).Build());
+		}
 
-        [Command("ping")]
-        [Summary("Ping Pong!")]
-        public async Task Ping()
-        {
-            await Context.Channel.SendMessageAsync($"Pong! **{Context.Client.Latency}**ms");
-        }
+		[Command("ping")]
+		[Summary("Ping Pong!")]
+		public async Task Ping()
+		{
+			await Context.Channel.SendMessageAsync($"Pong! **{Context.Client.Latency}**ms");
+		}
 
-        #region Functions
+		#region Functions
 
-        EmbedBuilder EmbedMessage(string title, string msg)
-        {
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.WithTitle(title);
-            embed.WithDescription(msg);
+		private EmbedBuilder EmbedMessage(string title, string msg)
+		{
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle(title);
+			embed.WithDescription(msg);
 
-            return embed;
-        }
+			return embed;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

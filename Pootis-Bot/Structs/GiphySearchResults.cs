@@ -1,6 +1,10 @@
 ﻿namespace Pootis_Bot.Structs
 {
-	public enum ErrorReason { NoApiKey, Error }
+	public enum ErrorReason
+	{
+		NoApiKey,
+		Error
+	}
 
 	public struct GiphySearchResult
 	{

@@ -1,124 +1,119 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
+using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Modules.Basic
 {
-    public class Help : ModuleBase<SocketCommandContext>
-    {
-        // Module Information
-        // Original Author   - Creepysin
-        // Description      - The two help commands
-        // Contributors     - Creepysin, 
+	public class Help : ModuleBase<SocketCommandContext>
+	{
+		// Module Information
+		// Original Author   - Creepysin
+		// Description      - The two help commands
+		// Contributors     - Creepysin, 
 
-        private readonly CommandService _cmdService;
+		private readonly CommandService _cmdService;
 
-        public Help(CommandService commandService)
-        {
-            _cmdService = commandService;
-        }
+		public Help(CommandService commandService)
+		{
+			_cmdService = commandService;
+		}
 
-        [Command("help")]
-        [Alias("h")]
-        [Summary("Gets help")]
-        public async Task HelpCmd()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append($"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
+		[Command("help")]
+		[Alias("h")]
+		[Summary("Gets help")]
+		public async Task HelpCmd()
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.Append(
+				$"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
 
-            //Basic Commands
-            foreach(var helpModule in Config.bot.HelpModules)
-            {
-                builder.Append($"\n**{helpModule.Group}** - ");
-                foreach(var module in helpModule.Modules)
-                {
-                    foreach(var cmd in GetModule(module).Commands)
-                    {
-                        builder.Append($"`{cmd.Name}` ");
-                    }
-                }
-            }
+			//Basic Commands
+			foreach (GlobalConfigFile.HelpModule helpModule in Config.bot.HelpModules)
+			{
+				builder.Append($"\n**{helpModule.Group}** - ");
+				foreach (string module in helpModule.Modules)
+				{
+					foreach (CommandInfo cmd in GetModule(module).Commands) builder.Append($"`{cmd.Name}` ");
+				}
+			}
 
-            await Context.Channel.SendMessageAsync(builder.ToString());
-        }
+			await Context.Channel.SendMessageAsync(builder.ToString());
+		}
 
-        [Command("help")]
-        [Alias("h", "command", "chelp", "ch")]
-        [Summary("Gets help on a specific command")]
-        public async Task HelpSpecific([Remainder] string query)
-        {
-            var embed = new EmbedBuilder();
-            embed.WithTitle($"Help for {query}");
-            embed.WithColor(new Color(241, 196, 15));
+		[Command("help")]
+		[Alias("h", "command", "chelp", "ch")]
+		[Summary("Gets help on a specific command")]
+		public async Task HelpSpecific([Remainder] string query)
+		{
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle($"Help for {query}");
+			embed.WithColor(new Color(241, 196, 15));
 
-            var result = _cmdService.Search(Context, query);
-            if (result.IsSuccess)
-            {
-                foreach (var command in result.Commands)
-                {
-                    embed.AddField(command.Command.Name, $"Summary: {command.Command.Summary}\nAlias: {FormatAliases(command.Command)}\nUsage: `{command.Command.Name} {FormatParms(command.Command)}`");
-                }
-            }
-            if (embed.Fields.Count == 0)
-                embed.WithDescription("Nothing was found for " + query);
+			SearchResult result = _cmdService.Search(Context, query);
+			if (result.IsSuccess)
+				foreach (CommandMatch command in result.Commands)
+					embed.AddField(command.Command.Name,
+						$"Summary: {command.Command.Summary}\nAlias: {FormatAliases(command.Command)}\nUsage: `{command.Command.Name} {FormatParms(command.Command)}`");
 
-            await Context.Channel.SendMessageAsync("", false, embed.Build());
-        }
+			if (embed.Fields.Count == 0)
+				embed.WithDescription("Nothing was found for " + query);
 
-        private string FormatAliases(CommandInfo commandInfo)
-        {
-            var aliases = commandInfo.Aliases;
+			await Context.Channel.SendMessageAsync("", false, embed.Build());
+		}
 
-            StringBuilder format = new StringBuilder();
+		private string FormatAliases(CommandInfo commandInfo)
+		{
+			IReadOnlyList<string> aliases = commandInfo.Aliases;
 
-            int count = aliases.Count;
-            int currentCount = 1;
-            foreach (var alias in aliases)
-            {
-                format.Append(alias);
+			StringBuilder format = new StringBuilder();
 
-                if (currentCount != count)
-                {
-                    format.Append(", ");
-                }
-                currentCount += 1;
-            }
+			int count = aliases.Count;
+			int currentCount = 1;
+			foreach (string alias in aliases)
+			{
+				format.Append(alias);
 
-            return format.ToString();
-        }
+				if (currentCount != count) format.Append(", ");
+				currentCount += 1;
+			}
 
-        private string FormatParms(CommandInfo commandInfo)
-        {
-            var parms = commandInfo.Parameters;
+			return format.ToString();
+		}
 
-            StringBuilder format = new StringBuilder();
-            int count = parms.Count;
-            if (count != 0) format.Append("[");
-            int currentCount = 1;
-            foreach (var parm in parms)
-            {
-                format.Append(parm);
+		private string FormatParms(CommandInfo commandInfo)
+		{
+			IReadOnlyList<ParameterInfo> parms = commandInfo.Parameters;
 
-                if (currentCount != count) format.Append(", ");
-                currentCount += 1;
-            }
+			StringBuilder format = new StringBuilder();
+			int count = parms.Count;
+			if (count != 0) format.Append("[");
+			int currentCount = 1;
+			foreach (ParameterInfo parm in parms)
+			{
+				format.Append(parm);
 
-            if (count != 0) format.Append("]");
+				if (currentCount != count) format.Append(", ");
+				currentCount += 1;
+			}
 
-            return format.ToString();
-        }
+			if (count != 0) format.Append("]");
 
-        private ModuleInfo GetModule(string moduleName)
-        {
-            var result = from a in _cmdService.Modules
-                         where a.Name == moduleName
-                         select a;
+			return format.ToString();
+		}
 
-            var module = result.FirstOrDefault();
-            return module;
-        }
-    }
+		private ModuleInfo GetModule(string moduleName)
+		{
+			IEnumerable<ModuleInfo> result = from a in _cmdService.Modules
+				where a.Name == moduleName
+				select a;
+
+			ModuleInfo module = result.FirstOrDefault();
+			return module;
+		}
+	}
 }

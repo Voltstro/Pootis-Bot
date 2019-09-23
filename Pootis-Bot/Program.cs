@@ -5,13 +5,15 @@ using Pootis_Bot.Services.Audio;
 
 namespace Pootis_Bot
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        => new Program().StartAsync(args).GetAwaiter().GetResult();
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			new Program().StartAsync(args).GetAwaiter().GetResult();
+		}
 
-        public async Task StartAsync(string[] args)
-        {
+		public async Task StartAsync(string[] args)
+		{
 			//Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
 			Console.WriteLine(@"__________              __  .__                 __________        __   ");
 			Console.WriteLine(@"\______   \____   _____/  |_|__| ______         \______   \ _____/  |_ ");
@@ -22,45 +24,45 @@ namespace Pootis_Bot
 			Console.WriteLine($"			Version: {Global.version}");
 			Console.WriteLine();
 
-            Global.Log("Starting...");
+			Global.Log("Starting...");
 
-            string name = null, token = null, prefix = null;
+			string name = null, token = null, prefix = null;
 
 			//This is just suggesting to use 64-bit
-            if (!Environment.Is64BitOperatingSystem)
-                Global.Log("This OS is a 32-bit os, 64-Bit is recommended!", ConsoleColor.Yellow);
+			if (!Environment.Is64BitOperatingSystem)
+				Global.Log("This OS is a 32-bit os, 64-Bit is recommended!", ConsoleColor.Yellow);
 
-            #region Config Loading
+			#region Config Loading
 
-            //Check config, if there arguments use them as the name, token and prefix
-            if (args.Length != 0)
-            {
-                if(args.Length == 1)
-                    token = args[0];
-                if (args.Length == 2)
-                    prefix = args[1];
-                if (args.Length == 3)
-                    name = args[2];
-            }
-            if (name == null) name = Config.bot.BotName;
-            if (token == null) token = Config.bot.BotToken;
-            if (prefix == null) prefix = Config.bot.BotPrefix;
+			//Check config, if there arguments use them as the name, token and prefix
+			if (args.Length != 0)
+			{
+				if (args.Length == 1)
+					token = args[0];
+				else if (args.Length == 2)
+					prefix = args[1];
+				else if (args.Length == 3) name = args[2];
+			}
+
+			if (name == null) name = Config.bot.BotName;
+			if (token == null) token = Config.bot.BotToken;
+			if (prefix == null) prefix = Config.bot.BotPrefix;
 
 			#endregion
 
 			//Check the audio services, if they are enabled
 			AudioCheckService.CheckAudioService();
 
-            Console.Title = name + " Console";
+			Console.Title = name + " Console";
 
 			//Setup the bot, put in the name, prefix and token
-            Bot bot = new Bot();
-            Global.BotName = name;
-            Global.BotPrefix = prefix;
-            Global.BotToken = token;
+			Bot bot = new Bot();
+			Global.BotName = name;
+			Global.BotPrefix = prefix;
+			Global.BotToken = token;
 
 			//Start her up!
-            await bot.StartBot();
-        }
-    }
+			await bot.StartBot();
+		}
+	}
 }
