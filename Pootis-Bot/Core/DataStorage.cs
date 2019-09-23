@@ -19,7 +19,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Gets all the user accounts
+		/// Loads all the user accounts
 		/// </summary>
 		/// <param name="filePath"></param>
 		/// <returns></returns>

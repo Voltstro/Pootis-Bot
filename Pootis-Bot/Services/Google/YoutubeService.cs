@@ -18,13 +18,7 @@ namespace Pootis_Bot.Services.Google
 		{
 			return SearchYoutube(search, appName, maxResults);
 		}
-		/// <summary>
-		/// Searches youtube for a string
-		/// </summary>
-		/// <param name="search">The string to search for</param>
-		/// <param name="appName"></param>
-		/// <param name="maxResults">The maximum amount of results</param>
-		/// <returns></returns>
+
 		private static SearchListResponse SearchYoutube(string search, string appName, int maxResults)
 		{
 			try

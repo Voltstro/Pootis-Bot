@@ -33,7 +33,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Gets a user account, or creates one if neeeded
+		/// Gets a user account, or creates one if needed
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>

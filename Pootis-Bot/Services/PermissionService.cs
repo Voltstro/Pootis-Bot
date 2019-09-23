@@ -18,7 +18,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		/// Lets a role use a command
+		/// Lets only a certain role use a command
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="role"></param>

@@ -85,12 +85,12 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Stops the audio service, asynchronously
+		/// Leaves the audio audio channel
 		/// </summary>
 		/// <param name="guild">The guild of <see cref="channel"/></param>
 		/// <param name="channel">The channel to use for messages</param>
 		/// <returns></returns>
-		public async Task StopAudioAsync(IGuild guild, IMessageChannel channel)
+		public async Task StopAudio(IGuild guild, IMessageChannel channel)
 		{
 			GlobalServerMusicItem serverList = GetMusicList(guild.Id);
 
@@ -107,14 +107,14 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Plays a song asynchronously in a given voice channel
+		/// Plays a song in a given voice channel
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="channel"></param>
 		/// <param name="target"></param>
 		/// <param name="search">The name of the song to play</param>
 		/// <returns></returns>
-		public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, IVoiceChannel target, string search)
+		public async Task SendAudio(IGuild guild, IMessageChannel channel, IVoiceChannel target, string search)
 		{
 			GlobalServerMusicItem serverList = GetMusicList(guild.Id);
 

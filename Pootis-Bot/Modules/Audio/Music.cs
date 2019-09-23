@@ -65,7 +65,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.SendAudioAsync(Context.Guild, Context.Channel, ((IVoiceState) Context.User).VoiceChannel,
+			await _service.SendAudio(Context.Guild, Context.Channel, ((IVoiceState) Context.User).VoiceChannel,
 				song);
 		}
 
@@ -81,7 +81,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.StopAudioAsync(Context.Guild, Context.Channel);
+			await _service.StopAudio(Context.Guild, Context.Channel);
 		}
 
 		[Command("pause", RunMode = RunMode.Async)]

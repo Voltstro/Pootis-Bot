@@ -24,7 +24,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Adds a command to the list of commands
+		/// Install all the modules
 		/// </summary>
 		/// <returns></returns>
 		public async Task InstallCommandsAsync()

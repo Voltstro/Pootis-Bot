@@ -46,7 +46,7 @@ namespace Pootis_Bot.Core
 		public static string BotToken;
 
 		/// <summary>
-		/// Logs a nice colourful message to the console because why the fuck not
+		/// Logs a nice colorful message to the console because why the fuck not
 		/// </summary>
 		/// <param name="msg">What could this be</param>
 		/// <param name="color">Yeah what does this do?</param>
