@@ -14,7 +14,7 @@ namespace Pootis_Bot.Preconditions
 		/// <summary>
 		/// Creates a new <see cref="CooldownAttribute"/>
 		/// </summary>
-		/// <param name="seconds">Yo waddup my dude?</param>
+		/// <param name="seconds"></param>
 		public CooldownAttribute(int seconds)
 		{
 			CooldownLength = TimeSpan.FromSeconds(seconds);

@@ -7,7 +7,7 @@ namespace Pootis_Bot.Core
 	public static class LevelingSystem
 	{
 		/// <summary>
-		/// Gives a
+		/// Levels up a user
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="channel"></param>

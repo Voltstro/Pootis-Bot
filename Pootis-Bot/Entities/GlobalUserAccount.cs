@@ -17,14 +17,14 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// What level is the user on?
 		/// </summary>
-		[JsonIgnore] internal uint LevelNumber => (uint) Math.Sqrt(Xp / 30f);
+		[JsonIgnore] public uint LevelNumber => (uint) Math.Sqrt(Xp / 30f);
 
 		/// <summary>
 		/// Gets or creates a server from an ID
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		internal GlobalUserAccountServer GetOrCreateServer(ulong id)
+		public GlobalUserAccountServer GetOrCreateServer(ulong id)
 		{
 			IEnumerable<GlobalUserAccountServer> result = from a in Servers
 				where a.ServerId == id
@@ -52,6 +52,8 @@ namespace Pootis_Bot.Entities
 			public ulong ServerId { get; set; }
 			public int Warnings { get; set; }
 			public bool IsAccountNotWarnable { get; set; }
+
+			public bool IsMuted { get; set; }
 
 			[JsonIgnore] public DateTime LastLevelUpTime { get; set; }
 

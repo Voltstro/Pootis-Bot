@@ -23,14 +23,14 @@ namespace Pootis_Bot.Core
 				Directory.CreateDirectory(ConfigFolder);
 
 			if (!File.Exists(ConfigFolder + "/" + ConfigFile)
-			) //If the config.json file doesn't exist it creats a new one.
+			) //If the config.json file doesn't exist it create a new one.
 			{
 				bot.ConfigVersion = ConfigVersion;
 				AddHelpModuleDefaults();
 
 				SaveConfig();
 
-				Global.Log("Config.json was created. Is this your first time runing?", ConsoleColor.Yellow);
+				Global.Log("Config.json was created. Is this your first time running?", ConsoleColor.Yellow);
 			}
 			else
 			{

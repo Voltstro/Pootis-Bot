@@ -9,7 +9,7 @@ namespace Pootis_Bot.Services.AntiSpam
 	public class AntiSpamService
 	{
 		/// <summary>
-		/// Checks if a given user is allowed to @mention other users, and warns them if not
+		/// Checks how many users are mention in a single message, if it is higher then the threshold then remove it
 		/// </summary>
 		/// <param name="message">The message to check</param>
 		/// <param name="guild">The guild of the message</param>

@@ -20,15 +20,14 @@ namespace Pootis_Bot.Modules.Basic
 		}
 
 		[Command("pick")]
-		[Summary("Picks between two things")]
+		[Summary("Picks between two or more things. Separate each choice with a |.")]
 		public async Task PickOne([Remainder] string message)
 		{
 			string[] options = message.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
 			Random r = new Random();
 			string selection = options[r.Next(0, options.Length)];
-			await Context.Channel.SendMessageAsync("Choice for " + Context.Message.Author.Mention + "\nI Choose: " +
-			                                       selection);
+			await Context.Channel.SendMessageAsync($"I choose... **{selection}**.");
 		}
 
 		[Command("roll")]
@@ -48,7 +47,7 @@ namespace Pootis_Bot.Modules.Basic
 				yesEmoji, noEmoji);
 		}
 
-		[Command("reminds")]
+		[Command("reminds", RunMode = RunMode.Async)]
 		[Summary("Reminds you, duh (In Seconds)")]
 		[Alias("res")]
 		public async Task Remind(int seconds, [Remainder] string remindmsg)

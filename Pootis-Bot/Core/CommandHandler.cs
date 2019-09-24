@@ -39,10 +39,18 @@ namespace Pootis_Bot.Core
 			if (!(messageParam is SocketUserMessage msg)) return;
 			SocketCommandContext context = new SocketCommandContext(_client, msg);
 			GlobalServerList server = ServerLists.GetServer(context.Guild);
+			GlobalUserAccount user = UserAccounts.GetAccount((SocketGuildUser) context.User);
 			int argPos = 0;
 
 			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
 				return;
+
+			//Check if the user is muted, if so delete the message, oh and make sure it ISN'T the owner of the guild
+			if (user.GetOrCreateServer(context.Guild.Id).IsMuted && user.Id != context.Guild.OwnerId)
+			{
+				await msg.DeleteAsync();
+				return;
+			}
 
 			//Someone has mention more than 2 users, check with the anti-spam
 			if (msg.MentionedUsers.Count >= 2)
@@ -57,6 +65,7 @@ namespace Pootis_Bot.Core
 			foreach (ulong item in server.BannedChannels) //Check to channel, make sure its not on the banned list
 				if (msg.Channel.Id == item)
 					return;
+
 			if (msg.HasStringPrefix(Global.BotPrefix, ref argPos)
 			    || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
 			{
@@ -79,14 +88,25 @@ namespace Pootis_Bot.Core
 						return;
 				}
 
+				//Result
 				IResult result = await _commands.ExecuteAsync(context, argPos, null);
-				if (!result.IsSuccess && (result.Error == CommandError.BadArgCount))
+
+				//The command either had too little arguments or too many
+				if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
 					await context.Channel.SendMessageAsync(
 						$"The command `{msg.Content.Replace(Global.BotPrefix, "")}` either has too many or too little arguments!");
-				else if (!result.IsSuccess && (result.Error == CommandError.UnmetPrecondition))
+
+				//The user or bot had unmet preconditions
+				else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
 					await context.Channel.SendMessageAsync(result.ErrorReason);
-				else if (!result.IsSuccess && (result.Error != CommandError.UnknownCommand))
+
+				//Some other error, just put the error into the console
+				//and tell the user an internal error occured so they are not just left blank
+				else if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+				{
 					Global.Log(result.ErrorReason, ConsoleColor.Red);
+					await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");
+				}
 			}
 			else
 			{
@@ -102,7 +122,7 @@ namespace Pootis_Bot.Core
 					LevelingSystem.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel,
 						10);
 
-					//We don't need to save the accounts file
+					//We don't need to save the accounts file since the LastLevelUpTime has a json ignore tag
 					account.LastLevelUpTime = now;
 				}
 			}

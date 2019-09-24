@@ -4,6 +4,8 @@ using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
+using Pootis_Bot.Core;
+using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Modules.Server
 {
@@ -21,7 +23,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task KickUser(IGuildUser user, [Remainder] string reason = "")
 		{
 			await user.KickAsync(reason);
-			await Context.Channel.SendMessageAsync($"The user {user.Username} was kicked");
+			await Context.Channel.SendMessageAsync($"The user {user.Username} was kicked.");
 		}
 
 		[Command("ban")]
@@ -31,7 +33,46 @@ namespace Pootis_Bot.Modules.Server
 		public async Task BanUser(IGuildUser user, int days = 0, [Remainder] string reason = "")
 		{
 			await user.BanAsync(days, reason);
-			await Context.Channel.SendMessageAsync($"The user {user.Username} was banned");
+			await Context.Channel.SendMessageAsync($"The user {user.Username} was banned.");
+		}
+
+		[Command("mute")]
+		[Summary("Mutes a user")]
+		[RequireBotPermission(GuildPermission.ManageRoles)]
+		[RequireUserPermission(GuildPermission.ManageRoles)]
+		public async Task MuteUser(SocketGuildUser user = null)
+		{
+			//Check to see if the user is null
+			if (user == null)
+			{
+				await Context.Channel.SendMessageAsync("You need to input a username of a user!");
+				return;
+			}
+
+			//Make sure the user being muted isn't the owner of the guild, because that would be retarded.
+			if (user.Id == Context.Guild.OwnerId)
+			{
+				await Context.Channel.SendMessageAsync("Excuse me, you are trying to mute... the owner? That is a terrible idea.");
+				return;
+			}
+
+			//Yea muting your self isn't normal either.
+			if (user == Context.User)
+			{
+				await Context.Channel.SendMessageAsync("Are you trying to mute your self? I don't think that is normal.");
+				return;
+			}
+
+			GlobalUserAccount account = UserAccounts.GetAccount(user);
+			GlobalUserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
+			accountServer.IsMuted = true;
+
+			UserAccounts.SaveAccounts();
+
+			if(accountServer.IsMuted)
+				await Context.Channel.SendMessageAsync($"**{user.Username}** is now muted.");
+			else
+				await Context.Channel.SendMessageAsync($"**{user.Username}** is now un-muted.");
 		}
 
 		[Command("purge", RunMode = RunMode.Async)]
