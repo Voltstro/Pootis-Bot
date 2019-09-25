@@ -71,6 +71,8 @@ namespace Pootis_Bot.Modules.Server
 				warningDes += "<:Cross:537572008574189578> The command `ban` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("kick") == null)
 				warningDes += "<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
+			if(server.GetCommandInfo("mute") == null)
+				warningDes += "<:Cross:537572008574189578> The command `mute` doesn't have a permission added to it!\n";
 			else
 				warningDes = "You have no warnings! :smile:";
 			embed.AddField(warningTitle, warningDes);
