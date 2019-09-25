@@ -127,8 +127,8 @@ namespace Pootis_Bot.Services.Audio
 
 			string fileLoc = SearchAudio(search); //Search for the song in our current music directory
 
-			if (string.IsNullOrWhiteSpace(fileLoc)
-			) //The search didn't come up with anything, lets attempt to get it from YouTube
+			//The search didn't come up with anything, lets attempt to get it from YouTube
+			if (string.IsNullOrWhiteSpace(fileLoc))
 			{
 				AudioDownload audioDownload = new AudioDownload();
 				string result = audioDownload.DownloadAudio(search, channel);
@@ -137,8 +137,6 @@ namespace Pootis_Bot.Services.Audio
 				else
 					return;
 			}
-
-			fileLoc = fileLoc.Replace("\"", "'");
 
 			string tempName = Path.GetFileName(fileLoc);
 			string fileName = tempName.Replace(".mp3", "");

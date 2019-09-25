@@ -46,6 +46,17 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
+		/// Removes not allowed characters that can't be in a windows file name
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns>Formatted string</returns>
+		public static string RemovedNotAllowedChars(string input)
+		{
+			string output = input.Replace("\"", "''").Replace("|", "_");
+			return output;
+		}
+
+		/// <summary>
 		/// Updates all files related to audio
 		/// </summary>
 		public static void UpdateAudioFiles()

@@ -29,11 +29,12 @@ namespace Pootis_Bot.Services.Audio
 				try
 				{
 					string videoUrl = FunCmdsConfig.ytStartLink + searchListResponse.Items[0].Id.VideoId;
-					string videoTitle = HttpUtility.HtmlDecode(searchListResponse.Items[0].Snippet.Title);
-					string videoLoc = "Music/" + videoTitle + ".mp3";
+					string videoTitle = AudioCheckService.RemovedNotAllowedChars(searchListResponse.Items[0].Snippet.Title);
+					string videoLoc = $"Music/{videoTitle}.mp3";
 
-					if (AudioService.SearchAudio(videoTitle) == videoTitle)
-						return videoLoc;
+					//Do a second check to see if we have already have that video
+					string check = AudioService.SearchAudio(videoTitle);
+					if (!string.IsNullOrWhiteSpace(check)) return videoLoc;
 
 					channel.SendMessageAsync(
 						$":musical_note: Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**");
@@ -49,7 +50,7 @@ namespace Pootis_Bot.Services.Audio
 				}
 
 			channel.SendMessageAsync(
-				$"No result for '{search}' were found on YouTube, try typing in something diffrent.");
+				$"No result for '{search}' were found on YouTube, try typing in something different.");
 			return null;
 		}
 
