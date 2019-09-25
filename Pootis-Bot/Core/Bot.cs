@@ -257,6 +257,8 @@ namespace Pootis_Bot.Core
 						foreach (GlobalServerMusicItem channel in AudioService.currentChannels)
 							channel.AudioClient.Dispose();
 
+						await Task.Delay(1000);
+
 						//Delete old files first
 						Directory.Delete("External/", true);
 						File.Delete("libsodium.dll");

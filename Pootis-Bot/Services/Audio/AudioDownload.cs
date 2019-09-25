@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Web;
 using Discord;
 using Google.Apis.YouTube.v3.Data;
 using Pootis_Bot.Modules.Fun;

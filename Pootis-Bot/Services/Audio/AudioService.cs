@@ -70,14 +70,15 @@ namespace Pootis_Bot.Services.Audio
 
 			if (serverList.FfMpeg != null)
 			{
+				serverList.IsExit = true;
 				serverList.FfMpeg.Kill();
 				serverList.FfMpeg.Dispose();
 			}
 
+			//Just wait a moment
 			await Task.Delay(100);
 
-			//await serverList.AudioClient.StopAsync(); //Stop the audio client
-			serverList.AudioClient.Dispose();
+			await serverList.AudioClient.StopAsync();
 
 			serverList.IsPlaying = false;
 
@@ -225,10 +226,13 @@ namespace Pootis_Bot.Services.Audio
 					serverList.Discord.Dispose();
 					serverList.IsPlaying = false;
 
-					await channel.SendMessageAsync(":musical_note: The song has finished.");
+
+					await channel.SendMessageAsync($":musical_note: **{fileName}** ended or was stopped.");
 
 					//Check to make sure that ffmpeg was disposed
 					ffmpeg.Dispose();
+
+					serverList.FfMpeg = null;
 				}
 			}
 		}
