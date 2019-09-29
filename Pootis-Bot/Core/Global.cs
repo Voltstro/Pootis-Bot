@@ -8,7 +8,7 @@ using Discord.WebSocket;
 namespace Pootis_Bot.Core
 {
 	/// <summary>
-	/// Contains a shitload of config. Also why isn't resharper tagging 'shitload'?
+	/// Contains some general config and methods.
 	/// </summary>
 	public static class Global
 	{
