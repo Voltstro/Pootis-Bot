@@ -72,7 +72,7 @@ namespace Pootis_Bot.Core
 		/// <returns></returns>
 		public static string TimeNow()
 		{
-			return DateTime.Now.ToString("h:mm:ss tt");
+			return DateTime.Now.ToString("hh:mm:ss tt");
 		}
 
 		/// <summary>
