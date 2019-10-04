@@ -17,7 +17,7 @@ namespace Pootis_Bot.Core
 	{
 		private DiscordSocketClient _client;
 
-		private string _gameStatus = Config.bot.GameMessage;
+		private string _gameStatus = Config.bot.DefaultGameMessage;
 		private bool _isRunning;
 		private bool _isStreaming;
 
@@ -76,8 +76,7 @@ namespace Pootis_Bot.Core
 		private async Task CheckConnectionStatus()
 		{
 			while (_isRunning)
-				if (Config.bot.CheckConnectionStatus
-				) // It is enabled then check the connection status ever so milliseconds
+				if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
 					if ((_client.ConnectionState == ConnectionState.Disconnected) ||
@@ -89,10 +88,12 @@ namespace Pootis_Bot.Core
 						_client.Dispose();
 
 						ProcessStartInfo newPootisStart = new ProcessStartInfo("dotnet", "Pootis-Bot.dll");
+#pragma warning disable IDE0067 // Dispose objects before losing scope
 						Process newPootis = new Process
 						{
 							StartInfo = newPootisStart
 						};
+#pragma warning restore IDE0067 // Dispose objects before losing scope
 						newPootis.Start();
 						Environment.Exit(0);
 					}
@@ -200,14 +201,14 @@ namespace Pootis_Bot.Core
 						_gameStatus = Console.ReadLine();
 
 						ActivityType activity = ActivityType.Playing;
-						string twich = null;
+						string twitch = null;
 						if (_isStreaming)
 						{
 							activity = ActivityType.Streaming;
-							twich = Config.bot.TwitchStreamingSite;
+							twitch = Config.bot.TwitchStreamingSite;
 						}
 
-						await _client.SetGameAsync(_gameStatus, twich, activity);
+						await _client.SetGameAsync(_gameStatus, twitch, activity);
 
 						Global.Log($"Bot's game was set to '{_gameStatus}'");
 						break;
@@ -275,6 +276,15 @@ namespace Pootis_Bot.Core
 					case "clear":
 					case "cls":
 						Console.Clear();
+						break;
+					case "resethelpmodules":
+					case "resethelp":
+						Config.bot.HelpModules.Clear();
+						Config.AddHelpModuleDefaults();
+
+						Config.SaveConfig();
+
+						Global.Log("The help modules were reset to there defaults.");
 						break;
 					default:
 						Global.Log(
@@ -415,15 +425,13 @@ namespace Pootis_Bot.Core
 
 		private string BotConfigToken()
 		{
-			string token;
-
 			Console.WriteLine($"The current bot token is set to: '{Config.bot.BotToken}'");
 			Console.WriteLine("Enter in what you want to change the bot token to: ");
 
 			while (true)
 			{
-				token = Console.ReadLine();
-				if (token == "")
+				string token = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(token))
 				{
 					Console.WriteLine("You cannot set the bot token to blank!");
 				}
@@ -437,15 +445,13 @@ namespace Pootis_Bot.Core
 
 		private string BotConfigPrefix()
 		{
-			string prefix;
-
 			Console.WriteLine($"The current bot prefix is set to: '{Config.bot.BotPrefix}'");
 			Console.WriteLine("Enter in what you want to change the bot prefix to: ");
 
 			while (true)
 			{
-				prefix = Console.ReadLine();
-				if (prefix == "")
+				string prefix = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(prefix))
 				{
 					Console.WriteLine("You cannot set the bot prefix to blank!");
 				}
@@ -459,15 +465,13 @@ namespace Pootis_Bot.Core
 
 		private string BotConfigName()
 		{
-			string name;
-
 			Console.WriteLine($"The current bot name is set to: '{Config.bot.BotName}'");
 			Console.WriteLine("Enter in what you want to change the bot name to: ");
 
 			while (true)
 			{
-				name = Console.ReadLine();
-				if (name == "")
+				string name = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(name))
 				{
 					Console.WriteLine("You cannot set the bot name to blank!");
 				}
@@ -481,15 +485,13 @@ namespace Pootis_Bot.Core
 
 		private string BotConfigAPIGiphy()
 		{
-			string key;
-
 			Console.WriteLine($"The current bot Giphy key is set to: '{Config.bot.Apis.ApiGiphyKey}'");
 			Console.WriteLine("Enter in what you want to change the bot Giphy key to: ");
 
 			while (true)
 			{
-				key = Console.ReadLine();
-				if (key == "")
+				string key = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(key))
 				{
 					Console.WriteLine("You cannot set the bot Giphy key to blank!");
 				}
@@ -503,15 +505,13 @@ namespace Pootis_Bot.Core
 
 		private string BotConfigAPIYoutube()
 		{
-			string key;
-
 			Console.WriteLine($"The current bot Youtube key is set to: '{Config.bot.Apis.ApiYoutubeKey}'");
 			Console.WriteLine("Enter in what you want to change the bot Youtube key to: ");
 
 			while (true)
 			{
-				key = Console.ReadLine();
-				if (key == "")
+				string key = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(key))
 				{
 					Console.WriteLine("You cannot set the bot Youtube key to blank!");
 				}
@@ -525,15 +525,13 @@ namespace Pootis_Bot.Core
 
 		private string BotConfigAPIGoogle()
 		{
-			string key;
-
 			Console.WriteLine($"The current bot Google key is set to: '{Config.bot.Apis.ApiGoogleSearchKey}'");
 			Console.WriteLine("Enter in what you want to change the bot Google key to: ");
 
 			while (true)
 			{
-				key = Console.ReadLine();
-				if (key == "")
+				string key = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(key))
 				{
 					Console.WriteLine("You cannot set the bot Google key to blank!");
 				}
@@ -547,15 +545,13 @@ namespace Pootis_Bot.Core
 
 		private string BotConfigGoogleSearchID()
 		{
-			string key;
-
 			Console.WriteLine($"The current bot Google Search Id is set to: '{Config.bot.Apis.GoogleSearchEngineId}'");
 			Console.WriteLine("Enter in what you want to change the bot Google Search Id to: ");
 
 			while (true)
 			{
-				key = Console.ReadLine();
-				if (key == "")
+				string key = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(key))
 				{
 					Console.WriteLine("You cannot set the bot Google Search Id to blank!");
 				}

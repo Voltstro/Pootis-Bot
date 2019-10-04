@@ -13,7 +13,7 @@ namespace Pootis_Bot.Core
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "config.json";
 
-		private const string ConfigVersion = "3";
+		private const string ConfigVersion = "4";
 
 		public static readonly GlobalConfigFile bot = new GlobalConfigFile();
 
@@ -56,7 +56,10 @@ namespace Pootis_Bot.Core
 			File.WriteAllText(ConfigFolder + "/" + ConfigFile, json);
 		}
 
-		private static void AddHelpModuleDefaults()
+		/// <summary>
+		/// Adds the default help modules
+		/// </summary>
+		public static void AddHelpModuleDefaults()
 		{
 			GlobalConfigFile.HelpModule basic = new GlobalConfigFile.HelpModule
 			{
