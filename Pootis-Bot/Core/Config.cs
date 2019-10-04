@@ -22,8 +22,8 @@ namespace Pootis_Bot.Core
 			if (!Directory.Exists(ConfigFolder)) //Creates the Resources folder if it doesn't exist.
 				Directory.CreateDirectory(ConfigFolder);
 
-			if (!File.Exists(ConfigFolder + "/" + ConfigFile)
-			) //If the config.json file doesn't exist it create a new one.
+			//If the config.json file doesn't exist it create a new one.
+			if (!File.Exists(ConfigFolder + "/" + ConfigFile)) 
 			{
 				bot.ConfigVersion = ConfigVersion;
 				AddHelpModuleDefaults();

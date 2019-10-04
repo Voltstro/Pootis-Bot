@@ -13,7 +13,7 @@ namespace Pootis_Bot.Modules.Basic
 	public class ProfileMang : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - Handles anything to do with profile management
 		// Contributors     - Creepysin, 
 
@@ -62,17 +62,21 @@ namespace Pootis_Bot.Modules.Basic
 		[Summary("Gets your")]
 		public async Task Profile()
 		{
+			//TODO: Test this quite well
+			//This will get the user's main role
 			IReadOnlyCollection<SocketRole> roles = ((SocketGuildUser) Context.User).Roles;
 			List<SocketRole> sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
 			SocketRole userMainRole = sortedRoles.First();
 
+			//Get the user's account and server data relating to the user
 			GlobalUserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
 			GlobalUserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
+
 			EmbedBuilder embed = new EmbedBuilder();
 
-			string warningText = "Yes";
-			if (accountServer.IsAccountNotWarnable)
-				warningText = "No :sunglasses:";
+			string warningText = "No :sunglasses:";
+			if (!accountServer.IsAccountNotWarnable)
+				warningText = $"Yes\n**Warnings: ** {accountServer.Warnings}";
 
 			embed.WithCurrentTimestamp();
 			embed.WithThumbnailUrl(Context.User.GetAvatarUrl());
@@ -84,7 +88,7 @@ namespace Pootis_Bot.Modules.Basic
 
 			embed.WithColor(userMainRole.Color);
 
-			embed.WithFooter(account.Msg, Context.User.GetAvatarUrl());
+			embed.WithFooter(account.ProfileMsg, Context.User.GetAvatarUrl());
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
@@ -93,23 +97,26 @@ namespace Pootis_Bot.Modules.Basic
 		[Summary("Gets a person's profile")]
 		public async Task Profile(SocketGuildUser user)
 		{
-			IReadOnlyCollection<SocketRole> roles = ((SocketGuildUser) Context.User).Roles;
-			List<SocketRole> sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
-			SocketRole userMainRole = sortedRoles.First();
-
+			//Check to see if the user requested to view the profile of is a bot
 			if (user.IsBot)
 			{
 				await Context.Channel.SendMessageAsync("You can not get a profile of a bot!");
 				return;
 			}
 
+			//This will get the user's main role
+			IReadOnlyCollection<SocketRole> roles = ((SocketGuildUser) Context.User).Roles;
+			List<SocketRole> sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
+			SocketRole userMainRole = sortedRoles.First();
+
+			//Get the user's account and server data relating to the user
 			GlobalUserAccount account = UserAccounts.GetAccount(user);
 			GlobalUserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
 			EmbedBuilder embed = new EmbedBuilder();
 
-			string warningText = "Yes";
-			if (accountServer.IsAccountNotWarnable)
-				warningText = "No :sunglasses:";
+			string warningText = "No :sunglasses:";
+			if (!accountServer.IsAccountNotWarnable)
+				warningText = $"Yes\n**Warnings: ** {accountServer.Warnings}";
 
 			embed.WithCurrentTimestamp();
 			embed.WithThumbnailUrl(user.GetAvatarUrl());
@@ -121,16 +128,17 @@ namespace Pootis_Bot.Modules.Basic
 
 			embed.WithColor(userMainRole.Color);
 
-			embed.WithFooter(account.Msg, user.GetAvatarUrl());
+			embed.WithFooter(account.ProfileMsg, user.GetAvatarUrl());
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
 
 		[Command("profilemsg")]
+		[Summary("Set your profile public message (This is on any Discord server with the same Pootis-Bot!)")]
 		public async Task ProfileMsg([Remainder] string message = "")
 		{
 			GlobalUserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
-			account.Msg = message;
+			account.ProfileMsg = message;
 			UserAccounts.SaveAccounts();
 
 			await Context.Channel.SendMessageAsync($"Your public profile message was set to '{message}'");

@@ -116,8 +116,8 @@ namespace Pootis_Bot.Core
 
 				//Only level it up if the last message was the level up cooldown.
 				// ReSharper disable once CompareOfFloatsByEqualityOperator
-				if ((account.LastLevelUpTime.Subtract(now).TotalSeconds == Config.bot.LevelUpCooldown) ||
-				    (account.LastLevelUpTime.Second == 0))
+				if (account.LastLevelUpTime.Subtract(now).TotalSeconds == Config.bot.LevelUpCooldown ||
+				    account.LastLevelUpTime.Second == 0)
 				{
 					LevelingSystem.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel,
 						10);

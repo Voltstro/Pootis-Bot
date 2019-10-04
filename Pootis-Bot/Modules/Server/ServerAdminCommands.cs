@@ -56,7 +56,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			//Yea muting your self isn't normal either.
+			//Yea, muting your self isn't normal either.
 			if (user == Context.User)
 			{
 				await Context.Channel.SendMessageAsync("Are you trying to mute your self? I don't think that is normal.");

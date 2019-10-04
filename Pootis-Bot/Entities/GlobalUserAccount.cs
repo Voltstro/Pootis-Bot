@@ -12,7 +12,7 @@ namespace Pootis_Bot.Entities
 
 		public uint Xp { get; set; }
 
-		public string Msg { get; set; }
+		public string ProfileMsg { get; set; }
 
 		/// <summary>
 		/// What level is the user on?

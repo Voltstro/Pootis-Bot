@@ -32,10 +32,10 @@ namespace Pootis_Bot.Core
 		public static readonly string[] discordServers =
 			{"https://discord.creepysin.com", "https://discord.gg/m4YcsUa"};
 
-		public static readonly string version = "0.3.3";
+		public static readonly string version = "0.3.4";
 
 		public static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
-		                                             $"Created by Creepysin licensed under the MIT license. Vist {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
+		                                             $"Created by Creepysin licensed under the MIT license. Visit {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
 		                                             "Pootis Robot icon by Valve\n" +
 		                                             "Created with Discord.NET\n" +
 		                                             "https://github.com/Creepysin/Pootis-Bot \n\n" +
@@ -46,10 +46,10 @@ namespace Pootis_Bot.Core
 		public static string BotToken;
 
 		/// <summary>
-		/// Logs a nice colorful message to the console because why the fuck not
+		/// Logs a message to the console
 		/// </summary>
-		/// <param name="msg">What could this be</param>
-		/// <param name="color">Yeah what does this do?</param>
+		/// <param name="msg">The message? Yea the message</param>
+		/// <param name="color">The color of the message</param>
 		public static void Log(string msg, ConsoleColor color)
 		{
 			Console.ForegroundColor = color;
@@ -58,7 +58,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Maybe this logs a message?
+		/// Logs a message to the console
 		/// </summary>
 		/// <param name="msg"></param>
 		public static void Log(string msg)
@@ -67,7 +67,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Gets... you guessed it, THE TIME NOW!!!!
+		/// Gets... you guessed it, THE TIME NOW!!!! (12hr time)
 		/// </summary>
 		/// <returns></returns>
 		public static string TimeNow()

@@ -43,7 +43,7 @@ namespace Pootis_Bot.Core
 			_client.Ready += BotReady;
 
 			//Setup the remaining events
-			EventsSetup eventsSetup = new EventsSetup(_client);
+			EventsSetup unused = new EventsSetup(_client);
 
 			await _client.LoginAsync(TokenType.Bot,
 				Global.BotToken); //Logging into the bot using the token in the config.
