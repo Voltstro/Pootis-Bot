@@ -14,6 +14,11 @@ namespace Pootis_Bot.Events
 			GuildEvents guildEvents = new GuildEvents();
 			client.JoinedGuild += guildEvents.JoinedNewServer;
 
+			//Message events
+			MessageEvents messageEvents = new MessageEvents();
+			client.MessageDeleted += messageEvents.MessageDeleted;
+			client.MessagesBulkDeleted += messageEvents.MessageBulkDeleted;
+
 			//Reaction events
 			ReactionEvents reactionEvents = new ReactionEvents();
 			client.ReactionAdded += reactionEvents.ReactionAdded;

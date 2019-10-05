@@ -8,6 +8,9 @@ using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Events
 {
+	/// <summary>
+	/// Handles reaction client events
+	/// </summary>
 	public class ReactionEvents
 	{
 		public Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel,

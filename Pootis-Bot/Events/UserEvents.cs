@@ -10,6 +10,9 @@ using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Events
 {
+	/// <summary>
+	/// Handles user client events
+	/// </summary>
 	public class UserEvents
 	{
 		private readonly DiscordSocketClient _client;

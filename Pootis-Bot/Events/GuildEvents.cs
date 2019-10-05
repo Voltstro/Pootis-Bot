@@ -5,6 +5,9 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Events
 {
+	/// <summary>
+	/// Handles guild client events
+	/// </summary>
 	public class GuildEvents
 	{
 		public async Task JoinedNewServer(SocketGuild guild)

@@ -6,6 +6,9 @@ using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Events
 {
+	/// <summary>
+	/// Handles channel client events
+	/// </summary>
 	public class ChannelEvents
 	{
 		public Task ChannelDestroyed(SocketChannel channel)
