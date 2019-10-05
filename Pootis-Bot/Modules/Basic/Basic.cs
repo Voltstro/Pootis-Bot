@@ -27,8 +27,7 @@ namespace Pootis_Bot.Modules.Basic
 			embed.WithDescription("Hello! My name is " + Config.bot.BotName + "!\n\n**__Links__**" +
 			                      $"\n:computer: [Commands]({Global.websiteCommands})" +
 			                      $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
-			                      $"\n:bookmark: [Documation]({Global.websiteHome})" +
-			                      $"\n<:Discord:529572497130127360> [Creepysin Development Server]({Global.discordServers[1]})" +
+			                      $"\n:bookmark: [Documentation]({Global.websiteHome})" +
 			                      $"\n<:Discord:529572497130127360> [Creepysin Server]({Global.discordServers[0]})" +
 			                      "\n\nRunning Pootis-Bot version: " + Global.version +
 			                      $"\nThis project is licensed under the [MIT license]({Global.githubPage}/blob/master/LICENSE.md)");

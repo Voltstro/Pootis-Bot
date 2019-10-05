@@ -27,9 +27,9 @@ namespace Pootis_Bot.Core
 			"https://pootis-bot.creepysin.com/commands/console-commands/";
 
 		//An array of Discord servers, add as many as you want and use it throughout the bot.
-		//                                                  Main Server                -  Development Server
+		//Main Server 
 		public static readonly string[] discordServers =
-			{"https://discord.creepysin.com", "https://discord.gg/m4YcsUa"};
+			{"https://discord.creepysin.com"};
 
 		public static readonly string version = "0.3.4";
 
