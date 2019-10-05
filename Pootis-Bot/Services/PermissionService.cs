@@ -42,7 +42,7 @@ namespace Pootis_Bot.Services
 			GlobalServerList server = ServerLists.GetServer(guild);
 
 			//Check too see if role exist
-			if (Global.CheckIfRoleExist(guild, role) != null)
+			if (Global.GetGuildRole(guild, role) != null)
 			{
 				if (server.GetCommandInfo(command) == null) // Command doesn't exist, add it
 				{
@@ -96,7 +96,7 @@ namespace Pootis_Bot.Services
 			GlobalServerList server = ServerLists.GetServer(guild);
 
 			//Check too see if role exist
-			if (Global.CheckIfRoleExist(guild, role) != null)
+			if (Global.GetGuildRole(guild, role) != null)
 			{
 				if (server.GetCommandInfo(command) == null) // Command already has no permissions
 				{

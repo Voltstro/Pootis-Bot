@@ -63,7 +63,7 @@ namespace Pootis_Bot.Core
 				WelcomeMessage =
 					"Hello [user]! Thanks for joining **[server]**. Please check out the rules first then enjoy your stay.",
 				RuleEnabled = false,
-				RuleRole = null,
+				RuleRoleId = 0,
 				RuleMessageId = 0,
 				AntiSpamSettings = new GlobalServerList.AntiSpamSettingsInfo
 				{

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
@@ -284,22 +283,25 @@ namespace Pootis_Bot.Modules.Server
 		{
 			GlobalServerList server = ServerLists.GetServer(Context.Guild);
 
-			if (server.RuleEnabled) //The rule reaction is enabled, disable it
+			//The rule reaction is enabled, disable it
+			if (server.RuleEnabled) 
 			{
 				server.RuleEnabled = false;
 				ServerLists.SaveServerList();
 
 				await Context.Channel.SendMessageAsync("The rule reaction feature was disabled.");
 			}
-			else //Enable the rule reaction feature, but first check to make sure everthing else is setup first
+			else //Enable the rule reaction feature, but first check to make sure everything else is setup first and is correct
 			{
-				if (Context.Guild.Roles.FirstOrDefault(x => x.Name == server.RuleRole) != null
-				) //Check to see if the role exist and is not null
+				//First, lets make sure the rule role is still valid and exists
+				if (Global.GetGuildRole(Context.Guild, server.RuleRoleId) != null) 
 				{
 					if (server.RuleMessageId != 0)
 					{
+						//Now lets double check if the rule emoji is valid emoji
 						if (Global.ContainsUnicodeCharacter(server.RuleReactionEmoji))
 						{
+							//If we reach here, then we are all good to go!
 							server.RuleEnabled = true;
 
 							ServerLists.SaveServerList();
@@ -308,20 +310,23 @@ namespace Pootis_Bot.Modules.Server
 						}
 						else
 						{
+							//The emoji was incorrect or wasn't set
 							await Context.Channel.SendMessageAsync(
 								"The emoji isn't set or is incorrect, use the command `setupruleemoji` to set the emoji.");
 						}
 					}
 					else
 					{
+						//The rule message either doesn't exist anymore, or was never set in the first place
 						await Context.Channel.SendMessageAsync(
 							"The rule message id isn't set, use the command `setuprulesmessage` to set the rule message id.");
 					}
 				}
 				else
 				{
+					//The rule role doesn't exist or wasn't set
 					await Context.Channel.SendMessageAsync(
-						"The reaction role doesn't exist, use the command `setuprulerole` to set the role.");
+						"The reaction role was either no set, or no longer exist, use the command `setuprulerole` to set the role.");
 				}
 			}
 		}
@@ -329,20 +334,21 @@ namespace Pootis_Bot.Modules.Server
 		[Command("setuprulerole")]
 		[Summary("Sets the role to give to the user after they have reacted")]
 		[RequireGuildOwner]
-		public async Task SetupRuleRole([Remainder] string role)
+		public async Task SetupRuleRole([Remainder] string roleName)
 		{
-			if (Context.Guild.Roles.FirstOrDefault(x => x.Name == role) != null)
-			{
-				GlobalServerList server = ServerLists.GetServer(Context.Guild);
-				server.RuleRole = role;
+			//Get the role and check to see if it exists
+			SocketRole role = Global.GetGuildRole(Context.Guild, roleName);
 
+			if (role != null)
+			{
+				ServerLists.GetServer(Context.Guild).RuleRoleId = role.Id;
 				ServerLists.SaveServerList();
 
-				await Context.Channel.SendMessageAsync("The role was set to " + role);
+				await Context.Channel.SendMessageAsync($"The rule role was set to **{role.Name}**.");
 			}
 			else
 			{
-				await Context.Channel.SendMessageAsync("That role doesn't exist!");
+				await Context.Channel.SendMessageAsync($"{roleName} doesn't exist in the guild!");
 			}
 		}
 	}

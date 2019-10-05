@@ -149,15 +149,31 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Checks if a given role exists in a guild
+		/// Gets a role in a guild
 		/// </summary>
 		/// <param name="guild"></param>
-		/// <param name="rolename"></param>
+		/// <param name="roleName"></param>
 		/// <returns></returns>
-		public static IRole CheckIfRoleExist(SocketGuild guild, string rolename)
+		public static SocketRole GetGuildRole(SocketGuild guild, string roleName)
 		{
 			IEnumerable<SocketRole> result = from a in guild.Roles
-				where a.Name == rolename
+				where a.Name == roleName
+				select a;
+
+			SocketRole role = result.FirstOrDefault();
+			return role;
+		}
+
+		/// <summary>
+		/// Gets a role in a guild
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="roleId"></param>
+		/// <returns></returns>
+		public static SocketRole GetGuildRole(SocketGuild guild, ulong roleId)
+		{
+			IEnumerable<SocketRole> result = from a in guild.Roles
+				where a.Id == roleId
 				select a;
 
 			SocketRole role = result.FirstOrDefault();

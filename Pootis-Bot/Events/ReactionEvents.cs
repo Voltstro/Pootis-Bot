@@ -20,7 +20,7 @@ namespace Pootis_Bot.Events
 			{
 				if (!server.RuleEnabled) return Task.CompletedTask;
 				if (reaction.Emote.Name != server.RuleReactionEmoji) return Task.CompletedTask;
-				SocketRole role = guild.Roles.FirstOrDefault(x => x.Name == server.RuleRole);
+				SocketRole role = Global.GetGuildRole(guild, server.RuleRoleId);
 
 				SocketGuildUser user = (SocketGuildUser) reaction.User;
 				user.AddRoleAsync(role);

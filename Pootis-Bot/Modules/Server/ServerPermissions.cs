@@ -79,15 +79,15 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task AddRoleToRoleMention(string roleNotAllowedToMention, string role)
 		{
-			if ((Global.CheckIfRoleExist(Context.Guild, roleNotAllowedToMention) == null) ||
-			    (Global.CheckIfRoleExist(Context.Guild, role) == null))
+			if ((Global.GetGuildRole(Context.Guild, roleNotAllowedToMention) == null) ||
+			    (Global.GetGuildRole(Context.Guild, role) == null))
 			{
 				await Context.Channel.SendMessageAsync(
 					$"Either the **{roleNotAllowedToMention}** role doesn't exist or the **{role}** role doesn't exist!");
 				return;
 			}
 
-			if (!Global.CheckIfRoleExist(Context.Guild, role).IsMentionable)
+			if (!Global.GetGuildRole(Context.Guild, role).IsMentionable)
 			{
 				await Context.Channel.SendMessageAsync($"The **{role}** role is already not mentionable by anyone!");
 				return;
@@ -104,8 +104,8 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task RemoveRoleToRoleMention(string roleNotAllowedToMention, string role)
 		{
-			if ((Global.CheckIfRoleExist(Context.Guild, roleNotAllowedToMention) == null) ||
-			    (Global.CheckIfRoleExist(Context.Guild, role) == null))
+			if ((Global.GetGuildRole(Context.Guild, roleNotAllowedToMention) == null) ||
+			    (Global.GetGuildRole(Context.Guild, role) == null))
 			{
 				await Context.Channel.SendMessageAsync(
 					$"Either the **{roleNotAllowedToMention}** role doesn't exist or the **{role}** role doesn't exist!");

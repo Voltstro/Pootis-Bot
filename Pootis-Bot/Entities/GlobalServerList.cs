@@ -24,7 +24,7 @@ namespace Pootis_Bot.Entities
 
 		public bool RuleEnabled { get; set; }
 		public ulong RuleMessageId { get; set; }
-		public string RuleRole { get; set; }
+		public ulong RuleRoleId { get; set; }
 		public string RuleReactionEmoji { get; set; }
 
 		public AntiSpamSettingsInfo AntiSpamSettings { get; set; }

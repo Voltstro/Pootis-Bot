@@ -9,8 +9,7 @@ using Pootis_Bot.Services.Audio;
 //Special Thanks
 // - EternalClickbait for XML comments and cleanup
 // - Mr. Fantastic Pootis ;D for suggesting the name and them of the bot
-// - My parents (my mum for letting me sit on my ass all day and work on this, my dad for showing C# and hosting the bot on his server)
-// - My DGS teacher I had in Year 10 for being a cool and supportive teacher
+// - My parents (my mum for letting me sit on my ass all day and work on this, my dad for showing C# and letting me host the bot on his server)
 // - Discord.NET for making this possible
 
 namespace Pootis_Bot
