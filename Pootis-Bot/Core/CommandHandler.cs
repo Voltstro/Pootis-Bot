@@ -37,13 +37,19 @@ namespace Pootis_Bot.Core
 		private async Task HandleCommandAsync(SocketMessage messageParam)
 		{
 			if (!(messageParam is SocketUserMessage msg)) return;
-			SocketCommandContext context = new SocketCommandContext(_client, msg);
-			GlobalServerList server = ServerLists.GetServer(context.Guild);
-			GlobalUserAccount user = UserAccounts.GetAccount((SocketGuildUser) context.User);
-			int argPos = 0;
 
 			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
 				return;
+
+			SocketCommandContext context = new SocketCommandContext(_client, msg);
+
+			//This message or command come in from a dm, not a guild, so just ignore it.
+			if(context.Guild == null)
+				return;
+
+			GlobalServerList server = ServerLists.GetServer(context.Guild);
+			GlobalUserAccount user = UserAccounts.GetAccount((SocketGuildUser) context.User);
+			int argPos = 0;
 
 			//Check if the user is muted, if so delete the message, oh and make sure it ISN'T the owner of the guild
 			if (user.GetOrCreateServer(context.Guild.Id).IsMuted && user.Id != context.Guild.OwnerId)
