@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Discord;
 using Discord.WebSocket;
 
 namespace Pootis_Bot.Core

@@ -77,43 +77,47 @@ namespace Pootis_Bot.Modules.Server
 
 		[Command("addroleping")]
 		[RequireGuildOwner]
-		public async Task AddRoleToRoleMention(string roleNotAllowedToMention, string role)
+		public async Task AddRoleToRoleMention(string roleToChangeName, string roleToNotAllowToMention)
 		{
-			if ((Global.GetGuildRole(Context.Guild, roleNotAllowedToMention) == null) ||
-			    (Global.GetGuildRole(Context.Guild, role) == null))
+			SocketRole roleNotToMention = Global.GetGuildRole(Context.Guild, roleToChangeName);
+			SocketRole role = Global.GetGuildRole(Context.Guild, roleToNotAllowToMention);
+
+			if(roleNotToMention == null || role == null)
 			{
 				await Context.Channel.SendMessageAsync(
-					$"Either the **{roleNotAllowedToMention}** role doesn't exist or the **{role}** role doesn't exist!");
+					$"Either the **{roleToChangeName}** role doesn't exist or the **{roleToNotAllowToMention}** role doesn't exist!");
 				return;
 			}
 
-			if (!Global.GetGuildRole(Context.Guild, role).IsMentionable)
+			if (!role.IsMentionable)
 			{
 				await Context.Channel.SendMessageAsync($"The **{role}** role is already not mentionable by anyone!");
 				return;
 			}
 
-			ServerLists.GetServer(Context.Guild).CreateRoleToRoleMention(roleNotAllowedToMention, role);
+			ServerLists.GetServer(Context.Guild).CreateRoleToRoleMention(roleNotToMention.Id, role.Id);
 			ServerLists.SaveServerList();
 
 			await Context.Channel.SendMessageAsync(
-				$"The **{roleNotAllowedToMention}** role will not be allowed to mention the **{role}** role.");
+				$"The **{roleNotToMention.Name}** role will not be allowed to mention the **{role.Name}** role.");
 		}
 
 		[Command("removeroleping")]
 		[RequireGuildOwner]
-		public async Task RemoveRoleToRoleMention(string roleNotAllowedToMention, string role)
+		public async Task RemoveRoleToRoleMention(string roleToChangeName, string roleAllowedToMentionName)
 		{
-			if ((Global.GetGuildRole(Context.Guild, roleNotAllowedToMention) == null) ||
-			    (Global.GetGuildRole(Context.Guild, role) == null))
+			SocketRole roleNotToMention = Global.GetGuildRole(Context.Guild, roleToChangeName);
+			SocketRole role = Global.GetGuildRole(Context.Guild, roleAllowedToMentionName);
+
+			if(roleNotToMention == null || role == null)
 			{
 				await Context.Channel.SendMessageAsync(
-					$"Either the **{roleNotAllowedToMention}** role doesn't exist or the **{role}** role doesn't exist!");
+					$"Either the **{roleToChangeName}** role doesn't exist or the **{roleAllowedToMentionName}** role doesn't exist!");
 				return;
 			}
 
 			GlobalServerList server = ServerLists.GetServer(Context.Guild);
-			List<RoleToRoleMention> roleToRoleMentionsWithRole = server.GetRoleToRoleMention(role);
+			List<RoleToRoleMention> roleToRoleMentionsWithRole = server.GetRoleToRoleMention(role.Id);
 
 			if (roleToRoleMentionsWithRole.Count == 0)
 			{
@@ -124,11 +128,11 @@ namespace Pootis_Bot.Modules.Server
 			foreach (RoleToRoleMention roleMention in roleToRoleMentionsWithRole)
 			{
 				//We found it
-				if (roleMention.RoleNotToMention == roleNotAllowedToMention)
+				if (roleMention.RoleNotToMentionId == roleNotToMention.Id)
 				{
 					server.RoleToRoleMentions.Remove(roleMention);
 					await Context.Channel.SendMessageAsync(
-						$"The **{roleNotAllowedToMention}** role can now mention the **{role}** role.");
+						$"The **{roleNotToMention.Name}** role can now mention the **{role.Name}** role.");
 
 					ServerLists.SaveServerList();
 
@@ -136,7 +140,7 @@ namespace Pootis_Bot.Modules.Server
 				}
 
 				await Context.Channel.SendMessageAsync(
-					$"The **{roleNotAllowedToMention}** role can already mention the **{role}** role.");
+					$"The **{roleNotToMention.Name}** role can already mention the **{role}** role.");
 			}
 		}
 
@@ -147,10 +151,12 @@ namespace Pootis_Bot.Modules.Server
 			GlobalServerList server = ServerLists.GetServer(Context.Guild);
 
 			StringBuilder builder = new StringBuilder();
-			builder.Append("__**Role to Roles**__\n");
+			builder.Append("__**Role to Roles**__\n```");
 
 			foreach (RoleToRoleMention roleToRole in server.RoleToRoleMentions)
-				builder.Append($"{roleToRole.RoleNotToMention} x-> {roleToRole.Role}\n");
+				builder.Append($"{Global.GetGuildRole(Context.Guild, roleToRole.RoleNotToMentionId).Name} =====> {Global.GetGuildRole(Context.Guild, roleToRole.RoleId).Name}\n");
+
+			builder.Append("```");
 
 			await Context.Channel.SendMessageAsync(builder.ToString());
 		}

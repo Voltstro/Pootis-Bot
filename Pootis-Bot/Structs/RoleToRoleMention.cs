@@ -2,13 +2,13 @@
 {
 	public struct RoleToRoleMention
 	{
-		public string RoleNotToMention { get; set; }
-		public string Role { get; set; }
+		public ulong RoleNotToMentionId { get; set; }
+		public ulong RoleId { get; set; }
 
-		public RoleToRoleMention(string roleNotToMention, string role)
+		public RoleToRoleMention(ulong roleNotToMention, ulong role)
 		{
-			RoleNotToMention = roleNotToMention;
-			Role = role;
+			RoleNotToMentionId = roleNotToMention;
+			RoleId = role;
 		}
 	}
 }

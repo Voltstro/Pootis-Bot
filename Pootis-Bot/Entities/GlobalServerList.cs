@@ -100,10 +100,10 @@ namespace Pootis_Bot.Entities
 			return channelId;
 		}
 
-		public List<RoleToRoleMention> GetRoleToRoleMention(string role)
+		public List<RoleToRoleMention> GetRoleToRoleMention(ulong roleId)
 		{
 			IEnumerable<RoleToRoleMention> result = from a in RoleToRoleMentions
-				where a.Role == role
+				where a.RoleId == roleId
 				select a;
 
 
@@ -111,7 +111,7 @@ namespace Pootis_Bot.Entities
 			return roleToRoleMention;
 		}
 
-		public RoleToRoleMention CreateRoleToRoleMention(string roleNotMention, string role)
+		public RoleToRoleMention CreateRoleToRoleMention(ulong roleNotMention, ulong role)
 		{
 			RoleToRoleMention roleToRole = new RoleToRoleMention(roleNotMention, role);
 			RoleToRoleMentions.Add(roleToRole);

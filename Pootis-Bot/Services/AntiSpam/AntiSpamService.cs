@@ -77,7 +77,7 @@ namespace Pootis_Bot.Services.AntiSpam
 			foreach (SocketRole role in user.Roles)
 			{
 				foreach (RoleToRoleMention notToMentionRoles in server.RoleToRoleMentions)
-					if (role.Name == notToMentionRoles.RoleNotToMention)
+					if (role.Id == notToMentionRoles.RoleNotToMentionId)
 					{
 						message.DeleteAsync();
 
@@ -85,7 +85,7 @@ namespace Pootis_Bot.Services.AntiSpam
 						    server.AntiSpamSettings.RoleToRoleMentionWarnings)
 						{
 							message.Channel.SendMessageAsync(
-								$"Hey {user.Mention}, you have been pinging the **{notToMentionRoles.Role}** role, which you are not allowed to ping!\nWe though we would tell you now and a warning has been added to your account, for info see your profile.");
+								$"Hey {user.Mention}, you have been pinging the **{Global.GetGuildRole(user.Guild, notToMentionRoles.RoleId).Name}** role, which you are not allowed to ping!\nWe though we would tell you now and a warning has been added to your account, for info see your profile.");
 							serverAccount.Warnings++;
 							UserAccounts.SaveAccounts();
 						}
