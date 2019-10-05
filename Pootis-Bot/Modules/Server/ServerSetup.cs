@@ -230,27 +230,21 @@ namespace Pootis_Bot.Modules.Server
 
 					ServerLists.SaveServerList();
 
-					await Context.Channel.DeleteMessageAsync(Context.Message.Id);
+					await Context.Channel.SendMessageAsync(
+						$"The rule message was set to the message with the id of **{id}**.");
 				}
 				else
 				{
-					RestUserMessage message = await Context.Channel.SendMessageAsync("That message doesn't exist");
-					await Task.Delay(2500);
-					await message.DeleteAsync();
-					await Context.Channel.DeleteMessageAsync(Context.Message.Id);
+					await Context.Channel.SendMessageAsync("That message doesn't exist");
 				}
 			}
 			else
 			{
-				RestUserMessage message = await Context.Channel.SendMessageAsync("The rules message was disabled");
+				await Context.Channel.SendMessageAsync("The rules message was disabled");
 				GlobalServerList server = ServerLists.GetServer(Context.Guild);
 				server.RuleMessageId = 0;
 
 				ServerLists.SaveServerList();
-
-				await Task.Delay(2500);
-				await message.DeleteAsync();
-				await Context.Channel.DeleteMessageAsync(Context.Message.Id);
 			}
 		}
 
