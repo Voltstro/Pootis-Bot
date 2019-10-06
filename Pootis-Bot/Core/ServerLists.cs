@@ -2,6 +2,7 @@
 using System.Linq;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Core
 {
@@ -44,7 +45,7 @@ namespace Pootis_Bot.Core
 		private static GlobalServerList GetOrCreateServer(ulong id)
 		{
 			IEnumerable<GlobalServerList> result = from a in Servers
-				where a.ServerId == id
+				where a.GuildId == id
 				select a;
 
 			GlobalServerList server = result.FirstOrDefault();
@@ -56,9 +57,14 @@ namespace Pootis_Bot.Core
 		{
 			GlobalServerList newServer = new GlobalServerList
 			{
-				ServerId = id,
+				GuildId = id,
+				BannedChannels = new List<ulong>(),
+				CommandInfos = new List<GlobalServerList.CommandInfo>(),
+				RoleToRoleMentions = new List<RoleToRoleMention>(),
+				AutoVoiceChannels = new List<VoiceChannel>(),
+				ActiveAutoVoiceChannels = new List<ulong>(),
 				WelcomeMessageEnabled = false,
-				WelcomeChannel = 0,
+				WelcomeChannelId = 0,
 				WelcomeGoodbyeMessage = "Goodbye [user]. We hope you enjoyed your stay.",
 				WelcomeMessage =
 					"Hello [user]! Thanks for joining **[server]**. Please check out the rules first then enjoy your stay.",

@@ -39,7 +39,7 @@ namespace Pootis_Bot.Modules.Server
 			{
 				welcometitle = "<:Check:537572054266806292> Welcome Channel Enabled";
 				welocmedes =
-					$"Welcome channel is enabled and is set to the channel **{((SocketTextChannel) Context.Client.GetChannel(server.WelcomeChannel)).Name}**\n";
+					$"Welcome channel is enabled and is set to the channel **{((SocketTextChannel) Context.Client.GetChannel(server.WelcomeChannelId)).Name}**\n";
 			}
 
 			embed.AddField(welcometitle, welocmedes);
@@ -157,11 +157,11 @@ namespace Pootis_Bot.Modules.Server
 			{
 				if (channel == null)
 				{
-					if (Context.Client.GetChannel(server.WelcomeChannel) != null)
+					if (Context.Client.GetChannel(server.WelcomeChannelId) != null)
 					{
 						server.WelcomeMessageEnabled = true;
 						await Context.Channel.SendMessageAsync(
-							$"The welcome channel was enabled and set to {((SocketTextChannel) Context.Client.GetChannel(server.WelcomeChannel)).Mention}");
+							$"The welcome channel was enabled and set to {((SocketTextChannel) Context.Client.GetChannel(server.WelcomeChannelId)).Mention}");
 
 						ServerLists.SaveServerList();
 					}
@@ -175,7 +175,7 @@ namespace Pootis_Bot.Modules.Server
 				{
 					//Set the welcome channel to the imputed one
 					server.WelcomeMessageEnabled = true;
-					server.WelcomeChannel = channel.Id;
+					server.WelcomeChannelId = channel.Id;
 
 					ServerLists.SaveServerList();
 

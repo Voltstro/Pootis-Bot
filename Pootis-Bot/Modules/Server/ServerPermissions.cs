@@ -26,6 +26,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("perm")]
+		[Summary("Adds or removes command permission")]
 		[RequireGuildOwner]
 		public async Task Permission(string command, string subCmd, string role)
 		{
@@ -41,6 +42,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("getbannedchannels")]
+		[Summary("Gets all banned channels")]
 		[RequireGuildOwner]
 		public async Task GetBannedChannels()
 		{
@@ -54,28 +56,49 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("addbannedchannel")]
+		[Summary("Adds a banned channel")]
 		[RequireGuildOwner]
 		public async Task AddBannedChannel(SocketTextChannel channel)
 		{
-			ServerLists.GetServer(Context.Guild).GetOrCreateBannedChannel(channel.Id);
-			ServerLists.SaveServerList();
+			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			if (server.GetBannedChannel(channel.Id) == 0)
+			{
+				ServerLists.GetServer(Context.Guild).CreateBannedChannel(channel.Id);
+				ServerLists.SaveServerList();
 
-			await Context.Channel.SendMessageAsync(
-				$"Channel **{channel.Name}** has been added to the baned channels list for your server.");
+				await Context.Channel.SendMessageAsync(
+					$"Channel **{channel.Name}** has been added to the banned channels list for your server.");
+			}
+			else
+			{
+				await Context.Channel.SendMessageAsync(
+					$" Channel **{channel.Name}** is already apart of the banned channel list!");
+			}
 		}
 
 		[Command("removebannedchannel")]
+		[Summary("Removes a banned channel")]
 		[RequireGuildOwner]
 		public async Task RemoveBannedChannel(SocketTextChannel channel)
 		{
-			ServerLists.GetServer(Context.Guild).BannedChannels.Remove(channel.Id);
-			ServerLists.SaveServerList();
+			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			if (server.GetBannedChannel(channel.Id) != 0)
+			{
+				server.BannedChannels.Remove(channel.Id);
+				ServerLists.SaveServerList();
 
-			await Context.Channel.SendMessageAsync(
-				$"Channel **{channel.Name}** was removed from your server's baned channel list.");
+				await Context.Channel.SendMessageAsync(
+					$"Channel **{channel.Name}** was removed from the banned channel list.");
+			}
+			else
+			{
+				await Context.Channel.SendMessageAsync(
+					$"Channel **{channel.Name}** isn't apart of the banned channel list!");
+			}
 		}
 
 		[Command("addroleping")]
+		[Summary("Adds a role to role ping")]
 		[RequireGuildOwner]
 		public async Task AddRoleToRoleMention(string roleToChangeName, string roleToNotAllowToMention)
 		{
@@ -103,6 +126,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("removeroleping")]
+		[Summary("Removes a role to role ping")]
 		[RequireGuildOwner]
 		public async Task RemoveRoleToRoleMention(string roleToChangeName, string roleAllowedToMentionName)
 		{
@@ -145,6 +169,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("rolepings")]
+		[Summary("Gets all role to role pings")]
 		[RequireGuildOwner]
 		public async Task GetRolePings()
 		{

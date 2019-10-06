@@ -112,11 +112,11 @@ namespace Pootis_Bot.Core
 
 			foreach (GlobalServerList server in ServerLists.Servers)
 			{
-				if ((_client.GetChannel(server.WelcomeChannel) == null) && server.WelcomeMessageEnabled)
+				if ((_client.GetChannel(server.WelcomeChannelId) == null) && server.WelcomeMessageEnabled)
 				{
 					somethingChanged = true;
 
-					SocketGuild guild = _client.GetGuild(server.ServerId);
+					SocketGuild guild = _client.GetGuild(server.GuildId);
 					IDMChannel ownerDm = await guild.Owner.GetOrCreateDMChannelAsync();
 
 					await ownerDm.SendMessageAsync(
@@ -124,7 +124,7 @@ namespace Pootis_Bot.Core
 						$"You can enable it again with `{Global.BotPrefix}setupwelcomemessage` command and your existing message should stay.");
 
 					server.WelcomeMessageEnabled = false;
-					server.WelcomeChannel = 0;
+					server.WelcomeChannelId = 0;
 				}
 
 				//Check to see if all the active channels don't have someone in it.
@@ -140,7 +140,7 @@ namespace Pootis_Bot.Core
 
 				//Check to see if all the auto voice channels are there
 				List<VoiceChannel> deleteAutoChannels = new List<VoiceChannel>();
-				foreach (VoiceChannel autoChannel in server.VoiceChannels.Where(autoChannel =>
+				foreach (VoiceChannel autoChannel in server.AutoVoiceChannels.Where(autoChannel =>
 					_client.GetChannel(autoChannel.Id) == null))
 				{
 					deleteAutoChannels.Add(autoChannel);
@@ -151,7 +151,7 @@ namespace Pootis_Bot.Core
 				foreach (ulong activeChannel in deleteActiveChannels)
 					server.ActiveAutoVoiceChannels.Remove(activeChannel);
 
-				foreach (VoiceChannel autoChannel in deleteAutoChannels) server.VoiceChannels.Remove(autoChannel);
+				foreach (VoiceChannel autoChannel in deleteAutoChannels) server.AutoVoiceChannels.Remove(autoChannel);
 			}
 
 			//If a server was updated then save the ServerList.json file

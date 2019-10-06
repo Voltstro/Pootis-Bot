@@ -25,7 +25,7 @@ namespace Pootis_Bot.Modules.Audio
 
 			VoiceChannel voiceChannel = new VoiceChannel(channel.Id, baseName);
 
-			ServerLists.GetServer((SocketGuild) Context.Guild).VoiceChannels.Add(voiceChannel);
+			ServerLists.GetServer((SocketGuild) Context.Guild).AutoVoiceChannels.Add(voiceChannel);
 			ServerLists.SaveServerList();
 		}
 	}

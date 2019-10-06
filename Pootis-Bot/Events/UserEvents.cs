@@ -41,7 +41,7 @@ namespace Pootis_Bot.Events
 					string addServerName = addUserMention.Replace("[server]", user.Guild.Name);
 
 					//Welcomes the new user with the server's message
-					if (_client.GetChannel(server.WelcomeChannel) is SocketTextChannel channel)
+					if (_client.GetChannel(server.WelcomeChannelId) is SocketTextChannel channel)
 						await channel.SendMessageAsync(addServerName);
 				}
 			}
@@ -63,7 +63,7 @@ namespace Pootis_Bot.Events
 					string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
 
 					//Get the welcome channel and send the message
-					if (_client.GetChannel(server.WelcomeChannel) is SocketTextChannel channel)
+					if (_client.GetChannel(server.WelcomeChannelId) is SocketTextChannel channel)
 						await channel.SendMessageAsync(addUserMention);
 				}
 			}
@@ -77,7 +77,7 @@ namespace Pootis_Bot.Events
 			//If we are adding an auto voice channel
 			if (after.VoiceChannel != null)
 			{
-				VoiceChannel voiceChannel = server.GetVoiceChannel(after.VoiceChannel.Id);
+				VoiceChannel voiceChannel = server.GetAutoVoiceChannel(after.VoiceChannel.Id);
 				if (voiceChannel.Name != null)
 				{
 					RestVoiceChannel createdChannel =

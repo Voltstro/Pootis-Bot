@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -48,19 +49,19 @@ namespace Pootis_Bot.Services
 				{
 					GlobalServerList.CommandInfo item = new GlobalServerList.CommandInfo
 					{
-						Command = command
+						Command = command,
+						Roles = new List<string> { role }
 					};
-					item.Roles.Add(role);
 
 					server.CommandInfos.Add(item);
 
-					await channel.SendMessageAsync($"The role **{role}** was added to the command **{command}**.");
+					await channel.SendMessageAsync($"The role **{role}** will be allowed to use the command **{command}**.");
 				}
 				else // The command already exist, add it to the list of roles.
 				{
 					server.GetCommandInfo(command).Roles.Add(role);
 
-					await channel.SendMessageAsync($"The role **{role}** was added to the command **{command}**.");
+					await channel.SendMessageAsync($"The role **{role}** will be allowed to use the command **{command}**.");
 				}
 
 				ServerLists.SaveServerList();
