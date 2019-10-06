@@ -82,13 +82,7 @@ namespace Pootis_Bot.Events
 					RestVoiceChannel createdChannel =
 						await after.VoiceChannel.Guild.CreateVoiceChannelAsync($"New {voiceChannel.Name} chat");
 
-					int count = server.ActiveAutoVoiceChannels.Count + 1;
-					await createdChannel.ModifyAsync(x =>
-					{
-						x.Bitrate = after.VoiceChannel.Bitrate;
-						x.Name = voiceChannel.Name + " #" + count;
-						x.CategoryId = after.VoiceChannel.CategoryId;
-					});
+					await AutoVcChannelCreate.SetupChannel(createdChannel,  after.VoiceChannel, voiceChannel, server);
 
 					//Move the user who created the channel to the new channel
 					await ((SocketGuildUser) user).ModifyAsync(x => { x.ChannelId = createdChannel.Id; });
