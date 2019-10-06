@@ -112,6 +112,12 @@ namespace Pootis_Bot.Core
 				{
 					Global.Log(result.ErrorReason, ConsoleColor.Red);
 					await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");
+
+					if (Config.bot.ReportErrorsToOwner)
+					{
+						await Global.BotOwner.SendMessageAsync(
+							$"ERROR: {result.ErrorReason}");
+					}
 				}
 			}
 			else

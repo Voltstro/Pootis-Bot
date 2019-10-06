@@ -77,7 +77,6 @@ namespace Pootis_Bot.Core
 				}
 			};
 
-
 			Servers.Add(newServer);
 			SaveServerList();
 			return newServer;

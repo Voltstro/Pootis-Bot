@@ -26,6 +26,11 @@ namespace Pootis_Bot.Entities
 		public string BotToken = "";
 
 		/// <summary>
+		/// Reports errors to the bot owner
+		/// </summary>
+		public bool ReportErrorsToOwner = false;
+
+		/// <summary>
 		/// Who's stream should the bot show when set in streaming mode
 		/// </summary>
 		public string TwitchStreamingSite = "https://www.twitch.tv/creepysin";

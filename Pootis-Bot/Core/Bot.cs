@@ -53,6 +53,9 @@ namespace Pootis_Bot.Core
 			//Install all the Modules
 			await handler.InstallCommandsAsync();
 
+			//Bot owner
+			Global.BotOwner = (await _client.GetApplicationInfoAsync()).Owner;
+
 			//Set the bot status to the default game status
 			await _client.SetGameAsync(_gameStatus);
 			await CheckConnectionStatus();

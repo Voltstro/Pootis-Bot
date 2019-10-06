@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
 using Discord.WebSocket;
 
 namespace Pootis_Bot.Core
@@ -43,6 +44,11 @@ namespace Pootis_Bot.Core
 		public static string BotName;
 		public static string BotPrefix;
 		public static string BotToken;
+
+		/// <summary>
+		/// The bot owner account
+		/// </summary>
+		public static IUser BotOwner;
 
 		/// <summary>
 		/// Logs a message to the console

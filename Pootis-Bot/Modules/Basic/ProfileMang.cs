@@ -90,6 +90,9 @@ namespace Pootis_Bot.Modules.Basic
 
 			embed.WithFooter(account.ProfileMsg, Context.User.GetAvatarUrl());
 
+			if (Context.User.Id == Global.BotOwner.Id)
+				embed.WithDescription($":crown: {Global.BotName} owner!");
+
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
 
@@ -105,7 +108,7 @@ namespace Pootis_Bot.Modules.Basic
 			}
 
 			//This will get the user's main role
-			IReadOnlyCollection<SocketRole> roles = ((SocketGuildUser) Context.User).Roles;
+			IReadOnlyCollection<SocketRole> roles = user.Roles;
 			List<SocketRole> sortedRoles = roles.OrderByDescending(o => o.Position).ToList();
 			SocketRole userMainRole = sortedRoles.First();
 
@@ -129,6 +132,9 @@ namespace Pootis_Bot.Modules.Basic
 			embed.WithColor(userMainRole.Color);
 
 			embed.WithFooter(account.ProfileMsg, user.GetAvatarUrl());
+
+			if (user.Id == Global.BotOwner.Id)
+				embed.WithDescription($":crown: {Global.BotName} owner!");
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
