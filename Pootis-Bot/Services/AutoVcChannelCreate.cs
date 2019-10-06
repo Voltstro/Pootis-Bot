@@ -2,8 +2,9 @@
 using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Structs;
 
-namespace Pootis_Bot.Structs
+namespace Pootis_Bot.Services
 {
 	public class AutoVcChannelCreate
 	{

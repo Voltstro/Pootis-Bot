@@ -5,6 +5,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Structs;
 
