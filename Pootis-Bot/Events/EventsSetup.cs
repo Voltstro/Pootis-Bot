@@ -23,6 +23,11 @@ namespace Pootis_Bot.Events
 			ReactionEvents reactionEvents = new ReactionEvents();
 			client.ReactionAdded += reactionEvents.ReactionAdded;
 
+			//Role events
+			RoleEvents roleEvents = new RoleEvents();
+			client.RoleDeleted += roleEvents.RoleDeleted;
+			client.RoleUpdated += roleEvents.RoleUpdated;
+
 			//User Related Events
 			UserEvents userEvents = new UserEvents(client);
 			client.UserJoined += userEvents.UserJoined;

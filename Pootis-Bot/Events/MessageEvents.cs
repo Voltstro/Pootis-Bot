@@ -25,7 +25,7 @@ namespace Pootis_Bot.Events
 
 				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
 				await dm.SendMessageAsync($"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the message being deleted.\n" +
-				                          $"You can enable it again after setting setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");
+				                          $"You can enable it again after setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");
 			}
 		}
 
