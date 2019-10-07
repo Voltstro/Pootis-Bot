@@ -28,7 +28,12 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Reports errors to the bot owner
 		/// </summary>
-		public bool ReportErrorsToOwner = false;
+		public bool ReportErrorsToOwner = true;
+
+		/// <summary>
+		/// Reports events such as when the bot joins/leaves a guild
+		/// </summary>
+		public bool ReportGuildEventsToOwner = true;
 
 		/// <summary>
 		/// Who's stream should the bot show when set in streaming mode

@@ -33,6 +33,15 @@ namespace Pootis_Bot.Events
 			IDMChannel owner = await guild.Owner.GetOrCreateDMChannelAsync();
 			await owner.SendMessageAsync(
 				$"Thanks for using {Global.BotName}! Check out {Global.websiteServerSetup} on how to setup {Global.BotName} for your server.");
+
+			if(Config.bot.ReportGuildEventsToOwner)
+				await Global.BotOwner.SendMessageAsync($"LOG: Joined guild {guild.Name}({guild.Id})");
+		}
+
+		public async Task LeftServer(SocketGuild guild)
+		{
+			if(Config.bot.ReportGuildEventsToOwner)
+				await Global.BotOwner.SendMessageAsync($"LOG: Left guild {guild.Name}({guild.Id})");
 		}
 	}
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using Newtonsoft.Json.Converters;
 using Pootis_Bot.Core;
-using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Modules.BotOwner
 {
@@ -36,6 +33,34 @@ namespace Pootis_Bot.Modules.BotOwner
 
 			await Context.Channel.SendMessageAsync(
 				$"**{user.Username}** had {amount} xp removed. They are now have {UserAccounts.GetAccount(user).Xp} xp in total.");
+		}
+
+		[Command("leaveguild")]
+		[Summary("Forces the bot to leave a guild")]
+		[RequireOwner]
+		public async Task LeaveGuild(ulong guildId)
+		{
+			await Context.Client.GetGuild(guildId).LeaveAsync();
+		}
+
+		[Command("guildlist")]
+		[Alias("guilds", "servers", "allguilds")]
+		[Summary("Sets a list of all the guilds the bot is in")]
+		[RequireOwner]
+		public async Task GuildList()
+		{
+			SocketGuild[] guilds = Context.Client.Guilds.ToArray();
+			StringBuilder sb = new StringBuilder();
+			sb.Append($"__**Guilds that {Global.BotName} is in**__\n```csharp\n");
+
+			foreach (SocketGuild guild in guilds)
+			{
+				sb.Append($" # {guild.Name}\n  └ ID: {guild.Id}\n  └ Member Count: {guild.MemberCount}");
+			}
+
+			sb.Append("```");
+
+			await Context.Channel.SendMessageAsync(sb.ToString());
 		}
 	}
 }

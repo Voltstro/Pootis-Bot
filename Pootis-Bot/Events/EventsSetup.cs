@@ -13,6 +13,7 @@ namespace Pootis_Bot.Events
 			//Guild events
 			GuildEvents guildEvents = new GuildEvents();
 			client.JoinedGuild += guildEvents.JoinedNewServer;
+			client.LeftGuild += guildEvents.LeftServer;
 
 			//Message events
 			MessageEvents messageEvents = new MessageEvents();
