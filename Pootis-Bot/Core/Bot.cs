@@ -8,6 +8,7 @@ using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Events;
+using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Structs;
 
@@ -64,7 +65,7 @@ namespace Pootis_Bot.Core
 		private async Task BotReady()
 		{
 			//Check the current connected server settings
-			await CheckConnectedServerSettings();
+			await BotCheckServerSettings.CheckConnectedServerSettings(_client);
 			Global.Log("Bot is now ready and online!");
 
 			ConsoleInput();
@@ -107,62 +108,6 @@ namespace Pootis_Bot.Core
 				}
 		}
 
-		private async Task CheckConnectedServerSettings()
-		{
-			Global.Log("Checking pre-connected server settings...");
-
-			bool somethingChanged = false;
-
-			foreach (GlobalServerList server in ServerLists.Servers)
-			{
-				if ((_client.GetChannel(server.WelcomeChannelId) == null) && server.WelcomeMessageEnabled)
-				{
-					somethingChanged = true;
-
-					SocketGuild guild = _client.GetGuild(server.GuildId);
-					IDMChannel ownerDm = await guild.Owner.GetOrCreateDMChannelAsync();
-
-					await ownerDm.SendMessageAsync(
-						$"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +
-						$"You can enable it again with `{Global.BotPrefix}setupwelcomemessage` command and your existing message should stay.");
-
-					server.WelcomeMessageEnabled = false;
-					server.WelcomeChannelId = 0;
-				}
-
-				//Check to see if all the active channels don't have someone in it.
-				List<ulong> deleteActiveChannels = new List<ulong>();
-
-				foreach (ulong activeChannel in server.ActiveAutoVoiceChannels.Where(activeChannel =>
-					_client.GetChannel(activeChannel).Users.Count == 0))
-				{
-					await ((SocketVoiceChannel) _client.GetChannel(activeChannel)).DeleteAsync();
-					deleteActiveChannels.Add(activeChannel);
-					somethingChanged = true;
-				}
-
-				//Check to see if all the auto voice channels are there
-				List<VoiceChannel> deleteAutoChannels = new List<VoiceChannel>();
-				foreach (VoiceChannel autoChannel in server.AutoVoiceChannels.Where(autoChannel =>
-					_client.GetChannel(autoChannel.Id) == null))
-				{
-					deleteAutoChannels.Add(autoChannel);
-					somethingChanged = true;
-				}
-
-				//To avoid System.InvalidOperationException remove all of the objects from the list after
-				foreach (ulong activeChannel in deleteActiveChannels)
-					server.ActiveAutoVoiceChannels.Remove(activeChannel);
-
-				foreach (VoiceChannel autoChannel in deleteAutoChannels) server.AutoVoiceChannels.Remove(autoChannel);
-			}
-
-			//If a server was updated then save the ServerList.json file
-			if (somethingChanged)
-				ServerLists.SaveServerList();
-			else
-				Global.Log("All servers are good!");
-		}
 
 		private async void ConsoleInput()
 		{
