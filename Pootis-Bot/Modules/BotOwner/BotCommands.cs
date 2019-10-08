@@ -40,7 +40,13 @@ namespace Pootis_Bot.Modules.BotOwner
 		[RequireOwner]
 		public async Task LeaveGuild(ulong guildId)
 		{
-			await Context.Client.GetGuild(guildId).LeaveAsync();
+			SocketGuild guild = Context.Client.GetGuild(guildId);
+
+			//Make sure the bot is in a guild with the provided guildId.
+			if(guild != null)
+				await guild.LeaveAsync();
+			else
+				await Context.Channel.SendMessageAsync($"The bot isn't in a guild with the id of {guildId}!");
 		}
 
 		[Command("guildlist")]
