@@ -2,6 +2,7 @@
 using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Events
 {
@@ -34,12 +35,20 @@ namespace Pootis_Bot.Events
 			await owner.SendMessageAsync(
 				$"Thanks for using {Global.BotName}! Check out {Global.websiteServerSetup} on how to setup {Global.BotName} for your server.");
 
+			//Log that the bot joined a new guild, if enabled
 			if(Config.bot.ReportGuildEventsToOwner)
 				await Global.BotOwner.SendMessageAsync($"LOG: Joined guild {guild.Name}({guild.Id})");
 		}
 
 		public async Task LeftServer(SocketGuild guild)
 		{
+			//Remove the server settings from the serverlist.json file
+			GlobalServerList server = ServerLists.GetServer(guild);
+			ServerLists.Servers.Remove(server);
+
+			ServerLists.SaveServerList();
+
+			//Log that the bot left a guild, if enabled
 			if(Config.bot.ReportGuildEventsToOwner)
 				await Global.BotOwner.SendMessageAsync($"LOG: Left guild {guild.Name}({guild.Id})");
 		}
