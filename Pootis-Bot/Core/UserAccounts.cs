@@ -39,32 +39,36 @@ namespace Pootis_Bot.Core
 		/// <returns></returns>
 		public static GlobalUserAccount GetAccount(SocketGuildUser user)
 		{
-			return GetOrCreateAccount(user.Id, user);
+			return GetOrCreateAccount(user);
 		}
 
-		private static GlobalUserAccount GetOrCreateAccount(ulong id, SocketGuildUser user)
+		private static GlobalUserAccount GetOrCreateAccount(SocketGuildUser user)
 		{
 			IEnumerable<GlobalUserAccount> result = from a in Accounts
-				where a.Id == id
+				where a.Id == user.Id
 				select a;
 
 			GlobalUserAccount account = result.FirstOrDefault();
-			if (account == null) account = CreateUserAccount(id, user);
+			if (account == null) account = CreateUserAccount(user);
 			return account;
 		}
 
-		private static GlobalUserAccount CreateUserAccount(ulong id, SocketGuildUser user)
+		private static GlobalUserAccount CreateUserAccount(SocketGuildUser user)
 		{
 			GlobalUserAccount newAccount = new GlobalUserAccount
 			{
-				Id = id,
-				Xp = 0
+				Id = user.Id,
+				Xp = 0,
+				ProfileMsg = null,
+				Servers = new List<GlobalUserAccount.GlobalUserAccountServer>()
 			};
 
+			//Lets add the server that we are creating the account on
 			newAccount.GetOrCreateServer(user.Guild.Id);
 
 			Accounts.Add(newAccount);
 			SaveAccounts();
+
 			return newAccount;
 		}
 
