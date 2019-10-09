@@ -15,7 +15,7 @@ namespace Pootis_Bot.Events
 	{
 		public Task ChannelDestroyed(SocketChannel channel)
 		{
-			GlobalServerList serverList = ServerLists.GetServer(((SocketGuildChannel) channel).Guild);
+			ServerList serverList = ServerLists.GetServer(((SocketGuildChannel) channel).Guild);
 			VoiceChannel voiceChannel = serverList.GetAutoVoiceChannel(channel.Id);
 
 			List<ulong> activeVcsToRemove = serverList.ActiveAutoVoiceChannels.Where(activeVcs => activeVcs == channel.Id).ToList();

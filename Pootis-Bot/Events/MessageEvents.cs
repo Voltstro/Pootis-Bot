@@ -15,7 +15,7 @@ namespace Pootis_Bot.Events
 		public async Task MessageDeleted(Cacheable<IMessage, ulong> cache, ISocketMessageChannel channel)
 		{
 			SocketGuild guild = ((SocketGuildChannel) channel).Guild;
-			GlobalServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerLists.GetServer(guild);
 			if (cache.Id == server.RuleMessageId)
 			{
 				//The rule reaction will be disabled and the owner of the guild will be notified.
@@ -32,7 +32,7 @@ namespace Pootis_Bot.Events
 		public async Task MessageBulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> cacheable, ISocketMessageChannel channel)
 		{
 			SocketGuild guild = ((SocketGuildChannel) channel).Guild;
-			GlobalServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerLists.GetServer(guild);
 
 			//Depending on how many message were deleted, this could take awhile. Or well I assume that, it would need to be tested
 			foreach (Cacheable<IMessage, ulong> cache in cacheable)

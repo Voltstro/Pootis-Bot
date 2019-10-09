@@ -9,7 +9,7 @@ namespace Pootis_Bot.Core
 	public static class UserAccounts
 	{
 		private const string AccountsFile = "Resources/accounts.json";
-		private static readonly List<GlobalUserAccount> Accounts;
+		private static readonly List<UserAccount> Accounts;
 
 		static UserAccounts()
 		{
@@ -19,7 +19,7 @@ namespace Pootis_Bot.Core
 			}
 			else
 			{
-				Accounts = new List<GlobalUserAccount>();
+				Accounts = new List<UserAccount>();
 				SaveAccounts();
 			}
 		}
@@ -37,30 +37,30 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
-		public static GlobalUserAccount GetAccount(SocketGuildUser user)
+		public static UserAccount GetAccount(SocketGuildUser user)
 		{
 			return GetOrCreateAccount(user);
 		}
 
-		private static GlobalUserAccount GetOrCreateAccount(SocketGuildUser user)
+		private static UserAccount GetOrCreateAccount(SocketGuildUser user)
 		{
-			IEnumerable<GlobalUserAccount> result = from a in Accounts
+			IEnumerable<UserAccount> result = from a in Accounts
 				where a.Id == user.Id
 				select a;
 
-			GlobalUserAccount account = result.FirstOrDefault();
+			UserAccount account = result.FirstOrDefault();
 			if (account == null) account = CreateUserAccount(user);
 			return account;
 		}
 
-		private static GlobalUserAccount CreateUserAccount(SocketGuildUser user)
+		private static UserAccount CreateUserAccount(SocketGuildUser user)
 		{
-			GlobalUserAccount newAccount = new GlobalUserAccount
+			UserAccount newAccount = new UserAccount
 			{
 				Id = user.Id,
 				Xp = 0,
 				ProfileMsg = null,
-				Servers = new List<GlobalUserAccount.GlobalUserAccountServer>()
+				Servers = new List<UserAccount.GlobalUserAccountServer>()
 			};
 
 			//Lets add the server that we are creating the account on
@@ -77,7 +77,7 @@ namespace Pootis_Bot.Core
 			if (user.IsBot)
 				return;
 
-			GlobalUserAccount.GlobalUserAccountServer userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
+			UserAccount.GlobalUserAccountServer userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
 			if (userAccount.Warnings >= 3) await user.KickAsync("Was kicked due to having 3 warnings.");
 

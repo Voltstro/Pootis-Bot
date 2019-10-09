@@ -9,7 +9,7 @@ namespace Pootis_Bot.Core
 	public class ServerLists
 	{
 		private const string ServerListFile = "Resources/serverlist.json";
-		public static List<GlobalServerList> Servers;
+		public static List<ServerList> Servers;
 
 		static ServerLists()
 		{
@@ -19,7 +19,7 @@ namespace Pootis_Bot.Core
 			}
 			else
 			{
-				Servers = new List<GlobalServerList>();
+				Servers = new List<ServerList>();
 				SaveServerList();
 			}
 		}
@@ -37,29 +37,29 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		/// <param name="server"></param>
 		/// <returns></returns>
-		public static GlobalServerList GetServer(SocketGuild server)
+		public static ServerList GetServer(SocketGuild server)
 		{
 			return GetOrCreateServer(server.Id);
 		}
 
-		private static GlobalServerList GetOrCreateServer(ulong id)
+		private static ServerList GetOrCreateServer(ulong id)
 		{
-			IEnumerable<GlobalServerList> result = from a in Servers
+			IEnumerable<ServerList> result = from a in Servers
 				where a.GuildId == id
 				select a;
 
-			GlobalServerList server = result.FirstOrDefault();
+			ServerList server = result.FirstOrDefault();
 			if (server == null) server = CreateServer(id);
 			return server;
 		}
 
-		private static GlobalServerList CreateServer(ulong id)
+		private static ServerList CreateServer(ulong id)
 		{
-			GlobalServerList newServer = new GlobalServerList
+			ServerList newServer = new ServerList
 			{
 				GuildId = id,
 				BannedChannels = new List<ulong>(),
-				CommandInfos = new List<GlobalServerList.CommandInfo>(),
+				CommandInfos = new List<ServerList.CommandInfo>(),
 				RoleToRoleMentions = new List<RoleToRoleMention>(),
 				AutoVoiceChannels = new List<VoiceChannel>(),
 				ActiveAutoVoiceChannels = new List<ulong>(),
@@ -71,7 +71,7 @@ namespace Pootis_Bot.Core
 				RuleEnabled = false,
 				RuleRoleId = 0,
 				RuleMessageId = 0,
-				AntiSpamSettings = new GlobalServerList.AntiSpamSettingsInfo
+				AntiSpamSettings = new ServerList.AntiSpamSettingsInfo
 				{
 					RoleToRoleMentionWarnings = 3, MentionUsersPercentage = 45, MentionUserEnabled = true
 				}

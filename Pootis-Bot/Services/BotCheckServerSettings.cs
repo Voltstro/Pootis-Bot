@@ -18,9 +18,9 @@ namespace Pootis_Bot.Services
 			//To avoid saving possibly 100 times we will only save once if something has changed
 			bool somethingChanged = false;
 
-			List<GlobalServerList> serversToRemove = new List<GlobalServerList>();
+			List<ServerList> serversToRemove = new List<ServerList>();
 
-			foreach (GlobalServerList server in ServerLists.Servers)
+			foreach (ServerList server in ServerLists.Servers)
 			{
 				//The bot is not longer in this guild, remove it from the server settings
 				if (client.GetGuild(server.GuildId) == null)
@@ -73,7 +73,7 @@ namespace Pootis_Bot.Services
 			}
 
 			//Like all the other ones, we remove all the unnecessary servers after to avoid System.InvalidOperationException
-			foreach (GlobalServerList toRemove in serversToRemove)
+			foreach (ServerList toRemove in serversToRemove)
 			{
 				Global.Log($"The bot is not longer in the {toRemove.GuildId}, Removing server settings...");
 				ServerLists.Servers.Remove(toRemove);

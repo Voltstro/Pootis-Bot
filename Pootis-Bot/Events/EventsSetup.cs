@@ -33,6 +33,7 @@ namespace Pootis_Bot.Events
 			UserEvents userEvents = new UserEvents(client);
 			client.UserJoined += userEvents.UserJoined;
 			client.UserLeft += userEvents.UserLeft;
+			client.UserBanned += userEvents.UserBanned;
 			client.UserVoiceStateUpdated += userEvents.UserVoiceStateUpdated;
 		}
 	}

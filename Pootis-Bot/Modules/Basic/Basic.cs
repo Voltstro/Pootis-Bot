@@ -62,7 +62,7 @@ namespace Pootis_Bot.Modules.Basic
 		[Summary("Get the top 10 users in the server")]
 		public async Task Top10()
 		{
-			List<GlobalUserAccount> serverUsers = new List<GlobalUserAccount>();
+			List<UserAccount> serverUsers = new List<UserAccount>();
 			foreach (SocketGuildUser user in Context.Guild.Users)
 				if (!user.IsBot && !user.IsWebhook)
 					serverUsers.Add(UserAccounts.GetAccount(user));
@@ -74,7 +74,7 @@ namespace Pootis_Bot.Modules.Basic
 			format.Append("```csharp\n 📋 Top 10 Server User Position\n ========================\n");
 
 			int count = 1;
-			foreach (GlobalUserAccount user in serverUsers)
+			foreach (UserAccount user in serverUsers)
 			{
 				if (count > 10)
 					continue;
@@ -84,15 +84,15 @@ namespace Pootis_Bot.Modules.Basic
 				count++;
 			}
 
-			GlobalUserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			UserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser) Context.User);
 			format.Append(
 				$"\n------------------------\n 😊 Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
 			await Context.Channel.SendMessageAsync(format.ToString());
 		}
 
-		private class SortUserAccount : IComparer<GlobalUserAccount>
+		private class SortUserAccount : IComparer<UserAccount>
 		{
-			public int Compare(GlobalUserAccount x, GlobalUserAccount y)
+			public int Compare(UserAccount x, UserAccount y)
 			{
 				if ((y != null) && (x != null) && (x.LevelNumber > y.LevelNumber))
 					return 1;

@@ -40,14 +40,14 @@ namespace Pootis_Bot.Services
 				return;
 			}
 
-			GlobalServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerLists.GetServer(guild);
 
 			//Check too see if role exist
 			if (Global.GetGuildRole(guild, role) != null)
 			{
 				if (server.GetCommandInfo(command) == null) // Command doesn't exist, add it
 				{
-					GlobalServerList.CommandInfo item = new GlobalServerList.CommandInfo
+					ServerList.CommandInfo item = new ServerList.CommandInfo
 					{
 						Command = command,
 						Roles = new List<string> { role }
@@ -94,7 +94,7 @@ namespace Pootis_Bot.Services
 				return;
 			}
 
-			GlobalServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerLists.GetServer(guild);
 
 			//Check too see if role exist
 			if (Global.GetGuildRole(guild, role) != null)

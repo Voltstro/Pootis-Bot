@@ -17,7 +17,7 @@ namespace Pootis_Bot.Events
 			SocketReaction reaction)
 		{
 			SocketGuild guild = ((SocketGuildChannel) channel).Guild;
-			GlobalServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerLists.GetServer(guild);
 
 			if (reaction.MessageId == server.RuleMessageId) //Check to see if the reaction is on the right message
 			{

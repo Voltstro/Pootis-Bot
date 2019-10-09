@@ -43,7 +43,7 @@ namespace Pootis_Bot.Events
 		public async Task LeftServer(SocketGuild guild)
 		{
 			//Remove the server settings from the serverlist.json file
-			GlobalServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerLists.GetServer(guild);
 			ServerLists.Servers.Remove(server);
 
 			ServerLists.SaveServerList();

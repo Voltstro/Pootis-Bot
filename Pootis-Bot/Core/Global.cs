@@ -32,7 +32,7 @@ namespace Pootis_Bot.Core
 		public static readonly string[] discordServers =
 			{"https://discord.creepysin.com"};
 
-		public static readonly string version = "0.3.4";
+		public static readonly string version = "0.3.5";
 
 		public static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
 		                                             $"Created by Creepysin licensed under the MIT license. Visit {githubPage}/blob/master/LICENSE.md for more info.\n\n" +

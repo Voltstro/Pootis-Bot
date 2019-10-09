@@ -21,7 +21,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task Setup()
 		{
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			EmbedBuilder embed = new EmbedBuilder();
 
 			await Context.Channel.SendMessageAsync("Setup status was sent to your dms.");
@@ -86,7 +86,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task SetupSpam()
 		{
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			EmbedBuilder embed = new EmbedBuilder();
 
 			await Context.Channel.SendMessageAsync("Setup anti-spam status was sent to your dms.");
@@ -116,7 +116,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task ToggleMentionUserSpam()
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			server.AntiSpamSettings.MentionUserEnabled = !server.AntiSpamSettings.MentionUserEnabled;
 
 			ServerLists.SaveServerList();
@@ -129,7 +129,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task SetMentionUserThreshold(int threshold)
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			server.AntiSpamSettings.MentionUsersPercentage = threshold;
 
 			ServerLists.SaveServerList();
@@ -142,7 +142,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task ToggleWelcomeMessage([Remainder] SocketTextChannel channel = null)
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 
 			if (server.WelcomeMessageEnabled && (channel == null))
 			{
@@ -191,7 +191,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task SetupWelcomeMessage([Remainder] string message = "")
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			server.WelcomeMessage = message;
 
 			ServerLists.SaveServerList();
@@ -204,7 +204,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task SetupGoodbyeMessage([Remainder] string message = "")
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 
 			if (!string.IsNullOrWhiteSpace(message))
 				server.WelcomeGoodbyeMessage = message;
@@ -224,7 +224,7 @@ namespace Pootis_Bot.Modules.Server
 			{
 				if (Context.Channel.GetMessageAsync(id) != null)
 				{
-					GlobalServerList server = ServerLists.GetServer(Context.Guild);
+					ServerList server = ServerLists.GetServer(Context.Guild);
 					server.RuleMessageId = id;
 
 					ServerLists.SaveServerList();
@@ -240,7 +240,7 @@ namespace Pootis_Bot.Modules.Server
 			else
 			{
 				await Context.Channel.SendMessageAsync("The rules message was disabled");
-				GlobalServerList server = ServerLists.GetServer(Context.Guild);
+				ServerList server = ServerLists.GetServer(Context.Guild);
 				server.RuleMessageId = 0;
 
 				ServerLists.SaveServerList();
@@ -260,7 +260,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 			else
 			{
-				GlobalServerList server = ServerLists.GetServer(Context.Guild);
+				ServerList server = ServerLists.GetServer(Context.Guild);
 				server.RuleReactionEmoji = emoji;
 				ServerLists.SaveServerList();
 
@@ -274,7 +274,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task ToggleRuleReaction()
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 
 			//The rule reaction is enabled, disable it
 			if (server.RuleEnabled) 

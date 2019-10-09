@@ -15,7 +15,7 @@ namespace Pootis_Bot.Core
 
 		private const string ConfigVersion = "4";
 
-		public static readonly GlobalConfigFile bot = new GlobalConfigFile();
+		public static readonly ConfigFile bot = new ConfigFile();
 
 		static Config()
 		{
@@ -36,7 +36,7 @@ namespace Pootis_Bot.Core
 			{
 				string json =
 					File.ReadAllText(ConfigFolder + "/" + ConfigFile); //If it does exist then it continues like normal.
-				bot = JsonConvert.DeserializeObject<GlobalConfigFile>(json);
+				bot = JsonConvert.DeserializeObject<ConfigFile>(json);
 
 				if (string.IsNullOrWhiteSpace(bot.ConfigVersion) || (bot.ConfigVersion != ConfigVersion))
 				{
@@ -61,7 +61,7 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		public static void AddHelpModuleDefaults()
 		{
-			GlobalConfigFile.HelpModule basic = new GlobalConfigFile.HelpModule
+			ConfigFile.HelpModule basic = new ConfigFile.HelpModule
 			{
 				Group = "Basic"
 			};
@@ -70,7 +70,7 @@ namespace Pootis_Bot.Core
 
 			bot.HelpModules.Add(basic);
 
-			GlobalConfigFile.HelpModule utils = new GlobalConfigFile.HelpModule
+			ConfigFile.HelpModule utils = new ConfigFile.HelpModule
 			{
 				Group = "Utils"
 			};
@@ -78,7 +78,7 @@ namespace Pootis_Bot.Core
 
 			bot.HelpModules.Add(utils);
 
-			GlobalConfigFile.HelpModule fun = new GlobalConfigFile.HelpModule
+			ConfigFile.HelpModule fun = new ConfigFile.HelpModule
 			{
 				Group = "Fun"
 			};
@@ -89,7 +89,7 @@ namespace Pootis_Bot.Core
 
 			bot.HelpModules.Add(fun);
 
-			GlobalConfigFile.HelpModule audio = new GlobalConfigFile.HelpModule
+			ConfigFile.HelpModule audio = new ConfigFile.HelpModule
 			{
 				Group = "Audio"
 			};

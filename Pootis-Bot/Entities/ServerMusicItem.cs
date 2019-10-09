@@ -4,7 +4,7 @@ using Discord.WebSocket;
 
 namespace Pootis_Bot.Entities
 {
-	public class GlobalServerMusicItem
+	public class ServerMusicItem
 	{
 		/// <summary>
 		/// What is the ID of this Guild

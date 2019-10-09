@@ -4,7 +4,7 @@ using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Entities
 {
-	public class GlobalServerList
+	public class ServerList
 	{
 		/// <summary>
 		/// The id of the guild

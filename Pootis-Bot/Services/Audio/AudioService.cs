@@ -18,7 +18,7 @@ namespace Pootis_Bot.Services.Audio
 		private const string FfmpegLocation = "external/ffmpeg";
 		private const string MusicDir = "Music/";
 
-		public static readonly List<GlobalServerMusicItem> currentChannels = new List<GlobalServerMusicItem>();
+		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
 
 		/// <summary>
 		/// Joins a guild voice channel, and sends messages to a text channel on error
@@ -37,7 +37,7 @@ namespace Pootis_Bot.Services.Audio
 
 			IAudioClient audio = await target.ConnectAsync(); //Connect to the voice channel
 
-			GlobalServerMusicItem item = new GlobalServerMusicItem //Added it to the currentChannels list
+			ServerMusicItem item = new ServerMusicItem //Added it to the currentChannels list
 			{
 				GuildId = guild.Id,
 				IsPlaying = false,
@@ -59,7 +59,7 @@ namespace Pootis_Bot.Services.Audio
 		public async Task LeaveAudio(IGuild guild, IMessageChannel channel)
 		{
 			if (guild == null) return; //Check if guild is null
-			GlobalServerMusicItem serverList = GetMusicList(guild.Id);
+			ServerMusicItem serverList = GetMusicList(guild.Id);
 			if (serverList == null)
 			{
 				await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
@@ -93,7 +93,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		public async Task StopAudio(IGuild guild, IMessageChannel channel)
 		{
-			GlobalServerMusicItem serverList = GetMusicList(guild.Id);
+			ServerMusicItem serverList = GetMusicList(guild.Id);
 
 			if (serverList == null)
 			{
@@ -117,7 +117,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		public async Task SendAudio(IGuild guild, IMessageChannel channel, IVoiceChannel target, string search)
 		{
-			GlobalServerMusicItem serverList = GetMusicList(guild.Id);
+			ServerMusicItem serverList = GetMusicList(guild.Id);
 
 			if (serverList == null)
 			{
@@ -247,7 +247,7 @@ namespace Pootis_Bot.Services.Audio
 		{
 			if (guild == null) return; //Check guild if null
 
-			GlobalServerMusicItem musicList = GetMusicList(guild.Id);
+			ServerMusicItem musicList = GetMusicList(guild.Id);
 			if (musicList == null) return; //Check server list if it is null
 
 			musicList.IsPlaying = !musicList.IsPlaying; //Toggle pause status
@@ -289,13 +289,13 @@ namespace Pootis_Bot.Services.Audio
 
 		#region List Fuctions
 
-		private GlobalServerMusicItem GetMusicList(ulong guildid)
+		private ServerMusicItem GetMusicList(ulong guildid)
 		{
-			IEnumerable<GlobalServerMusicItem> result = from a in currentChannels
+			IEnumerable<ServerMusicItem> result = from a in currentChannels
 				where a.GuildId == guildid
 				select a;
 
-			GlobalServerMusicItem list = result.FirstOrDefault();
+			ServerMusicItem list = result.FirstOrDefault();
 			return list;
 		}
 

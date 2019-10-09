@@ -50,7 +50,7 @@ namespace Pootis_Bot.Modules.Basic
 
 			foreach (SocketGuildUser user in Context.Guild.Users)
 			{
-				GlobalUserAccount userAccount = UserAccounts.GetAccount(user);
+				UserAccount userAccount = UserAccounts.GetAccount(user);
 				if (userAccount.GetOrCreateServer(Context.Guild.Id).IsAccountNotWarnable)
 					builder.Append(user.Username + "\n");
 			}
@@ -69,8 +69,8 @@ namespace Pootis_Bot.Modules.Basic
 			SocketRole userMainRole = sortedRoles.First();
 
 			//Get the user's account and server data relating to the user
-			GlobalUserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
-			GlobalUserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
+			UserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			UserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
 
 			EmbedBuilder embed = new EmbedBuilder();
 
@@ -113,8 +113,8 @@ namespace Pootis_Bot.Modules.Basic
 			SocketRole userMainRole = sortedRoles.First();
 
 			//Get the user's account and server data relating to the user
-			GlobalUserAccount account = UserAccounts.GetAccount(user);
-			GlobalUserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
+			UserAccount account = UserAccounts.GetAccount(user);
+			UserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
 			EmbedBuilder embed = new EmbedBuilder();
 
 			string warningText = "No :sunglasses:";
@@ -143,7 +143,7 @@ namespace Pootis_Bot.Modules.Basic
 		[Summary("Set your profile public message (This is on any Discord server with the same Pootis-Bot!)")]
 		public async Task ProfileMsg([Remainder] string message = "")
 		{
-			GlobalUserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			UserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
 			account.ProfileMsg = message;
 			UserAccounts.SaveAccounts();
 
@@ -161,7 +161,7 @@ namespace Pootis_Bot.Modules.Basic
 				return "You can not change the warnable status of a bot!";
 
 			SocketGuildUser userGuild = (SocketGuildUser) user;
-			GlobalUserAccount.GlobalUserAccountServer userAccount =
+			UserAccount.GlobalUserAccountServer userAccount =
 				UserAccounts.GetAccount(userGuild).GetOrCreateServer(userGuild.Guild.Id);
 
 			if (userAccount.IsAccountNotWarnable) return $"**{userGuild}** is already not warnable.";
@@ -182,7 +182,7 @@ namespace Pootis_Bot.Modules.Basic
 
 			SocketGuildUser userguild = (SocketGuildUser) user;
 
-			GlobalUserAccount.GlobalUserAccountServer userAccount =
+			UserAccount.GlobalUserAccountServer userAccount =
 				UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 			if (userAccount.IsAccountNotWarnable == false) return $"**{user}** is already warnable.";
 
@@ -197,7 +197,7 @@ namespace Pootis_Bot.Modules.Basic
 				return "You cannot give a warning to a bot!";
 
 			SocketGuildUser userGuild = (SocketGuildUser) user;
-			GlobalUserAccount.GlobalUserAccountServer userAccount =
+			UserAccount.GlobalUserAccountServer userAccount =
 				UserAccounts.GetAccount(userGuild).GetOrCreateServer(userGuild.Guild.Id);
 
 			if (userAccount.IsAccountNotWarnable)

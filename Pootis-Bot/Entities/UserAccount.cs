@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Pootis_Bot.Entities
 {
-	public class GlobalUserAccount
+	public class UserAccount
 	{
 		/// <summary>
 		/// The id of the user

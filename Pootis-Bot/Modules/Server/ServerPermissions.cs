@@ -46,7 +46,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task GetBannedChannels()
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			StringBuilder final = new StringBuilder();
 			final.Append("**All banned channels**: \n");
 
@@ -60,7 +60,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task AddBannedChannel(SocketTextChannel channel)
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			if (server.GetBannedChannel(channel.Id) == 0)
 			{
 				ServerLists.GetServer(Context.Guild).CreateBannedChannel(channel.Id);
@@ -81,7 +81,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task RemoveBannedChannel(SocketTextChannel channel)
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			if (server.GetBannedChannel(channel.Id) != 0)
 			{
 				server.BannedChannels.Remove(channel.Id);
@@ -140,7 +140,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 			List<RoleToRoleMention> roleToRoleMentionsWithRole = server.GetRoleToRoleMention(role.Id);
 
 			if (roleToRoleMentionsWithRole.Count == 0)
@@ -173,7 +173,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task GetRolePings()
 		{
-			GlobalServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerLists.GetServer(Context.Guild);
 
 			StringBuilder builder = new StringBuilder();
 			builder.Append("__**Role to Roles**__\n```");

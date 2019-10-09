@@ -63,8 +63,8 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			GlobalUserAccount account = UserAccounts.GetAccount(user);
-			GlobalUserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
+			UserAccount account = UserAccounts.GetAccount(user);
+			UserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
 			accountServer.IsMuted = true;
 
 			UserAccounts.SaveAccounts();

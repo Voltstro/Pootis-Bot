@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -10,7 +8,6 @@ using Pootis_Bot.Entities;
 using Pootis_Bot.Events;
 using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
-using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Core
 {
@@ -124,7 +121,7 @@ namespace Pootis_Bot.Core
 
 						Global.Log("Shutting down...");
 						await _client.SetGameAsync("Bot shutting down");
-						foreach (GlobalServerMusicItem channel in AudioService.currentChannels)
+						foreach (ServerMusicItem channel in AudioService.currentChannels)
 							channel.AudioClient.Dispose();
 
 						await _client.LogoutAsync();
@@ -173,7 +170,7 @@ namespace Pootis_Bot.Core
 						break;
 					case "deletemusic":
 					{
-						foreach (GlobalServerMusicItem channel in AudioService.currentChannels)
+						foreach (ServerMusicItem channel in AudioService.currentChannels)
 							channel.AudioClient.Dispose();
 
 						Global.Log("Deleting music directory...", ConsoleColor.Blue);
@@ -203,7 +200,7 @@ namespace Pootis_Bot.Core
 					case "forceaudioupdate":
 					{
 						Global.Log("Updating audio files.", ConsoleColor.Blue);
-						foreach (GlobalServerMusicItem channel in AudioService.currentChannels)
+						foreach (ServerMusicItem channel in AudioService.currentChannels)
 							channel.AudioClient.Dispose();
 
 						await Task.Delay(1000);

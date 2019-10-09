@@ -13,7 +13,7 @@ namespace Pootis_Bot.Core
 		/// <param name="amount"></param>
 		public static async void UserSentMessage(SocketGuildUser user, SocketTextChannel channel, uint amount)
 		{
-			GlobalUserAccount userAccount = UserAccounts.GetAccount(user);
+			UserAccount userAccount = UserAccounts.GetAccount(user);
 			uint oldLevel = userAccount.LevelNumber;
 
 			//Nice one EternalClickbait...

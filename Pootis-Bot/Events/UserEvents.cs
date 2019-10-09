@@ -25,7 +25,7 @@ namespace Pootis_Bot.Events
 
 		public async Task UserJoined(SocketGuildUser user)
 		{
-			GlobalServerList server = ServerLists.GetServer(user.Guild);
+			ServerList server = ServerLists.GetServer(user.Guild);
 
 			if (!user.IsBot)
 			{
@@ -49,11 +49,11 @@ namespace Pootis_Bot.Events
 
 		public async Task UserLeft(SocketGuildUser user)
 		{
-			GlobalServerList server = ServerLists.GetServer(user.Guild);
+			ServerList server = ServerLists.GetServer(user.Guild);
 			if (!user.IsBot)
 			{
 				//Remove server data from account
-				GlobalUserAccount account = UserAccounts.GetAccount(user);
+				UserAccount account = UserAccounts.GetAccount(user);
 				account.Servers.Remove(account.GetOrCreateServer(user.Guild.Id));
 				UserAccounts.SaveAccounts();
 
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Events
 		public async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before,
 			SocketVoiceState after)
 		{
-			GlobalServerList server = ServerLists.GetServer(((SocketGuildUser) user).Guild);
+			ServerList server = ServerLists.GetServer(((SocketGuildUser) user).Guild);
 
 			//If we are adding an auto voice channel
 			if (after.VoiceChannel != null)
@@ -110,9 +110,9 @@ namespace Pootis_Bot.Events
 			//Only check channel user count if the audio services are enabled.
 			if (Config.bot.IsAudioServiceEnabled)
 			{
-				List<GlobalServerMusicItem> toRemove = new List<GlobalServerMusicItem>();
+				List<ServerMusicItem> toRemove = new List<ServerMusicItem>();
 
-				foreach (GlobalServerMusicItem channel in AudioService.currentChannels.Where(channel =>
+				foreach (ServerMusicItem channel in AudioService.currentChannels.Where(channel =>
 					channel.AudioChannel.Users.Count == 1))
 				{
 					//Stop ffmpeg if it is running
@@ -129,9 +129,14 @@ namespace Pootis_Bot.Events
 
 				//To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
 				if (toRemove.Count != 0)
-					foreach (GlobalServerMusicItem channel in toRemove)
+					foreach (ServerMusicItem channel in toRemove)
 						AudioService.currentChannels.Remove(channel);
 			}
+		}
+
+		public async Task UserBanned(SocketUser user, SocketGuild guild)
+		{
+			
 		}
 	}
 }

@@ -3,7 +3,7 @@ using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Entities
 {
-	public class GlobalConfigFile
+	public class ConfigFile
 	{
 		/// <summary>
 		/// The config version

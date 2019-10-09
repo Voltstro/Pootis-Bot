@@ -18,7 +18,7 @@ namespace Pootis_Bot.Services.AntiSpam
 		{
 			SocketGuildUser user = (SocketGuildUser) message.Author;
 
-			GlobalUserAccount.GlobalUserAccountServer serverAccount =
+			UserAccount.GlobalUserAccountServer serverAccount =
 				UserAccounts.GetAccount(user).GetOrCreateServer(guild.Id);
 
 			if (serverAccount.IsAccountNotWarnable)
@@ -61,7 +61,7 @@ namespace Pootis_Bot.Services.AntiSpam
 		/// <returns>Whether the user is allowed to do that action</returns>
 		public bool CheckRoleMentions(SocketUserMessage message, SocketGuildUser user)
 		{
-			GlobalUserAccount.GlobalUserAccountServer serverAccount =
+			UserAccount.GlobalUserAccountServer serverAccount =
 				UserAccounts.GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
 			if (serverAccount.IsAccountNotWarnable)
@@ -71,7 +71,7 @@ namespace Pootis_Bot.Services.AntiSpam
 			if (user.Id == user.Guild.OwnerId)
 				return false;
 
-			GlobalServerList server = ServerLists.GetServer(user.Guild);
+			ServerList server = ServerLists.GetServer(user.Guild);
 
 			//Go over each role a user has
 			foreach (SocketRole role in user.Roles)

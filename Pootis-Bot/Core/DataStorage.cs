@@ -12,7 +12,7 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		/// <param name="accounts">A list of all the user accounts to save</param>
 		/// <param name="filePath">Where to save the file</param>
-		public static void SaveUserAccounts(IEnumerable<GlobalUserAccount> accounts, string filePath)
+		public static void SaveUserAccounts(IEnumerable<UserAccount> accounts, string filePath)
 		{
 			string json = JsonConvert.SerializeObject(accounts, Formatting.Indented);
 			File.WriteAllText(filePath, json);
@@ -23,11 +23,11 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		/// <param name="filePath"></param>
 		/// <returns></returns>
-		public static IEnumerable<GlobalUserAccount> LoadUserAccounts(string filePath)
+		public static IEnumerable<UserAccount> LoadUserAccounts(string filePath)
 		{
 			if (!File.Exists(filePath)) return null;
 			string json = File.ReadAllText(filePath);
-			return JsonConvert.DeserializeObject<List<GlobalUserAccount>>(json);
+			return JsonConvert.DeserializeObject<List<UserAccount>>(json);
 		}
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		/// <param name="serverLists">A list of servers to save</param>
 		/// <param name="filePath">Where to save to</param>
-		public static void SaveServerList(IEnumerable<GlobalServerList> serverLists, string filePath)
+		public static void SaveServerList(IEnumerable<ServerList> serverLists, string filePath)
 		{
 			string json = JsonConvert.SerializeObject(serverLists, Formatting.Indented);
 			File.WriteAllText(filePath, json);
@@ -56,11 +56,11 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		/// <param name="filePath">The path to the server list json file</param>
 		/// <returns></returns>
-		public static IEnumerable<GlobalServerList> LoadServerList(string filePath)
+		public static IEnumerable<ServerList> LoadServerList(string filePath)
 		{
 			if (!File.Exists(filePath)) return null;
 			string json = File.ReadAllText(filePath);
-			return JsonConvert.DeserializeObject<List<GlobalServerList>>(json);
+			return JsonConvert.DeserializeObject<List<ServerList>>(json);
 		}
 	}
 }
