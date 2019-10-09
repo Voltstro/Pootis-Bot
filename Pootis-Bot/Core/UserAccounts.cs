@@ -60,7 +60,7 @@ namespace Pootis_Bot.Core
 				Id = user.Id,
 				Xp = 0,
 				ProfileMsg = null,
-				Servers = new List<UserAccount.GlobalUserAccountServer>()
+				Servers = new List<UserAccountServerData>()
 			};
 
 			//Lets add the server that we are creating the account on
@@ -77,7 +77,7 @@ namespace Pootis_Bot.Core
 			if (user.IsBot)
 				return;
 
-			UserAccount.GlobalUserAccountServer userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
+			UserAccountServerData userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
 			if (userAccount.Warnings >= 3) await user.KickAsync("Was kicked due to having 3 warnings.");
 

@@ -122,7 +122,7 @@ namespace Pootis_Bot.Core
 			}
 			else
 			{
-				UserAccount.GlobalUserAccountServer account = UserAccounts
+				UserAccountServerData account = UserAccounts
 					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
 				DateTime now = DateTime.Now;
 

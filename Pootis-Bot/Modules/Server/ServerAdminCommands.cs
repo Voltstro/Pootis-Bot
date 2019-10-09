@@ -64,7 +64,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 
 			UserAccount account = UserAccounts.GetAccount(user);
-			UserAccount.GlobalUserAccountServer accountServer = account.GetOrCreateServer(Context.Guild.Id);
+			UserAccountServerData accountServer = account.GetOrCreateServer(Context.Guild.Id);
 			accountServer.IsMuted = true;
 
 			UserAccounts.SaveAccounts();
