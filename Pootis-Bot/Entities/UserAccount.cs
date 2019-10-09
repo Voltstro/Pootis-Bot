@@ -25,7 +25,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Server specific data
 		/// </summary>
-		public List<GlobalUserAccountServer> Servers { get; set; }
+		public List<UserAccountServerData> Servers { get; set; }
 
 		/// <summary>
 		/// What level is the user on?
@@ -37,60 +37,28 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public GlobalUserAccountServer GetOrCreateServer(ulong id)
+		public UserAccountServerData GetOrCreateServer(ulong id)
 		{
-			IEnumerable<GlobalUserAccountServer> result = from a in Servers
+			IEnumerable<UserAccountServerData> result = from a in Servers
 				where a.ServerId == id
 				select a;
 
-			GlobalUserAccountServer server = result.FirstOrDefault() ?? CreateServer(id);
-			return server;
+			UserAccountServerData serverData = result.FirstOrDefault() ?? CreateServer(id);
+			return serverData;
 		}
 
-		private GlobalUserAccountServer CreateServer(ulong serverId)
+		private UserAccountServerData CreateServer(ulong serverId)
 		{
-			GlobalUserAccountServer serverItem = new GlobalUserAccountServer
+			UserAccountServerData serverDataItem = new UserAccountServerData
 			{
 				ServerId = serverId,
 				IsAccountNotWarnable = false,
 				Warnings = 0
 			};
 
-			Servers.Add(serverItem);
-			return serverItem;
+			Servers.Add(serverDataItem);
+			return serverDataItem;
 		}
 
-		public class GlobalUserAccountServer
-		{
-			/// <summary>
-			/// What is the ID of the server
-			/// </summary>
-			public ulong ServerId { get; set; }
-
-			/// <summary>
-			/// How many warnings does a user have on this server
-			/// </summary>
-			public int Warnings { get; set; }
-
-			/// <summary>
-			/// Is the account NOT warnable (if true the account cannot be warned)
-			/// </summary>
-			public bool IsAccountNotWarnable { get; set; }
-
-			/// <summary>
-			/// Is the user muted?
-			/// </summary>
-			public bool IsMuted { get; set; }
-
-			/// <summary>
-			/// What was their last level up time?
-			/// </summary>
-			[JsonIgnore] public DateTime LastLevelUpTime { get; set; }
-
-			/// <summary>
-			/// How many warnings has this user got from pinging a role they were not allowed to?
-			/// </summary>
-			[JsonIgnore] public int RoleToRoleMentionWarnings { get; set; }
-		}
 	}
 }

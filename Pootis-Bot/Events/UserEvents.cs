@@ -134,9 +134,17 @@ namespace Pootis_Bot.Events
 			}
 		}
 
-		public async Task UserBanned(SocketUser user, SocketGuild guild)
+		public Task UserBanned(SocketUser user, SocketGuild guild)
 		{
-			
+			//We remove the user's server data from the user account ONLY if they are banned since their chance of coming back if very low.
+			//If the data was deleted when they left/kicked they would also loose their warnings. I am sure you can see what the issue would be if we allowed that.
+
+			UserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser)user);
+			userAccount.Servers.Remove(userAccount.GetOrCreateServer(guild.Id));
+
+			UserAccounts.SaveAccounts();
+
+			return Task.CompletedTask;
 		}
 	}
 }
