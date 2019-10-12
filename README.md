@@ -12,35 +12,35 @@ Some current features that the bot can do. More feature are planed to be added
 
 - Multi Server Capabilities
 
-- Moderation 
+- Moderation
 
 - User Accounts
 
 - Leveling system
 
-- Music Service (Plays from YouTube)
+- Music Service (Downloads from YouTube)
 
 - Google, YouTube and Giphy search support
 
-- Rule reaction feature
+- [Rule reaction feature](https://pootis-bot.creepysin.com/server-setup/rulereaction/)
 
 - [Auto Voice Channels](https://pootis-bot.creepysin.com/server-setup/auto-vc/)
 
+- [Basic Anti-Spam features](https://pootis-bot.creepysin.com/server-setup/anti-spam/)
+
 ## Getting Started
 
-### If you just want to download the bot
+### Downloading A Full Pre-Compiled Version
 
 You can download a compiled version [here](https://pootis-bot.creepysin.com/download/all)!
 
-### Contributing or compiling the bot your self
+### Compiling Your Self
 
-These instructions will get you a copy of the project up and running on your local machine.
+1. Fork the project
 
-1. Fork and clone the project
+2. Clone your fork to your local machine
 
-2. Download it
-
-You can visit the [Pootis-Bot documentation](https://pootis-bot.creepysin.com/dev/building/) on how to build Pootis-Bot.
+Visit [Pootis-Bot documentation](https://pootis-bot.creepysin.com/dev/building/) which will show you how to use the powershell scripts or how to compile with the dotnet command.
 
 ## Authors
 
@@ -54,5 +54,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 * This is the first piece of software that I have publicly release, there are bound to be mistakes and pieces of code that aren't "professional" or whatever
 * The name 'Pootis-Bot' was suggested by my friend. Yes, I know what game it is from
-* The robot heavy icon is Valves
-* Thanks for Discord for being a general good chatting service
+* The robot Heavy icon is Valves
+* Thanks for Discord for generaly being awesome
