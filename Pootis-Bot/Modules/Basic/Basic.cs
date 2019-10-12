@@ -86,7 +86,7 @@ namespace Pootis_Bot.Modules.Basic
 
 			UserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser) Context.User);
 			format.Append(
-				$"\n------------------------\n 😊 Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
+				$"\n------------------------\n 😊 Your Position: {serverUsers.IndexOf(userAccount) + 1}      Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
 			await Context.Channel.SendMessageAsync(format.ToString());
 		}
 
