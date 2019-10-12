@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Fun;
 
 namespace Pootis_Bot.Modules.Fun
@@ -9,7 +10,7 @@ namespace Pootis_Bot.Modules.Fun
 	{
 		// Module Information
 		// Original Author   - Creepysin
-		// Description      - Uses the tronaldump api to get Tronal Dump quotes
+		// Description      - Uses the tronaldump api to get Tronald Dump quotes
 		// Contributors     - Creepysin, 
 
 		private readonly string trumpImageUrl = "https://assets.tronalddump.io/img/tronalddump_850x850.png";
@@ -17,10 +18,12 @@ namespace Pootis_Bot.Modules.Fun
 		[Command("tronald")]
 		[Summary("Search Donald Trump quotes")]
 		[Alias("tronalddump", "dump", "donald", "donaldtrump", "trump")]
+		[Cooldown(5)]
 		public async Task Tronald([Remainder] string subCmd = "random")
 		{
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithThumbnailUrl(trumpImageUrl);
+			embed.WithColor(FunCmdsConfig.trumpQuoteColor);
 
 			if (subCmd == "random")
 			{

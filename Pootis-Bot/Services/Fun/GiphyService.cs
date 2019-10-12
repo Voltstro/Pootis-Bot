@@ -24,8 +24,7 @@ namespace Pootis_Bot.Services.Fun
 					string input = search.Replace(" ", "+");
 
 					string json;
-					using (WebClient client = new WebClient()
-					) //Search the term using the giphy api. More about the api here: https://developers.giphy.com/docs/
+					using (WebClient client = new WebClient()) //Search the term using the giphy api. More about the api here: https://developers.giphy.com/docs/
 					{
 						json = client.DownloadString(
 							$"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.ApiGiphyKey}");

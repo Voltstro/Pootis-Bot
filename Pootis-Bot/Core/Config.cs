@@ -86,6 +86,7 @@ namespace Pootis_Bot.Core
 			fun.Modules.Add("GoogleSearch");
 			fun.Modules.Add("YoutubeSearch");
 			fun.Modules.Add("TronaldDump");
+			fun.Modules.Add("RandomPerson");
 
 			bot.HelpModules.Add(fun);
 
