@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Pootis_Bot.Entities;
@@ -48,7 +49,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Saves the config! DUH!
+		/// Saves the config, DUH!
 		/// </summary>
 		public static void SaveConfig()
 		{
@@ -63,39 +64,37 @@ namespace Pootis_Bot.Core
 		{
 			ConfigFile.HelpModule basic = new ConfigFile.HelpModule
 			{
-				Group = "Basic"
+				Group = "Basic",
+				Modules = new List<string> { "BasicCommands", "Misc" }
 			};
-			basic.Modules.Add("BasicCommands");
-			basic.Modules.Add("Misc");
-
 			bot.HelpModules.Add(basic);
 
 			ConfigFile.HelpModule utils = new ConfigFile.HelpModule
 			{
-				Group = "Utils"
+				Group = "Utils",
+				Modules = new List<string> { "Utils" }
 			};
-			utils.Modules.Add("Utils");
-
 			bot.HelpModules.Add(utils);
+
+			ConfigFile.HelpModule account = new ConfigFile.HelpModule
+			{
+				Group = "Account",
+				Modules = new List<string> { "AccountDataManagement", "AccountUtils" }
+			};
+			bot.HelpModules.Add(account);
 
 			ConfigFile.HelpModule fun = new ConfigFile.HelpModule
 			{
-				Group = "Fun"
+				Group = "Fun",
+				Modules = new List<string> {"GiphySearch", "GoogleSearch", "YoutubeSearch", "TronaldDump", "RandomPerson"}
 			};
-			fun.Modules.Add("GiphySearch");
-			fun.Modules.Add("GoogleSearch");
-			fun.Modules.Add("YoutubeSearch");
-			fun.Modules.Add("TronaldDump");
-			fun.Modules.Add("RandomPerson");
-
 			bot.HelpModules.Add(fun);
 
 			ConfigFile.HelpModule audio = new ConfigFile.HelpModule
 			{
-				Group = "Audio"
+				Group = "Audio",
+				Modules = new List<string> { "Music" }
 			};
-			audio.Modules.Add("Music");
-
 			bot.HelpModules.Add(audio);
 		}
 	}

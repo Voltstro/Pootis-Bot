@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,21 +29,31 @@ namespace Pootis_Bot.Modules.Basic
 		[Summary("Gets help")]
 		public async Task HelpCmd()
 		{
-			StringBuilder builder = new StringBuilder();
-			builder.Append(
-				$"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
-
-			//Basic Commands
-			foreach (ConfigFile.HelpModule helpModule in Config.bot.HelpModules)
+			try
 			{
-				builder.Append($"\n**{helpModule.Group}** - ");
-				foreach (string module in helpModule.Modules)
-				{
-					foreach (CommandInfo cmd in GetModule(module).Commands) builder.Append($"`{cmd.Name}` ");
-				}
-			}
+				StringBuilder builder = new StringBuilder();
+				builder.Append(
+					$"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
 
-			await Context.Channel.SendMessageAsync(builder.ToString());
+				//Basic Commands
+				foreach (ConfigFile.HelpModule helpModule in Config.bot.HelpModules)
+				{
+					builder.Append($"\n**{helpModule.Group}** - ");
+					foreach (string module in helpModule.Modules)
+					{
+						foreach (CommandInfo cmd in GetModule(module).Commands) builder.Append($"`{cmd.Name}` ");
+					}
+				}
+
+				await Context.Channel.SendMessageAsync(builder.ToString());
+			}
+			catch (NullReferenceException)
+			{
+				await Context.Channel.SendMessageAsync(
+					$"Sorry, but it looks like the bot owner doesn't have the help options configured correctly.\nVisit {Global.websiteCommands} for command list.");
+
+				Global.Log("The help options are configured incorrectly!", ConsoleColor.Red);
+			}
 		}
 
 		[Command("help")]

@@ -78,7 +78,7 @@ namespace Pootis_Bot.Entities
 		public class HelpModule
 		{
 			public string Group;
-			public List<string> Modules = new List<string>();
+			public List<string> Modules;
 		}
 	}
 }
