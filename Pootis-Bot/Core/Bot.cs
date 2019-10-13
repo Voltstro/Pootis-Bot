@@ -51,6 +51,9 @@ namespace Pootis_Bot.Core
 			//Install all the Modules
 			await handler.InstallCommandsAsync();
 
+			//Check all help modules
+			handler.CheckHelpModules();
+
 			//Bot owner
 			Global.BotOwner = (await _client.GetApplicationInfoAsync()).Owner;
 

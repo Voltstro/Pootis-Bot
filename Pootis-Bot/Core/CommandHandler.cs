@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services.AntiSpam;
 
@@ -15,12 +17,15 @@ namespace Pootis_Bot.Core
 		private readonly AntiSpamService _antiSpam;
 		private readonly DiscordSocketClient _client;
 		private readonly CommandService _commands;
+		private readonly IServiceProvider _services;
 
 		public CommandHandler(DiscordSocketClient client)
 		{
 			_commands = new CommandService();
 			_antiSpam = new AntiSpamService();
 			_client = client;
+
+			_services = new ServiceCollection().AddSingleton(this).BuildServiceProvider();
 		}
 
 		/// <summary>
@@ -31,7 +36,18 @@ namespace Pootis_Bot.Core
 		{
 			_client.MessageReceived += HandleCommandAsync;
 
-			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+		}
+
+		/// <summary>
+		/// Checks all the help modules in the config
+		/// </summary>
+		public void CheckHelpModules()
+		{
+			foreach (string module in Config.bot.HelpModules.SelectMany(helpModule => helpModule.Modules.Where(module => GetModule(module) == null)))
+			{
+				Global.Log($"There is no module called {module}! Reset the help modules or fix the help modules in the config file!", ConsoleColor.Red);
+			}
 		}
 
 		private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -95,7 +111,7 @@ namespace Pootis_Bot.Core
 				}
 
 				//Result
-				IResult result = await _commands.ExecuteAsync(context, argPos, null);
+				IResult result = await _commands.ExecuteAsync(context, argPos, _services);
 
 				//The command either had too little arguments or too many
 				if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
@@ -138,6 +154,21 @@ namespace Pootis_Bot.Core
 					account.LastLevelUpTime = now;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Get a modules
+		/// </summary>
+		/// <param name="moduleName"></param>
+		/// <returns></returns>
+		public ModuleInfo GetModule(string moduleName)
+		{
+			IEnumerable<ModuleInfo> result = from a in _commands.Modules
+				where a.Name == moduleName
+				select a;
+
+			ModuleInfo module = result.FirstOrDefault();
+			return module;
 		}
 	}
 }

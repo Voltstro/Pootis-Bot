@@ -18,10 +18,12 @@ namespace Pootis_Bot.Modules.Basic
 		// Contributors     - Creepysin, 
 
 		private readonly CommandService _cmdService;
+		private readonly CommandHandler _commandHandler;
 
-		public Help(CommandService commandService)
+		public Help(CommandService commandService, CommandHandler cmdHandler)
 		{
 			_cmdService = commandService;
+			_commandHandler = cmdHandler;
 		}
 
 		[Command("help")]
@@ -39,9 +41,9 @@ namespace Pootis_Bot.Modules.Basic
 				foreach (ConfigFile.HelpModule helpModule in Config.bot.HelpModules)
 				{
 					builder.Append($"\n**{helpModule.Group}** - ");
-					foreach (string module in helpModule.Modules)
+					foreach (CommandInfo cmd in helpModule.Modules.SelectMany(module => _commandHandler.GetModule(module).Commands))
 					{
-						foreach (CommandInfo cmd in GetModule(module).Commands) builder.Append($"`{cmd.Name}` ");
+						builder.Append($"`{cmd.Name}` ");
 					}
 				}
 
@@ -115,16 +117,6 @@ namespace Pootis_Bot.Modules.Basic
 			if (count != 0) format.Append("]");
 
 			return format.ToString();
-		}
-
-		private ModuleInfo GetModule(string moduleName)
-		{
-			IEnumerable<ModuleInfo> result = from a in _cmdService.Modules
-				where a.Name == moduleName
-				select a;
-
-			ModuleInfo module = result.FirstOrDefault();
-			return module;
 		}
 	}
 }
