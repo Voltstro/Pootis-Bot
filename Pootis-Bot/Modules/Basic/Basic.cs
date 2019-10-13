@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -60,6 +61,7 @@ namespace Pootis_Bot.Modules.Basic
 
 		[Command("top10")]
 		[Summary("Get the top 10 users in the server")]
+		[Cooldown(5)]
 		public async Task Top10()
 		{
 			List<UserAccount> serverUsers = new List<UserAccount>();
@@ -74,11 +76,8 @@ namespace Pootis_Bot.Modules.Basic
 			format.Append("```csharp\n 📋 Top 10 Server User Position\n ========================\n");
 
 			int count = 1;
-			foreach (UserAccount user in serverUsers)
+			foreach (UserAccount user in serverUsers.Where(user => count <= 10))
 			{
-				if (count > 10)
-					continue;
-
 				format.Append(
 					$"\n [{count}] -- # {Context.Client.GetUser(user.Id)}\n         └ Level: {user.LevelNumber}\n         └ Xp: {user.Xp}");
 				count++;
@@ -87,6 +86,35 @@ namespace Pootis_Bot.Modules.Basic
 			UserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser) Context.User);
 			format.Append(
 				$"\n------------------------\n 😊 Your Position: {serverUsers.IndexOf(userAccount) + 1}      Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
+
+			await Context.Channel.SendMessageAsync(format.ToString());
+		}
+
+		[Command("top10total", RunMode = RunMode.Async)]
+		[Summary("Gets the top user in Pootis-Bot")]
+		[Cooldown(10)]
+		public async Task Top10Total()
+		{
+			//Get all accounts Pootis-Bot has and sort them
+			List<UserAccount> totalUsers = UserAccounts.GetAllUserAccounts().ToList();
+			totalUsers.Sort(new SortUserAccount());
+			totalUsers.Reverse();
+
+			StringBuilder format = new StringBuilder();
+			format.Append("```csharp\n 📋 Top 10 Pootis-Bot Accounts\n ========================\n");
+
+			int count = 1;
+			foreach (UserAccount user in totalUsers.Where(user => count <= 10))
+			{
+				format.Append(
+					$"\n [{count}] -- # {Context.Client.GetUser(user.Id)}\n         └ Level: {user.LevelNumber}\n         └ Xp: {user.Xp}");
+				count++;
+			}
+
+			UserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			format.Append(
+				$"\n------------------------\n 😊 Your Position: {totalUsers.IndexOf(userAccount) + 1}      Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
+
 			await Context.Channel.SendMessageAsync(format.ToString());
 		}
 

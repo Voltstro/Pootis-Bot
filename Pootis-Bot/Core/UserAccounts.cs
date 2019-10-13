@@ -42,6 +42,11 @@ namespace Pootis_Bot.Core
 			return GetOrCreateAccount(user);
 		}
 
+		public static UserAccount[] GetAllUserAccounts()
+		{
+			return Accounts.ToArray();
+		}
+
 		private static UserAccount GetOrCreateAccount(SocketGuildUser user)
 		{
 			IEnumerable<UserAccount> result = from a in Accounts
