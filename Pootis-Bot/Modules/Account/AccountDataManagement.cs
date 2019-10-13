@@ -12,6 +12,11 @@ namespace Pootis_Bot.Modules.Account
 {
 	public class AccountDataManagement : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Allows users to manage their profile data
+		// Contributors     - Creepysin, HelloHowIsItGoing
+
 		[Command("requestdata")]
 		[Alias("getdata", "mydata")]
 		[Summary("Gets your profile data and DMs you it in a JSON file.")]

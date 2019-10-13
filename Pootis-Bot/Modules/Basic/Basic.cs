@@ -16,7 +16,7 @@ namespace Pootis_Bot.Modules.Basic
 		// Module Information
 		// Original Author   - Creepysin
 		// Description      - Basic, simple commands
-		// Contributors     - Creepysin, 
+		// Contributors     - Creepysin, HelloHowIsItGoing
 
 		[Command("hello")]
 		[Summary("Displays the 'hello' message")]
