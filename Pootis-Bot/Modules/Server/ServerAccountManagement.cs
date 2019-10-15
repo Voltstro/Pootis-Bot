@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -12,7 +10,11 @@ namespace Pootis_Bot.Modules.Server
 {
 	public class ServerAccountManagement : ModuleBase<SocketCommandContext>
 	{
-		
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Commands for server owners to manage user server data settings
+		// Contributors     - Creepysin, 
+
 		[Command("makenotwarnable")]
 		[Summary("Makes the user not warnable")]
 		public async Task NotWarnable([Remainder] IGuildUser user = null)
