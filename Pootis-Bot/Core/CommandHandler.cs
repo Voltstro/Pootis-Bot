@@ -129,10 +129,11 @@ namespace Pootis_Bot.Core
 					Global.Log(result.ErrorReason, ConsoleColor.Red);
 					await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");
 
+					//If the bot owner has ReportErrorsToOwner enabled we will give them a heads up about the error
 					if (Config.bot.ReportErrorsToOwner)
 					{
 						await Global.BotOwner.SendMessageAsync(
-							$"ERROR: {result.ErrorReason}");
+							$"ERROR: {result.ErrorReason}\nError occured while executing command `{msg.Content.Replace(Global.BotPrefix, "")}` on server '{context.Guild.Id}'.");
 					}
 				}
 			}

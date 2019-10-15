@@ -7,7 +7,7 @@ namespace Pootis_Bot.Modules.BotOwner
 {
 	public class BotThrowException : ModuleBase<SocketCommandContext>
 	{
-		[Command("thorwexception")]
+		[Command("throwexception")]
 		[Alias("throwexcept")]
 		[Summary("Makes the bot throw an exception")]
 		[RequireOwner]
