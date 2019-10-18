@@ -115,11 +115,21 @@ namespace Pootis_Bot.Events
 				foreach (ServerMusicItem channel in AudioService.currentChannels.Where(channel =>
 					channel.AudioChannel.Users.Count == 1))
 				{
-					//Stop ffmpeg if it is running
-					channel.FfMpeg?.Dispose();
+					channel.IsExit = true;
 
-					//Leave the audio channel
+					if (channel.FfMpeg != null)
+					{
+						channel.IsExit = true;
+						channel.FfMpeg.Kill();
+						channel.FfMpeg.Dispose();
+					}
+
+					//Just wait a moment
+					await Task.Delay(100);
+
 					await channel.AudioClient.StopAsync();
+
+					channel.IsPlaying = false;
 
 					await channel.StartChannel.SendMessageAsync(
 						":musical_note: Left the audio channel due to there being no one there :(");
@@ -128,8 +138,7 @@ namespace Pootis_Bot.Events
 				}
 
 				//To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
-				if (toRemove.Count != 0)
-					foreach (ServerMusicItem channel in toRemove)
+				foreach (ServerMusicItem channel in toRemove)
 						AudioService.currentChannels.Remove(channel);
 			}
 		}

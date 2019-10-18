@@ -226,7 +226,6 @@ namespace Pootis_Bot.Services.Audio
 					serverList.Discord.Dispose();
 					serverList.IsPlaying = false;
 
-
 					await channel.SendMessageAsync($":musical_note: **{fileName}** ended or was stopped.");
 
 					//Check to make sure that ffmpeg was disposed
