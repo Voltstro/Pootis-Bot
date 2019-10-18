@@ -62,6 +62,7 @@ namespace Pootis_Bot.Core
 				CommandInfos = new List<ServerList.CommandInfo>(),
 				RoleToRoleMentions = new List<RoleToRoleMention>(),
 				AutoVoiceChannels = new List<VoiceChannel>(),
+				RoleGives = new List<RoleGive>(),
 				ActiveAutoVoiceChannels = new List<ulong>(),
 				WelcomeMessageEnabled = false,
 				WelcomeChannelId = 0,

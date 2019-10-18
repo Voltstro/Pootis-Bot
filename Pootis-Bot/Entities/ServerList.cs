@@ -37,6 +37,11 @@ namespace Pootis_Bot.Entities
 		public List<ulong> ActiveAutoVoiceChannels { get; set; }
 
 		/// <summary>
+		/// Role gives, key is role to give, Value is role to require, if one
+		/// </summary>
+		public List<RoleGive> RoleGives { get; set; }
+
+		/// <summary>
 		/// Do we have custom welcome/goodbye messages enabled
 		/// </summary>
 		public bool WelcomeMessageEnabled { get; set; }
@@ -112,7 +117,7 @@ namespace Pootis_Bot.Entities
 			public int RoleToRoleMentionWarnings { get; set; }
 		}
 
-		#region Functions
+		#region Banned Channel Functions
 
 		/// <summary>
 		/// Gets a banned channel
@@ -140,6 +145,10 @@ namespace Pootis_Bot.Entities
 			BannedChannels.Add(channelId);
 			return channelId;
 		}
+
+		#endregion
+
+		#region Auto VC Functions
 
 		/// <summary>
 		/// Gets an auto voice channel
@@ -172,6 +181,10 @@ namespace Pootis_Bot.Entities
 			return channel;
 		}
 
+		#endregion
+
+		#region Permissions Functions
+
 		/// <summary>
 		/// Get an command permission
 		/// </summary>
@@ -186,6 +199,10 @@ namespace Pootis_Bot.Entities
 			CommandInfo commandInfo = result.FirstOrDefault();
 			return commandInfo;
 		}
+
+		#endregion
+
+		#region Role To Role Functions
 
 		/// <summary>
 		/// Get a role to role ping
@@ -214,6 +231,20 @@ namespace Pootis_Bot.Entities
 			RoleToRoleMention roleToRole = new RoleToRoleMention(roleNotMention, role);
 			RoleToRoleMentions.Add(roleToRole);
 			return roleToRole;
+		}
+
+		#endregion
+
+		#region RoleGiveFunctions
+
+		public RoleGive GetRoleGive(string roleGiveName)
+		{
+			IEnumerable<RoleGive> result = from a in RoleGives
+				where a.Name == roleGiveName
+				select a;
+
+			RoleGive roleToRoleMention = result.FirstOrDefault();
+			return roleToRoleMention;
 		}
 
 		#endregion

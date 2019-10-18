@@ -56,6 +56,76 @@ namespace Pootis_Bot.Modules.Server
 			await Context.Channel.SendMessageAsync(builder.ToString());
 		}
 
+		[Command("rolegiveadd")]
+		[Summary("Assigns you a specified role if the user meets a requirement")]
+		[RequireBotPermission(GuildPermission.ManageRoles)]
+		public async Task RoleGiveAdd(string roleGiveName, string roleToGive, [Remainder] string roleRequired = "")
+		{
+			SocketRole roleToAssign = Global.GetGuildRole(Context.Guild, roleToGive);
+
+			//Check to make sure the role exists first
+			if (roleToAssign == null)
+			{
+				await Context.Channel.SendMessageAsync($"No role under the name '{roleToGive}' exists!");
+				return;
+			}
+
+			SocketRole socketRoleRequired = null;
+
+			//If a required role was specified, check to make sure it exists
+			if (!string.IsNullOrWhiteSpace(roleRequired))
+			{
+				socketRoleRequired = Global.GetGuildRole(Context.Guild, roleRequired);
+				if (socketRoleRequired == null)
+				{
+					await Context.Channel.SendMessageAsync($"Role {roleRequired} doesn't exist!");
+					return;
+				}
+			}
+
+			ServerList server = ServerLists.GetServer(Context.Guild);
+
+			//Check to make sure a role give doesn't already exist first
+			if (server.GetRoleGive(roleGiveName) != null)
+			{
+				await Context.Channel.SendMessageAsync($"A role give with the name '{roleGiveName}' already exist!");
+				return;
+			}
+
+			RoleGive roleGive = new RoleGive
+			{
+				Name = roleGiveName,
+				RoleToGiveId = roleToAssign.Id,
+				RoleRequiredId = 0
+			};
+
+			if (socketRoleRequired != null)
+				roleGive.RoleRequiredId = socketRoleRequired.Id;
+
+			server.RoleGives.Add(roleGive);
+			ServerLists.SaveServerList();
+
+			await Context.Channel.SendMessageAsync($"The role give was created with the name of **{roleGiveName}**.");
+		}
+
+		[Command("rolegiveremove")]
+		[Summary("Removes a role give")]
+		public async Task RoleGiveRemove(string roleGiveName)
+		{
+			ServerList server = ServerLists.GetServer(Context.Guild);
+			RoleGive roleGive = server.GetRoleGive(roleGiveName);
+			if (roleGive == null)
+			{
+				await Context.Channel.SendMessageAsync($"There is no role give with the name '{roleGiveName}''.");
+				return;
+			}
+
+			server.RoleGives.Remove(roleGive);
+			ServerLists.SaveServerList();
+
+			await Context.Channel.SendMessageAsync($"Removed role give '{roleGiveName}'.'");
+		}
+
 		#region Functions
 
 		private string MakeNotWarnable(SocketUser user)
