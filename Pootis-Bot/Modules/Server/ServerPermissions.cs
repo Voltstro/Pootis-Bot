@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
@@ -39,6 +40,24 @@ namespace Pootis_Bot.Modules.Server
 					await _perm.RemovePerm(command, role, Context.Channel, Context.Guild);
 					break;
 			}
+		}
+
+		[Command("perms")]
+		[Alias("permissions", "allperm", "allperms")]
+		[RequireGuildOwner]
+		public async Task Permissions()
+		{
+			StringBuilder sb = new StringBuilder();
+			ServerList server = ServerLists.GetServer(Context.Guild);
+
+			sb.Append("**__Permissions__**\n");
+
+			foreach (ServerList.CommandInfo perm in server.CommandInfos)
+			{
+				sb.Append($"__`{perm.Command}`__\nRoles: {FormatRoles(perm.Roles)}\n\n");
+			}
+
+			await Context.Channel.SendMessageAsync(sb.ToString());
 		}
 
 		[Command("getbannedchannels")]
@@ -185,5 +204,14 @@ namespace Pootis_Bot.Modules.Server
 
 			await Context.Channel.SendMessageAsync(builder.ToString());
 		}
+
+		#region Functions
+
+		private static string FormatRoles(IEnumerable<string> roles)
+		{
+			return roles.Aggregate("", (current, role) => current + $"{role}, ");
+		}
+
+		#endregion
 	}
 }

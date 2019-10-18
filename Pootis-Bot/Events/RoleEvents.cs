@@ -28,7 +28,6 @@ namespace Pootis_Bot.Events
 				server.RuleEnabled = false;
 				ServerLists.SaveServerList();
 
-				
 				await dm.SendMessageAsync($"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the role being deleted.\n" +
 				                          $"You can enable it again after setting a new role with the command `setuprulerole` and then enabling the feature again with `togglerulereaction`.");
 
@@ -36,7 +35,6 @@ namespace Pootis_Bot.Events
 			}
 
 			//Check to see if all the role to role pings still exist
-
 			List<RoleToRoleMention> rolesToRemove = new List<RoleToRoleMention>();
 
 			foreach (RoleToRoleMention roles in server.RoleToRoleMentions.Where(roles => roles.RoleId == role.Id || roles.RoleNotToMentionId == role.Id))
