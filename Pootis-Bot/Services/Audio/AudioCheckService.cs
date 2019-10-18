@@ -52,7 +52,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns>Formatted string</returns>
 		public static string RemovedNotAllowedChars(string input)
 		{
-			string output = input.Replace("\"", "''").Replace("|", "_");
+			string output = input.Replace("\"", "''").Replace("|", "_").Replace("&#39;", "'");
 			return output;
 		}
 
