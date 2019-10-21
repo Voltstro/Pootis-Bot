@@ -27,6 +27,11 @@ namespace Pootis_Bot.Entities
 		public List<ulong> BannedChannels { get; set; }
 
 		/// <summary>
+		/// What role to give after a user gets a certain amount of points
+		/// </summary>
+		public List<ServerRolePoints> ServerRolePoints { get; set; }
+
+		/// <summary>
 		/// Command permissions
 		/// </summary>
 		public List<CommandInfo> CommandInfos { get; set; }
@@ -154,6 +159,25 @@ namespace Pootis_Bot.Entities
 		{
 			BannedChannels.Add(channelId);
 			return channelId;
+		}
+
+		#endregion
+
+		#region Server Role Points Functions
+
+		/// <summary>
+		/// Gets a server role points
+		/// </summary>
+		/// <param name="pointAmount"></param>
+		/// <returns></returns>
+		public ServerRolePoints GetServerRolePoints(uint pointAmount)
+		{
+			IEnumerable<ServerRolePoints> result = from a in ServerRolePoints
+				where a.PointsRequired == pointAmount
+				select a;
+
+			ServerRolePoints serverRolePoints = result.FirstOrDefault();
+			return serverRolePoints;
 		}
 
 		#endregion

@@ -58,7 +58,10 @@ namespace Pootis_Bot.Core
 			ServerList newServer = new ServerList
 			{
 				GuildId = id,
+				PointGiveAmount = 10,
+				PointsGiveCooldownTime = 15,
 				BannedChannels = new List<ulong>(),
+				ServerRolePoints = new List<ServerRolePoints>(),
 				CommandInfos = new List<ServerList.CommandInfo>(),
 				RoleToRoleMentions = new List<RoleToRoleMention>(),
 				AutoVoiceChannels = new List<VoiceChannel>(),

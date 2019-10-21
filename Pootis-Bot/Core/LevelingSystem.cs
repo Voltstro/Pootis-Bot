@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Core
 {
@@ -38,7 +39,15 @@ namespace Pootis_Bot.Core
 
 			UserAccounts.SaveAccounts();
 
-			//TODO: Give role if user has enough points for it
+			//Give the user a role if they have enough points for it.
+			ServerList server = ServerLists.GetServer(user.Guild);
+			ServerRolePoints serverRole = server.GetServerRolePoints(userAccount.GetOrCreateServer(user.Guild.Id).Points);
+			if (serverRole.PointsRequired == 0) return;
+
+			await user.AddRoleAsync(Global.GetGuildRole(user.Guild, serverRole.RoleId));
+
+			await channel.SendMessageAsync(
+				$"Congrats {user.Mention}, you got {userAccount.GetOrCreateServer(user.Guild.Id).Points} points and got the **{Global.GetGuildRole(user.Guild, serverRole.RoleId).Name}** role!");
 		}
 	}
 }

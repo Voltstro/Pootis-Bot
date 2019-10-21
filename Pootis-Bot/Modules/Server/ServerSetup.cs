@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Preconditions;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Modules.Server
 {
@@ -343,6 +345,84 @@ namespace Pootis_Bot.Modules.Server
 			{
 				await Context.Channel.SendMessageAsync($"{roleName} doesn't exist in the guild!");
 			}
+		}
+
+		[Command("addrolepoints")]
+		[Alias("addpointsrole", "add points role", "add role points")]
+		[Summary("Adds a role to give after a user gets a certain amount of points")]
+		[RequireGuildOwner]
+		public async Task AddRolePoints(uint pointsAmount, string roleName)
+		{
+			SocketRole role = Global.GetGuildRole(Context.Guild, roleName);
+			if (role == null)
+			{
+				await Context.Channel.SendMessageAsync("That role doesn't exists!");
+				return;
+			}
+
+			ServerList server = ServerLists.GetServer(Context.Guild);
+
+			if (pointsAmount >= server.PointGiveAmount)
+			{
+				await Context.Channel.SendMessageAsync(
+					$"Sorry, but you have to set the points require higher then {server.PointGiveAmount}");
+
+				return;
+			}
+
+			ServerRolePoints serverRolePoints = new ServerRolePoints
+			{
+				RoleId = role.Id,
+				PointsRequired = pointsAmount
+			};
+
+			server.ServerRolePoints.Add(serverRolePoints);
+			ServerLists.SaveServerList();
+
+			await Context.Channel.SendMessageAsync(
+				$"Ok, when a user gets {pointsAmount} points they shell receive the **{role.Name}** role.\nPlease note any user who already have {pointsAmount} points won't get the role.");
+		}
+
+		[Command("removerolepoints")]
+		[Alias("removepointsrole", "remove points role", "remove role points")]
+		[Summary("Removes a role to give to a user after they get a certain amount of points")]
+		[RequireGuildOwner]
+		public async Task RemoveRolePoints(uint pointsAmount)
+		{
+			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerRolePoints serverRolePoints = server.GetServerRolePoints(pointsAmount);
+			if (serverRolePoints.PointsRequired == 0)
+			{
+				await Context.Channel.SendMessageAsync(
+					$"There are no role points that have {pointsAmount} points as there requirement!");
+				return;
+			}
+
+			server.ServerRolePoints.Remove(serverRolePoints);
+			ServerLists.SaveServerList();
+
+			//TODO: Maybe a better reply?
+			await Context.Channel.SendMessageAsync(
+				$"The {serverRolePoints.PointsRequired} points required one was removed.");
+		}
+
+		[Command("rolepoints")]
+		[Alias("pointsrole", "role points", "points role")]
+		[Summary("Gets all the role points")]
+		[RequireGuildOwner]
+		public async Task RolePoints()
+		{
+			StringBuilder sb = new StringBuilder();
+			ServerList server = ServerLists.GetServer(Context.Guild);
+
+			sb.Append("__**Server Role Points**__\n");
+
+			foreach (ServerRolePoints rolePoint in server.ServerRolePoints)
+			{
+				sb.Append($"[{Global.GetGuildRole(Context.Guild, rolePoint.RoleId)}] **{rolePoint.PointsRequired}**\n");
+			}
+
+			await Context.Channel.SendMessageAsync(sb.ToString());
 		}
 	}
 }
