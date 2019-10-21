@@ -114,6 +114,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("togglementionuser")]
+		[Alias("toggle mention user")]
 		[Summary("Enables / Disables the mention user anti-spam feature")]
 		[RequireGuildOwner]
 		public async Task ToggleMentionUserSpam()
@@ -127,6 +128,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("setmentionuserthreshold")]
+		[Alias("set mention user threshold")]
 		[Summary("Set how much of a percentage of a servers users need to be mention before it is considered spam")]
 		[RequireGuildOwner]
 		public async Task SetMentionUserThreshold(int threshold)
@@ -140,6 +142,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("togglewelcomemessage")]
+		[Alias("toggle welcome message")]
 		[Summary("Enables / Disabled the welcome and goodbye message")]
 		[RequireGuildOwner]
 		public async Task ToggleWelcomeMessage([Remainder] SocketTextChannel channel = null)
@@ -188,6 +191,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("setupwelcomemessage")]
+		[Alias("setup welcome message")]
 		[Summary(
 			"Setups the welcome message and channel. Use [user] to mention the user. User [server] to insert the server name.")]
 		[RequireGuildOwner]
@@ -202,6 +206,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("setupgoodbyemessage")]
+		[Alias("setup googbye message")]
 		[Summary("Sets up the goodbye message")]
 		[RequireGuildOwner]
 		public async Task SetupGoodbyeMessage([Remainder] string message = "")
@@ -219,6 +224,7 @@ namespace Pootis_Bot.Modules.Server
 
 		[Command("setuprulesmessage")]
 		[Summary("Sets the rules message by the message id. Needs to be in the same channel with the message!")]
+		[Alias("setup rules message")]
 		[RequireGuildOwner]
 		public async Task SetupRuleMessage(ulong id = 0)
 		{
@@ -252,6 +258,7 @@ namespace Pootis_Bot.Modules.Server
 		[Command("setupruleemoji")]
 		[Summary(
 			"Sets the rule reaction emoji. MUST BE UNICODE. Refer to here for more details. https://unicode.org/emoji/charts/full-emoji-list.html")]
+		[Alias("setup rule emoji")]
 		[RequireGuildOwner]
 		public async Task SetupRuleEmoji(string emoji)
 		{
@@ -272,6 +279,7 @@ namespace Pootis_Bot.Modules.Server
 
 		[Command("togglerulereaction")]
 		[Summary("Enables or disables the rule reaction feature is on or off")]
+		[Alias("toggle rule reaction")]
 		[RequireGuildOwner]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task ToggleRuleReaction()

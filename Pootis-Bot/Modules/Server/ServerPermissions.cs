@@ -61,6 +61,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("getbannedchannels")]
+		[Alias("get banned channels")]
 		[Summary("Gets all banned channels")]
 		[RequireGuildOwner]
 		public async Task GetBannedChannels()
@@ -75,6 +76,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("addbannedchannel")]
+		[Alias("add banned channel")]
 		[Summary("Adds a banned channel")]
 		[RequireGuildOwner]
 		public async Task AddBannedChannel(SocketTextChannel channel)
@@ -96,6 +98,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("removebannedchannel")]
+		[Alias("remove banned channel")]
 		[Summary("Removes a banned channel")]
 		[RequireGuildOwner]
 		public async Task RemoveBannedChannel(SocketTextChannel channel)
@@ -117,6 +120,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("addroleping")]
+		[Alias("add role ping")]
 		[Summary("Adds a role to role ping")]
 		[RequireGuildOwner]
 		public async Task AddRoleToRoleMention(string roleToChangeName, string roleToNotAllowToMention)
@@ -145,6 +149,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("removeroleping")]
+		[Alias("remove role ping")]
 		[Summary("Removes a role to role ping")]
 		[RequireGuildOwner]
 		public async Task RemoveRoleToRoleMention(string roleToChangeName, string roleAllowedToMentionName)
@@ -188,6 +193,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("rolepings")]
+		[Alias("role pings")]
 		[Summary("Gets all role to role pings")]
 		[RequireGuildOwner]
 		public async Task GetRolePings()

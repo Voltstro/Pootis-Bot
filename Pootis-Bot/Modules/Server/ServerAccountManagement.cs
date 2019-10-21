@@ -16,6 +16,7 @@ namespace Pootis_Bot.Modules.Server
 		// Contributors     - Creepysin, 
 
 		[Command("makenotwarnable")]
+		[Alias("make not warnable")]
 		[Summary("Makes the user not warnable")]
 		public async Task NotWarnable([Remainder] IGuildUser user = null)
 		{
@@ -23,7 +24,8 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("makewarnable")]
-		[Summary("Makes the user warnable.")]
+		[Alias("make warnable")]
+		[Summary("Makes the user warnable")]
 		public async Task MakeWarnable([Remainder] IGuildUser user = null)
 		{
 			await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser) user));
@@ -40,6 +42,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("getnotwarnable")]
+		[Alias("get not warnable")]
 		[Summary("Gets a list of people in the server who are not warnable")]
 		public async Task GetNotWarnable()
 		{
@@ -57,6 +60,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("rolegiveadd")]
+		[Alias("role give add", "add role give")]
 		[Summary("Assigns you a specified role if the user meets a requirement")]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task RoleGiveAdd(string roleGiveName, string roleToGive, [Remainder] string roleRequired = "")
@@ -109,6 +113,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("rolegiveremove")]
+		[Alias("role give remove", "remove role give")]
 		[Summary("Removes a role give")]
 		public async Task RoleGiveRemove(string roleGiveName)
 		{
