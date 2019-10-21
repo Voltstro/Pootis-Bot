@@ -39,7 +39,7 @@ namespace Pootis_Bot.Modules.Account
 			embed.WithTitle(Context.User.Username + "'s Profile");
 
 			embed.AddField("Stats", $"**Level: ** {account.LevelNumber}\n**Xp: ** {account.Xp}\n", true);
-			embed.AddField("Server", $"**Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
+			embed.AddField("Server", $"**Points: **{accountServer.Points}\n **Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
 			embed.AddField("Account", $"**Id: **{account.Id}\n**Creation Date: **{Context.User.CreatedAt}");
 
 			embed.WithColor(userMainRole.Color);
@@ -82,7 +82,7 @@ namespace Pootis_Bot.Modules.Account
 			embed.WithTitle(user.Username + "'s Profile");
 
 			embed.AddField("Stats", $"**Level: ** {account.LevelNumber}\n**Xp: ** {account.Xp}\n", true);
-			embed.AddField("Server", $"**Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
+			embed.AddField("Server", $"**Points: **{accountServer.Points}\n**Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
 			embed.AddField("Account", $"**Id: **{account.Id}\n**Creation Date: **{user.CreatedAt}");
 
 			embed.WithColor(userMainRole.Color);

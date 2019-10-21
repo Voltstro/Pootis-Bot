@@ -143,9 +143,20 @@ namespace Pootis_Bot.Core
 					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
 				DateTime now = DateTime.Now;
 
+				//Server points
+				// ReSharper disable once CompareOfFloatsByEqualityOperator
+				if (account.LastServerPointsTime.Subtract(now).TotalSeconds <= -server.PointsGiveCooldownTime ||
+				    account.LastServerPointsTime.Second == 0)
+				{
+					LevelingSystem.GiveUserServerPoints((SocketGuildUser)context.User, (SocketTextChannel) context.Channel, server.PointGiveAmount);
+
+					//No need to save since this variable has a JsonIgnore attribute
+					account.LastServerPointsTime = now;
+				}
+
 				//Only level it up if the last message was the level up cooldown.
 				// ReSharper disable once CompareOfFloatsByEqualityOperator
-				if (account.LastLevelUpTime.Subtract(now).TotalSeconds == Config.bot.LevelUpCooldown ||
+				if (account.LastLevelUpTime.Subtract(now).TotalSeconds <= -Config.bot.LevelUpCooldown ||
 				    account.LastLevelUpTime.Second == 0)
 				{
 					LevelingSystem.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel,

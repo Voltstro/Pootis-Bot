@@ -24,5 +24,21 @@ namespace Pootis_Bot.Core
 			if (oldLevel != userAccount.LevelNumber)
 				await channel.SendMessageAsync($"{user.Mention} leveled up! Now on level **{userAccount.LevelNumber}**!");
 		}
+
+		/// <summary>
+		/// Gives a user server points, and gives them a role if they past a certain amount of points
+		/// </summary>
+		/// <param name="user"></param>
+		/// <param name="channel"></param>
+		/// <param name="amount"></param>
+		public static async void GiveUserServerPoints(SocketGuildUser user, SocketTextChannel channel, uint amount)
+		{
+			UserAccount userAccount = UserAccounts.GetAccount(user);
+			userAccount.GetOrCreateServer(user.Guild.Id).Points += amount;
+
+			UserAccounts.SaveAccounts();
+
+			//TODO: Give role if user has enough points for it
+		}
 	}
 }

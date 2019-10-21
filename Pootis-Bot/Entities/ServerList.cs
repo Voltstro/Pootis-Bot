@@ -12,6 +12,16 @@ namespace Pootis_Bot.Entities
 		public ulong GuildId { get; set; }
 
 		/// <summary>
+		/// How many points to give
+		/// </summary>
+		public uint PointGiveAmount { get; set; }
+
+		/// <summary>
+		/// What is the delay between each give points
+		/// </summary>
+		public int PointsGiveCooldownTime { get; set; }
+
+		/// <summary>
 		/// Channels were the bot isn't allowed to except commands from
 		/// </summary>
 		public List<ulong> BannedChannels { get; set; }

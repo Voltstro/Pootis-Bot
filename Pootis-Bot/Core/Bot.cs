@@ -234,9 +234,21 @@ namespace Pootis_Bot.Core
 
 						Global.Log("The help modules were reset to there defaults.");
 						break;
+					case "save config":
+						Config.SaveConfig();
+						Global.Log("Config saved!");
+						break;
+					case "save accounts":
+						UserAccounts.SaveAccounts();
+						Global.Log("User accounts saved!");
+						break;
+					case "save servers":
+						ServerLists.SaveServerList();
+						Global.Log("Server list saved!");
+						break;
 					default:
 						Global.Log(
-							$"Unknown command '{input}'. Vist {Global.websiteConsoleCommands} for a list of console commands.",
+							$"Unknown command '{input}'. Visit {Global.websiteConsoleCommands} for a list of console commands.",
 							ConsoleColor.Red);
 						break;
 				}
