@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
 
@@ -8,7 +7,7 @@ using Pootis_Bot.Services.Audio;
 //
 //Special Thanks
 // - EternalClickbait for XML comments and cleanup
-// - Mr. Fantastic Pootis ;D for suggesting the name and them of the bot
+// - Mr. Fantastic Pootis ;D for suggesting the name and theme of the bot
 // - My parents (my mum for letting me sit on my ass all day and work on this, my dad for showing C# and letting me host the bot on his server)
 // - Discord.NET for making this possible
 
@@ -17,11 +16,6 @@ namespace Pootis_Bot
 	public class Program
 	{
 		public static void Main(string[] args)
-		{
-			new Program().StartAsync(args).GetAwaiter().GetResult();
-		}
-
-		public async Task StartAsync(string[] args)
 		{
 			//Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
 			Console.WriteLine(@"__________              __  .__                 __________        __   ");
@@ -41,16 +35,16 @@ namespace Pootis_Bot
 			if (!Environment.Is64BitOperatingSystem)
 				Global.Log("This OS is a 32-bit os, 64-Bit is recommended!", ConsoleColor.Yellow);
 
-			#region Config Loading
+			#region Config arguments check
 
 			//Check config, if there arguments use them as the name, token and prefix
 			if (args.Length != 0)
 			{
 				if (args.Length == 1)
 					token = args[0];
-				else if (args.Length == 2)
+				if (args.Length == 2)
 					prefix = args[1];
-				else if (args.Length == 3) name = args[2];
+				if (args.Length == 3) name = args[2];
 			}
 
 			if (name == null) name = Config.bot.BotName;
@@ -71,7 +65,7 @@ namespace Pootis_Bot
 			Global.BotToken = token;
 
 			//Start her up!
-			await bot.StartBot();
+			bot.StartBot().GetAwaiter().GetResult();
 		}
 	}
 }
