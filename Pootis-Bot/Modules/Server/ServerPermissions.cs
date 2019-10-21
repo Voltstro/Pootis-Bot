@@ -48,7 +48,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task Permissions()
 		{
 			StringBuilder sb = new StringBuilder();
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			sb.Append("**__Permissions__**\n");
 
@@ -66,7 +66,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task GetBannedChannels()
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			StringBuilder final = new StringBuilder();
 			final.Append("**All banned channels**: \n");
 
@@ -81,11 +81,11 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task AddBannedChannel(SocketTextChannel channel)
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			if (server.GetBannedChannel(channel.Id) == 0)
 			{
-				ServerLists.GetServer(Context.Guild).CreateBannedChannel(channel.Id);
-				ServerLists.SaveServerList();
+				ServerListsManager.GetServer(Context.Guild).CreateBannedChannel(channel.Id);
+				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync(
 					$"Channel **{channel.Name}** has been added to the banned channels list for your server.");
@@ -103,11 +103,11 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task RemoveBannedChannel(SocketTextChannel channel)
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			if (server.GetBannedChannel(channel.Id) != 0)
 			{
 				server.BannedChannels.Remove(channel.Id);
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync(
 					$"Channel **{channel.Name}** was removed from the banned channel list.");
@@ -141,8 +141,8 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			ServerLists.GetServer(Context.Guild).CreateRoleToRoleMention(roleNotToMention.Id, role.Id);
-			ServerLists.SaveServerList();
+			ServerListsManager.GetServer(Context.Guild).CreateRoleToRoleMention(roleNotToMention.Id, role.Id);
+			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync(
 				$"The **{roleNotToMention.Name}** role will not be allowed to mention the **{role.Name}** role.");
@@ -164,7 +164,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			List<RoleToRoleMention> roleToRoleMentionsWithRole = server.GetRoleToRoleMention(role.Id);
 
 			if (roleToRoleMentionsWithRole.Count == 0)
@@ -182,7 +182,7 @@ namespace Pootis_Bot.Modules.Server
 					await Context.Channel.SendMessageAsync(
 						$"The **{roleNotToMention.Name}** role can now mention the **{role.Name}** role.");
 
-					ServerLists.SaveServerList();
+					ServerListsManager.SaveServerList();
 
 					return;
 				}
@@ -198,7 +198,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task GetRolePings()
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			StringBuilder builder = new StringBuilder();
 			builder.Append("__**Role to Roles**__\n```");

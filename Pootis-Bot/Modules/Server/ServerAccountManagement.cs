@@ -38,7 +38,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task WarnUser(IGuildUser user)
 		{
 			await Context.Channel.SendMessageAsync(Warn((SocketUser) user));
-			await UserAccounts.CheckUserWarnStatus((SocketGuildUser) user);
+			await UserAccountsManager.CheckUserWarnStatus((SocketGuildUser) user);
 		}
 
 		[Command("getnotwarnable")]
@@ -51,7 +51,7 @@ namespace Pootis_Bot.Modules.Server
 
 			foreach (SocketGuildUser user in Context.Guild.Users)
 			{
-				UserAccount userAccount = UserAccounts.GetAccount(user);
+				UserAccount userAccount = UserAccountsManager.GetAccount(user);
 				if (userAccount.GetOrCreateServer(Context.Guild.Id).IsAccountNotWarnable)
 					builder.Append(user.Username + "\n");
 			}
@@ -87,7 +87,7 @@ namespace Pootis_Bot.Modules.Server
 				}
 			}
 
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			//Check to make sure a role give doesn't already exist first
 			if (server.GetRoleGive(roleGiveName) != null)
@@ -107,7 +107,7 @@ namespace Pootis_Bot.Modules.Server
 				roleGive.RoleRequiredId = socketRoleRequired.Id;
 
 			server.RoleGives.Add(roleGive);
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync($"The role give was created with the name of **{roleGiveName}**.");
 		}
@@ -117,7 +117,7 @@ namespace Pootis_Bot.Modules.Server
 		[Summary("Removes a role give")]
 		public async Task RoleGiveRemove(string roleGiveName)
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			RoleGive roleGive = server.GetRoleGive(roleGiveName);
 			if (roleGive == null)
 			{
@@ -126,7 +126,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 
 			server.RoleGives.Remove(roleGive);
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync($"Removed role give '{roleGiveName}'.'");
 		}
@@ -143,13 +143,13 @@ namespace Pootis_Bot.Modules.Server
 
 			SocketGuildUser userGuild = (SocketGuildUser) user;
 			UserAccountServerData userAccount =
-				UserAccounts.GetAccount(userGuild).GetOrCreateServer(userGuild.Guild.Id);
+				UserAccountsManager.GetAccount(userGuild).GetOrCreateServer(userGuild.Guild.Id);
 
 			if (userAccount.IsAccountNotWarnable) return $"**{userGuild}** is already not warnable.";
 
 			userAccount.IsAccountNotWarnable = true;
 			userAccount.Warnings = 0;
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 			return $"**{userGuild}** was made not warnable.";
 		}
 
@@ -164,11 +164,11 @@ namespace Pootis_Bot.Modules.Server
 			SocketGuildUser userguild = (SocketGuildUser) user;
 
 			UserAccountServerData userAccount =
-				UserAccounts.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
+				UserAccountsManager.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
 			if (userAccount.IsAccountNotWarnable == false) return $"**{user}** is already warnable.";
 
 			userAccount.IsAccountNotWarnable = false;
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 			return $"**{user}** was made warnable.";
 		}
 
@@ -179,13 +179,13 @@ namespace Pootis_Bot.Modules.Server
 
 			SocketGuildUser userGuild = (SocketGuildUser) user;
 			UserAccountServerData userAccount =
-				UserAccounts.GetAccount(userGuild).GetOrCreateServer(userGuild.Guild.Id);
+				UserAccountsManager.GetAccount(userGuild).GetOrCreateServer(userGuild.Guild.Id);
 
 			if (userAccount.IsAccountNotWarnable)
 				return $"A warning cannot be given to **{user}**. That person's account is set to not warnable.";
 
 			userAccount.Warnings++;
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 			return $"A warning was given to **{user}**";
 		}
 

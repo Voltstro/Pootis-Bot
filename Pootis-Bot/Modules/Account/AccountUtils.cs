@@ -25,7 +25,7 @@ namespace Pootis_Bot.Modules.Account
 			SocketRole userMainRole = sortedRoles.First();
 
 			//Get the user's account and server data relating to the user
-			UserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			UserAccount account = UserAccountsManager.GetAccount((SocketGuildUser) Context.User);
 			UserAccountServerData accountServer = account.GetOrCreateServer(Context.Guild.Id);
 
 			EmbedBuilder embed = new EmbedBuilder();
@@ -69,7 +69,7 @@ namespace Pootis_Bot.Modules.Account
 			SocketRole userMainRole = sortedRoles.First();
 
 			//Get the user's account and server data relating to the user
-			UserAccount account = UserAccounts.GetAccount(user);
+			UserAccount account = UserAccountsManager.GetAccount(user);
 			UserAccountServerData accountServer = account.GetOrCreateServer(Context.Guild.Id);
 			EmbedBuilder embed = new EmbedBuilder();
 
@@ -99,9 +99,9 @@ namespace Pootis_Bot.Modules.Account
 		[Summary("Set your profile public message (This is on any Discord server with the same Pootis-Bot!)")]
 		public async Task ProfileMsg([Remainder] string message = "")
 		{
-			UserAccount account = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			UserAccount account = UserAccountsManager.GetAccount((SocketGuildUser) Context.User);
 			account.ProfileMsg = message;
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 
 			await Context.Channel.SendMessageAsync($"Your public profile message was set to '{message}'");
 		}
@@ -112,7 +112,7 @@ namespace Pootis_Bot.Modules.Account
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task Role([Remainder] string roleGiveName)
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			RoleGive role = server.GetRoleGive(roleGiveName);
 
 			//Check to make sure the role give exists first

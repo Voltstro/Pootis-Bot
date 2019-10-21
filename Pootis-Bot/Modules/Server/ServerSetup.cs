@@ -23,7 +23,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task Setup()
 		{
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			EmbedBuilder embed = new EmbedBuilder();
 
 			await Context.Channel.SendMessageAsync("Setup status was sent to your dms.");
@@ -88,7 +88,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task SetupSpam()
 		{
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			EmbedBuilder embed = new EmbedBuilder();
 
 			await Context.Channel.SendMessageAsync("Setup anti-spam status was sent to your dms.");
@@ -119,10 +119,10 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task ToggleMentionUserSpam()
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			server.AntiSpamSettings.MentionUserEnabled = !server.AntiSpamSettings.MentionUserEnabled;
 
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 			await Context.Channel.SendMessageAsync(
 				$"Mention user anti-spam was set to {server.AntiSpamSettings.MentionUserEnabled}.");
 		}
@@ -133,10 +133,10 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task SetMentionUserThreshold(int threshold)
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			server.AntiSpamSettings.MentionUsersPercentage = threshold;
 
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync($"The threshold was set to {threshold}.");
 		}
@@ -147,14 +147,14 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task ToggleWelcomeMessage([Remainder] SocketTextChannel channel = null)
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			if (server.WelcomeMessageEnabled && (channel == null))
 			{
 				//Disable the welcome message
 				server.WelcomeMessageEnabled = false;
 
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync("The welcome message was disabled.");
 			}
@@ -168,7 +168,7 @@ namespace Pootis_Bot.Modules.Server
 						await Context.Channel.SendMessageAsync(
 							$"The welcome channel was enabled and set to {((SocketTextChannel) Context.Client.GetChannel(server.WelcomeChannelId)).Mention}");
 
-						ServerLists.SaveServerList();
+						ServerListsManager.SaveServerList();
 					}
 					else
 					{
@@ -182,7 +182,7 @@ namespace Pootis_Bot.Modules.Server
 					server.WelcomeMessageEnabled = true;
 					server.WelcomeChannelId = channel.Id;
 
-					ServerLists.SaveServerList();
+					ServerListsManager.SaveServerList();
 
 					await Context.Channel.SendMessageAsync(
 						$"The welcome channel was enabled and set to {channel.Mention}");
@@ -197,10 +197,10 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task SetupWelcomeMessage([Remainder] string message = "")
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			server.WelcomeMessage = message;
 
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync($"The welcome message was set to '{message}'.");
 		}
@@ -211,12 +211,12 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task SetupGoodbyeMessage([Remainder] string message = "")
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			if (!string.IsNullOrWhiteSpace(message))
 				server.WelcomeGoodbyeMessage = message;
 
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync(
 				$"The goodbye message was set to '{message}'. For this to work the welcome message needs to be set up and enabled");
@@ -232,10 +232,10 @@ namespace Pootis_Bot.Modules.Server
 			{
 				if (Context.Channel.GetMessageAsync(id) != null)
 				{
-					ServerList server = ServerLists.GetServer(Context.Guild);
+					ServerList server = ServerListsManager.GetServer(Context.Guild);
 					server.RuleMessageId = id;
 
-					ServerLists.SaveServerList();
+					ServerListsManager.SaveServerList();
 
 					await Context.Channel.SendMessageAsync(
 						$"The rule message was set to the message with the id of **{id}**.");
@@ -248,10 +248,10 @@ namespace Pootis_Bot.Modules.Server
 			else
 			{
 				await Context.Channel.SendMessageAsync("The rules message was disabled");
-				ServerList server = ServerLists.GetServer(Context.Guild);
+				ServerList server = ServerListsManager.GetServer(Context.Guild);
 				server.RuleMessageId = 0;
 
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 			}
 		}
 
@@ -269,9 +269,9 @@ namespace Pootis_Bot.Modules.Server
 			}
 			else
 			{
-				ServerList server = ServerLists.GetServer(Context.Guild);
+				ServerList server = ServerListsManager.GetServer(Context.Guild);
 				server.RuleReactionEmoji = emoji;
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync("The emoji was set to " + emoji);
 			}
@@ -284,13 +284,13 @@ namespace Pootis_Bot.Modules.Server
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task ToggleRuleReaction()
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			//The rule reaction is enabled, disable it
 			if (server.RuleEnabled) 
 			{
 				server.RuleEnabled = false;
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync("The rule reaction feature was disabled.");
 			}
@@ -307,7 +307,7 @@ namespace Pootis_Bot.Modules.Server
 							//If we reach here, then we are all good to go!
 							server.RuleEnabled = true;
 
-							ServerLists.SaveServerList();
+							ServerListsManager.SaveServerList();
 
 							await Context.Channel.SendMessageAsync("The rule reaction feature is enabled.");
 						}
@@ -344,8 +344,8 @@ namespace Pootis_Bot.Modules.Server
 
 			if (role != null)
 			{
-				ServerLists.GetServer(Context.Guild).RuleRoleId = role.Id;
-				ServerLists.SaveServerList();
+				ServerListsManager.GetServer(Context.Guild).RuleRoleId = role.Id;
+				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync($"The rule role was set to **{role.Name}**.");
 			}
@@ -368,7 +368,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			if (pointsAmount >= server.PointGiveAmount)
 			{
@@ -385,7 +385,7 @@ namespace Pootis_Bot.Modules.Server
 			};
 
 			server.ServerRolePoints.Add(serverRolePoints);
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync(
 				$"Ok, when a user gets {pointsAmount} points they shell receive the **{role.Name}** role.\nPlease note any user who already have {pointsAmount} points won't get the role.");
@@ -397,7 +397,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task RemoveRolePoints(uint pointsAmount)
 		{
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			ServerRolePoints serverRolePoints = server.GetServerRolePoints(pointsAmount);
 			if (serverRolePoints.PointsRequired == 0)
 			{
@@ -407,7 +407,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 
 			server.ServerRolePoints.Remove(serverRolePoints);
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			//TODO: Maybe a better reply?
 			await Context.Channel.SendMessageAsync(
@@ -421,7 +421,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task RolePoints()
 		{
 			StringBuilder sb = new StringBuilder();
-			ServerList server = ServerLists.GetServer(Context.Guild);
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			sb.Append("__**Server Role Points**__\n");
 

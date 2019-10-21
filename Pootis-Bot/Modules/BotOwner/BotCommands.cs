@@ -19,7 +19,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			await Task.Delay(500);
 
 			await Context.Channel.SendMessageAsync(
-				$"**{user.Username}** was given {amount} xp. They are now have {UserAccounts.GetAccount(user).Xp} xp in total.");
+				$"**{user.Username}** was given {amount} xp. They are now have {UserAccountsManager.GetAccount(user).Xp} xp in total.");
 		}
 
 		[Command("removexp")]
@@ -32,7 +32,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			await Task.Delay(500);
 
 			await Context.Channel.SendMessageAsync(
-				$"**{user.Username}** had {amount} xp removed. They are now have {UserAccounts.GetAccount(user).Xp} xp in total.");
+				$"**{user.Username}** had {amount} xp removed. They are now have {UserAccountsManager.GetAccount(user).Xp} xp in total.");
 		}
 
 		[Command("leaveguild")]

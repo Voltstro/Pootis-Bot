@@ -63,8 +63,8 @@ namespace Pootis_Bot.Core
 			if(context.Guild == null)
 				return;
 
-			ServerList server = ServerLists.GetServer(context.Guild);
-			UserAccount user = UserAccounts.GetAccount((SocketGuildUser) context.User);
+			ServerList server = ServerListsManager.GetServer(context.Guild);
+			UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser) context.User);
 			int argPos = 0;
 
 			//Check if the user is muted, if so delete the message, oh and make sure it ISN'T the owner of the guild
@@ -139,7 +139,7 @@ namespace Pootis_Bot.Core
 			}
 			else
 			{
-				UserAccountServerData account = UserAccounts
+				UserAccountServerData account = UserAccountsManager
 					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
 				DateTime now = DateTime.Now;
 

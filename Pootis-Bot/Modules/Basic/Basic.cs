@@ -67,7 +67,7 @@ namespace Pootis_Bot.Modules.Basic
 			List<UserAccount> serverUsers = new List<UserAccount>();
 			foreach (SocketGuildUser user in Context.Guild.Users)
 				if (!user.IsBot && !user.IsWebhook)
-					serverUsers.Add(UserAccounts.GetAccount(user));
+					serverUsers.Add(UserAccountsManager.GetAccount(user));
 
 			serverUsers.Sort(new SortUserAccount());
 			serverUsers.Reverse();
@@ -83,7 +83,7 @@ namespace Pootis_Bot.Modules.Basic
 				count++;
 			}
 
-			UserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			UserAccount userAccount = UserAccountsManager.GetAccount((SocketGuildUser) Context.User);
 			format.Append(
 				$"\n------------------------\n 😊 Your Position: {serverUsers.IndexOf(userAccount) + 1}      Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
 
@@ -96,7 +96,7 @@ namespace Pootis_Bot.Modules.Basic
 		public async Task Top10Total()
 		{
 			//Get all accounts Pootis-Bot has and sort them
-			List<UserAccount> totalUsers = UserAccounts.GetAllUserAccounts().ToList();
+			List<UserAccount> totalUsers = UserAccountsManager.GetAllUserAccounts().ToList();
 			totalUsers.Sort(new SortUserAccount());
 			totalUsers.Reverse();
 
@@ -111,7 +111,7 @@ namespace Pootis_Bot.Modules.Basic
 				count++;
 			}
 
-			UserAccount userAccount = UserAccounts.GetAccount((SocketGuildUser) Context.User);
+			UserAccount userAccount = UserAccountsManager.GetAccount((SocketGuildUser) Context.User);
 			format.Append(
 				$"\n------------------------\n 😊 Your Position: {totalUsers.IndexOf(userAccount) + 1}      Your Level: {userAccount.LevelNumber}      Your Xp: {userAccount.Xp}```");
 

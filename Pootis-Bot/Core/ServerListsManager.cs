@@ -6,12 +6,12 @@ using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Core
 {
-	public class ServerLists
+	public class ServerListsManager
 	{
 		private const string ServerListFile = "Resources/serverlist.json";
 		public static List<ServerList> Servers;
 
-		static ServerLists()
+		static ServerListsManager()
 		{
 			if (DataStorage.SaveExists(ServerListFile))
 			{

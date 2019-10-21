@@ -17,7 +17,7 @@ namespace Pootis_Bot.Events
 		public async Task RoleDeleted(SocketRole role)
 		{
 			SocketGuild guild = role.Guild;
-			ServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerListsManager.GetServer(guild);
 
 			//Setup the dm channel even though we might not even use it just makes it so I don't have to repeat this a whole bunch of times.
 			IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
@@ -26,7 +26,7 @@ namespace Pootis_Bot.Events
 			if (role.Id == server.RuleRoleId)
 			{
 				server.RuleEnabled = false;
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 
 				await dm.SendMessageAsync($"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the role being deleted.\n" +
 				                          $"You can enable it again after setting a new role with the command `setuprulerole` and then enabling the feature again with `togglerulereaction`.");
@@ -48,14 +48,14 @@ namespace Pootis_Bot.Events
 			foreach (RoleToRoleMention roleToRemove in rolesToRemove)
 			{
 				server.RoleToRoleMentions.Remove(roleToRemove);
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 			}
 		}
 
 		public async Task RoleUpdated(SocketRole before, SocketRole after)
 		{
 			SocketGuild guild = before.Guild;
-			ServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerListsManager.GetServer(guild);
 
 			List<RoleToRoleMention> rolesToRemove = new List<RoleToRoleMention>();
 
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Events
 			foreach (RoleToRoleMention roleToRemove in rolesToRemove)
 			{
 				server.RoleToRoleMentions.Remove(roleToRemove);
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 			}
 		}
 	}

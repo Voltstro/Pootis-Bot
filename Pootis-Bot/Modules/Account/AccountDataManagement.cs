@@ -31,7 +31,7 @@ namespace Pootis_Bot.Modules.Account
 				Directory.CreateDirectory("temp/");
 
 			//Get the user account in a single json file
-			string json = JsonConvert.SerializeObject(UserAccounts.GetAccount((SocketGuildUser) Context.User), Formatting.Indented);
+			string json = JsonConvert.SerializeObject(UserAccountsManager.GetAccount((SocketGuildUser) Context.User), Formatting.Indented);
 			File.WriteAllText($"temp/{Context.User.Id}.json", json);
 
 			//Get the user's dm and send the file
@@ -62,11 +62,11 @@ namespace Pootis_Bot.Modules.Account
 			}
 			
 
-			UserAccount user = UserAccounts.GetAccount((SocketGuildUser)Context.User);
+			UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser)Context.User);
 			user.ProfileMsg = "";
 			user.Xp = 0;
 
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 
 			await Context.Channel.SendMessageAsync("Your profile data has been reset!");
 		}

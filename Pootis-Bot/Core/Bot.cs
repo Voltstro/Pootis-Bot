@@ -239,11 +239,11 @@ namespace Pootis_Bot.Core
 						Global.Log("Config saved!");
 						break;
 					case "save accounts":
-						UserAccounts.SaveAccounts();
+						UserAccountsManager.SaveAccounts();
 						Global.Log("User accounts saved!");
 						break;
 					case "save servers":
-						ServerLists.SaveServerList();
+						ServerListsManager.SaveServerList();
 						Global.Log("Server list saved!");
 						break;
 					default:

@@ -14,8 +14,8 @@ namespace Pootis_Bot.Events
 		public async Task JoinedNewServer(SocketGuild guild)
 		{
 			//Add the new server to the server list
-			ServerLists.GetServer(guild);
-			ServerLists.SaveServerList();
+			ServerListsManager.GetServer(guild);
+			ServerListsManager.SaveServerList();
 
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Hey, thanks for adding me to your server.");
@@ -43,10 +43,10 @@ namespace Pootis_Bot.Events
 		public async Task LeftServer(SocketGuild guild)
 		{
 			//Remove the server settings from the serverlist.json file
-			ServerList server = ServerLists.GetServer(guild);
-			ServerLists.Servers.Remove(server);
+			ServerList server = ServerListsManager.GetServer(guild);
+			ServerListsManager.Servers.Remove(server);
 
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			//Log that the bot left a guild, if enabled
 			if(Config.bot.ReportGuildEventsToOwner)

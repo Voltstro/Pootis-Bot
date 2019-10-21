@@ -15,13 +15,13 @@ namespace Pootis_Bot.Events
 		public async Task MessageDeleted(Cacheable<IMessage, ulong> cache, ISocketMessageChannel channel)
 		{
 			SocketGuild guild = ((SocketGuildChannel) channel).Guild;
-			ServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerListsManager.GetServer(guild);
 			if (cache.Id == server.RuleMessageId)
 			{
 				//The rule reaction will be disabled and the owner of the guild will be notified.
 				server.RuleEnabled = false;
 
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 
 				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
 				await dm.SendMessageAsync($"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the message being deleted.\n" +
@@ -32,7 +32,7 @@ namespace Pootis_Bot.Events
 		public async Task MessageBulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> cacheable, ISocketMessageChannel channel)
 		{
 			SocketGuild guild = ((SocketGuildChannel) channel).Guild;
-			ServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerListsManager.GetServer(guild);
 
 			//Depending on how many message were deleted, this could take awhile. Or well I assume that, it would need to be tested
 			foreach (Cacheable<IMessage, ulong> cache in cacheable)
@@ -42,7 +42,7 @@ namespace Pootis_Bot.Events
 				//The rule reaction will be disabled and the owner of the guild will be notified.
 				server.RuleEnabled = false;
 
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 
 				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
 				await dm.SendMessageAsync($"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the message being deleted.\n" +

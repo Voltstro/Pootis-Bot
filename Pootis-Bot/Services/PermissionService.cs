@@ -40,7 +40,7 @@ namespace Pootis_Bot.Services
 				return;
 			}
 
-			ServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerListsManager.GetServer(guild);
 
 			//Check too see if role exist
 			if (Global.GetGuildRole(guild, role) != null)
@@ -64,7 +64,7 @@ namespace Pootis_Bot.Services
 					await channel.SendMessageAsync($"The role **{role}** will be allowed to use the command **{command}**.");
 				}
 
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 			}
 			else
 			{
@@ -94,7 +94,7 @@ namespace Pootis_Bot.Services
 				return;
 			}
 
-			ServerList server = ServerLists.GetServer(guild);
+			ServerList server = ServerListsManager.GetServer(guild);
 
 			//Check too see if role exist
 			if (Global.GetGuildRole(guild, role) != null)
@@ -125,7 +125,7 @@ namespace Pootis_Bot.Services
 				if (server.GetCommandInfo(command).Roles.Count == 0)
 					server.CommandInfos.Remove(server.GetCommandInfo(command));
 
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 			}
 			else
 			{

@@ -19,7 +19,7 @@ namespace Pootis_Bot.Services.AntiSpam
 			SocketGuildUser user = (SocketGuildUser) message.Author;
 
 			UserAccountServerData serverAccount =
-				UserAccounts.GetAccount(user).GetOrCreateServer(guild.Id);
+				UserAccountsManager.GetAccount(user).GetOrCreateServer(guild.Id);
 
 			if (serverAccount.IsAccountNotWarnable)
 				return false;
@@ -34,7 +34,7 @@ namespace Pootis_Bot.Services.AntiSpam
 			int percentage = (mentionCount / guildMemberCount) * 100;
 			Console.WriteLine(percentage.ToString());
 
-			if (percentage <= ServerLists.GetServer(guild).AntiSpamSettings.MentionUsersPercentage)
+			if (percentage <= ServerListsManager.GetServer(guild).AntiSpamSettings.MentionUsersPercentage)
 			{
 				Console.WriteLine("Was more than 45 percent");
 
@@ -44,8 +44,8 @@ namespace Pootis_Bot.Services.AntiSpam
 
 				serverAccount.Warnings++;
 
-				UserAccounts.CheckUserWarnStatus(user).GetAwaiter().GetResult();
-				UserAccounts.SaveAccounts();
+				UserAccountsManager.CheckUserWarnStatus(user).GetAwaiter().GetResult();
+				UserAccountsManager.SaveAccounts();
 
 				return true;
 			}
@@ -62,7 +62,7 @@ namespace Pootis_Bot.Services.AntiSpam
 		public bool CheckRoleMentions(SocketUserMessage message, SocketGuildUser user)
 		{
 			UserAccountServerData serverAccount =
-				UserAccounts.GetAccount(user).GetOrCreateServer(user.Guild.Id);
+				UserAccountsManager.GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
 			if (serverAccount.IsAccountNotWarnable)
 				return false;
@@ -71,7 +71,7 @@ namespace Pootis_Bot.Services.AntiSpam
 			if (user.Id == user.Guild.OwnerId)
 				return false;
 
-			ServerList server = ServerLists.GetServer(user.Guild);
+			ServerList server = ServerListsManager.GetServer(user.Guild);
 
 			//Go over each role a user has
 			foreach (SocketRole role in user.Roles)
@@ -87,7 +87,7 @@ namespace Pootis_Bot.Services.AntiSpam
 							message.Channel.SendMessageAsync(
 								$"Hey {user.Mention}, you have been pinging the **{Global.GetGuildRole(user.Guild, notToMentionRoles.RoleId).Name}** role, which you are not allowed to ping!\nWe though we would tell you now and a warning has been added to your account, for info see your profile.");
 							serverAccount.Warnings++;
-							UserAccounts.SaveAccounts();
+							UserAccountsManager.SaveAccounts();
 						}
 
 						serverAccount.RoleToRoleMentionWarnings++;

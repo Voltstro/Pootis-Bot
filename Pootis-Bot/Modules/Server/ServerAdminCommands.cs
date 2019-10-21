@@ -63,11 +63,11 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			UserAccount account = UserAccounts.GetAccount(user);
+			UserAccount account = UserAccountsManager.GetAccount(user);
 			UserAccountServerData accountServer = account.GetOrCreateServer(Context.Guild.Id);
 			accountServer.IsMuted = true;
 
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 
 			if(accountServer.IsMuted)
 				await Context.Channel.SendMessageAsync($"**{user.Username}** is now muted.");

@@ -14,13 +14,13 @@ namespace Pootis_Bot.Core
 		/// <param name="amount"></param>
 		public static async void UserSentMessage(SocketGuildUser user, SocketTextChannel channel, uint amount)
 		{
-			UserAccount userAccount = UserAccounts.GetAccount(user);
+			UserAccount userAccount = UserAccountsManager.GetAccount(user);
 			uint oldLevel = userAccount.LevelNumber;
 
 			//Nice one EternalClickbait...
 
 			userAccount.Xp += amount;
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 
 			if (oldLevel != userAccount.LevelNumber)
 				await channel.SendMessageAsync($"{user.Mention} leveled up! Now on level **{userAccount.LevelNumber}**!");
@@ -34,13 +34,13 @@ namespace Pootis_Bot.Core
 		/// <param name="amount"></param>
 		public static async void GiveUserServerPoints(SocketGuildUser user, SocketTextChannel channel, uint amount)
 		{
-			UserAccount userAccount = UserAccounts.GetAccount(user);
+			UserAccount userAccount = UserAccountsManager.GetAccount(user);
 			userAccount.GetOrCreateServer(user.Guild.Id).Points += amount;
 
-			UserAccounts.SaveAccounts();
+			UserAccountsManager.SaveAccounts();
 
 			//Give the user a role if they have enough points for it.
-			ServerList server = ServerLists.GetServer(user.Guild);
+			ServerList server = ServerListsManager.GetServer(user.Guild);
 			ServerRolePoints serverRole = server.GetServerRolePoints(userAccount.GetOrCreateServer(user.Guild.Id).Points);
 			if (serverRole.PointsRequired == 0) return;
 

@@ -15,7 +15,7 @@ namespace Pootis_Bot.Events
 	{
 		public Task ChannelDestroyed(SocketChannel channel)
 		{
-			ServerList serverList = ServerLists.GetServer(((SocketGuildChannel) channel).Guild);
+			ServerList serverList = ServerListsManager.GetServer(((SocketGuildChannel) channel).Guild);
 			VoiceChannel voiceChannel = serverList.GetAutoVoiceChannel(channel.Id);
 
 			List<ulong> activeVcsToRemove = serverList.ActiveAutoVoiceChannels.Where(activeVcs => activeVcs == channel.Id).ToList();
@@ -24,7 +24,7 @@ namespace Pootis_Bot.Events
 			foreach (ulong toRemove in activeVcsToRemove)
 			{
 				serverList.ActiveAutoVoiceChannels.Remove(toRemove);
-				ServerLists.SaveServerList();
+				ServerListsManager.SaveServerList();
 				return Task.CompletedTask;
 			}
 
@@ -32,7 +32,7 @@ namespace Pootis_Bot.Events
 			if (voiceChannel.Name == null) return Task.CompletedTask;
 
 			serverList.AutoVoiceChannels.Remove(voiceChannel);
-			ServerLists.SaveServerList();
+			ServerListsManager.SaveServerList();
 
 			return Task.CompletedTask;
 		}

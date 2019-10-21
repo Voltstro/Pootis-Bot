@@ -6,12 +6,12 @@ using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Core
 {
-	public static class UserAccounts
+	public static class UserAccountsManager
 	{
 		private const string AccountsFile = "Resources/accounts.json";
 		private static readonly List<UserAccount> Accounts;
 
-		static UserAccounts()
+		static UserAccountsManager()
 		{
 			if (DataStorage.SaveExists(AccountsFile))
 			{
