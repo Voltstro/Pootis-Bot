@@ -20,7 +20,7 @@ namespace Pootis_Bot.Modules.Fun
 		[Command("wiki")]
 		[Alias("wikipedia")]
 		[Summary("Searches Wikipedia")]
-		public async Task Wikipedia(string search = "")
+		public async Task Wikipedia([Remainder] string search = "")
 		{
 			if (string.IsNullOrWhiteSpace(search))
 			{
@@ -31,7 +31,9 @@ namespace Pootis_Bot.Modules.Fun
 			EmbedBuilder embed = new EmbedBuilder();
 			StringBuilder sb = new StringBuilder();
 			embed.WithTitle("Wikipedia Search");
+			embed.WithColor(FunCmdsConfig.wikipediaSearchColor);
 
+			//TODO: Once max search responses are added into Wiki.NET, add max search responses
 			WikiSearchResponse response = WikiSearcher.Search(search);
 			for (int i = 0; i < 5; i++)
 			{
@@ -40,6 +42,9 @@ namespace Pootis_Bot.Modules.Fun
 			}
 
 			embed.WithDescription(sb.ToString());
+			embed.WithFooter($"Search by {Context.User.Username}", Context.User.GetAvatarUrl());
+			embed.WithCurrentTimestamp();
+
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
 	}

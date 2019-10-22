@@ -57,7 +57,7 @@ namespace Pootis_Bot.Modules.Fun
 				Title = $"Youtube Search '{search}'"
 			};
 			embed.WithDescription($"**Videos**\n{videos}\n\n**Channels**\n{channels}");
-			embed.WithFooter($"Search by {Context.User} @ ", Context.User.GetAvatarUrl());
+			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
 			embed.WithCurrentTimestamp();
 			embed.WithColor(FunCmdsConfig.youtubeColor);
 

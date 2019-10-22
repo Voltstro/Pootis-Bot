@@ -2,6 +2,9 @@
 
 namespace Pootis_Bot.Modules.Fun
 {
+	/// <summary>
+	/// Contains settings for fun commands
+	/// </summary>
 	public static class FunCmdsConfig
 	{
 		public static readonly string ytStartLink = "https://www.youtube.com/watch?v=";
@@ -12,5 +15,6 @@ namespace Pootis_Bot.Modules.Fun
 		public static readonly Color giphyColor = new Color(190, 101, 249);
 		public static readonly Color trumpQuoteColor = new Color(245, 167, 59);
 		public static readonly Color randomPersonColor = new Color(59, 245, 121);
+		public static readonly Color wikipediaSearchColor = new Color(237, 237, 237);
 	}
 }
