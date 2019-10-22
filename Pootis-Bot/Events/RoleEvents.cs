@@ -34,21 +34,27 @@ namespace Pootis_Bot.Events
 				return;
 			}
 
-			//Check to see if all the role to role pings still exist
-			List<RoleToRoleMention> rolesToRemove = new List<RoleToRoleMention>();
-
-			foreach (RoleToRoleMention roles in server.RoleToRoleMentions.Where(roles => roles.RoleId == role.Id || roles.RoleNotToMentionId == role.Id))
+			//Check all server role points roles
+			List<ServerRolePoints> rolePointsToRemove = server.ServerRolePoints.Where(rolePoint => role.Id == rolePoint.RoleId).ToList();
+			foreach (ServerRolePoints toRemove in rolePointsToRemove)
 			{
-				await dm.SendMessageAsync(
-					$"The **{role.Name}** role was deleted which was apart of the **{roles.RoleNotToMentionId}** => **{roles.RoleId}**. This role to role ping was deleted. ({guild.Name})");
+				await dm.SendMessageAsync($"The **{role.Name}** was deleted which was apart of the {toRemove.PointsRequired} server points role. This server points role was deleted. ({guild.Name})");
 
-				rolesToRemove.Add(roles);
+				server.ServerRolePoints.Remove(toRemove);
+				ServerListsManager.SaveServerList();
+				return;
 			}
 
+			//Check to see if all the role to role pings still exist
+			List<RoleToRoleMention> rolesToRemove = server.RoleToRoleMentions.Where(roles => roles.RoleId == role.Id || roles.RoleNotToMentionId == role.Id).ToList();
 			foreach (RoleToRoleMention roleToRemove in rolesToRemove)
 			{
+				await dm.SendMessageAsync(
+					$"The **{role.Name}** role was deleted which was apart of the **{roleToRemove.RoleNotToMentionId}** => **{roleToRemove.RoleId}**. This role to role ping was deleted. ({guild.Name})");
+
 				server.RoleToRoleMentions.Remove(roleToRemove);
 				ServerListsManager.SaveServerList();
+				return;
 			}
 		}
 
@@ -57,22 +63,19 @@ namespace Pootis_Bot.Events
 			SocketGuild guild = before.Guild;
 			ServerList server = ServerListsManager.GetServer(guild);
 
-			List<RoleToRoleMention> rolesToRemove = new List<RoleToRoleMention>();
+			IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
 
-			foreach (RoleToRoleMention roleToRole in server.RoleToRoleMentions.Where(roleToRole => roleToRole.RoleId == after.Id && !after.IsMentionable))
-			{
-				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
-
-				await dm.SendMessageAsync(
-					$"The **{after.Name}** role was changed to not mentionable so it was deleted from the **{Global.GetGuildRole(guild, roleToRole.RoleNotToMentionId).Name}** => **{Global.GetGuildRole(guild, roleToRole.RoleId).Name}** role to role ping list. ({guild.Name})");
-
-				rolesToRemove.Add(roleToRole);
-			}
-
+			//Check all server role pings to make sure they are still mentionable
+			List<RoleToRoleMention> rolesToRemove = server.RoleToRoleMentions.Where(roleToRole => roleToRole.RoleId == after.Id && !after.IsMentionable).ToList();
 			foreach (RoleToRoleMention roleToRemove in rolesToRemove)
 			{
+				await dm.SendMessageAsync(
+					$"The **{after.Name}** role was changed to not mentionable so it was deleted from the **{Global.GetGuildRole(guild, roleToRemove.RoleNotToMentionId).Name}** => **{Global.GetGuildRole(guild, roleToRemove.RoleId).Name}** role to role ping list. ({guild.Name})");
+
 				server.RoleToRoleMentions.Remove(roleToRemove);
 				ServerListsManager.SaveServerList();
+
+				return;
 			}
 		}
 	}
