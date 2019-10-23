@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Entities
@@ -26,6 +27,11 @@ namespace Pootis_Bot.Entities
 		public string BotToken;
 
 		/// <summary>
+		/// What type of formatting we should use for ServerList.json and UserAccounts.json
+		/// </summary>
+		public Formatting ResourceFilesFormatting;
+
+		/// <summary>
 		/// Reports errors to the bot owner
 		/// </summary>
 		public bool ReportErrorsToOwner;
@@ -46,9 +52,14 @@ namespace Pootis_Bot.Entities
 		public int LevelUpCooldown;
 
 		/// <summary>
+		/// How much xp to give?
+		/// </summary>
+		public uint LevelUpAmount;
+
+		/// <summary>
 		/// Are the audio services enabled?
 		/// </summary>
-		public bool IsAudioServiceEnabled;
+		[JsonProperty("AudioServicesEnabled")] public bool IsAudioServiceEnabled;
 
 		/// <summary>
 		/// Whether or not we should check to see if we are still connected
@@ -68,7 +79,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Api settings
 		/// </summary>
-		public ConfigApis Apis;
+		[JsonProperty("ApiKeys")] public ConfigApis Apis;
 
 		/// <summary>
 		/// The help modules, basically what commands do you want in your help message

@@ -14,7 +14,7 @@ namespace Pootis_Bot.Core
 		/// <param name="filePath">Where to save the file</param>
 		public static void SaveUserAccounts(IEnumerable<UserAccount> accounts, string filePath)
 		{
-			string json = JsonConvert.SerializeObject(accounts, Formatting.Indented);
+			string json = JsonConvert.SerializeObject(accounts, Config.bot.ResourceFilesFormatting);
 			File.WriteAllText(filePath, json);
 		}
 
@@ -31,23 +31,13 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Checks if a saved user file exists
-		/// </summary>
-		/// <param name="filePath">The path to the user save file</param>
-		/// <returns></returns>
-		public static bool SaveExists(string filePath)
-		{
-			return File.Exists(filePath);
-		}
-
-		/// <summary>
 		/// Saves a list of servers
 		/// </summary>
 		/// <param name="serverLists">A list of servers to save</param>
 		/// <param name="filePath">Where to save to</param>
 		public static void SaveServerList(IEnumerable<ServerList> serverLists, string filePath)
 		{
-			string json = JsonConvert.SerializeObject(serverLists, Formatting.Indented);
+			string json = JsonConvert.SerializeObject(serverLists, Config.bot.ResourceFilesFormatting);
 			File.WriteAllText(filePath, json);
 		}
 
@@ -61,6 +51,16 @@ namespace Pootis_Bot.Core
 			if (!File.Exists(filePath)) return null;
 			string json = File.ReadAllText(filePath);
 			return JsonConvert.DeserializeObject<List<ServerList>>(json);
+		}
+
+		/// <summary>
+		/// Checks if a saved user file exists
+		/// </summary>
+		/// <param name="filePath">The path to the user save file</param>
+		/// <returns></returns>
+		public static bool SaveExists(string filePath)
+		{
+			return File.Exists(filePath);
 		}
 	}
 }

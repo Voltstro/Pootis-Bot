@@ -15,7 +15,7 @@ namespace Pootis_Bot.Core
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "config.json";
 
-		private const string ConfigVersion = "4";
+		private const string ConfigVersion = "5";
 
 		public static readonly ConfigFile bot;
 
@@ -57,10 +57,12 @@ namespace Pootis_Bot.Core
 				BotName = "CSharp Bot",
 				BotPrefix = "$",
 				BotToken = "",
+				ResourceFilesFormatting = Formatting.Indented,
 				ReportErrorsToOwner = false,
 				ReportGuildEventsToOwner = false,
 				TwitchStreamingSite = "https://www.twitch.tv/creepysin",
 				LevelUpCooldown = 15,
+				LevelUpAmount = 10,
 				IsAudioServiceEnabled = false,
 				CheckConnectionStatus = true,
 				CheckConnectionStatusInterval = 60000,

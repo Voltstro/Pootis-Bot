@@ -160,7 +160,7 @@ namespace Pootis_Bot.Core
 				    account.LastLevelUpTime.Second == 0)
 				{
 					LevelingSystem.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel,
-						10);
+						Config.bot.LevelUpAmount);
 
 					//We don't need to save the accounts file since the LastLevelUpTime has a json ignore tag
 					account.LastLevelUpTime = now;
