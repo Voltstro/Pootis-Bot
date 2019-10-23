@@ -13,57 +13,57 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// The bot's name
 		/// </summary>
-		public string BotName = "Bot";
+		public string BotName;
 
 		/// <summary>
 		/// The bot's prefix
 		/// </summary>
-		public string BotPrefix = "$";
+		public string BotPrefix;
 
 		/// <summary>
 		/// The bot's token
 		/// </summary>
-		public string BotToken = "";
+		public string BotToken;
 
 		/// <summary>
 		/// Reports errors to the bot owner
 		/// </summary>
-		public bool ReportErrorsToOwner = true;
+		public bool ReportErrorsToOwner;
 
 		/// <summary>
 		/// Reports events such as when the bot joins/leaves a guild
 		/// </summary>
-		public bool ReportGuildEventsToOwner = true;
+		public bool ReportGuildEventsToOwner;
 
 		/// <summary>
 		/// Who's stream should the bot show when set in streaming mode
 		/// </summary>
-		public string TwitchStreamingSite = "https://www.twitch.tv/creepysin";
+		public string TwitchStreamingSite;
 
 		/// <summary>
 		/// How long between each message should we wait before allowing to give more XP
 		/// </summary>
-		public int LevelUpCooldown = 15;
+		public int LevelUpCooldown;
 
 		/// <summary>
 		/// Are the audio services enabled?
 		/// </summary>
-		public bool IsAudioServiceEnabled = false;
+		public bool IsAudioServiceEnabled;
 
 		/// <summary>
 		/// Whether or not we should check to see if we are still connected
 		/// </summary>
-		public bool CheckConnectionStatus = true;
+		public bool CheckConnectionStatus;
 
 		/// <summary>
 		/// How ofter should we check if we are still connected (milliseconds)
 		/// </summary>
-		public int CheckConnectionStatusInterval = 60000;
+		public int CheckConnectionStatusInterval;
 
 		/// <summary>
 		/// The default game status the bot should use
 		/// </summary>
-		public string DefaultGameMessage = "Use $help for help.";
+		public string DefaultGameMessage;
 
 		/// <summary>
 		/// Api settings
@@ -73,7 +73,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// The help modules, basically what commands do you want in your help message
 		/// </summary>
-		public List<HelpModule> HelpModules = new List<HelpModule>();
+		public List<HelpModule> HelpModules;
 
 		public class HelpModule
 		{

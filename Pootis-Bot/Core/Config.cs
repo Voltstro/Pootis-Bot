@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Core
 {
@@ -16,7 +17,7 @@ namespace Pootis_Bot.Core
 
 		private const string ConfigVersion = "4";
 
-		public static readonly ConfigFile bot = new ConfigFile();
+		public static readonly ConfigFile bot;
 
 		static Config()
 		{
@@ -24,9 +25,9 @@ namespace Pootis_Bot.Core
 				Directory.CreateDirectory(ConfigFolder);
 
 			//If the config.json file doesn't exist it create a new one.
-			if (!File.Exists(ConfigFolder + "/" + ConfigFile)) 
+			if (!File.Exists(ConfigFolder + "/" + ConfigFile))
 			{
-				bot.ConfigVersion = ConfigVersion;
+				bot = NewConfig();
 				AddHelpModuleDefaults();
 
 				SaveConfig();
@@ -46,6 +47,29 @@ namespace Pootis_Bot.Core
 					Global.Log("Updated config to version " + ConfigVersion, ConsoleColor.Yellow);
 				}
 			}
+		}
+
+		public static ConfigFile NewConfig()
+		{
+			ConfigFile newConfig = new ConfigFile
+			{
+				ConfigVersion = ConfigVersion,
+				BotName = "CSharp Bot",
+				BotPrefix = "$",
+				BotToken = "",
+				ReportErrorsToOwner = false,
+				ReportGuildEventsToOwner = false,
+				TwitchStreamingSite = "https://www.twitch.tv/creepysin",
+				LevelUpCooldown = 15,
+				IsAudioServiceEnabled = false,
+				CheckConnectionStatus = true,
+				CheckConnectionStatusInterval = 60000,
+				DefaultGameMessage = "Use $help for help.",
+				Apis = new ConfigApis(),
+				HelpModules = new List<ConfigFile.HelpModule>()
+			};
+
+			return newConfig;
 		}
 
 		/// <summary>
