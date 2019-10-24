@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Entities
@@ -80,16 +79,5 @@ namespace Pootis_Bot.Entities
 		/// Api settings
 		/// </summary>
 		[JsonProperty("ApiKeys")] public ConfigApis Apis;
-
-		/// <summary>
-		/// The help modules, basically what commands do you want in your help message
-		/// </summary>
-		public List<HelpModule> HelpModules;
-
-		public class HelpModule
-		{
-			public string Group;
-			public List<string> Modules;
-		}
 	}
 }

@@ -38,7 +38,7 @@ namespace Pootis_Bot.Modules.Basic
 					$"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
 
 				//Basic Commands
-				foreach (ConfigFile.HelpModule helpModule in Config.bot.HelpModules)
+				foreach (HelpModule helpModule in HelpModulesManager.GetHelpModules())
 				{
 					builder.Append($"\n**{helpModule.Group}** - ");
 					foreach (CommandInfo cmd in helpModule.Modules.SelectMany(module => _commandHandler.GetModule(module).Commands))

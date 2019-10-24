@@ -44,7 +44,7 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		public void CheckHelpModules()
 		{
-			foreach (string module in Config.bot.HelpModules.SelectMany(helpModule => helpModule.Modules.Where(module => GetModule(module) == null)))
+			foreach (string module in HelpModulesManager.GetHelpModules().SelectMany(helpModule => helpModule.Modules.Where(module => GetModule(module) == null)))
 			{
 				Global.Log($"There is no module called {module}! Reset the help modules or fix the help modules in the config file!", ConsoleColor.Red);
 			}
@@ -139,6 +139,8 @@ namespace Pootis_Bot.Core
 			}
 			else
 			{
+				//Since it isn't a command we do level up stuff
+
 				UserAccountServerData account = UserAccountsManager
 					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
 				DateTime now = DateTime.Now;

@@ -7,6 +7,8 @@ namespace Pootis_Bot.Core
 {
 	public static class DataStorage
 	{
+		#region User Accounts
+
 		/// <summary>
 		/// Saves all user accounts
 		/// </summary>
@@ -30,6 +32,10 @@ namespace Pootis_Bot.Core
 			return JsonConvert.DeserializeObject<List<UserAccount>>(json);
 		}
 
+		#endregion
+
+		#region Server List
+
 		/// <summary>
 		/// Saves a list of servers
 		/// </summary>
@@ -52,6 +58,35 @@ namespace Pootis_Bot.Core
 			string json = File.ReadAllText(filePath);
 			return JsonConvert.DeserializeObject<List<ServerList>>(json);
 		}
+
+		#endregion
+
+		#region Help Modules
+
+		/// <summary>
+		/// Saves a list of help modules
+		/// </summary>
+		/// <param name="helpModules"></param>
+		/// <param name="filePath"></param>
+		public static void SaveHelpModules(IEnumerable<HelpModule> helpModules, string filePath)
+		{
+			string json = JsonConvert.SerializeObject(helpModules, Config.bot.ResourceFilesFormatting);
+			File.WriteAllText(filePath, json);
+		}
+
+		/// <summary>
+		/// Loads a list of all the help modules from a file
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <returns></returns>
+		public static IEnumerable<HelpModule> LoadHelpModules(string filePath)
+		{
+			if (!File.Exists(filePath)) return null;
+			string json = File.ReadAllText(filePath);
+			return JsonConvert.DeserializeObject<List<HelpModule>>(json);
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Checks if a saved user file exists

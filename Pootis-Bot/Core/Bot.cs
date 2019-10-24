@@ -227,10 +227,8 @@ namespace Pootis_Bot.Core
 						break;
 					case "resethelpmodules":
 					case "resethelp":
-						Config.bot.HelpModules.Clear();
-						Config.AddHelpModuleDefaults();
-
-						Config.SaveConfig();
+						HelpModulesManager.ResetHelpModulesToDefault();
+						HelpModulesManager.SaveHelpModules();
 
 						Global.Log("The help modules were reset to there defaults.");
 						break;

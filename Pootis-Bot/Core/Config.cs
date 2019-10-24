@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Pootis_Bot.Entities;
@@ -13,9 +12,9 @@ namespace Pootis_Bot.Core
 	public static class Config
 	{
 		private const string ConfigFolder = "Resources";
-		private const string ConfigFile = "config.json";
+		private const string ConfigFile = "Config.json";
 
-		private const string ConfigVersion = "5";
+		private const string ConfigVersion = "6";
 
 		public static readonly ConfigFile bot;
 
@@ -28,7 +27,6 @@ namespace Pootis_Bot.Core
 			if (!File.Exists(ConfigFolder + "/" + ConfigFile))
 			{
 				bot = NewConfig();
-				AddHelpModuleDefaults();
 
 				SaveConfig();
 
@@ -67,8 +65,7 @@ namespace Pootis_Bot.Core
 				CheckConnectionStatus = true,
 				CheckConnectionStatusInterval = 60000,
 				DefaultGameMessage = "Use $help for help.",
-				Apis = new ConfigApis(),
-				HelpModules = new List<ConfigFile.HelpModule>()
+				Apis = new ConfigApis()
 			};
 
 			return newConfig;
@@ -81,47 +78,6 @@ namespace Pootis_Bot.Core
 		{
 			string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
 			File.WriteAllText(ConfigFolder + "/" + ConfigFile, json);
-		}
-
-		/// <summary>
-		/// Adds the default help modules
-		/// </summary>
-		public static void AddHelpModuleDefaults()
-		{
-			ConfigFile.HelpModule basic = new ConfigFile.HelpModule
-			{
-				Group = "Basic",
-				Modules = new List<string> { "BasicCommands", "Misc" }
-			};
-			bot.HelpModules.Add(basic);
-
-			ConfigFile.HelpModule utils = new ConfigFile.HelpModule
-			{
-				Group = "Utils",
-				Modules = new List<string> { "Utils" }
-			};
-			bot.HelpModules.Add(utils);
-
-			ConfigFile.HelpModule account = new ConfigFile.HelpModule
-			{
-				Group = "Account",
-				Modules = new List<string> { "AccountDataManagement", "AccountUtils" }
-			};
-			bot.HelpModules.Add(account);
-
-			ConfigFile.HelpModule fun = new ConfigFile.HelpModule
-			{
-				Group = "Fun",
-				Modules = new List<string> {"GiphySearch", "GoogleSearch", "YoutubeSearch", "TronaldDump", "RandomPerson"}
-			};
-			bot.HelpModules.Add(fun);
-
-			ConfigFile.HelpModule audio = new ConfigFile.HelpModule
-			{
-				Group = "Audio",
-				Modules = new List<string> { "Music" }
-			};
-			bot.HelpModules.Add(audio);
 		}
 	}
 }
