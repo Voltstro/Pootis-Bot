@@ -22,17 +22,33 @@ namespace Pootis_Bot.Core
 			}
 		}
 
+		/// <summary>
+		/// Saves help modules... obviously 
+		/// </summary>
 		public static void SaveHelpModules()
 		{
 			DataStorage.SaveHelpModules(_helpModules, HelpModulesFile);
 		}
 
+		/// <summary>
+		/// Gets all the help modules
+		/// </summary>
+		/// <returns></returns>
 		public static List<HelpModule> GetHelpModules()
 		{
 			return _helpModules;
 		}
 
-		public static List<HelpModule> DefaultHelpModules()
+		/// <summary>
+		/// Resets help modules to their default state
+		/// </summary>
+		public static void ResetHelpModulesToDefault()
+		{
+			_helpModules = null;
+			_helpModules = DefaultHelpModules();
+		}
+
+		private static List<HelpModule> DefaultHelpModules()
 		{
 			List<HelpModule> helpModules = new List<HelpModule>();
 
@@ -72,12 +88,6 @@ namespace Pootis_Bot.Core
 			helpModules.Add(audio);
 
 			return helpModules;
-		}
-
-		public static void ResetHelpModulesToDefault()
-		{
-			_helpModules = null;
-			_helpModules = DefaultHelpModules();
 		}
 	}
 }
