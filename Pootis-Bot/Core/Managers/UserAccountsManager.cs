@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
@@ -8,7 +10,7 @@ namespace Pootis_Bot.Core.Managers
 {
 	public static class UserAccountsManager
 	{
-		private const string AccountsFile = "Resources/accounts.json";
+		private const string AccountsFile = "Resources/UserAccounts.json";
 		private static readonly List<UserAccount> Accounts;
 
 		static UserAccountsManager()
@@ -19,6 +21,13 @@ namespace Pootis_Bot.Core.Managers
 			}
 			else
 			{
+				if (CheckForOldFileName())
+				{
+					Global.Log("Renamed accounts.json to UserAccounts.json", ConsoleColor.Yellow);
+					Accounts = DataStorage.LoadUserAccounts(AccountsFile).ToList();
+					return;
+				}
+
 				Accounts = new List<UserAccount>();
 				SaveAccounts();
 			}
@@ -56,6 +65,19 @@ namespace Pootis_Bot.Core.Managers
 			UserAccount account = result.FirstOrDefault();
 			if (account == null) account = CreateUserAccount(user);
 			return account;
+		}
+
+		//TODO: Remove this in the 1.0.0 release
+		/// <summary>
+		/// Checks for old file name (accounts.json)
+		/// </summary>
+		/// <returns>Returns true if upgraded</returns>
+		private static bool CheckForOldFileName()
+		{
+			if (!DataStorage.SaveExists("Resources/accounts.json")) return false;
+
+			File.Move("Resources/accounts.json", AccountsFile);
+			return true;
 		}
 
 		private static UserAccount CreateUserAccount(SocketGuildUser user)
