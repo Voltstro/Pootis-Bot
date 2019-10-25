@@ -108,7 +108,7 @@ namespace Pootis_Bot.Core.Managers
 
 			if (userAccount.Warnings >= 3) await user.KickAsync("Was kicked due to having 3 warnings.");
 
-			if (userAccount.Warnings >= 4) await user.Guild.AddBanAsync(user, 5, "Was baned due to having 4 warnings.");
+			if (userAccount.Warnings >= 4) await user.Guild.AddBanAsync(user, 5, "Was banned due to having 4 warnings.");
 		}
 	}
 }
