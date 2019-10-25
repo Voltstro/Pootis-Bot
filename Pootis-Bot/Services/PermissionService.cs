@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Services
@@ -135,34 +136,32 @@ namespace Pootis_Bot.Services
 
 		private bool CanModifyPerm(string command)
 		{
-			bool isModifyable = true;
+			bool canModifyPerm = true;
 			foreach (string cmd in _blockedCmds)
 				if (command == cmd)
-					isModifyable = false;
+					canModifyPerm = false;
 
-			return isModifyable;
+			return canModifyPerm;
 		}
 
 		private bool DoesCmdExist(string command)
 		{
 			// ReSharper disable once NotAccessedVariable
-			CommandInfo cmdinfo;
-			bool stopsearch = false;
+			bool doesCmdExist = false;
 
 			foreach (ModuleInfo module in _service.Modules) //Get the command info
 			{
-				if (stopsearch)
+				if (doesCmdExist)
 					continue;
 
 				foreach (CommandInfo commandInfo in module.Commands)
 					if (commandInfo.Name == command)
 					{
-						cmdinfo = commandInfo;
-						stopsearch = true;
+						doesCmdExist = true;
 					}
 			}
 
-			return stopsearch;
+			return doesCmdExist;
 		}
 	}
 }

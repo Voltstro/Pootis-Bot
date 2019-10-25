@@ -2,7 +2,7 @@
 using System.Linq;
 using Pootis_Bot.Entities;
 
-namespace Pootis_Bot.Core
+namespace Pootis_Bot.Core.Managers
 {
 	public static class HelpModulesManager
 	{

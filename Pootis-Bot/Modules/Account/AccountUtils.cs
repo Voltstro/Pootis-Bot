@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Modules.Account

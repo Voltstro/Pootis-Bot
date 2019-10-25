@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Structs;
 
-namespace Pootis_Bot.Core
+namespace Pootis_Bot.Core.Managers
 {
 	public class ServerListsManager
 	{

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
 
-namespace Pootis_Bot.Core
+namespace Pootis_Bot.Core.Managers
 {
 	public static class UserAccountsManager
 	{

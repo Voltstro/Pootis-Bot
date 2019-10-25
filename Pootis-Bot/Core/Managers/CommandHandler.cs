@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services.AntiSpam;
 
-namespace Pootis_Bot.Core
+namespace Pootis_Bot.Core.Managers
 {
 	public class CommandHandler
 	{
