@@ -16,7 +16,7 @@ namespace Pootis_Bot.Modules.Server
 	public class ServerPermissions : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - Anything permission related
 		// Contributors     - Creepysin, 
 

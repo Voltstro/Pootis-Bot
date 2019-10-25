@@ -11,6 +11,11 @@ namespace Pootis_Bot.Modules.Audio
 {
 	public class VoiceChannels : ModuleBase<ICommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Adds an auto voice channel
+		// Contributors     - Creepysin, 
+
 		[Command("addvcchannel")]
 		[RequireBotPermission(GuildPermission.ManageChannels)]
 		[RequireBotPermission(GuildPermission.MoveMembers)]

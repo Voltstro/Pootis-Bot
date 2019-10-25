@@ -338,7 +338,6 @@ namespace Pootis_Bot.Modules.Server
 			await Context.Channel.SendMessageAsync(sb.ToString());
 		}
 
-		
 		[Command("rolegiveadd")]
 		[Alias("role give add", "add role give")]
 		[Summary("Assigns you a specified role if the user meets a requirement")]

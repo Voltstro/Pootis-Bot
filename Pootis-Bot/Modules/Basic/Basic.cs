@@ -15,7 +15,7 @@ namespace Pootis_Bot.Modules.Basic
 	public class BasicCommands : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - Basic, simple commands
 		// Contributors     - Creepysin, HelloHowIsItGoing
 

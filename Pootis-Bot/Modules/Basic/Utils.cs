@@ -10,6 +10,11 @@ namespace Pootis_Bot.Modules.Basic
 {
 	public class Utils : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - General utils
+		// Contributors     - Creepysin, 
+
 		[Command("hasrole")]
 		[Summary("Check if user has a role")]
 		public async Task HasRole(string roleName, SocketGuildUser user)

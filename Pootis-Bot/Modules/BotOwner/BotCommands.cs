@@ -10,6 +10,11 @@ namespace Pootis_Bot.Modules.BotOwner
 {
 	public class BotCommands : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Bot owner commands
+		// Contributors     - Creepysin, 
+
 		[Command("addxp")]
 		[Summary("Adds xp to a specific user")]
 		[RequireOwner]

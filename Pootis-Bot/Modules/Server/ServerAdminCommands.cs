@@ -12,7 +12,7 @@ namespace Pootis_Bot.Modules.Server
 	public class ServerAdminCommands : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - Commands for admins
 		// Contributors     - Creepysin, 
 

@@ -14,7 +14,7 @@ namespace Pootis_Bot.Modules.Basic
 	public class Help : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - The two help commands
 		// Contributors     - Creepysin, 
 

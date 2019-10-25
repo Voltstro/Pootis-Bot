@@ -8,7 +8,7 @@ namespace Pootis_Bot.Modules.Basic
 	public class Misc : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - Misc commands
 		// Contributors     - Creepysin, 
 

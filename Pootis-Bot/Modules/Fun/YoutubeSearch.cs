@@ -13,7 +13,7 @@ namespace Pootis_Bot.Modules.Fun
 	public class YoutubeSearch : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - Searches YouTube
 		// Contributors     - Creepysin, 
 

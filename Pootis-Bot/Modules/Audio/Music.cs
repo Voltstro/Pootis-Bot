@@ -10,7 +10,7 @@ namespace Pootis_Bot.Modules.Audio
 	public class Music : ModuleBase<ICommandContext>
 	{
 		// Module Information
-		// Original Author   - Creepysin
+		// Original Author  - Creepysin
 		// Description      - To run audio commands
 		// Contributors     - Creepysin, 
 
