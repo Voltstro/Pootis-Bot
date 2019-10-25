@@ -7,10 +7,11 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services.AntiSpam;
 
-namespace Pootis_Bot.Core.Managers
+namespace Pootis_Bot.Core
 {
 	public class CommandHandler
 	{
