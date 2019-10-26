@@ -109,7 +109,7 @@ namespace Pootis_Bot.Events
 			}
 
 			//Only check channel user count if the audio services are enabled.
-			if (Config.bot.IsAudioServiceEnabled)
+			if (Config.bot.AudioSettings.AudioServicesEnabled)
 			{
 				List<ServerMusicItem> toRemove = new List<ServerMusicItem>();
 

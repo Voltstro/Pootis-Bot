@@ -115,7 +115,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <param name="target"></param>
 		/// <param name="search">The name of the song to play</param>
 		/// <returns></returns>
-		public async Task SendAudio(IGuild guild, IMessageChannel channel, IVoiceChannel target, string search)
+		public async Task SendAudio(SocketGuild guild, IMessageChannel channel, IVoiceChannel target, string search)
 		{
 			ServerMusicItem serverList = GetMusicList(guild.Id);
 
@@ -132,7 +132,7 @@ namespace Pootis_Bot.Services.Audio
 			if (string.IsNullOrWhiteSpace(fileLoc))
 			{
 				AudioDownload audioDownload = new AudioDownload();
-				string result = audioDownload.DownloadAudio(search, channel);
+				string result = audioDownload.DownloadAudio(search, channel, guild);
 				if (result != null)
 					fileLoc = result;
 				else

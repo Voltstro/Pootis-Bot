@@ -6,7 +6,7 @@ namespace Pootis_Bot.Core.Managers
 {
 	public static class HelpModulesManager
 	{
-		private const string HelpModulesFile = "resources/HelpModules.json";
+		private const string HelpModulesFile = "Resources/HelpModules.json";
 		private static List<HelpModule> _helpModules;
 
 		static HelpModulesManager()

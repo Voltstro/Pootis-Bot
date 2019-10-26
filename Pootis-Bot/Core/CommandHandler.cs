@@ -134,7 +134,7 @@ namespace Pootis_Bot.Core
 					if (Config.bot.ReportErrorsToOwner)
 					{
 						await Global.BotOwner.SendMessageAsync(
-							$"ERROR: {result.ErrorReason}\nError occured while executing command `{msg.Content.Replace(Global.BotPrefix, "")}` on server '{context.Guild.Id}'.");
+							$"ERROR: {result.ErrorReason}\nError occured while executing command `{msg.Content.Replace(Global.BotPrefix, "")}` on server `{context.Guild.Id}`.");
 					}
 				}
 			}

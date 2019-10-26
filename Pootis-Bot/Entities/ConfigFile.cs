@@ -56,9 +56,9 @@ namespace Pootis_Bot.Entities
 		public uint LevelUpAmount;
 
 		/// <summary>
-		/// Are the audio services enabled?
+		/// Audio settings
 		/// </summary>
-		[JsonProperty("AudioServicesEnabled")] public bool IsAudioServiceEnabled;
+		public ConfigAudio AudioSettings;
 
 		/// <summary>
 		/// Whether or not we should check to see if we are still connected

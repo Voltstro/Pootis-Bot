@@ -209,12 +209,12 @@ namespace Pootis_Bot.Core
 					}
 					case "toggleaudio":
 					{
-						Config.bot.IsAudioServiceEnabled = !Config.bot.IsAudioServiceEnabled;
+						Config.bot.AudioSettings.AudioServicesEnabled = !Config.bot.AudioSettings.AudioServicesEnabled;
 						Config.SaveConfig();
 
-						Global.Log($"The audio service was set to {Config.bot.IsAudioServiceEnabled}",
+						Global.Log($"The audio service was set to {Config.bot.AudioSettings.AudioServicesEnabled}",
 							ConsoleColor.Blue);
-						if (Config.bot.IsAudioServiceEnabled)
+						if (Config.bot.AudioSettings.AudioServicesEnabled)
 							AudioCheckService.CheckAudioService();
 						break;
 					}

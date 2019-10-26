@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using Discord;
+using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
+using Pootis_Bot.Core;
 using Pootis_Bot.Modules.Fun;
 using Pootis_Bot.Services.Google;
 
@@ -10,17 +12,15 @@ namespace Pootis_Bot.Services.Audio
 {
 	public class AudioDownload
 	{
-		private readonly string _pythonDir = Directory.GetCurrentDirectory() + "/External/python.exe";
-
 		/// <summary>
 		/// Downloads an audio file using a search string
 		/// </summary>
 		/// <param name="search">The string to search for</param>
 		/// <param name="channel">What channel are we on?</param>
 		/// <returns></returns>
-		public string DownloadAudio(string search, IMessageChannel channel)
+		public string DownloadAudio(string search, IMessageChannel channel, SocketGuild guild)
 		{
-			channel.SendMessageAsync($"Searching youtube for '{search}'");
+			channel.SendMessageAsync($"Searching YouTube for '{search}'");
 
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString());
 
@@ -35,16 +35,25 @@ namespace Pootis_Bot.Services.Audio
 					string check = AudioService.SearchAudio(videoTitle);
 					if (!string.IsNullOrWhiteSpace(check)) return videoLoc;
 
+					if (!Directory.Exists("Music/")) Directory.CreateDirectory("Music/");
+
 					channel.SendMessageAsync(
 						$":musical_note: Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**");
 
 					//Use Youtube-dl to download the song and convert it to a .mp3
-					CreateYtdlProcess(videoUrl, videoTitle);
+					CreateYtDownloadProcess(videoUrl, videoTitle);
 					return videoLoc;
 				}
 				catch (Exception ex)
 				{
+					Global.Log(ex.Message, ConsoleColor.Red);
 					channel.SendMessageAsync("Sorry but an error occured. Here are the details:\n" + ex.Message);
+
+					//Log out an error to the owner if they have it enabled
+					if (Config.bot.ReportErrorsToOwner)
+						channel.SendMessageAsync(
+							$"ERROR: {ex.Message}\nError occured while trying to search or download a video from YouTube on server `{guild.Id}`.");
+
 					return null;
 				}
 
@@ -53,21 +62,21 @@ namespace Pootis_Bot.Services.Audio
 			return null;
 		}
 
-		private void CreateYtdlProcess(string url, string name)
+		private static void CreateYtDownloadProcess(string url, string name)
 		{
-			ProcessStartInfo startinfo = new ProcessStartInfo
+			ProcessStartInfo processStartInfo = new ProcessStartInfo
 			{
-				FileName = _pythonDir,
+				FileName = Config.bot.AudioSettings.InitialApplication,
 				Arguments =
-					$" ./External/youtube_dl/__main__.py -x --audio-format mp3 -o /music/\"{name}\".%(ext)s \"{url}\"",
-				CreateNoWindow = false,
+					$" {Config.bot.AudioSettings.PythonArguments} -x --audio-format mp3 -o ./Music/\"{name}\".%(ext)s \"{url}\"",
+				CreateNoWindow = !Config.bot.AudioSettings.ShowYoutubeDlWindow,
 				RedirectStandardOutput = false,
-				UseShellExecute = true
+				UseShellExecute = Config.bot.AudioSettings.ShowYoutubeDlWindow
 			};
 
 			Process proc = new Process
 			{
-				StartInfo = startinfo
+				StartInfo = processStartInfo
 			};
 
 			proc.Start();

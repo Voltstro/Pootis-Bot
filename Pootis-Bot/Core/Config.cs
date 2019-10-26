@@ -14,7 +14,7 @@ namespace Pootis_Bot.Core
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "Config.json";
 
-		private const string ConfigVersion = "6";
+		private const string ConfigVersion = "7";
 
 		public static readonly ConfigFile bot;
 
@@ -61,7 +61,12 @@ namespace Pootis_Bot.Core
 				TwitchStreamingSite = "https://www.twitch.tv/creepysin",
 				LevelUpCooldown = 15,
 				LevelUpAmount = 10,
-				IsAudioServiceEnabled = false,
+				AudioSettings = new ConfigAudio
+				{
+					AudioServicesEnabled = false,
+					InitialApplication = "External\\youtube-dl",
+					PythonArguments = ""
+				},
 				CheckConnectionStatus = true,
 				CheckConnectionStatusInterval = 60000,
 				DefaultGameMessage = "Use $help for help.",

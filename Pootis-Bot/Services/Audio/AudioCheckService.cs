@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -12,37 +13,48 @@ namespace Pootis_Bot.Services.Audio
 	public static class AudioCheckService
 	{
 		//Downloads a .json file that has were to get some needed libs from
-		private static readonly string audioLibFileJsonUrl =
-			"https://pootis-bot.creepysin.com/download/audiolibfiles.json";
+		private const string AudioLibFileJsonUrl = "https://pootis-bot.creepysin.com/download/audiolibfiles.json";
+
+		//This is for when we are downloading audio service files
+		private static List<AudioDownloadServiceFiles.LibFile> _libFiles;
 
 		/// <summary>
 		/// Checks the audio service
 		/// </summary>
 		public static void CheckAudioService()
 		{
-			if (Config.bot.IsAudioServiceEnabled)
+			if (!Config.bot.AudioSettings.AudioServicesEnabled) return;
+			Global.Log("Checking audio services...", ConsoleColor.Blue);
+
+			if (!Environment.Is64BitProcess)
 			{
-				Global.Log("Checking audio services...", ConsoleColor.Blue);
+				Global.Log("Audio services cannot run on a 32-bit machine/process! Audio services weren't enabled.", ConsoleColor.Blue);
 
-				//Check to see if all the necessary files are here.
-				if (!File.Exists("external/python.exe") || !File.Exists("external/ffmpeg.exe") ||
-				    !File.Exists("external/ffplay.exe") || !File.Exists("external/ffprobe.exe") ||
-				    !Directory.Exists("external/youtube_dl")) UpdateAudioFiles();
+				Config.bot.AudioSettings.AudioServicesEnabled = false;
+				Config.SaveConfig();
 
-				if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
-				{
-					Global.Log(
-						"You need to set a YouTube api key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3",
-						ConsoleColor.Red);
-					Config.bot.IsAudioServiceEnabled = false;
-					Config.SaveConfig();
-					Global.Log("Audio service was disabled!", ConsoleColor.Red);
-				}
-				else
-				{
-					if (Config.bot.IsAudioServiceEnabled)
-						Global.Log("Audio services are ready", ConsoleColor.Blue);
-				}
+				return;
+			}
+
+			//Check to see if all the necessary files are here.
+			if (!File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") || !File.Exists("external/ffprobe.exe") 
+			     || !File.Exists("opus.dll") || !File.Exists("libsodium.dll")) UpdateAudioFiles();
+
+			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
+			{
+				Global.Log(
+					"You need to set a YouTube Data API key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3, and setting via the config menu.",
+					ConsoleColor.Red);
+
+				Global.Log("Audio service was disabled!", ConsoleColor.Red);
+
+				Config.bot.AudioSettings.AudioServicesEnabled = false;
+				Config.SaveConfig();
+			}
+			else
+			{
+				if (Config.bot.AudioSettings.AudioServicesEnabled)
+					Global.Log("Audio services are ready!", ConsoleColor.Blue);
 			}
 		}
 
@@ -53,8 +65,8 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns>Formatted string</returns>
 		public static string RemovedNotAllowedChars(string input)
 		{
-			//Remove quotes
-			string unQuoted = input.Replace("&quot;", "'");
+			//Remove quotes and other symbols
+			string unQuoted = input.Replace("&quot;", "'").Replace(":", "");
 
 			string decoded = WebUtility.HtmlDecode(unQuoted);
 			//Remove html formatting tags
@@ -66,145 +78,47 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		public static void UpdateAudioFiles()
 		{
-			Global.Log("Downloading required files for audio services...", ConsoleColor.Blue);
+			Global.Log("Downloading required files for audio services...");
 
 			//If the temp directory doesn't exist, create a new one.
-			if (!Directory.Exists("temp/")) Directory.CreateDirectory("temp/");
+			if (!Directory.Exists("Temp/")) Directory.CreateDirectory("temp/");
 
-			//Download files
+			//If the external directory doesn't exist, create it
+			if (!Directory.Exists("External/")) Directory.CreateDirectory("External/");
+
 			using (WebClient client = new WebClient())
 			{
+				// ReSharper disable once CommentTypo
 				//Get the audiolibfiles.json from the pootis-bot website and deserialize it.
-				Global.Log($"Gathering base data from {audioLibFileJsonUrl}", ConsoleColor.Blue);
-				string json = client.DownloadString(audioLibFileJsonUrl);
-				dynamic data = JsonConvert.DeserializeObject<dynamic>(json);
-				Global.Log("Done!", ConsoleColor.Blue);
+				Global.Log($"Gathering needed information from {AudioLibFileJsonUrl}...");
+				string json = client.DownloadString(AudioLibFileJsonUrl);
+				_libFiles = JsonConvert.DeserializeObject<List<AudioDownloadServiceFiles.LibFile>>(json);
+				Global.Log("Got what I needed.");
 
-				Global.Log("----==== Downloading Files ====----", ConsoleColor.Blue);
-
-				//Download the dlls
-				Global.Log($"Downloading dlls from {data.AudioDllsUrl.ToString()}", ConsoleColor.Blue);
-				client.DownloadFile(data.AudioDllsUrl.ToString(), "temp/audiodlls.zip");
-				Global.Log("Done!", ConsoleColor.Blue);
-
-				int windowsIndex = 0;
-				// ReSharper disable NotAccessedVariable
-				int linuxIndex = 0;
-				int macOsIndex = 0;
-				// ReSharper restore NotAccessedVariable
-
-				for (int i = 0; i < data.data.Count; i++)
-					if (data.data[i].OsName == "Windows")
-						windowsIndex = i;
-					else if (data.data[i].OsName == "Linux")
-						linuxIndex = i;
-					else
-						macOsIndex = i;
-
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) &&
-				    (data.data[windowsIndex].IsOsSupported == true))
-				{
-					if (Environment.Is64BitProcess)
-					{
-						//Download ffmpeg 64 bit
-						Global.Log($"Downloading ffmpeg from {data.data[windowsIndex].Ffmpeg64Url.ToString()}",
-							ConsoleColor.Blue);
-						client.DownloadFile(data.data[windowsIndex].Ffmpeg64Url.ToString(), "temp/ffmpeg-latest.zip");
-						Global.Log("Done!", ConsoleColor.Blue);
-
-						//Download ffmpeg 32 bit
-						Global.Log($"Downloading python from {data.data[windowsIndex].Python64Url}", ConsoleColor.Blue);
-						client.DownloadFile(data.data[windowsIndex].Python64Url.ToString(), "temp/python-embed.zip");
-						Global.Log("Done!", ConsoleColor.Blue);
-					}
-					else
-					{
-						//Download ffmpeg 32 bit
-						Global.Log($"Downloading ffmpeg from {data.data[windowsIndex].Ffmpeg32Url.ToString()}",
-							ConsoleColor.Blue);
-						client.DownloadFile(data.data[windowsIndex].Ffmpeg64Url.ToString(), "temp/ffmpeg-latest.zip");
-						Global.Log("Done!", ConsoleColor.Blue);
-
-						//Download ffmpeg 32 bit
-						Global.Log($"Downloading python from {data.data[windowsIndex].Python32Url}", ConsoleColor.Blue);
-						client.DownloadFile(data.data[windowsIndex].Python64Url.ToString(), "temp/python-embed.zip");
-						Global.Log("Done!", ConsoleColor.Blue);
-					}
-				}
-				else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-				{
-					//Linux audio serivces are not supported
-					Global.Log("Linux is not supported for the audio services", ConsoleColor.Blue);
-					Config.bot.IsAudioServiceEnabled = false;
-					Config.SaveConfig();
-					Global.Log("Audio service was disabled!", ConsoleColor.Red);
-					return;
-				}
-				else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-				{
-					//OSX audio serivces are not supported
-					Global.Log("MACOSX is not supported for the audio services", ConsoleColor.Blue);
-					Config.bot.IsAudioServiceEnabled = false;
-					Config.SaveConfig();
-					Global.Log("Audio service was disabled!", ConsoleColor.Red);
-					return;
-				}
-
-				Global.Log($"Downloading Youtube-Dl {data.YouTubeDlUrl.ToString()}", ConsoleColor.Blue);
-				client.DownloadFile(data.YouTubeDlUrl.ToString(), "temp/youtube-dl.zip");
-				Global.Log("Done!", ConsoleColor.Blue);
-			}
-
-			//Extract files
-			Global.Log("----==== Extracting Files ====----", ConsoleColor.Blue);
-
-			//Aduio Dlls
-			Global.Log("Extracting audio dlls...", ConsoleColor.Blue);
-			ZipFile.ExtractToDirectory("temp/audiodlls.zip", "./", true);
-			Global.Log("Done!", ConsoleColor.Blue);
-
-			//FfMpeg
-			Global.Log("Extracting ffmpeg...", ConsoleColor.Blue);
-			Directory.CreateDirectory("temp/ffmpeg");
-			ZipFile.ExtractToDirectory("temp/ffmpeg-latest.zip", "temp/ffmpeg/", true);
-			Global.Log("Done!", ConsoleColor.Blue);
-
-			//Python
-			Global.Log("Extracting python...", ConsoleColor.Blue);
-			Directory.CreateDirectory("temp/python");
-			ZipFile.ExtractToDirectory("temp/python-embed.zip", "temp/python/", true);
-			Global.Log("Done!", ConsoleColor.Blue);
-
-			//Youtube-dl
-			Global.Log("Extracting youtube-dl...", ConsoleColor.Blue);
-			Directory.CreateDirectory("temp/youtube-dl");
-			ZipFile.ExtractToDirectory("temp/youtube-dl.zip", "temp/youtube-dl/", true);
-
-			Global.Log("Done!", ConsoleColor.Blue);
-
-			//Copy files to there needed directory
-			Global.Log("----==== Copying Files ====----", ConsoleColor.Blue);
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				Global.Log("Copying FfMpeg...", ConsoleColor.Blue);
-				if (Environment.Is64BitProcess)
-					Global.DirectoryCopy("temp/ffmpeg/ffmpeg-latest-win64-static/bin/", "External/", true);
+				//Download required files depending on platform
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+					AudioDownloadServiceFiles.PrepareWindowFiles(GetLibFile("Windows"), client);
 				else
-					Global.DirectoryCopy("temp/ffmpeg/ffmpeg-latest-win32-static/bin/", "External/", true);
-				Global.Log("Done!", ConsoleColor.Blue);
+				{
+					Global.Log("Currently platform not supported! Audio services have been disabled!");
+					Config.bot.AudioSettings.AudioServicesEnabled = false;
+					Config.SaveConfig();
 
-				Global.Log("Copying python...", ConsoleColor.Blue);
-				Global.DirectoryCopy("temp/python/", "External/", true);
-				Global.Log("Done!", ConsoleColor.Blue);
-
-				Global.Log("Copying YouTube-Dl", ConsoleColor.Blue);
-				Global.DirectoryCopy("temp/youtube-dl/youtube-dl-master/youtube_dl/", "External/youtube_dl/", true);
-				Global.Log("Done!", ConsoleColor.Blue);
+					return;
+				}
 			}
 
-			Global.Log("Cleaning up...", ConsoleColor.Blue);
-			Directory.Delete("temp/", true);
-			Global.Log("Done!", ConsoleColor.Blue);
+			Global.Log("Done! All files needed for audio service are ready!", ConsoleColor.Blue);
+		}
+
+		private static AudioDownloadServiceFiles.LibFile GetLibFile(string osPlatform)
+		{
+			IEnumerable<AudioDownloadServiceFiles.LibFile> result = from a in _libFiles
+				where a.OsPlatform == osPlatform
+				select a;
+
+			AudioDownloadServiceFiles.LibFile libFile = result.FirstOrDefault();
+			return libFile;
 		}
 	}
 }
