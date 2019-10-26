@@ -175,7 +175,24 @@ namespace Pootis_Bot.Core
 					case "deletemusic":
 					{
 						foreach (ServerMusicItem channel in AudioService.currentChannels)
-							channel.AudioClient.Dispose();
+						{
+							channel.IsExit = true;
+
+							if (channel.FfMpeg != null)
+							{
+								channel.FfMpeg.Kill();
+								channel.FfMpeg.Dispose();
+							}
+
+							//Just wait a moment
+							await Task.Delay(100);
+
+							await channel.AudioClient.StopAsync();
+
+							channel.IsPlaying = false;
+						}
+
+						AudioService.currentChannels.Clear();
 
 						Global.Log("Deleting music directory...", ConsoleColor.Blue);
 						if (Directory.Exists("Music/"))

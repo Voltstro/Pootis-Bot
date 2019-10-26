@@ -39,7 +39,7 @@ namespace Pootis_Bot.Services.Audio
 						$":musical_note: Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**");
 
 					//Use Youtube-dl to download the song and convert it to a .mp3
-					CreateYtdlProcess(videoUrl);
+					CreateYtdlProcess(videoUrl, videoTitle);
 					return videoLoc;
 				}
 				catch (Exception ex)
@@ -53,13 +53,13 @@ namespace Pootis_Bot.Services.Audio
 			return null;
 		}
 
-		private void CreateYtdlProcess(string url)
+		private void CreateYtdlProcess(string url, string name)
 		{
 			ProcessStartInfo startinfo = new ProcessStartInfo
 			{
 				FileName = _pythonDir,
 				Arguments =
-					$" ./External/youtube_dl/__main__.py -x --audio-format mp3 -o /music/%(title)s.%(ext)s \"{url}\"",
+					$" ./External/youtube_dl/__main__.py -x --audio-format mp3 -o /music/\"{name}\".%(ext)s \"{url}\"",
 				CreateNoWindow = false,
 				RedirectStandardOutput = false,
 				UseShellExecute = true

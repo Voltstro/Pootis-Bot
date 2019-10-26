@@ -23,6 +23,5 @@ namespace Pootis_Bot.Modules.BotOwner
 			Global.Log($"Manually thrown exception at: {Global.TimeNow()}.", ConsoleColor.Yellow);
 			throw new Exception(message);
 		}
-
 	}
 }

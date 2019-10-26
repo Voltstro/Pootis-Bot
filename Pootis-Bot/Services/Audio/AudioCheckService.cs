@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
 
@@ -52,8 +53,12 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns>Formatted string</returns>
 		public static string RemovedNotAllowedChars(string input)
 		{
-			string output = input.Replace("\"", "''").Replace("|", "_").Replace("&#39;", "'");
-			return output;
+			//Remove quotes
+			string unQuoted = input.Replace("&quot;", "'");
+
+			string decoded = WebUtility.HtmlDecode(unQuoted);
+			//Remove html formatting tags
+			return Regex.Replace(decoded, "<.*?>", string.Empty);
 		}
 
 		/// <summary>
