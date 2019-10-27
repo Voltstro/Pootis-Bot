@@ -97,6 +97,7 @@ namespace Pootis_Bot.Modules.Account
 		}
 
 		[Command("profilemsg")]
+		[Alias("profile msg", "profile message")]
 		[Summary("Set your profile public message (This is on any Discord server with the same Pootis-Bot!)")]
 		public async Task ProfileMsg([Remainder] string message = "")
 		{

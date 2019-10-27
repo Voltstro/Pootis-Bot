@@ -20,6 +20,8 @@ namespace Pootis_Bot.Core
 		private readonly CommandService _commands;
 		private readonly IServiceProvider _services;
 
+		private const string UserNotFoundError = "User not found.";
+
 		public CommandHandler(DiscordSocketClient client)
 		{
 			_commands = new CommandService();
@@ -122,6 +124,10 @@ namespace Pootis_Bot.Core
 				//The user or bot had unmet preconditions
 				else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
 					await context.Channel.SendMessageAsync(result.ErrorReason);
+
+				//The user name imputed wasn't valid
+				else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound && result.ErrorReason == UserNotFoundError)
+					await context.Channel.SendMessageAsync("You need to input a valid username!");
 
 				//Some other error, just put the error into the console
 				//and tell the user an internal error occured so they are not just left blank

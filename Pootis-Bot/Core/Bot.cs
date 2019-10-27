@@ -84,24 +84,23 @@ namespace Pootis_Bot.Core
 				if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
-					if ((_client.ConnectionState == ConnectionState.Disconnected) ||
-					    ((_client.ConnectionState == ConnectionState.Disconnecting) && _isRunning))
-					{
-						Global.Log("The bot had disconnect for some reason, restarting...", ConsoleColor.Yellow);
+					if (_client.ConnectionState != ConnectionState.Disconnected &&
+					    (_client.ConnectionState != ConnectionState.Disconnecting || !_isRunning)) continue;
 
-						await _client.LogoutAsync();
-						_client.Dispose();
+					Global.Log("The bot had disconnect for some reason, restarting...", ConsoleColor.Yellow);
 
-						ProcessStartInfo newPootisStart = new ProcessStartInfo("dotnet", "Pootis-Bot.dll");
+					await _client.LogoutAsync();
+					_client.Dispose();
+
+					ProcessStartInfo newPootisStart = new ProcessStartInfo("dotnet", "Pootis-Bot.dll");
 #pragma warning disable IDE0067 // Dispose objects before losing scope
-						Process newPootis = new Process
-						{
-							StartInfo = newPootisStart
-						};
+					Process newPootis = new Process
+					{
+						StartInfo = newPootisStart
+					};
 #pragma warning restore IDE0067 // Dispose objects before losing scope
-						newPootis.Start();
-						Environment.Exit(0);
-					}
+					newPootis.Start();
+					Environment.Exit(0);
 				}
 				else
 				{

@@ -35,10 +35,16 @@ namespace Pootis_Bot.Modules.Server
 		[Summary("Warns the user")]
 		[RequireBotPermission(GuildPermission.KickMembers)]
 		[RequireBotPermission(GuildPermission.BanMembers)]
-		public async Task WarnUser(IGuildUser user)
+		public async Task WarnUser([Remainder] SocketGuildUser user = null)
 		{
-			await Context.Channel.SendMessageAsync(Warn((SocketUser) user));
-			await UserAccountsManager.CheckUserWarnStatus((SocketGuildUser) user);
+			if (user == null)
+			{
+				await Context.Channel.SendMessageAsync("You need to input a valid username!");
+				return;
+			}
+
+			await Context.Channel.SendMessageAsync(Warn(user));
+			await UserAccountsManager.CheckUserWarnStatus(user);
 		}
 
 		[Command("getnotwarnable")]
