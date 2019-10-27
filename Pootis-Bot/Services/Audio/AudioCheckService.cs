@@ -66,7 +66,7 @@ namespace Pootis_Bot.Services.Audio
 		public static string RemovedNotAllowedChars(string input)
 		{
 			//Remove quotes and other symbols
-			string unQuoted = input.Replace("&quot;", "'").Replace(":", "");
+			string unQuoted = input.Replace("&quot;", "'").Replace(":", "").Replace("|", "-");
 
 			string decoded = WebUtility.HtmlDecode(unQuoted);
 			//Remove html formatting tags
