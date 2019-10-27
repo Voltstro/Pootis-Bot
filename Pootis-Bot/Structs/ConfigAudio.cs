@@ -6,5 +6,6 @@
 		public string InitialApplication { get; set; }
 		public string PythonArguments { get; set; }
 		public bool ShowYoutubeDlWindow { get; set; }
+		public bool LogPlayStopSongToConsole { get; set; }
 	}
 }

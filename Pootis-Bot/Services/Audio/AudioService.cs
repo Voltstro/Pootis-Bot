@@ -190,7 +190,8 @@ namespace Pootis_Bot.Services.Audio
 			IAudioClient client = serverList.AudioClient;
 			Process ffmpeg = serverList.FfMpeg = GetFfmpeg(fileLoc);
 
-			Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
+			if(Config.bot.AudioSettings.LogPlayStopSongToConsole)
+				Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
 			using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
 			{
@@ -253,8 +254,9 @@ namespace Pootis_Bot.Services.Audio
 						}
 
 					//End
-					Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
-						ConsoleColor.Blue);
+					if(Config.bot.AudioSettings.LogPlayStopSongToConsole)
+						Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
+							ConsoleColor.Blue);
 
 					await serverList.Discord.FlushAsync(cancellation);
 					serverList.Discord.Dispose();

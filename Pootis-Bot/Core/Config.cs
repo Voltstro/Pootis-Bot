@@ -14,7 +14,7 @@ namespace Pootis_Bot.Core
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "Config.json";
 
-		private const string ConfigVersion = "7";
+		private const string ConfigVersion = "8";
 
 		public static readonly ConfigFile bot;
 
@@ -65,7 +65,8 @@ namespace Pootis_Bot.Core
 				{
 					AudioServicesEnabled = false,
 					InitialApplication = "External\\youtube-dl",
-					PythonArguments = ""
+					PythonArguments = "",
+					LogPlayStopSongToConsole = true
 				},
 				CheckConnectionStatus = true,
 				CheckConnectionStatusInterval = 60000,
