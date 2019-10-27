@@ -50,7 +50,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.LeaveAudio(Context.Guild, Context.Channel);
+			await _service.LeaveAudio(Context.Guild, Context.Channel, Context.User);
 		}
 
 		[Command("play", RunMode = RunMode.Async)]
@@ -66,7 +66,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.SendAudio((SocketGuild)Context.Guild, Context.Channel, ((IVoiceState) Context.User).VoiceChannel,
+			await _service.SendAudio((SocketGuild)Context.Guild, Context.Channel, ((IVoiceState) Context.User).VoiceChannel, Context.User,
 				song);
 		}
 
@@ -82,7 +82,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.StopAudio(Context.Guild, Context.Channel);
+			await _service.StopAudio(Context.Guild, Context.Channel, Context.User);
 		}
 
 		[Command("pause", RunMode = RunMode.Async)]
@@ -97,7 +97,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.PauseAudio(Context.Guild, Context.Channel);
+			await _service.PauseAudio(Context.Guild, Context.Channel, Context.User);
 		}
 	}
 }

@@ -17,6 +17,7 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		/// <param name="search">The string to search for</param>
 		/// <param name="channel">What channel are we on?</param>
+		/// <param name="guild"></param>
 		/// <returns></returns>
 		public string DownloadAudio(string search, IMessageChannel channel, SocketGuild guild)
 		{

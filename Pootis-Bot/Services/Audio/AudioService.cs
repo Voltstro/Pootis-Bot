@@ -15,7 +15,7 @@ namespace Pootis_Bot.Services.Audio
 {
 	public class AudioService
 	{
-		private const string FfmpegLocation = "external/ffmpeg";
+		private const string FfmpegLocation = "External/ffmpeg";
 		private const string MusicDir = "Music/";
 
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
@@ -31,7 +31,16 @@ namespace Pootis_Bot.Services.Audio
 		{
 			if (target == null)
 			{
-				await channel.SendMessageAsync(":musical_note: You need to be in a voice channel");
+				await channel.SendMessageAsync(":musical_note: You need to be in a voice channel!");
+				return;
+			}
+
+			ServerMusicItem serverMusic = GetMusicList(guild.Id);
+			if (serverMusic != null)
+			{
+				await channel.SendMessageAsync(
+					":musical_note: Sorry, but I am already playing in a different audio channel at the moment.");
+
 				return;
 			}
 
@@ -55,14 +64,22 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		/// <param name="guild">The current guild</param>
 		/// <param name="channel">Where the messages are sent</param>
+		/// <param name="user"></param>
 		/// <returns></returns>
-		public async Task LeaveAudio(IGuild guild, IMessageChannel channel)
+		public async Task LeaveAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
 			if (guild == null) return; //Check if guild is null
 			ServerMusicItem serverList = GetMusicList(guild.Id);
 			if (serverList == null)
 			{
-				await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
+				await channel.SendMessageAsync(":musical_note: You are not in any voice channel!");
+				return;
+			}
+
+			//Check to see if the user is in the playing audio channel
+			if (serverList.AudioChannel.GetUser(user.Id) == null)
+			{
+				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
 				return;
 			}
 
@@ -86,18 +103,26 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Leaves the audio audio channel
+		/// Leaves the audio channel
 		/// </summary>
 		/// <param name="guild">The guild of <see cref="channel"/></param>
 		/// <param name="channel">The channel to use for messages</param>
+		/// <param name="user"></param>
 		/// <returns></returns>
-		public async Task StopAudio(IGuild guild, IMessageChannel channel)
+		public async Task StopAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
 			ServerMusicItem serverList = GetMusicList(guild.Id);
 
 			if (serverList == null)
 			{
 				await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
+				return;
+			}
+
+			//Check to see if the user is in the playing audio channel
+			if (serverList.AudioChannel.GetUser(user.Id) == null)
+			{
+				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
 				return;
 			}
 
@@ -113,9 +138,10 @@ namespace Pootis_Bot.Services.Audio
 		/// <param name="guild"></param>
 		/// <param name="channel"></param>
 		/// <param name="target"></param>
+		/// <param name="user"></param>
 		/// <param name="search">The name of the song to play</param>
 		/// <returns></returns>
-		public async Task SendAudio(SocketGuild guild, IMessageChannel channel, IVoiceChannel target, string search)
+		public async Task SendAudio(SocketGuild guild, IMessageChannel channel, IVoiceChannel target, IUser user, string search)
 		{
 			ServerMusicItem serverList = GetMusicList(guild.Id);
 
@@ -124,6 +150,13 @@ namespace Pootis_Bot.Services.Audio
 				await JoinAudio(guild, target, channel);
 
 				serverList = GetMusicList(guild.Id);
+			}
+
+			//Check to see if the user is in the playing audio channel
+			if (serverList.AudioChannel.GetUser(user.Id) == null)
+			{
+				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
+				return;
 			}
 
 			string fileLoc = SearchAudio(search); //Search for the song in our current music directory
@@ -202,12 +235,13 @@ namespace Pootis_Bot.Services.Audio
 
 							await serverList.Discord.WriteAsync(buffer, 0, read, cancellation);
 
-							if (serverList.IsPlaying == false)
-								do
-								{
-									//Do nothing, wait till is playing is true
-									await Task.Delay(100, cancellation);
-								} while (serverList.IsPlaying == false);
+							if (serverList.IsPlaying) continue;
+
+							do
+							{
+								//Do nothing, wait till is playing is true
+								await Task.Delay(100, cancellation);
+							} while (serverList.IsPlaying == false);
 						}
 						catch (OperationCanceledException)
 						{
@@ -241,18 +275,30 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="channel"></param>
+		/// <param name="user"></param>
 		/// <returns></returns>
-		public async Task PauseAudio(IGuild guild, IMessageChannel channel)
+		public async Task PauseAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
-			if (guild == null) return; //Check guild if null
+			if (guild == null) return;
 
 			ServerMusicItem musicList = GetMusicList(guild.Id);
-			if (musicList == null) return; //Check server list if it is null
+			if (musicList == null)
+			{
+				await channel.SendMessageAsync(":musical_note: There is no music being played!");
+				return;
+			}
+
+			//Check to see if the user is in the playing audio channel
+			if (musicList.AudioChannel.GetUser(user.Id) == null)
+			{
+				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
+				return;
+			}
 
 			musicList.IsPlaying = !musicList.IsPlaying; //Toggle pause status
 
-			if (musicList.IsPlaying) await channel.SendMessageAsync(":musical_note: Current song has been un-paused");
-			else await channel.SendMessageAsync(":musical_note: Current song has been paused");
+			if (musicList.IsPlaying) await channel.SendMessageAsync(":musical_note: Current song has been un-paused.");
+			else await channel.SendMessageAsync(":musical_note: Current song has been paused.");
 		}
 
 		/// <summary>
