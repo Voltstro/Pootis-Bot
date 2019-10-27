@@ -250,6 +250,11 @@ namespace Pootis_Bot.Services.Audio
 						catch (Exception ex)
 						{
 							await channel.SendMessageAsync($"Sorry an error occured **Error Details**\n{ex.Message}");
+
+							if(Config.bot.ReportErrorsToOwner)
+								await Global.BotOwner.SendMessageAsync(
+									$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
+
 							fail = true;
 						}
 

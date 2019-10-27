@@ -52,7 +52,7 @@ namespace Pootis_Bot.Services.Audio
 
 					//Log out an error to the owner if they have it enabled
 					if (Config.bot.ReportErrorsToOwner)
-						channel.SendMessageAsync(
+						Global.BotOwner.SendMessageAsync(
 							$"ERROR: {ex.Message}\nError occured while trying to search or download a video from YouTube on server `{guild.Id}`.");
 
 					return null;
