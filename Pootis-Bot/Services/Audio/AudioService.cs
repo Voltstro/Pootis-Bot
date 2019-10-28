@@ -87,7 +87,6 @@ namespace Pootis_Bot.Services.Audio
 
 			if (serverList.FfMpeg != null)
 			{
-				serverList.IsExit = true;
 				serverList.FfMpeg.Kill();
 				serverList.FfMpeg.Dispose();
 			}

@@ -125,7 +125,22 @@ namespace Pootis_Bot.Core
 						Global.Log("Shutting down...");
 						await _client.SetGameAsync("Bot shutting down");
 						foreach (ServerMusicItem channel in AudioService.currentChannels)
-							channel.AudioClient.Dispose();
+						{
+							channel.IsExit = true;
+
+							if (channel.FfMpeg != null)
+							{
+								channel.FfMpeg.Kill();
+								channel.FfMpeg.Dispose();
+							}
+
+							//Just wait a moment
+							await Task.Delay(100);
+
+							await channel.AudioClient.StopAsync();
+
+							channel.IsPlaying = false;
+						}
 
 						await _client.LogoutAsync();
 						_client.Dispose();
