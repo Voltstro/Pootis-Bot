@@ -12,6 +12,11 @@ namespace Pootis_Bot.Services
 {
 	public class BotCheckServerSettings
 	{
+		/// <summary>
+		/// Checks all server settings, auto vc channels, active vc channels and the welcome message
+		/// </summary>
+		/// <param name="client"></param>
+		/// <returns></returns>
 		public static async Task CheckConnectedServerSettings(DiscordSocketClient client)
 		{
 			Global.Log("Checking pre-connected server settings...");
@@ -46,31 +51,44 @@ namespace Pootis_Bot.Services
 					server.WelcomeChannelId = 0;
 				}
 
-				//Check to see if all the active channels don't have someone in it.
-				List<ulong> deleteActiveChannels = new List<ulong>();
-
-				foreach (ulong activeChannel in server.ActiveAutoVoiceChannels.Where(activeChannel =>
-					client.GetChannel(activeChannel).Users.Count == 0))
+				//Active voice channels to delete
+				List<ulong> toDeleteActiveChannels = new List<ulong>();
+				foreach (ulong voiceChannel in server.ActiveAutoVoiceChannels)
 				{
-					await ((SocketVoiceChannel) client.GetChannel(activeChannel)).DeleteAsync();
-					deleteActiveChannels.Add(activeChannel);
-					somethingChanged = true;
-				}
+					//If the channel doesn't exist anymore remove it from the active voice channels
+					if (client.GetGuild(server.GuildId).GetVoiceChannel(voiceChannel) == null)
+					{
+						toDeleteActiveChannels.Add(voiceChannel);
+						somethingChanged = true;
+						continue;
+					}
 
-				//Check to see if all the auto voice channels are there
-				List<VoiceChannel> deleteAutoChannels = new List<VoiceChannel>();
-				foreach (VoiceChannel autoChannel in server.AutoVoiceChannels.Where(autoChannel =>
-					client.GetChannel(autoChannel.Id) == null))
-				{
-					deleteAutoChannels.Add(autoChannel);
+					//Also remove and delete the channel if there is no one in the channel
+					if (client.GetGuild(server.GuildId).GetVoiceChannel(voiceChannel).Users.Count != 0) continue;
+
+					toDeleteActiveChannels.Add(voiceChannel);
+					
 					somethingChanged = true;
 				}
 
 				//To avoid System.InvalidOperationException remove all of the objects from the list after
-				foreach (ulong activeChannel in deleteActiveChannels)
-					server.ActiveAutoVoiceChannels.Remove(activeChannel);
+				foreach (ulong toDeleteFromActiveVoiceChannelList in toDeleteActiveChannels)
+				{
+					server.ActiveAutoVoiceChannels.Remove(toDeleteFromActiveVoiceChannelList);
 
-				foreach (VoiceChannel autoChannel in deleteAutoChannels) server.AutoVoiceChannels.Remove(autoChannel);
+					if(client.GetGuild(server.GuildId).GetVoiceChannel(toDeleteFromActiveVoiceChannelList) != null)
+#pragma warning disable 4014
+						client.GetGuild(server.GuildId).GetVoiceChannel(toDeleteFromActiveVoiceChannelList).DeleteAsync();
+#pragma warning restore 4014
+				}
+
+				List<VoiceChannel> autoVcChannelsToDelete = server.AutoVoiceChannels.Where(voiceChannel => client.GetGuild(server.GuildId).GetVoiceChannel(voiceChannel.Id) == null).ToList();
+
+				foreach (VoiceChannel toDelete in autoVcChannelsToDelete)
+				{
+					server.AutoVoiceChannels.Remove(toDelete);
+					somethingChanged = true;
+				}
 			}
 
 			//Like all the other ones, we remove all the unnecessary servers after to avoid System.InvalidOperationException
