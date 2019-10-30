@@ -1,12 +1,6 @@
 steps:
-- task: NuGetToolInstaller@1
+- script: dotnet restore -v minimal Pootis-Bot.sln
+  displayName: Restore Packages
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+- script: dotnet build Pootis-Bot.sln --no-restore --framework $(frameworkVersion) -v minimal -c $(buildConfiguration)
+  displayName: Build Projects
