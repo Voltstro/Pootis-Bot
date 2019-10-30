@@ -43,12 +43,19 @@ namespace Pootis_Bot.Services
 				return;
 			}
 
+			List<IRole> iRoles = new List<IRole>();
+
 			ServerList server = ServerListsManager.GetServer(guild);
 
-			//Check all roles to see if they exists
+			//Check all roles to see if they actually exists
 			foreach (string role in roles)
 			{
-				if (Global.GetGuildRole(guild, role) != null) continue;
+				if (Global.GetGuildRole(guild, role) != null)
+				{
+					//Add all the roles Ids
+					iRoles.Add(Global.GetGuildRole(guild, role));
+					continue;
+				}
 
 				await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
 				return;
@@ -57,10 +64,12 @@ namespace Pootis_Bot.Services
 			if (server.GetCommandInfo(command) == null)
 			{
 				//The command didn't exist before, so we will create a new one and just add the roles
+				List<ulong> rolesIds = iRoles.Select(iRole => iRole.Id).ToList();
+
 				server.CommandInfos.Add(new ServerList.CommandInfo
 				{
 					Command = command,
-					Roles = roles.ToList()
+					Roles = rolesIds
 				});
 
 				ServerListsManager.SaveServerList();
@@ -69,16 +78,18 @@ namespace Pootis_Bot.Services
 			}
 			else //The command already exists
 			{
-				//Build a list of command
-				foreach (string role in roles)
+				//Check to see if all the roles we are adding are non-existing roles assigned to the command
+				foreach (IRole iRole in iRoles.Where(iRole => server.GetCommandInfo(command).GetRole(iRole.Id) != 0))
 				{
-					if (server.GetCommandInfo(command).GetRole(role) != null)
-					{
-						await channel.SendMessageAsync($"The command `{command}` already has the role **{role}** added to it!");
-						return;
-					}
+					await channel.SendMessageAsync(
+						$"The command `{command}` already has the role **{iRole.Name}**.");
+					return;
+				}
 
-					server.GetCommandInfo(command).Roles.Add(role);
+				//Since we now know that all the roles we are assigning are not assigned, we add them to the list of roles
+				foreach (IRole iRole in iRoles)
+				{
+					server.GetCommandInfo(command).Roles.Add(iRole.Id);
 				}
 
 				ServerListsManager.SaveServerList();
@@ -108,15 +119,21 @@ namespace Pootis_Bot.Services
 				return;
 			}
 
+			List<IRole> iRoles = new List<IRole>();
+
 			ServerList server = ServerListsManager.GetServer(guild);
 
 			//Check all the imputed roles to see if they exists
 			foreach (string role in roles)
 			{
-				if (Global.GetGuildRole(guild, role) != null) continue;
+				IRole iRole = Global.GetGuildRole(guild, role);
+				if (iRole == null)
+				{
+					await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
+					return;
+				}
 
-				await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
-				return;
+				iRoles.Add(iRole);
 			}
 
 			//Doesn't exist
@@ -127,9 +144,9 @@ namespace Pootis_Bot.Services
 			else 
 			{
 				//Check all roles and make sure they are assigned to the command
-				foreach (string role in roles)
+				foreach (IRole role in iRoles)
 				{
-					if (server.GetCommandInfo(command).GetRole(role) != null) continue;
+					if (server.GetCommandInfo(command).GetRole(role.Id) != 0) continue;
 
 					await channel.SendMessageAsync(
 						$"The command `{command}` doesn't have the role **{role}** assigned to it!");
@@ -137,9 +154,9 @@ namespace Pootis_Bot.Services
 				}
 
 				//Now begin removing all the roles, since we know all the entered roles are already assigned to the command
-				foreach (string role in roles)
+				foreach (IRole role in iRoles)
 				{
-					server.GetCommandInfo(command).Roles.Remove(server.GetCommandInfo(command).GetRole(role));
+					server.GetCommandInfo(command).Roles.Remove(server.GetCommandInfo(command).GetRole(role.Id));
 				}
 
 				//There are no more roles assigned to the command so remove it entirely

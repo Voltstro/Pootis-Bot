@@ -111,15 +111,15 @@ namespace Pootis_Bot.Entities
 			/// <summary>
 			/// Roles that are allowed to use the command
 			/// </summary>
-			public List<string> Roles { get; set; }
+			public List<ulong> Roles { get; set; }
 
-			public string GetRole(string roleName)
+			public ulong GetRole(ulong roleId)
 			{
-				IEnumerable<string> result = from a in Roles
-					where a == roleName
+				IEnumerable<ulong> result = from a in Roles
+					where a == roleId
 					select a;
 				
-				string role = result.FirstOrDefault();
+				ulong role = result.FirstOrDefault();
 				return role;
 			}
 		}

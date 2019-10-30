@@ -101,16 +101,27 @@ namespace Pootis_Bot.Core
 				ServerList.CommandInfo perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
 				if (perm != null)
 				{
-					bool doesUserHaveARole = false;
-
-					foreach (string role in perm.Roles)
+					bool doesUserHavePerm = false;
+					foreach (SocketRole role in ((SocketGuildUser)context.User).Roles)
 					{
-						IRole guildRole = ((IGuildUser) context.User).Guild.Roles.FirstOrDefault(x => x.Name == role);
-						if (((SocketGuildUser) context.User).Roles.Contains(guildRole)) doesUserHaveARole = true;
+						if(doesUserHavePerm)
+							continue;
+
+						foreach (ulong unused in perm.Roles.Where(permRole => role == Global.GetGuildRole(context.Guild, permRole)))
+						{
+							if(doesUserHavePerm)
+								continue;
+
+							doesUserHavePerm = true;
+						}
 					}
 
-					if (!doesUserHaveARole && (context.User.Id != context.Guild.Owner.Id))
+					if (!doesUserHavePerm && context.User.Id != context.Guild.OwnerId)
+					{
+						await context.Channel.SendMessageAsync(
+							"You do not have permission to use that command on this guild!");
 						return;
+					}
 				}
 
 				//Result

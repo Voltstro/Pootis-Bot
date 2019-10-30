@@ -58,7 +58,7 @@ namespace Pootis_Bot.Modules.Server
 
 			foreach (ServerList.CommandInfo perm in server.CommandInfos)
 			{
-				sb.Append($"__`{perm.Command}`__\nRoles: {FormatRoles(perm.Roles)}\n\n");
+				sb.Append($"__`{perm.Command}`__\nRoles: {FormatRoles(perm.Roles, Context.Guild)}\n\n");
 			}
 
 			await Context.Channel.SendMessageAsync(sb.ToString());
@@ -217,9 +217,9 @@ namespace Pootis_Bot.Modules.Server
 
 		#region Functions
 
-		private static string FormatRoles(IEnumerable<string> roles)
+		private static string FormatRoles(IEnumerable<ulong> roles, SocketGuild guild)
 		{
-			return roles.Aggregate("", (current, role) => current + $"{role}, ");
+			return roles.Aggregate("", (current, role) => current + $"{Global.GetGuildRole(guild, role).Name}, ");
 		}
 
 		#endregion
