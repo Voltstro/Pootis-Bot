@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,15 +31,17 @@ namespace Pootis_Bot.Modules.Server
 		[Command("perm")]
 		[Summary("Adds or removes command permission")]
 		[RequireGuildOwner]
-		public async Task Permission(string command, string subCmd, string role)
+		public async Task Permission(string command, string subCmd, [Remainder] string roles)
 		{
+			string[] spiltRoles = roles.Split(new[] {", ", ","}, StringSplitOptions.RemoveEmptyEntries);
+
 			switch (subCmd)
 			{
 				case "add":
-					await _perm.AddPerm(command, role, Context.Channel, Context.Guild);
+					await _perm.AddPerm(command, spiltRoles, Context.Channel, Context.Guild);
 					break;
 				default:
-					await _perm.RemovePerm(command, role, Context.Channel, Context.Guild);
+					await _perm.RemovePerm(command, spiltRoles, Context.Channel, Context.Guild);
 					break;
 			}
 		}

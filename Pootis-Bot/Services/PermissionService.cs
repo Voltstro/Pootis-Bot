@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -23,11 +25,11 @@ namespace Pootis_Bot.Services
 		/// Lets only a certain role use a command
 		/// </summary>
 		/// <param name="command"></param>
-		/// <param name="role"></param>
+		/// <param name="roles"></param>
 		/// <param name="channel"></param>
 		/// <param name="guild"></param>
 		/// <returns></returns>
-		public async Task AddPerm(string command, string role, IMessageChannel channel, SocketGuild guild)
+		public async Task AddPerm(string command, string[] roles, IMessageChannel channel, SocketGuild guild)
 		{
 			if (!CanModifyPerm(command))
 			{
@@ -43,33 +45,44 @@ namespace Pootis_Bot.Services
 
 			ServerList server = ServerListsManager.GetServer(guild);
 
-			//Check too see if role exist
-			if (Global.GetGuildRole(guild, role) != null)
+			//Check all roles to see if they exists
+			foreach (string role in roles)
 			{
-				if (server.GetCommandInfo(command) == null) // Command doesn't exist, add it
+				if (Global.GetGuildRole(guild, role) != null) continue;
+
+				await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
+				return;
+			}
+
+			if (server.GetCommandInfo(command) == null)
+			{
+				//The command didn't exist before, so we will create a new one and just add the roles
+				server.CommandInfos.Add(new ServerList.CommandInfo
 				{
-					ServerList.CommandInfo item = new ServerList.CommandInfo
+					Command = command,
+					Roles = roles.ToList()
+				});
+
+				ServerListsManager.SaveServerList();
+
+				await channel.SendMessageAsync(AddPermMessage(roles, command));
+			}
+			else //The command already exists
+			{
+				//Build a list of command
+				foreach (string role in roles)
+				{
+					if (server.GetCommandInfo(command).GetRole(role) != null)
 					{
-						Command = command,
-						Roles = new List<string> { role }
-					};
+						await channel.SendMessageAsync($"The command `{command}` already has the role **{role}** added to it!");
+						return;
+					}
 
-					server.CommandInfos.Add(item);
-
-					await channel.SendMessageAsync($"The role **{role}** will be allowed to use the command **{command}**.");
-				}
-				else // The command already exist, add it to the list of roles.
-				{
 					server.GetCommandInfo(command).Roles.Add(role);
-
-					await channel.SendMessageAsync($"The role **{role}** will be allowed to use the command **{command}**.");
 				}
 
 				ServerListsManager.SaveServerList();
-			}
-			else
-			{
-				await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
+				await channel.SendMessageAsync(AddPermMessage(roles, command));
 			}
 		}
 
@@ -77,60 +90,66 @@ namespace Pootis_Bot.Services
 		/// Stops a role from being able to use a command
 		/// </summary>
 		/// <param name="command"></param>
-		/// <param name="role"></param>
+		/// <param name="roles"></param>
 		/// <param name="channel"></param>
 		/// <param name="guild"></param>
 		/// <returns></returns>
-		public async Task RemovePerm(string command, string role, IMessageChannel channel, SocketGuild guild)
+		public async Task RemovePerm(string command, string[] roles, IMessageChannel channel, SocketGuild guild)
 		{
 			if (!CanModifyPerm(command))
 			{
-				await channel.SendMessageAsync($"Cannot set the permission of **{command}**");
+				await channel.SendMessageAsync($"Cannot set the permission of the command `{command}`.");
 				return;
 			}
 
 			if (!DoesCmdExist(command))
 			{
-				await channel.SendMessageAsync($"The command **{command}** doesn't exist!");
+				await channel.SendMessageAsync($"The command `{command}` doesn't exist!");
 				return;
 			}
 
 			ServerList server = ServerListsManager.GetServer(guild);
 
-			//Check too see if role exist
-			if (Global.GetGuildRole(guild, role) != null)
+			//Check all the imputed roles to see if they exists
+			foreach (string role in roles)
 			{
-				if (server.GetCommandInfo(command) == null) // Command already has no permissions
+				if (Global.GetGuildRole(guild, role) != null) continue;
+
+				await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
+				return;
+			}
+
+			//Doesn't exist
+			if (server.GetCommandInfo(command) == null)
+			{
+				await channel.SendMessageAsync($"The command `{command}` already has no roles assigned to it!");
+			}
+			else 
+			{
+				//Check all roles and make sure they are assigned to the command
+				foreach (string role in roles)
 				{
+					if (server.GetCommandInfo(command).GetRole(role) != null) continue;
+
 					await channel.SendMessageAsync(
-						$"The command **{command}** already has no permissions added to it!");
+						$"The command `{command}` doesn't have the role **{role}** assigned to it!");
 					return;
 				}
 
-				bool roleRemoved = false;
-				foreach (string cmdRole in server.GetCommandInfo(command).Roles.ToArray())
+				//Now begin removing all the roles, since we know all the entered roles are already assigned to the command
+				foreach (string role in roles)
 				{
-					if (roleRemoved)
-						continue;
-
-					if (role != cmdRole) continue;
-					server.GetCommandInfo(command).Roles.Remove(role);
-					roleRemoved = true;
-
-					await channel.SendMessageAsync($"The role **{role}** was removed from the command **{command}**.");
+					server.GetCommandInfo(command).Roles.Remove(server.GetCommandInfo(command).GetRole(role));
 				}
 
-				if (!roleRemoved)
-					await channel.SendMessageAsync($"The command **{command}** didn't had the role **{role}** on it!");
-
+				//There are no more roles assigned to the command so remove it entirely
 				if (server.GetCommandInfo(command).Roles.Count == 0)
+				{
 					server.CommandInfos.Remove(server.GetCommandInfo(command));
+				}
 
 				ServerListsManager.SaveServerList();
-			}
-			else
-			{
-				await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
+				await channel.SendMessageAsync(RemovePermMessage(roles, command, server));
 			}
 		}
 
@@ -162,6 +181,49 @@ namespace Pootis_Bot.Services
 			}
 
 			return doesCmdExist;
+		}
+
+		private static string AddPermMessage(IReadOnlyList<string> roles, string command)
+		{
+			//There is only one role
+			if (roles.Count == 1)
+			{
+				return $"**{roles[0]}** role will be allowed to use the command `{command}`.";
+			}
+			else //Multiple roles
+			{
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < roles.Count; i++)
+				{
+					sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
+				}
+
+				return $"**{sb}** roles will be allowed to use the command `{command}`.";
+			}
+		}
+
+		private static string RemovePermMessage(IReadOnlyList<string> roles, string command, ServerList server)
+		{
+			if (server.GetCommandInfo(command) == null)
+			{
+				return $"Anyone will now be allowed to use the command `{command}`.";
+			}
+
+			//There is only one role
+			if (roles.Count == 1)
+			{
+				return $"**{roles[0]}** role will not be allowed to use the command `{command}`.";
+			}
+			else //Multiple roles
+			{
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < roles.Count; i++)
+				{
+					sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
+				}
+
+				return $"**{sb}** roles will not be allowed to use the command `{command}`.";
+			}
 		}
 	}
 }

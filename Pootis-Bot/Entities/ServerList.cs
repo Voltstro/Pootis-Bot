@@ -112,6 +112,16 @@ namespace Pootis_Bot.Entities
 			/// Roles that are allowed to use the command
 			/// </summary>
 			public List<string> Roles { get; set; }
+
+			public string GetRole(string roleName)
+			{
+				IEnumerable<string> result = from a in Roles
+					where a == roleName
+					select a;
+				
+				string role = result.FirstOrDefault();
+				return role;
+			}
 		}
 
 		public class AntiSpamSettingsInfo
