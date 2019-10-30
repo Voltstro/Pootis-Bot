@@ -29,14 +29,17 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
+			if (string.IsNullOrWhiteSpace(search))
+			{
+				await Context.Channel.SendMessageAsync("The search input cannot be blank!");
+				return;
+			}
+
 			//Search Youtube
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString(), 6);
 
 			StringBuilder videos = new StringBuilder();
 			StringBuilder channels = new StringBuilder();
-
-			if (searchListResponse == null)
-				Console.WriteLine("Is null");
 
 			if (searchListResponse != null)
 				foreach (SearchResult result in searchListResponse.Items)

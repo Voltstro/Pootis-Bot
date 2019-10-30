@@ -27,6 +27,12 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
+			if (string.IsNullOrWhiteSpace(search))
+			{
+				await Context.Channel.SendMessageAsync("The search input cannot be blank!");
+				return;
+			}
+
 			GiphySearchResult results = GiphyService.Search(search);
 			if (!results.IsSuccessful)
 			{

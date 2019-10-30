@@ -28,6 +28,12 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
+			if (string.IsNullOrEmpty(search))
+			{
+				await Context.Channel.SendMessageAsync("he search input cannot be blank!");
+				return;
+			}
+
 			Search searchListResponse = GoogleService.Search(search, GetType().ToString());
 
 			StringBuilder results = new StringBuilder();
