@@ -69,6 +69,10 @@ function getLatestRelease() {
 		var download = document.createElement("p");
 		download.innerHTML = downloadsText;
 
-		element.appendChild(download);                      
+		var allVersionLink = document.createElement("p");
+		allVersionLink.innerHTML = "<a href='all'>All Versions are here! </a>";
+
+		element.appendChild(download);     
+		element.appendChild(allVersionLink);           
 	});
 }
