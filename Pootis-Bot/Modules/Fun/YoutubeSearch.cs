@@ -2,8 +2,11 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Rest;
+using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
 using Pootis_Bot.Core;
+using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Google;
 using SearchResult = Google.Apis.YouTube.v3.Data.SearchResult;
@@ -20,6 +23,7 @@ namespace Pootis_Bot.Modules.Fun
 		[Command("youtube")]
 		[Summary("Searches Youtube")]
 		[Alias("yt")]
+		[Cooldown(5)]
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
 		public async Task Youtube([Remainder] string search = "")
 		{
@@ -35,12 +39,15 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
-			await Context.Channel.SendMessageAsync("", false, YtSearch(search));
+			await YtSearch(search, Context.Channel);
+
+			//await Context.Channel.SendMessageAsync("", false, YtSearch(search));
 		}
 
 		[Command("youtube")]
 		[Summary("Searches Youtube")]
 		[Alias("yt")]
+		[Cooldown(5)]
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
 		public async Task Youtube(int maxSearchResults = 6, [Remainder] string search = "")
 		{
@@ -63,11 +70,20 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
-			await Context.Channel.SendMessageAsync("", false, YtSearch(search, maxSearchResults));
+			await YtSearch(search, Context.Channel, maxSearchResults);
 		}
 
-		private Embed YtSearch(string search, int maxSearch = 6)
+		private async Task YtSearch(string search, ISocketMessageChannel channel, int maxSearch = 6)
 		{
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle($"YouTube Search '{search}'");
+			embed.WithDescription("Searching YouTube...");
+			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
+			embed.WithCurrentTimestamp();
+			embed.WithColor(FunCmdsConfig.youtubeColor);
+
+			RestUserMessage message = await channel.SendMessageAsync("", false, embed.Build());
+
 			//Search Youtube
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString(), maxSearch);
 
@@ -92,14 +108,10 @@ namespace Pootis_Bot.Modules.Fun
 				}
 			}
 
-			EmbedBuilder embed = new EmbedBuilder();
-			embed.WithTitle($"YouTube Search '{search}'");
 			embed.WithDescription($"**Videos**\n{videos}\n\n**Channels**\n{channels}");
-			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
 			embed.WithCurrentTimestamp();
-			embed.WithColor(FunCmdsConfig.youtubeColor);
 
-			return embed.Build();
+			await message.ModifyAsync(x => { x.Embed = embed.Build(); });
 		}
 	}
 }

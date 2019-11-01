@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Rest;
 using Pootis_Bot.Core;
+using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Fun;
 using Pootis_Bot.Structs;
 
@@ -17,9 +19,10 @@ namespace Pootis_Bot.Modules.Fun
 		[Command("giphy")]
 		[Summary("Searches Giphy")]
 		[Alias("gy")]
+		[Cooldown(5)]
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
 		[RequireBotPermission(GuildPermission.AttachFiles)]
-		public async Task CmdGiphySearch([Remainder] string search = "")
+		public async Task Giphy([Remainder] string search = "")
 		{
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGiphyKey))
 			{
@@ -33,12 +36,18 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle($"Giphy Search '{search}'");
+			embed.WithDescription("Searching Giphy...");
+			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
+			embed.WithCurrentTimestamp();
+			embed.WithColor(FunCmdsConfig.giphyColor);
+
+			RestUserMessage message = await Context.Channel.SendMessageAsync("", false, embed.Build());
+
 			GiphySearchResult results = GiphyService.Search(search);
 			if (!results.IsSuccessful)
 			{
-				//This should never happen, since we check it at the start!
-				if (results.ErrorReason == ErrorReason.NoApiKey)
-					return;
 				if (results.ErrorReason == ErrorReason.Error)
 				{
 					await Context.Channel.SendMessageAsync(
@@ -47,15 +56,11 @@ namespace Pootis_Bot.Modules.Fun
 				}
 			}
 
-			EmbedBuilder embed = new EmbedBuilder();
-			embed.WithTitle($"Giphy Search '{Global.Title(results.Data.GifTitle)}'");
 			embed.WithDescription($"**By**: {results.Data.GifAuthor}\n**URL**: {results.Data.GifLink}");
 			embed.WithImageUrl(results.Data.GifUrl);
-			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
 			embed.WithCurrentTimestamp();
-			embed.WithColor(FunCmdsConfig.giphyColor);
 
-			await Context.Channel.SendMessageAsync("", false, embed.Build());
+			await message.ModifyAsync(x => { x.Embed = embed.Build(); });
 		}
 	}
 }

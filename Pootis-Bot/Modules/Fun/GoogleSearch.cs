@@ -2,8 +2,11 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Rest;
+using Discord.WebSocket;
 using Google.Apis.Customsearch.v1.Data;
 using Pootis_Bot.Core;
+using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Google;
 
 namespace Pootis_Bot.Modules.Fun
@@ -18,6 +21,7 @@ namespace Pootis_Bot.Modules.Fun
 		[Command("google")]
 		[Summary("Searches Google")]
 		[Alias("g")]
+		[Cooldown(5)]
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
 		public async Task Google([Remainder] string search = "")
 		{
@@ -34,12 +38,13 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
-			await Context.Channel.SendMessageAsync("", false, GSearch(search));
+			await GSearch(search, Context.Channel);
 		}
 
 		[Command("google")]
 		[Summary("Searches Google")]
 		[Alias("g")]
+		[Cooldown(5)]
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
 		public async Task Google(int maxSearchResults = 10, [Remainder] string search = "")
 		{
@@ -63,11 +68,20 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
-			await Context.Channel.SendMessageAsync("", false, GSearch(search, maxSearchResults));
+			await GSearch(search, Context.Channel, maxSearchResults);
 		}
 
-		private Embed GSearch(string search, int maxResults = 10)
+		private async Task GSearch(string search, ISocketMessageChannel channel, int maxResults = 10)
 		{
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle($"Google Search '{search}'");
+			embed.WithDescription("Searching Google...");
+			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
+			embed.WithColor(FunCmdsConfig.googleColor);
+			embed.WithCurrentTimestamp();
+
+			RestUserMessage message = await channel.SendMessageAsync("", false, embed.Build());
+
 			Search searchListResponse = GoogleService.Search(search, GetType().ToString());
 
 			StringBuilder description = new StringBuilder();
@@ -77,26 +91,22 @@ namespace Pootis_Bot.Modules.Fun
 			{
 				if (currentResult == maxResults) continue;
 
-				string message = $"**[{result.Title}]({result.Link})**\n{result.Snippet}\n\n";
+				string link = $"**[{result.Title}]({result.Link})**\n{result.Snippet}\n\n";
 
 				if (description.Length >= 2048)
 					continue;
 
-				if (description.Length + message.Length >= 2048)
+				if (description.Length + link.Length >= 2048)
 					continue;
 
-				description.Append(message);
+				description.Append(link);
 				currentResult += 1;
 			}
 
-			EmbedBuilder embed = new EmbedBuilder();
-			embed.WithTitle($"Google Search '{search}'");
 			embed.WithDescription(description.ToString());
-			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
-			embed.WithColor(FunCmdsConfig.googleColor);
 			embed.WithCurrentTimestamp();
 
-			return embed.Build();
+			await message.ModifyAsync(x => { x.Embed = embed.Build(); });
 		}
 	}
 }
