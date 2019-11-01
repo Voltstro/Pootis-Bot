@@ -21,7 +21,7 @@ namespace Pootis_Bot.Modules.Fun
 		[Summary("Searches Youtube")]
 		[Alias("yt")]
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
-		public async Task CmdYoutubeSearch([Remainder] string search = "")
+		public async Task Youtube([Remainder] string search = "")
 		{
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
 			{
@@ -35,14 +35,42 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
+			await Context.Channel.SendMessageAsync("", false, YtSearch(search));
+		}
+
+		[Command("youtube")]
+		[Summary("Searches Youtube")]
+		[Alias("yt")]
+		[RequireBotPermission(GuildPermission.EmbedLinks)]
+		public async Task Youtube(int maxSearchResults = 6, [Remainder] string search = "")
+		{
+			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
+			{
+				await Context.Channel.SendMessageAsync("YouTube search is disabled by the bot owner.");
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(search))
+			{
+				await Context.Channel.SendMessageAsync("The search input cannot be blank!");
+				return;
+			}
+
+			await Context.Channel.SendMessageAsync("", false, YtSearch(search, maxSearchResults));
+		}
+
+		private Embed YtSearch(string search, int maxSearch = 6)
+		{
 			//Search Youtube
-			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString(), 6);
+			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString(), maxSearch);
 
 			StringBuilder videos = new StringBuilder();
 			StringBuilder channels = new StringBuilder();
 
 			if (searchListResponse != null)
+			{
 				foreach (SearchResult result in searchListResponse.Items)
+				{
 					switch (result.Id.Kind)
 					{
 						case "youtube#video":
@@ -54,6 +82,8 @@ namespace Pootis_Bot.Modules.Fun
 								$"**[{AudioCheckService.RemovedNotAllowedChars(result.Snippet.Title)}]({FunCmdsConfig.ytChannelStart}{result.Id.ChannelId})**\n{result.Snippet.Description}\n\n");
 							break;
 					}
+				}
+			}
 
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle($"YouTube Search '{search}'");
@@ -62,7 +92,7 @@ namespace Pootis_Bot.Modules.Fun
 			embed.WithCurrentTimestamp();
 			embed.WithColor(FunCmdsConfig.youtubeColor);
 
-			await Context.Channel.SendMessageAsync("", false, embed.Build());
+			return embed.Build();
 		}
 	}
 }
