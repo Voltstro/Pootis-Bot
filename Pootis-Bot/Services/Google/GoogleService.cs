@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Google
 	public static class GoogleService
 	{
 		/// <summary>
-		/// Searches google for a string
+		/// Searches Google
 		/// </summary>
 		/// <param name="search"></param>
 		/// <param name="appName"></param>
@@ -17,22 +17,24 @@ namespace Pootis_Bot.Services.Google
 		{
 			try
 			{
-				if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGoogleSearchKey) &&
-				    !string.IsNullOrWhiteSpace(Config.bot.Apis.GoogleSearchEngineId))
-				{
-					CustomsearchService google = new CustomsearchService(new BaseClientService.Initializer
-					{
-						ApiKey = Config.bot.Apis.ApiGoogleSearchKey,
-						ApplicationName = appName
-					});
+				if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGoogleSearchKey) ||
+				    string.IsNullOrWhiteSpace(Config.bot.Apis.GoogleSearchEngineId)) return null;
 
+				Search googleSearch;
+
+				using (CustomsearchService google = new CustomsearchService(new BaseClientService.Initializer
+				{
+					ApiKey = Config.bot.Apis.ApiGoogleSearchKey,
+					ApplicationName = appName,
+				}))
+				{
 					CseResource.ListRequest searchListRequest = google.Cse.List(search);
 					searchListRequest.Cx = Config.bot.Apis.GoogleSearchEngineId;
 
-					return searchListRequest.Execute();
+					googleSearch = searchListRequest.Execute();
 				}
 
-				return null;
+				return googleSearch;
 			}
 			catch
 			{

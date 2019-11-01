@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Google
 	public static class YoutubeService
 	{
 		/// <summary>
-		/// Searches youtube for a string
+		/// Searches YouTube
 		/// </summary>
 		/// <param name="search">The string to search for</param>
 		/// <param name="appName"></param>
@@ -24,23 +24,24 @@ namespace Pootis_Bot.Services.Google
 			try
 			{
 				//Check to see if the token is null or white space
-				if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
-				{
-					YouTubeService youtube = new YouTubeService(new BaseClientService.Initializer
-					{
-						ApiKey = Config.bot.Apis.ApiYoutubeKey,
-						ApplicationName = appName
-					});
+				if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey)) return null;
 
+				SearchListResponse youtubeSearch;
+
+				using (YouTubeService youtube = new YouTubeService(new BaseClientService.Initializer
+				{
+					ApiKey = Config.bot.Apis.ApiYoutubeKey,
+					ApplicationName = appName
+				}))
+				{
 					SearchResource.ListRequest searchListRequest = youtube.Search.List("snippet");
 					searchListRequest.Q = search;
 					searchListRequest.MaxResults = maxResults;
 
-					//Search and return
-					return searchListRequest.Execute();
+					youtubeSearch = searchListRequest.Execute();
 				}
 
-				return null;
+				return youtubeSearch;
 			}
 			catch
 			{
