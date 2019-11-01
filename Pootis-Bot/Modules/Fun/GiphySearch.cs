@@ -48,10 +48,10 @@ namespace Pootis_Bot.Modules.Fun
 			}
 
 			EmbedBuilder embed = new EmbedBuilder();
-			embed.WithTitle("Giphy Search: " + Global.Title(results.Data.GifTitle));
+			embed.WithTitle($"Giphy Search '{Global.Title(results.Data.GifTitle)}'");
 			embed.WithDescription($"**By**: {results.Data.GifAuthor}\n**URL**: {results.Data.GifLink}");
 			embed.WithImageUrl(results.Data.GifUrl);
-			embed.WithFooter($"Search by {Context.User} @ ", Context.User.GetAvatarUrl());
+			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
 			embed.WithCurrentTimestamp();
 			embed.WithColor(FunCmdsConfig.giphyColor);
 

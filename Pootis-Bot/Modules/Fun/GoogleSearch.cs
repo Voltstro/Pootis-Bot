@@ -30,7 +30,7 @@ namespace Pootis_Bot.Modules.Fun
 
 			if (string.IsNullOrEmpty(search))
 			{
-				await Context.Channel.SendMessageAsync("he search input cannot be blank!");
+				await Context.Channel.SendMessageAsync("The search input cannot be blank!");
 				return;
 			}
 
@@ -42,16 +42,14 @@ namespace Pootis_Bot.Modules.Fun
 			foreach (Result result in searchListResponse.Items)
 				if (currentResult != 5)
 				{
-					results.Append($"[{result.Title}]({result.Link})\n{result.Snippet}\n");
+					results.Append($"**[{result.Title}]({result.Link})**\n{result.Snippet}\n\n");
 					currentResult += 1;
 				}
 
-			EmbedBuilder embed = new EmbedBuilder
-			{
-				Title = $"Google Search For '{search}'"
-			};
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle($"Google Search '{search}'");
 			embed.WithDescription(results.ToString());
-			embed.WithFooter($"Search by {Context.User} @ ", Context.User.GetAvatarUrl());
+			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
 			embed.WithColor(FunCmdsConfig.googleColor);
 			embed.WithCurrentTimestamp();
 

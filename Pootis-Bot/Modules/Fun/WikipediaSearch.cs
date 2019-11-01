@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using CreepysinStudios.WikiDotNet;
 using Discord;
 using Discord.Commands;
-using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules.Fun
 {
@@ -51,7 +50,7 @@ namespace Pootis_Bot.Modules.Fun
 			EmbedBuilder embed = new EmbedBuilder();
 
 			StringBuilder sb = new StringBuilder();
-			embed.WithTitle("Wikipedia Search");
+			embed.WithTitle($"Wikipedia Search '{search}'");
 			embed.WithColor(FunCmdsConfig.wikipediaSearchColor);
 
 			WikiSearchResponse response = WikiSearcher.Search(search, new WikiSearchSettings
@@ -79,7 +78,7 @@ namespace Pootis_Bot.Modules.Fun
 			}
 
 			embed.WithDescription(sb.ToString());
-			embed.WithFooter($"Search by {Context.User.Username}", Context.User.GetAvatarUrl());
+			embed.WithFooter($"Search by {Context.User}", Context.User.GetAvatarUrl());
 			embed.WithCurrentTimestamp();
 
 			return embed.Build();
