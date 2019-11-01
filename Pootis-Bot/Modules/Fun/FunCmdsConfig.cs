@@ -16,5 +16,9 @@ namespace Pootis_Bot.Modules.Fun
 		public static readonly Color trumpQuoteColor = new Color(245, 167, 59);
 		public static readonly Color randomPersonColor = new Color(59, 245, 121);
 		public static readonly Color wikipediaSearchColor = new Color(237, 237, 237);
+
+		public static readonly int youtubeMaxSearches = 8;
+		public static readonly int googleMaxSearches = 12;
+		public static readonly int wikipediaMaxSearches = 15;
 	}
 }

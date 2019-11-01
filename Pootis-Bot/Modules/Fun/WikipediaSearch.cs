@@ -42,6 +42,13 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
+			if (maxSearchResults > FunCmdsConfig.wikipediaMaxSearches)
+			{
+				await Context.Channel.SendMessageAsync(
+					$"The max search amount you have put in is too high! It has to be below {FunCmdsConfig.wikipediaMaxSearches}.");
+				return;
+			}
+
 			await Context.Channel.SendMessageAsync("", false, WikiSearch(search, maxSearchResults));
 		}
 

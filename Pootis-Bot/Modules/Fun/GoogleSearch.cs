@@ -41,7 +41,7 @@ namespace Pootis_Bot.Modules.Fun
 		[Summary("Searches Google")]
 		[Alias("g")]
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
-		public async Task Google(int maxSearch = 10, [Remainder] string search = "")
+		public async Task Google(int maxSearchResults = 10, [Remainder] string search = "")
 		{
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGoogleSearchKey) ||
 			    string.IsNullOrWhiteSpace(Config.bot.Apis.GoogleSearchEngineId))
@@ -56,7 +56,14 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
-			await Context.Channel.SendMessageAsync("", false, GSearch(search, maxSearch));
+			if (maxSearchResults > FunCmdsConfig.googleMaxSearches)
+			{
+				await Context.Channel.SendMessageAsync(
+					$"The max search amount you have put in is too high! It has to be below {FunCmdsConfig.googleMaxSearches}.");
+				return;
+			}
+
+			await Context.Channel.SendMessageAsync("", false, GSearch(search, maxSearchResults));
 		}
 
 		private Embed GSearch(string search, int maxResults = 10)

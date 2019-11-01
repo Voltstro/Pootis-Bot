@@ -56,6 +56,13 @@ namespace Pootis_Bot.Modules.Fun
 				return;
 			}
 
+			if (maxSearchResults > FunCmdsConfig.youtubeMaxSearches)
+			{
+				await Context.Channel.SendMessageAsync(
+					$"The max search amount you have put in is too high! It has to be below {FunCmdsConfig.youtubeMaxSearches}.");
+				return;
+			}
+
 			await Context.Channel.SendMessageAsync("", false, YtSearch(search, maxSearchResults));
 		}
 
