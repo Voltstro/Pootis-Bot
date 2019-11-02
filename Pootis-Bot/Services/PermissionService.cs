@@ -144,10 +144,8 @@ namespace Pootis_Bot.Services
 			else 
 			{
 				//Check all roles and make sure they are assigned to the command
-				foreach (IRole role in iRoles)
+				foreach (IRole role in iRoles.Where(role => server.GetCommandInfo(command).GetRole(role.Id) == 0))
 				{
-					if (server.GetCommandInfo(command).GetRole(role.Id) != 0) continue;
-
 					await channel.SendMessageAsync(
 						$"The command `{command}` doesn't have the role **{role}** assigned to it!");
 					return;
@@ -160,13 +158,19 @@ namespace Pootis_Bot.Services
 				}
 
 				//There are no more roles assigned to the command so remove it entirely
-				if (server.GetCommandInfo(command).Roles.Count == 0)
-				{
-					server.CommandInfos.Remove(server.GetCommandInfo(command));
-				}
+				CheckAllServerRoles(server);
 
 				ServerListsManager.SaveServerList();
 				await channel.SendMessageAsync(RemovePermMessage(roles, command, server));
+			}
+		}
+
+		public static void CheckAllServerRoles(ServerList server)
+		{
+			List<ServerList.CommandInfo> cmdsToRemove = server.CommandInfos.Where(command => command.Roles.Count == 0).ToList();
+			foreach (ServerList.CommandInfo command in cmdsToRemove)
+			{
+				server.CommandInfos.Remove(command);
 			}
 		}
 
@@ -231,16 +235,14 @@ namespace Pootis_Bot.Services
 			{
 				return $"**{roles[0]}** role will not be allowed to use the command `{command}`.";
 			}
-			else //Multiple roles
-			{
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < roles.Count; i++)
-				{
-					sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
-				}
 
-				return $"**{sb}** roles will not be allowed to use the command `{command}`.";
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < roles.Count; i++)
+			{
+				sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
 			}
+
+			return $"**{sb}** roles will not be allowed to use the command `{command}`.";
 		}
 	}
 }

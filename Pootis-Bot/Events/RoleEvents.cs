@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Services;
 using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Events
@@ -57,6 +58,21 @@ namespace Pootis_Bot.Events
 				ServerListsManager.SaveServerList();
 				return;
 			}
+
+			//Check all permission roles
+			List<ServerList.CommandInfo> permsToCheck = server.CommandInfos;
+			foreach (ServerList.CommandInfo command in permsToCheck)
+			{
+				List<ulong> permRolesToRemove = command.Roles.Where(commandRole => role.Id == commandRole).ToList();
+
+				foreach (ulong permRoleToRemove in permRolesToRemove)
+				{
+					server.GetCommandInfo(command.Command).Roles.Remove(permRoleToRemove);
+				}
+			}
+
+			PermissionService.CheckAllServerRoles(server);
+			ServerListsManager.SaveServerList();
 		}
 
 		public async Task RoleUpdated(SocketRole before, SocketRole after)
