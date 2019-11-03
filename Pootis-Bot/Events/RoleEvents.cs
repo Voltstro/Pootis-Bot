@@ -60,19 +60,7 @@ namespace Pootis_Bot.Events
 			}
 
 			//Check all permission roles
-			List<ServerList.CommandInfo> permsToCheck = server.CommandInfos;
-			foreach (ServerList.CommandInfo command in permsToCheck)
-			{
-				List<ulong> permRolesToRemove = command.Roles.Where(commandRole => role.Id == commandRole).ToList();
-
-				foreach (ulong permRoleToRemove in permRolesToRemove)
-				{
-					server.GetCommandInfo(command.Command).Roles.Remove(permRoleToRemove);
-				}
-			}
-
-			PermissionService.CheckAllServerRoles(server);
-			ServerListsManager.SaveServerList();
+			BotCheckServerSettings.CheckServerPerms(server);
 		}
 
 		public async Task RoleUpdated(SocketRole before, SocketRole after)

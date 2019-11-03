@@ -158,14 +158,18 @@ namespace Pootis_Bot.Services
 				}
 
 				//There are no more roles assigned to the command so remove it entirely
-				CheckAllServerRoles(server);
+				RemoveAllCommandsWithNoRoles(server);
 
 				ServerListsManager.SaveServerList();
 				await channel.SendMessageAsync(RemovePermMessage(roles, command, server));
 			}
 		}
 
-		public static void CheckAllServerRoles(ServerList server)
+		/// <summary>
+		/// Gets all commands with no roles and removes them
+		/// </summary>
+		/// <param name="server"></param>
+		public static void RemoveAllCommandsWithNoRoles(ServerList server)
 		{
 			List<ServerList.CommandInfo> cmdsToRemove = server.CommandInfos.Where(command => command.Roles.Count == 0).ToList();
 			foreach (ServerList.CommandInfo command in cmdsToRemove)

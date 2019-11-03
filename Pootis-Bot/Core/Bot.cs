@@ -66,7 +66,7 @@ namespace Pootis_Bot.Core
 		private async Task BotReady()
 		{
 			//Check the current connected server settings
-			await BotCheckServerSettings.CheckConnectedServerSettings(_client);
+			await new BotCheckServerSettings(_client).CheckConnectedServerSettings();
 			Global.Log("Bot is now ready and online!");
 
 			ConsoleInput();
@@ -81,7 +81,8 @@ namespace Pootis_Bot.Core
 		private async Task CheckConnectionStatus()
 		{
 			while (_isRunning)
-				if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
+				if (Config.bot.CheckConnectionStatus
+				) // It is enabled then check the connection status ever so milliseconds
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
 					if (_client.ConnectionState != ConnectionState.Disconnected &&
@@ -107,7 +108,6 @@ namespace Pootis_Bot.Core
 					await Task.Delay(-1); // Just run forever
 				}
 		}
-
 
 		private async void ConsoleInput()
 		{
