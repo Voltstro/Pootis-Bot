@@ -42,10 +42,9 @@ should work.
 ## Code style
 
 Internally, we use [Visual Studio 2019](https://visualstudio.microsoft.com)(or [JetBrian's Rider](https://www.jetbrains.com/rider/)) 
-with [JetBrain's Resharper](https://www.jetbrains.com/resharper/) installed.
+with [JetBrain's ReSharper](https://www.jetbrains.com/resharper/) installed.
 
-I highly recommond using Resharper will coding for Pootis-Bot, if you can affort it, or if you are a student you might be able to get the
-student pack. (Like me :))
+I highly recommond using ReSharper when coding for Pootis-Bot, if you can affort it, or if you are a student you might be able to get the student pack. (Like me :))
 
 The naming of variables are just the default ReSharper style.
 
