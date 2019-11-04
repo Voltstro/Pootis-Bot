@@ -113,5 +113,42 @@ namespace Pootis_Bot.Modules.BotOwner
 
 			await Context.Channel.SendMessageAsync(modules.ToString());
 		}
+
+		[Command("addcustomprofilemessage")]
+		[Summary("Adds a custom profile message")]
+		[RequireOwner]
+		public async Task AddCustomProfileMessage(SocketUser user, [Remainder] string message)
+		{
+			if (HighLevelProfileMessageManager.GetHighLevelProfileMessage(user.Id) != null)
+			{
+				await Context.Channel.SendMessageAsync("That user already has a custom high level profile message!");
+				return;
+			}
+
+			HighLevelProfileMessageManager.AddCustomHighLevelProfileMessage(user.Id, message);
+
+			await Context.Channel.SendMessageAsync(
+				$"**{user.Username}** now has a custom high level profile message of '{message}'.");
+		}
+
+		[Command("removecustomprofilemessage")]
+		[Summary("Removes a custom profile message")]
+		[RequireOwner]
+		public async Task RemoveCustomProfileMessage([Remainder] SocketUser user)
+		{
+			if (HighLevelProfileMessageManager.GetHighLevelProfileMessage(user.Id) == null)
+			{
+				await Context.Channel.SendMessageAsync("That user already doesn't have a custom high level profile message!");
+				return;
+			}
+
+			HighLevelProfileMessageManager.HighLevelProfileMessages.Remove(
+				HighLevelProfileMessageManager.GetHighLevelProfileMessage(user.Id));
+
+			HighLevelProfileMessageManager.SaveHighLevelProfileMessages();
+
+			await Context.Channel.SendMessageAsync(
+				$"**{user.Username}** custom high level profile message was removed.");
+		}
 	}
 }

@@ -48,7 +48,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("getnotwarnable")]
-		[Alias("get not warnable")]
+		[Alias("get not warnable", "notwarnable")]
 		[Summary("Gets a list of people in the server who are not warnable")]
 		public async Task GetNotWarnable()
 		{

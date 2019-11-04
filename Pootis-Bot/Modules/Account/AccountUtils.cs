@@ -47,8 +47,15 @@ namespace Pootis_Bot.Modules.Account
 
 			embed.WithFooter(account.ProfileMsg, Context.User.GetAvatarUrl());
 
+			string description = "";
+
 			if (Context.User.Id == Global.BotOwner.Id)
-				embed.WithDescription($":crown: {Global.BotName} owner!");
+				description += $":crown: {Global.BotName} owner!\n";
+
+			if (HighLevelProfileMessageManager.GetHighLevelProfileMessage(Context.User.Id) != null)
+				description += HighLevelProfileMessageManager.GetHighLevelProfileMessage(Context.User.Id).Message;
+
+			embed.WithDescription(description);
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
@@ -90,8 +97,15 @@ namespace Pootis_Bot.Modules.Account
 
 			embed.WithFooter(account.ProfileMsg, user.GetAvatarUrl());
 
+			string description = "";
+
 			if (user.Id == Global.BotOwner.Id)
-				embed.WithDescription($":crown: {Global.BotName} owner!");
+				description += $":crown: {Global.BotName} owner!\n";
+
+			if (HighLevelProfileMessageManager.GetHighLevelProfileMessage(user.Id) != null)
+				description += HighLevelProfileMessageManager.GetHighLevelProfileMessage(user.Id).Message;
+
+			embed.WithDescription(description);
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}

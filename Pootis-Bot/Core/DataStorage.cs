@@ -88,6 +88,33 @@ namespace Pootis_Bot.Core
 
 		#endregion
 
+		#region High Level Profile Messages
+
+		/// <summary>
+		/// Saves custom high level profile messages
+		/// </summary>
+		/// <param name="highLevelProfileMessages"></param>
+		/// <param name="filePath"></param>
+		public static void SaveHighLevelProfileMessages(IEnumerable<HighLevelProfileMessage> highLevelProfileMessages, string filePath)
+		{
+			string json = JsonConvert.SerializeObject(highLevelProfileMessages, Config.bot.ResourceFilesFormatting);
+			File.WriteAllText(filePath, json);
+		}
+
+		/// <summary>
+		/// Loads custom high level profile messages
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <returns></returns>
+		public static IEnumerable<HighLevelProfileMessage> LoadHighLevelProfileMessages(string filePath)
+		{
+			if (!File.Exists(filePath)) return null;
+			string json = File.ReadAllText(filePath);
+			return JsonConvert.DeserializeObject<List<HighLevelProfileMessage>>(json);
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Checks if a saved user file exists
 		/// </summary>
