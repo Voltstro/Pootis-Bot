@@ -6,7 +6,6 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Structs;
 
@@ -82,9 +81,15 @@ namespace Pootis_Bot.Events
 				if (voiceChannel.Name != null)
 				{
 					RestVoiceChannel createdChannel =
-						await after.VoiceChannel.Guild.CreateVoiceChannelAsync($"New {voiceChannel.Name} chat");
+						await after.VoiceChannel.Guild.CreateVoiceChannelAsync($"{voiceChannel.Name} #" + server.ActiveAutoVoiceChannels.Count + 1, x =>
+						{
+							x.CategoryId = after.VoiceChannel.CategoryId;
+							x.Bitrate = after.VoiceChannel.Bitrate;
+							x.Position = after.VoiceChannel.Position + 1;
+						});
 
-					await AutoVcChannelCreate.SetupChannel(createdChannel,  after.VoiceChannel, voiceChannel, server);
+					if(createdChannel.CategoryId != null)
+						await createdChannel.SyncPermissionsAsync();
 
 					//Move the user who created the channel to the new channel
 					await ((SocketGuildUser) user).ModifyAsync(x => { x.ChannelId = createdChannel.Id; });

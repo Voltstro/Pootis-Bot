@@ -112,11 +112,22 @@ namespace Pootis_Bot.Services
 		public static void CheckServerActiveVoiceChannels(ServerList server)
 		{
 			//Get all the active voice channels that have been deleted, or have no one in it
-			List<ulong> autoVcChannelsToDelete = (from serverActiveAutoVoiceChannel in server.ActiveAutoVoiceChannels let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(serverActiveAutoVoiceChannel) where vcChannel == null || vcChannel.Users.Count == 0 select serverActiveAutoVoiceChannel).ToList();
+			List<ulong> autoVcChannelsToDelete = (from serverActiveAutoVoiceChannel in server.ActiveAutoVoiceChannels let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(serverActiveAutoVoiceChannel) where vcChannel == null select serverActiveAutoVoiceChannel).ToList();
 
 			foreach (ulong voiceChannel in autoVcChannelsToDelete)
 			{
 				server.ActiveAutoVoiceChannels.Remove(voiceChannel);
+			}
+
+			List<ulong> autoVcWithNoUsers = (from activeAutoVoiceChannel in server.ActiveAutoVoiceChannels
+				let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(activeAutoVoiceChannel)
+				where vcChannel.Users.Count == 0
+				select activeAutoVoiceChannel).ToList();
+
+			foreach (ulong autoVoiceChannel in autoVcWithNoUsers)
+			{
+				_client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel).DeleteAsync();
+				server.ActiveAutoVoiceChannels.Remove(autoVoiceChannel);
 			}
 			
 			ServerListsManager.SaveServerList();
