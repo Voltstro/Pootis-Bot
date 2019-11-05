@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Config;
 
 namespace Pootis_Bot.Core
 {

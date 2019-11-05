@@ -1,4 +1,4 @@
-﻿namespace Pootis_Bot.Structs
+﻿namespace Pootis_Bot.Structs.Server
 {
 	public struct ServerRolePoints
 	{

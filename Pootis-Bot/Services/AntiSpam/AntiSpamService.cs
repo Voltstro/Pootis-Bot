@@ -3,7 +3,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Services.AntiSpam
 {
@@ -77,7 +77,7 @@ namespace Pootis_Bot.Services.AntiSpam
 			//Go over each role a user has
 			foreach (SocketRole role in user.Roles)
 			{
-				foreach (RoleToRoleMention notToMentionRoles in server.RoleToRoleMentions)
+				foreach (ServerRoleToRoleMention notToMentionRoles in server.RoleToRoleMentions)
 					if (role.Id == notToMentionRoles.RoleNotToMentionId)
 					{
 						message.DeleteAsync();

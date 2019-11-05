@@ -7,7 +7,7 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Events
 {
@@ -48,8 +48,8 @@ namespace Pootis_Bot.Events
 			}
 
 			//Check to see if all the role to role pings still exist
-			List<RoleToRoleMention> rolesToRemove = server.RoleToRoleMentions.Where(roles => roles.RoleId == role.Id || roles.RoleNotToMentionId == role.Id).ToList();
-			foreach (RoleToRoleMention roleToRemove in rolesToRemove)
+			List<ServerRoleToRoleMention> rolesToRemove = server.RoleToRoleMentions.Where(roles => roles.RoleId == role.Id || roles.RoleNotToMentionId == role.Id).ToList();
+			foreach (ServerRoleToRoleMention roleToRemove in rolesToRemove)
 			{
 				await dm.SendMessageAsync(
 					$"The **{role.Name}** role was deleted which was apart of the **{roleToRemove.RoleNotToMentionId}** => **{roleToRemove.RoleId}**. This role to role ping was deleted. ({guild.Name})");
@@ -71,8 +71,8 @@ namespace Pootis_Bot.Events
 			IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
 
 			//Check all server role pings to make sure they are still mentionable
-			List<RoleToRoleMention> rolesToRemove = server.RoleToRoleMentions.Where(roleToRole => roleToRole.RoleId == after.Id && !after.IsMentionable).ToList();
-			foreach (RoleToRoleMention roleToRemove in rolesToRemove)
+			List<ServerRoleToRoleMention> rolesToRemove = server.RoleToRoleMentions.Where(roleToRole => roleToRole.RoleId == after.Id && !after.IsMentionable).ToList();
+			foreach (ServerRoleToRoleMention roleToRemove in rolesToRemove)
 			{
 				await dm.SendMessageAsync(
 					$"The **{after.Name}** role was changed to not mentionable so it was deleted from the **{Global.GetGuildRole(guild, roleToRemove.RoleNotToMentionId).Name}** => **{Global.GetGuildRole(guild, roleToRemove.RoleId).Name}** role to role ping list. ({guild.Name})");

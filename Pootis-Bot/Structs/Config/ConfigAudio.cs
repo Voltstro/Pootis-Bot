@@ -1,4 +1,4 @@
-﻿namespace Pootis_Bot.Structs
+﻿namespace Pootis_Bot.Structs.Config
 {
 	public struct ConfigAudio
 	{

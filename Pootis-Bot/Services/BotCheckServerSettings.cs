@@ -6,7 +6,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Services
 {
@@ -95,9 +95,9 @@ namespace Pootis_Bot.Services
 		public static void CheckServerVoiceChannels(ServerList server)
 		{
 			//Get all the voice channels that have been deleted
-			List<VoiceChannel> autoVcChannelsToDelete = (from autoVoiceChannel in server.AutoVoiceChannels let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel.Id) where vcChannel == null select autoVoiceChannel).ToList();
+			List<ServerVoiceChannel> autoVcChannelsToDelete = (from autoVoiceChannel in server.AutoVoiceChannels let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel.Id) where vcChannel == null select autoVoiceChannel).ToList();
 
-			foreach (VoiceChannel voiceChannel in autoVcChannelsToDelete)
+			foreach (ServerVoiceChannel voiceChannel in autoVcChannelsToDelete)
 			{
 				server.AutoVoiceChannels.Remove(voiceChannel);
 			}

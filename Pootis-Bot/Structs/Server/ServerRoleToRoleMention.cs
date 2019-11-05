@@ -1,6 +1,6 @@
-﻿namespace Pootis_Bot.Structs
+﻿namespace Pootis_Bot.Structs.Server
 {
-	public struct RoleToRoleMention
+	public struct ServerRoleToRoleMention
 	{
 		/// <summary>
 		/// The base role
@@ -12,7 +12,7 @@
 		/// </summary>
 		public ulong RoleId { get; set; }
 
-		public RoleToRoleMention(ulong roleNotToMention, ulong role)
+		public ServerRoleToRoleMention(ulong roleNotToMention, ulong role)
 		{
 			RoleNotToMentionId = roleNotToMention;
 			RoleId = role;

@@ -1,4 +1,4 @@
-﻿namespace Pootis_Bot.Structs
+﻿namespace Pootis_Bot.Structs.Giphy
 {
 	public enum ErrorReason
 	{

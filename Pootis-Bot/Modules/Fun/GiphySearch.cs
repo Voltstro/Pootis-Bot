@@ -5,7 +5,7 @@ using Discord.Rest;
 using Pootis_Bot.Core;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Fun;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Giphy;
 
 namespace Pootis_Bot.Modules.Fun
 {

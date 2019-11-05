@@ -5,7 +5,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Preconditions;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Modules.Audio
 {
@@ -28,7 +28,7 @@ namespace Pootis_Bot.Modules.Audio
 
 			await Context.Channel.SendMessageAsync($"Added {baseName} as an auto voice channel.");
 
-			VoiceChannel voiceChannel = new VoiceChannel(channel.Id, baseName);
+			ServerVoiceChannel voiceChannel = new ServerVoiceChannel(channel.Id, baseName);
 
 			ServerListsManager.GetServer((SocketGuild) Context.Guild).AutoVoiceChannels.Add(voiceChannel);
 			ServerListsManager.SaveServerList();

@@ -10,7 +10,7 @@ using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Modules.Server
 {
@@ -169,7 +169,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			List<RoleToRoleMention> roleToRoleMentionsWithRole = server.GetRoleToRoleMention(role.Id);
+			List<ServerRoleToRoleMention> roleToRoleMentionsWithRole = server.GetRoleToRoleMention(role.Id);
 
 			if (roleToRoleMentionsWithRole.Count == 0)
 			{
@@ -177,7 +177,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			foreach (RoleToRoleMention roleMention in roleToRoleMentionsWithRole)
+			foreach (ServerRoleToRoleMention roleMention in roleToRoleMentionsWithRole)
 			{
 				//We found it
 				if (roleMention.RoleNotToMentionId == roleNotToMention.Id)
@@ -207,7 +207,7 @@ namespace Pootis_Bot.Modules.Server
 			StringBuilder builder = new StringBuilder();
 			builder.Append("__**Role to Roles**__\n```");
 
-			foreach (RoleToRoleMention roleToRole in server.RoleToRoleMentions)
+			foreach (ServerRoleToRoleMention roleToRole in server.RoleToRoleMentions)
 				builder.Append($"{Global.GetGuildRole(Context.Guild, roleToRole.RoleNotToMentionId).Name} =====> {Global.GetGuildRole(Context.Guild, roleToRole.RoleId).Name}\n");
 
 			builder.Append("```");

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Entities
 {
@@ -39,12 +39,12 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Role to role mentions
 		/// </summary>
-		public List<RoleToRoleMention> RoleToRoleMentions { get; set; }
+		public List<ServerRoleToRoleMention> RoleToRoleMentions { get; set; }
 
 		/// <summary>
 		/// Auto voice channels
 		/// </summary>
-		public List<VoiceChannel> AutoVoiceChannels { get; set; }
+		public List<ServerVoiceChannel> AutoVoiceChannels { get; set; }
 
 		/// <summary>
 		/// Any active channels that were created from an auto-vc channel
@@ -199,13 +199,13 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public VoiceChannel GetAutoVoiceChannel(ulong id)
+		public ServerVoiceChannel GetAutoVoiceChannel(ulong id)
 		{
-			IEnumerable<VoiceChannel> result = from a in AutoVoiceChannels
+			IEnumerable<ServerVoiceChannel> result = from a in AutoVoiceChannels
 				where a.Id == id
 				select a;
 
-			VoiceChannel channel = result.FirstOrDefault();
+			ServerVoiceChannel channel = result.FirstOrDefault();
 			return channel;
 		}
 
@@ -253,14 +253,14 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		/// <param name="roleId"></param>
 		/// <returns></returns>
-		public List<RoleToRoleMention> GetRoleToRoleMention(ulong roleId)
+		public List<ServerRoleToRoleMention> GetRoleToRoleMention(ulong roleId)
 		{
-			IEnumerable<RoleToRoleMention> result = from a in RoleToRoleMentions
+			IEnumerable<ServerRoleToRoleMention> result = from a in RoleToRoleMentions
 				where a.RoleId == roleId
 				select a;
 
 
-			List<RoleToRoleMention> roleToRoleMention = result.ToList();
+			List<ServerRoleToRoleMention> roleToRoleMention = result.ToList();
 			return roleToRoleMention;
 		}
 
@@ -270,9 +270,9 @@ namespace Pootis_Bot.Entities
 		/// <param name="roleNotMention"></param>
 		/// <param name="role"></param>
 		/// <returns></returns>
-		public RoleToRoleMention CreateRoleToRoleMention(ulong roleNotMention, ulong role)
+		public ServerRoleToRoleMention CreateRoleToRoleMention(ulong roleNotMention, ulong role)
 		{
-			RoleToRoleMention roleToRole = new RoleToRoleMention(roleNotMention, role);
+			ServerRoleToRoleMention roleToRole = new ServerRoleToRoleMention(roleNotMention, role);
 			RoleToRoleMentions.Add(roleToRole);
 			return roleToRole;
 		}

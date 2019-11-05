@@ -7,7 +7,7 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services.Audio;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Events
 {
@@ -77,7 +77,7 @@ namespace Pootis_Bot.Events
 			//If we are adding an auto voice channel
 			if (after.VoiceChannel != null)
 			{
-				VoiceChannel voiceChannel = server.GetAutoVoiceChannel(after.VoiceChannel.Id);
+				ServerVoiceChannel voiceChannel = server.GetAutoVoiceChannel(after.VoiceChannel.Id);
 				if (voiceChannel.Name != null)
 				{
 					RestVoiceChannel createdChannel =

@@ -1,7 +1,7 @@
 ﻿using Discord.WebSocket;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Core
 {

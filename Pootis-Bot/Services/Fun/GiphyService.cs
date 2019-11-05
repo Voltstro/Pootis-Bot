@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Giphy;
 
 namespace Pootis_Bot.Services.Fun
 {

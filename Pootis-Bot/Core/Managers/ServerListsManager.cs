@@ -2,7 +2,7 @@
 using System.Linq;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Structs;
+using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Core.Managers
 {
@@ -63,8 +63,8 @@ namespace Pootis_Bot.Core.Managers
 				BannedChannels = new List<ulong>(),
 				ServerRolePoints = new List<ServerRolePoints>(),
 				CommandInfos = new List<ServerList.CommandInfo>(),
-				RoleToRoleMentions = new List<RoleToRoleMention>(),
-				AutoVoiceChannels = new List<VoiceChannel>(),
+				RoleToRoleMentions = new List<ServerRoleToRoleMention>(),
+				AutoVoiceChannels = new List<ServerVoiceChannel>(),
 				RoleGives = new List<RoleGive>(),
 				ActiveAutoVoiceChannels = new List<ulong>(),
 				WelcomeMessageEnabled = false,
