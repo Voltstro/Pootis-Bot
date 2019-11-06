@@ -32,7 +32,7 @@ namespace Pootis_Bot.Modules.Account
 			EmbedBuilder embed = new EmbedBuilder();
 
 			string warningText = "No :sunglasses:";
-			if (!accountServer.IsAccountNotWarnable)
+			if (!accountServer.IsAccountNotWarnable && !((SocketGuildUser)Context.User).GuildPermissions.Administrator)
 				warningText = $"Yes\n**Warnings: ** {accountServer.Warnings}";
 
 			embed.WithCurrentTimestamp();
@@ -82,7 +82,7 @@ namespace Pootis_Bot.Modules.Account
 			EmbedBuilder embed = new EmbedBuilder();
 
 			string warningText = "No :sunglasses:";
-			if (!accountServer.IsAccountNotWarnable)
+			if (!accountServer.IsAccountNotWarnable && !user.GuildPermissions.Administrator)
 				warningText = $"Yes\n**Warnings: ** {accountServer.Warnings}";
 
 			embed.WithCurrentTimestamp();

@@ -67,13 +67,13 @@ namespace Pootis_Bot.Modules.Server
 
 		#region Functions
 
-		private string MakeNotWarnable(SocketUser user)
+		private static string MakeNotWarnable(SocketUser user)
 		{
-			if (user == null)
-				return "That user doesn't exist!";
-
 			if (user.IsBot)
 				return "You can not change the warnable status of a bot!";
+
+			if (((SocketGuildUser) user).GuildPermissions.Administrator)
+				return "You cannot change the warnable status of an administrator!";
 
 			SocketGuildUser userGuild = (SocketGuildUser) user;
 			UserAccountServerData userAccount =
@@ -87,13 +87,13 @@ namespace Pootis_Bot.Modules.Server
 			return $"**{userGuild}** was made not warnable.";
 		}
 
-		private string MakeWarnable(SocketUser user)
+		private static string MakeWarnable(SocketUser user)
 		{
-			if (user == null)
-				return "That user doesn't exist!";
-
 			if (user.IsBot)
 				return "You can not change the warnable status of a bot!";
+
+			if (((SocketGuildUser) user).GuildPermissions.Administrator)
+				return "You cannot change the warnable status of an administrator!";
 
 			SocketGuildUser userguild = (SocketGuildUser) user;
 
@@ -106,10 +106,13 @@ namespace Pootis_Bot.Modules.Server
 			return $"**{user}** was made warnable.";
 		}
 
-		private string Warn(SocketUser user)
+		private static string Warn(SocketUser user)
 		{
 			if (user.IsBot)
 				return "You cannot give a warning to a bot!";
+
+			if (((SocketGuildUser) user).GuildPermissions.Administrator)
+				return "You cannot warn an administrator!";
 
 			SocketGuildUser userGuild = (SocketGuildUser) user;
 			UserAccountServerData userAccount =
