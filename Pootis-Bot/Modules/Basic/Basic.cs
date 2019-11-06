@@ -60,7 +60,7 @@ namespace Pootis_Bot.Modules.Basic
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
 
-		[Command("top10")]
+		[Command("top10", RunMode = RunMode.Async)]
 		[Summary("Get the top 10 users in the server")]
 		[Cooldown(5)]
 		public async Task Top10()
@@ -102,7 +102,7 @@ namespace Pootis_Bot.Modules.Basic
 			totalUsers.Reverse();
 
 			StringBuilder format = new StringBuilder();
-			format.Append("```csharp\n 📋 Top 10 Pootis-Bot Accounts\n ========================\n");
+			format.Append($"```csharp\n 📋 Top 10 {Global.BotName} Accounts\n ========================\n");
 
 			int count = 1;
 			foreach (UserAccount user in totalUsers.Where(user => count <= 10))

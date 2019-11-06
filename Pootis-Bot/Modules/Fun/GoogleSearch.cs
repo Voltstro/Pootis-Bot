@@ -18,7 +18,7 @@ namespace Pootis_Bot.Modules.Fun
 		// Description      - Searches Google
 		// Contributors     - Creepysin, 
 
-		[Command("google")]
+		[Command("google", RunMode = RunMode.Async)]
 		[Summary("Searches Google")]
 		[Alias("g")]
 		[Cooldown(5)]
@@ -41,7 +41,7 @@ namespace Pootis_Bot.Modules.Fun
 			await GSearch(search, Context.Channel);
 		}
 
-		[Command("google")]
+		[Command("google", RunMode = RunMode.Async)]
 		[Summary("Searches Google")]
 		[Alias("g")]
 		[Cooldown(5)]

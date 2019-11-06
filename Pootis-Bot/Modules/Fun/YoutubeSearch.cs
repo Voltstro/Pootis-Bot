@@ -20,7 +20,7 @@ namespace Pootis_Bot.Modules.Fun
 		// Description      - Searches YouTube
 		// Contributors     - Creepysin, 
 
-		[Command("youtube")]
+		[Command("youtube", RunMode = RunMode.Async)]
 		[Summary("Searches Youtube")]
 		[Alias("yt")]
 		[Cooldown(5)]
@@ -44,7 +44,7 @@ namespace Pootis_Bot.Modules.Fun
 			//await Context.Channel.SendMessageAsync("", false, YtSearch(search));
 		}
 
-		[Command("youtube")]
+		[Command("youtube", RunMode = RunMode.Async)]
 		[Summary("Searches Youtube")]
 		[Alias("yt")]
 		[Cooldown(5)]

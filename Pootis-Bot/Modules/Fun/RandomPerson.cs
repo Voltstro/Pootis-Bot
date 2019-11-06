@@ -15,7 +15,7 @@ namespace Pootis_Bot.Modules.Fun
 		// Description      - Gets a random person
 		// Contributors     - Creepysin, 
 
-		[Command("randomperson")]
+		[Command("randomperson", RunMode = RunMode.Async)]
 		[Alias("person", "randperson")]
 		[Summary("Generate a random person")]
 		[Cooldown(5)]

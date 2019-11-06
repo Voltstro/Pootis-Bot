@@ -16,7 +16,7 @@ namespace Pootis_Bot.Modules.Fun
 		// Description      - Searches Giphy
 		// Contributors     - Creepysin, 
 
-		[Command("giphy")]
+		[Command("giphy", RunMode = RunMode.Async)]
 		[Summary("Searches Giphy")]
 		[Alias("gy")]
 		[Cooldown(5)]

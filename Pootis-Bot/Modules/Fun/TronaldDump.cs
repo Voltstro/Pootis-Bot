@@ -15,7 +15,7 @@ namespace Pootis_Bot.Modules.Fun
 
 		private readonly string trumpImageUrl = "https://assets.tronalddump.io/img/tronalddump_850x850.png";
 
-		[Command("tronald")]
+		[Command("tronald", RunMode = RunMode.Async)]
 		[Summary("Search Donald Trump quotes")]
 		[Alias("tronalddump", "dump", "donald", "donaldtrump", "trump")]
 		[Cooldown(5)]

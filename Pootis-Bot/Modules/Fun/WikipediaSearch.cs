@@ -20,7 +20,7 @@ namespace Pootis_Bot.Modules.Fun
 		//It was developed by my good friend EternalClickbait and partially by me(Creepysin).
 		//You can get it here: https://github.com/Creepysin-Studios/Wiki.Net
 
-		[Command("wiki")]
+		[Command("wiki", RunMode = RunMode.Async)]
 		[Alias("wikipedia")]
 		[Summary("Searches Wikipedia")]
 		[Cooldown(5)]
@@ -35,7 +35,7 @@ namespace Pootis_Bot.Modules.Fun
 			await WikiSearch(search, Context.Channel);
 		}
 
-		[Command("wiki")]
+		[Command("wiki", RunMode = RunMode.Async)]
 		[Alias("wikipedia")]
 		[Summary("Searches Wikipedia")]
 		[Cooldown(5)]
