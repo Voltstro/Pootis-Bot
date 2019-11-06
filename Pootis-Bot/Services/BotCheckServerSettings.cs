@@ -44,6 +44,7 @@ namespace Pootis_Bot.Services
 
 
 				await CheckServerWelcomeSettings(server);
+				await CheckServerRuleMessageChannel(server);
 
 				CheckServerVoiceChannels(server);
 				CheckServerActiveVoiceChannels(server);
@@ -152,6 +153,23 @@ namespace Pootis_Bot.Services
 			PermissionService.RemoveAllCommandsWithNoRoles(server);
 
 			ServerListsManager.SaveServerList();
+		}
+
+		public static async Task CheckServerRuleMessageChannel(ServerList server)
+		{
+			if (!server.RuleEnabled) return;
+
+			if (_client.GetGuild(server.GuildId).GetChannel(server.RuleMessageChannelId) == null)
+			{
+				//The rule reaction will be disabled and the owner of the guild will be notified.
+				server.RuleEnabled = false;
+
+				ServerListsManager.SaveServerList();
+
+				IDMChannel dm = await _client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
+				await dm.SendMessageAsync($"Your rule reaction on the Discord server **{_client.GetGuild(server.GuildId).Name}** has been disabled due to the message being deleted.\n" +
+				                          $"You can enable it again after setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");
+			}
 		}
 	}
 }

@@ -11,18 +11,19 @@ namespace Pootis_Bot.Events
 	/// </summary>
 	public class ChannelEvents
 	{
-		public Task ChannelDestroyed(SocketChannel channel)
+		public async Task ChannelDestroyed(SocketChannel channel)
 		{
 			ServerList server = ServerListsManager.GetServer(((SocketGuildChannel) channel).Guild);
 
 			//Check the server's welcome settings
-			BotCheckServerSettings.CheckServerWelcomeSettings(server).GetAwaiter().GetResult();
+			await BotCheckServerSettings.CheckServerWelcomeSettings(server);
 
 			//Check the bot's auto voice channels
 			BotCheckServerSettings.CheckServerVoiceChannels(server);
 			BotCheckServerSettings.CheckServerActiveVoiceChannels(server);
 
-			return Task.CompletedTask;
+			//Check the bot's rule message channel
+			await BotCheckServerSettings.CheckServerRuleMessageChannel(server);
 		}
 	}
 }

@@ -87,6 +87,11 @@ namespace Pootis_Bot.Entities
 		public ulong RuleMessageId { get; set; }
 
 		/// <summary>
+		/// The channel were that gosh darn rule message is located
+		/// </summary>
+		public ulong RuleMessageChannelId { get; set; }
+
+		/// <summary>
 		/// The role that will be given to the user after reacting with the right emoji
 		/// </summary>
 		public ulong RuleRoleId { get; set; }

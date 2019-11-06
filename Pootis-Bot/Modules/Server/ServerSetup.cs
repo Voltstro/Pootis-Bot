@@ -135,7 +135,7 @@ namespace Pootis_Bot.Modules.Server
 		{
 			if (id != 0)
 			{
-				if (Context.Channel.GetMessageAsync(id) != null)
+				if (Context.Channel.GetMessageAsync(id).Result != null)
 				{
 					ServerList server = ServerListsManager.GetServer(Context.Guild);
 					server.RuleMessageId = id;
@@ -147,7 +147,7 @@ namespace Pootis_Bot.Modules.Server
 				}
 				else
 				{
-					await Context.Channel.SendMessageAsync("That message doesn't exist");
+					await Context.Channel.SendMessageAsync("That message doesn't exist! Make sure you are in the same channel as were that message is located.");
 				}
 			}
 			else
