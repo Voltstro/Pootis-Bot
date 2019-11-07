@@ -8,7 +8,7 @@ namespace Pootis_Bot.Core
 	{
 		public class ConfigResult
 		{
-			public enum ResultTypes {Token}
+			public enum ResultTypes {Token, Prefix}
 
 			public bool WasModified { get; set; }
 			public ResultTypes ResultType { get; set; }
@@ -23,7 +23,7 @@ namespace Pootis_Bot.Core
 			Console.WriteLine("                    Bot configuration                    ");
 			Console.WriteLine("---------------------------------------------------------");
 			Console.WriteLine("1 - Bot Token");
-			//Console.WriteLine("2 - Bot Prefix");
+			Console.WriteLine("2 - Bot Prefix");
 			//Console.WriteLine("3 - Bot Name");
 			//Console.WriteLine("4 - APIs");
 			Console.WriteLine("");
@@ -31,6 +31,10 @@ namespace Pootis_Bot.Core
 			Console.WriteLine("Enter in either '1', '2' ect... or 'exit' to exit the config menu.");
 
 			ConfigResult tokenResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Token, WasModified = false};
+
+			ConfigResult prefixResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = false};
+
+			bool somethingWasModified = false;
 
 			while (true)
 			{
@@ -41,6 +45,13 @@ namespace Pootis_Bot.Core
 					case "1":
 					{
 						tokenResult = ConfigEditToken();
+						if (tokenResult.WasModified) somethingWasModified = true;
+						break;
+					}
+					case "2":
+					{
+						prefixResult = ConfigEditPrefix();
+						if(prefixResult.WasModified) somethingWasModified = true;
 						break;
 					}
 					case "exit":
@@ -59,8 +70,22 @@ namespace Pootis_Bot.Core
 							Global.Log("For the bot to use the new token you must restart the bot!", ConsoleColor.Yellow);
 						}
 
-						Config.SaveConfig();
-						Global.Log("Config has been saved!");
+						//Set the new prefix
+						if (prefixResult.WasModified)
+						{
+							Global.BotPrefix = Config.bot.BotPrefix;
+						}
+
+						//No point in saving if nothing was changed
+						if (somethingWasModified)
+						{
+							Config.SaveConfig();
+							Global.Log("Config has been saved!");
+						}
+						else
+						{
+							Global.Log("Nothing was changed, so nothing was saved!");
+						}
 
 						return;
 					}
@@ -98,6 +123,34 @@ namespace Pootis_Bot.Core
 					Global.BotToken = newToken;
 					Console.WriteLine($"The token will be set to `{newToken}`.");
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Token, WasModified = true};
+				}
+			}
+		}
+
+		private static ConfigResult ConfigEditPrefix()
+		{
+			Console.WriteLine("Enter in a new prefix for the bot to use.");
+			Console.WriteLine($"The current prefix is `{Global.BotPrefix}`.");
+			Console.WriteLine("To exit without saving, type in `exit`.");
+
+			while (true)
+			{
+				string newPrefix = Console.ReadLine()?.Trim();
+
+				if (newPrefix == "exit")
+				{
+					Console.WriteLine("The prefix was not modified.");
+					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = false};
+				}
+				if(string.IsNullOrWhiteSpace(newPrefix))
+				{
+					Console.WriteLine("The prefix cannot be blank!");
+				}
+				else
+				{
+					Config.bot.BotPrefix = newPrefix;
+					Console.WriteLine($"The prefix will be set to `{newPrefix}`.");
+					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = true};
 				}
 			}
 		}
