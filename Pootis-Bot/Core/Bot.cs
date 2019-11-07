@@ -152,6 +152,9 @@ namespace Pootis_Bot.Core
 						BotConfigStart();
 						Global.Log("Restart the bot to apply the settings");
 						break;
+					case "newconfig":
+						new ConfigMenu().OpenConfig();
+						break;
 					case "about":
 						Console.WriteLine(Global.aboutMessage);
 						break;
@@ -350,7 +353,7 @@ namespace Pootis_Bot.Core
 						break;
 					default:
 						Console.WriteLine(
-							"Invaild input, you need to either enter '1', '2', '3', '4' or 'exit' (With out '')");
+							"Invalid input, you need to either enter '1', '2', '3', '4' or 'exit' (With out '')");
 						break;
 				}
 			}
