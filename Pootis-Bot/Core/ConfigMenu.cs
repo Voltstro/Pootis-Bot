@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Pootis_Bot.Core
 {
@@ -8,7 +6,7 @@ namespace Pootis_Bot.Core
 	{
 		public class ConfigResult
 		{
-			public enum ResultTypes {Token, Prefix}
+			public enum ResultTypes {Token, Prefix, Name}
 
 			public bool WasModified { get; set; }
 			public ResultTypes ResultType { get; set; }
@@ -24,7 +22,7 @@ namespace Pootis_Bot.Core
 			Console.WriteLine("---------------------------------------------------------");
 			Console.WriteLine("1 - Bot Token");
 			Console.WriteLine("2 - Bot Prefix");
-			//Console.WriteLine("3 - Bot Name");
+			Console.WriteLine("3 - Bot Name");
 			//Console.WriteLine("4 - APIs");
 			Console.WriteLine("");
 			
@@ -33,6 +31,8 @@ namespace Pootis_Bot.Core
 			ConfigResult tokenResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Token, WasModified = false};
 
 			ConfigResult prefixResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = false};
+
+			ConfigResult nameResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Name, WasModified = false};
 
 			bool somethingWasModified = false;
 
@@ -52,6 +52,12 @@ namespace Pootis_Bot.Core
 					{
 						prefixResult = ConfigEditPrefix();
 						if(prefixResult.WasModified) somethingWasModified = true;
+						break;
+					}
+					case "3":
+					{
+						nameResult = ConfigEditName();
+						if(nameResult.WasModified) somethingWasModified = true;
 						break;
 					}
 					case "exit":
@@ -74,6 +80,12 @@ namespace Pootis_Bot.Core
 						if (prefixResult.WasModified)
 						{
 							Global.BotPrefix = Config.bot.BotPrefix;
+						}
+
+						if (nameResult.WasModified)
+						{
+							Global.BotName = Config.bot.BotName;
+							Console.Title = $"{Global.BotName} Console";
 						}
 
 						//No point in saving if nothing was changed
@@ -151,6 +163,34 @@ namespace Pootis_Bot.Core
 					Config.bot.BotPrefix = newPrefix;
 					Console.WriteLine($"The prefix will be set to `{newPrefix}`.");
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = true};
+				}
+			}
+		}
+
+		private static ConfigResult ConfigEditName()
+		{
+			Console.WriteLine("Enter in a new name for the bot to use.");
+			Console.WriteLine($"The current name of the bot is `{Global.BotName}`.");
+			Console.WriteLine("To exit without saving, type in `exit`.");
+
+			while (true)
+			{
+				string newName = Console.ReadLine()?.Trim();
+
+				if (newName == "exit")
+				{
+					Console.WriteLine("The bot name was not modified.");
+					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Name, WasModified = false};
+				}
+				if(string.IsNullOrWhiteSpace(newName))
+				{
+					Console.WriteLine("The bot name cannot be blank!");
+				}
+				else
+				{
+					Config.bot.BotName = newName;
+					Console.WriteLine($"The bot name will be set to `{newName}`.");
+					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Name, WasModified = true};
 				}
 			}
 		}

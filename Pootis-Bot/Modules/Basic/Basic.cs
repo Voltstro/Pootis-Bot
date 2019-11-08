@@ -26,7 +26,7 @@ namespace Pootis_Bot.Modules.Basic
 		{
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Hello!");
-			embed.WithDescription("Hello! My name is " + Config.bot.BotName + "!\n\n**__Links__**" +
+			embed.WithDescription($"Hello! My name is {Global.BotName}!\n\n**__Links__**" +
 			                      $"\n:computer: [Commands]({Global.websiteCommands})" +
 			                      $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
 			                      $"\n:bookmark: [Documentation]({Global.websiteHome})" +

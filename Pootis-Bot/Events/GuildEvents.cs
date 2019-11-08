@@ -20,7 +20,7 @@ namespace Pootis_Bot.Events
 
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Hey, thanks for adding me to your server.");
-			embed.WithDescription("Hello! My name is " + Global.BotName + "!\n\n**__Links__**" +
+			embed.WithDescription($"Hello! My name is {Global.BotName}!\n\n**__Links__**" +
 			                      $"\n:computer: [Commands]({Global.websiteCommands})" +
 			                      $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
 			                      $"\n:bookmark: [Documentation]({Global.websiteHome})" +
