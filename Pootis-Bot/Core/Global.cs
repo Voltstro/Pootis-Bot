@@ -44,6 +44,7 @@ namespace Pootis_Bot.Core
 		public static string BotName;
 		public static string BotPrefix;
 		public static string BotToken;
+		public static string BotStatusText;
 
 		/// <summary>
 		/// The bot owner account

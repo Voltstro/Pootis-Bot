@@ -6,6 +6,13 @@
     <RootNamespace>Pootis_Bot</RootNamespace>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
+    <Authors>Creepysin</Authors>
+    <Company>Creepysin</Company>
+    <Copyright>Copyright © Creepysin 2019</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://pootis-bot.creepysin.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Creepysin/Pootis-Bot</RepositoryUrl>
+    <Description>Pootis-Bot, an all in one C# Discord.NET Bot</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,8 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Pootis-Bot.ConsoleCommandHandler\Pootis-Bot.ConsoleCommandHandler.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
