@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
 
@@ -17,6 +18,8 @@ namespace Pootis_Bot
 	{
 		public static void Main(string[] args)
 		{
+			Debug.WriteLine("[Program] Pootis-Bot starting...");
+
 			//Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
 			Console.WriteLine(@"__________              __  .__                 __________        __   ");
 			Console.WriteLine(@"\______   \____   _____/  |_|__| ______         \______   \ _____/  |_ ");
@@ -58,11 +61,15 @@ namespace Pootis_Bot
 
 			Console.Title = name + " Console";
 
+			Debug.WriteLine("[Program] Creating bot instance");
+
 			//Setup the bot, put in the name, prefix and token
 			Bot bot = new Bot();
 			Global.BotName = name;
 			Global.BotPrefix = prefix;
 			Global.BotToken = token;
+
+			Debug.WriteLine("[Program] Starting bot...");
 
 			//Start her up!
 			bot.StartBot().GetAwaiter().GetResult();

@@ -28,6 +28,8 @@ namespace Pootis_Bot.Core
 			//Make sure the token isn't null or empty, if so open the bot config menu.
 			if (string.IsNullOrEmpty(Global.BotToken)) new ConfigMenu().OpenConfig(true);
 
+			Debug.WriteLine("[Bot] Creating new client...");
+
 			_client = new DiscordSocketClient(new DiscordSocketConfig
 			{
 				LogLevel = LogSeverity.Verbose
@@ -37,13 +39,22 @@ namespace Pootis_Bot.Core
 			_client.Log += Log;
 			_client.Ready += BotReady;
 
+			Debug.WriteLine("[Bot] Setting up events");
+
 			//Setup the remaining events
 			EventsSetup unused = new EventsSetup(_client);
+
+			Debug.WriteLine("[Bot] Signing in using token...");
 
 			await _client.LoginAsync(TokenType.Bot,
 				Global.BotToken); //Logging into the bot using the token in the config.
 			await _client.StartAsync(); //Start the client
+
+			Debug.WriteLine("[Bot] Sign in successful");
+
 			CommandHandler handler = new CommandHandler(_client);
+
+			Debug.WriteLine("[Bot] Installing commands...");
 
 			//Install all the Modules
 			await handler.InstallCommandsAsync();
@@ -53,6 +64,8 @@ namespace Pootis_Bot.Core
 
 			//Bot owner
 			Global.BotOwner = (await _client.GetApplicationInfoAsync()).Owner;
+
+			Debug.WriteLine($"[Bot] The owner of this bot is {Global.BotOwner}");
 
 			//Set the bot status to the default game status
 			await _client.SetGameAsync(Config.bot.DefaultGameMessage);
@@ -78,10 +91,12 @@ namespace Pootis_Bot.Core
 		{
 			while (IsRunning)
 			{
-				
 				if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
+
+					Debug.WriteLine("[Bot Connection] Checking bot connection status...");
+
 					if (_client.ConnectionState != ConnectionState.Disconnected &&
 					    (_client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
 

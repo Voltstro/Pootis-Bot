@@ -44,7 +44,6 @@ namespace Pootis_Bot.ConsoleCommandHandler
 			}
 
 			_consoleCommands.Add(name, new ConsoleCommand(name, summary, method));
-			Debug.WriteLine($"[Command] Added command {name}");
 		}
 
 		/// <summary>

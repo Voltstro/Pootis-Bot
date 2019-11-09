@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
@@ -67,7 +68,9 @@ namespace Pootis_Bot.Core
 				channel.IsPlaying = false;
 			}
 
+			Debug.WriteLine("[Bot] Logging out...");
 			await _client.LogoutAsync();
+			Debug.WriteLine("[Bot] Logged out successfully!");
 			_client.Dispose();
 			Environment.Exit(0);
 		}
