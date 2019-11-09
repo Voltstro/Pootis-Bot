@@ -96,11 +96,11 @@ namespace Pootis_Bot.Core
 						if (somethingWasModified)
 						{
 							Config.SaveConfig();
-							Global.Log("Config has been saved!");
+							Global.Log("Config has been saved! Exited out of the config menu.");
 						}
 						else
 						{
-							Global.Log("Nothing was changed, so nothing was saved!");
+							Global.Log("Nothing was changed, so nothing was saved! Exited out of the config menu.");
 						}
 
 						return;
@@ -246,7 +246,7 @@ namespace Pootis_Bot.Core
 						break;
 					case "return":
 					{
-						bool isModified = giphyKey != Config.bot.Apis.ApiGiphyKey || youtubeKey != Config.bot.Apis.ApiYoutubeKey || googleKey != Config.bot.Apis.ApiGiphyKey || googleSearchId != Config.bot.Apis.GoogleSearchEngineId;
+						bool isModified = giphyKey != Config.bot.Apis.ApiGiphyKey || youtubeKey != Config.bot.Apis.ApiYoutubeKey || googleKey != Config.bot.Apis.ApiGoogleSearchKey || googleSearchId != Config.bot.Apis.GoogleSearchEngineId;
 
 						if (isModified)
 						{
