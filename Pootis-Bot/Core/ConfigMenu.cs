@@ -6,7 +6,7 @@ namespace Pootis_Bot.Core
 	{
 		public class ConfigResult
 		{
-			public enum ResultTypes {Token, Prefix, Name}
+			public enum ResultTypes {Token, Prefix, Name, Apis}
 
 			public bool WasModified { get; set; }
 			public ResultTypes ResultType { get; set; }
@@ -23,15 +23,13 @@ namespace Pootis_Bot.Core
 			Console.WriteLine("1 - Bot Token");
 			Console.WriteLine("2 - Bot Prefix");
 			Console.WriteLine("3 - Bot Name");
-			//Console.WriteLine("4 - APIs");
+			Console.WriteLine("4 - APIs");
 			Console.WriteLine("");
 			
 			Console.WriteLine("Enter in either '1', '2' ect... or 'exit' to exit the config menu.");
 
 			ConfigResult tokenResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Token, WasModified = false};
-
 			ConfigResult prefixResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = false};
-
 			ConfigResult nameResult = new ConfigResult{ResultType = ConfigResult.ResultTypes.Name, WasModified = false};
 
 			bool somethingWasModified = false;
@@ -42,25 +40,31 @@ namespace Pootis_Bot.Core
 
 				switch (input)
 				{
-					case "1":
+					case "1": //Bot token
 					{
 						tokenResult = ConfigEditToken();
 						if (tokenResult.WasModified) somethingWasModified = true;
 						break;
 					}
-					case "2":
+					case "2": //Bot prefix
 					{
 						prefixResult = ConfigEditPrefix();
 						if(prefixResult.WasModified) somethingWasModified = true;
 						break;
 					}
-					case "3":
+					case "3": //Bot name
 					{
 						nameResult = ConfigEditName();
 						if(nameResult.WasModified) somethingWasModified = true;
 						break;
 					}
-					case "exit":
+					case "4": //API keys
+					{
+						ConfigResult apiResult = ConfigEditApis();
+						if (apiResult.WasModified) somethingWasModified = true;
+						break;
+					}
+					case "exit": //Exit out of config menu
 					{
 						//If it is the first startup, check to make sure the token was modified.
 						if (isFirstStartUp && !tokenResult.WasModified)
@@ -110,6 +114,8 @@ namespace Pootis_Bot.Core
 			}
 		}
 
+		#region Config Edit Token, Name, Prefix
+
 		private static ConfigResult ConfigEditToken()
 		{
 			Console.WriteLine("Enter in a new token for the bot to use.");
@@ -123,6 +129,7 @@ namespace Pootis_Bot.Core
 				if (newToken == "exit")
 				{
 					Console.WriteLine("The token was not modified.");
+
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Token, WasModified = false};
 				}
 				if(string.IsNullOrWhiteSpace(newToken))
@@ -134,6 +141,7 @@ namespace Pootis_Bot.Core
 					Config.bot.BotToken = newToken;
 					Global.BotToken = newToken;
 					Console.WriteLine($"The token will be set to `{newToken}`.");
+
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Token, WasModified = true};
 				}
 			}
@@ -152,6 +160,7 @@ namespace Pootis_Bot.Core
 				if (newPrefix == "exit")
 				{
 					Console.WriteLine("The prefix was not modified.");
+
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = false};
 				}
 				if(string.IsNullOrWhiteSpace(newPrefix))
@@ -162,6 +171,7 @@ namespace Pootis_Bot.Core
 				{
 					Config.bot.BotPrefix = newPrefix;
 					Console.WriteLine($"The prefix will be set to `{newPrefix}`.");
+
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Prefix, WasModified = true};
 				}
 			}
@@ -180,6 +190,7 @@ namespace Pootis_Bot.Core
 				if (newName == "exit")
 				{
 					Console.WriteLine("The bot name was not modified.");
+
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Name, WasModified = false};
 				}
 				if(string.IsNullOrWhiteSpace(newName))
@@ -190,9 +201,119 @@ namespace Pootis_Bot.Core
 				{
 					Config.bot.BotName = newName;
 					Console.WriteLine($"The bot name will be set to `{newName}`.");
+
 					return new ConfigResult{ResultType = ConfigResult.ResultTypes.Name, WasModified = true};
 				}
 			}
 		}
+
+		#endregion
+
+		private static ConfigResult ConfigEditApis()
+		{
+			Console.WriteLine("APIs are needed for commands such as `google`, `youtube`, `giphy`");
+			Console.WriteLine("It is definitely recommended.");
+			Console.WriteLine("");
+			Console.WriteLine("1 - Giphy API Key");
+			Console.WriteLine("2 - Youtube API Key");
+			Console.WriteLine("3 - Google API Key");
+			Console.WriteLine("4 - Google Search Id");
+			Console.WriteLine("");
+			Console.WriteLine("At any time type 'return' to return back to the bot configuration menu.");
+
+			string giphyKey = Config.bot.Apis.ApiGiphyKey;
+			string youtubeKey = Config.bot.Apis.ApiYoutubeKey;
+			string googleKey = Config.bot.Apis.ApiGoogleSearchKey;
+			string googleSearchId = Config.bot.Apis.GoogleSearchEngineId;
+
+			while (true)
+			{
+				string input = Console.ReadLine()?.Trim();
+
+				switch (input)
+				{
+					case "1":
+						giphyKey = ConfigEditApiGiphy();
+						break;
+					case "2":
+						youtubeKey = ConfigEditApiYouTube();
+						break;
+					case "3":
+						googleKey = ConfigEditApiGoogleSearch();
+						break;
+					case "4":
+						googleSearchId = ConfigEditApiGoogleEngineId();
+						break;
+					case "return":
+					{
+						bool isModified = giphyKey != Config.bot.Apis.ApiGiphyKey || youtubeKey != Config.bot.Apis.ApiYoutubeKey || googleKey != Config.bot.Apis.ApiGiphyKey || googleSearchId != Config.bot.Apis.GoogleSearchEngineId;
+
+						if (isModified)
+						{
+							Console.WriteLine("API keys have immediately been updated, but not saved until the config menu is exited. Exited back to the main config menu.");
+							return new ConfigResult{ResultType = ConfigResult.ResultTypes.Apis, WasModified = true};
+						}
+
+						Console.WriteLine("Nothing was changed, exited back to the main config menu.");
+						return new ConfigResult{ResultType = ConfigResult.ResultTypes.Apis, WasModified = false};
+					}
+					default:
+						Console.WriteLine("Input either needs to be '1', '2', ect... or 'return' to exit to the config menu. ");
+						break;
+				}
+			}
+		}
+
+		#region Config APIs
+
+		private static string ConfigEditApiGiphy()
+		{
+			Console.WriteLine($"The current Giphy API key is `{Config.bot.Apis.ApiGiphyKey}`.");
+			Console.WriteLine("Enter in a Giphy API key.");
+
+			string giphyKey = Console.ReadLine()?.Trim();
+
+			Console.WriteLine($"Giphy API key has been set to `{giphyKey}`.");
+
+			return giphyKey;
+		}
+
+		private static string ConfigEditApiYouTube()
+		{
+			Console.WriteLine($"The current YouTube API key is `{Config.bot.Apis.ApiYoutubeKey}`.");
+			Console.WriteLine("Enter in a YouTube API key.");
+
+			string youTubeKey = Console.ReadLine()?.Trim();
+
+			Console.WriteLine($"YouTube API key has been set to `{youTubeKey}`.");
+
+			return youTubeKey;
+		}
+
+		private static string ConfigEditApiGoogleSearch()
+		{
+			Console.WriteLine($"The current Google search API key is `{Config.bot.Apis.ApiGoogleSearchKey}`.");
+			Console.WriteLine("Enter in a Google search API key.");
+
+			string googleKey = Console.ReadLine()?.Trim();
+
+			Console.WriteLine($"Google search API key has been set to `{googleKey}`.");
+
+			return googleKey;
+		}
+
+		private static string ConfigEditApiGoogleEngineId()
+		{
+			Console.WriteLine($"The current Google Engine ID is `{Config.bot.Apis.GoogleSearchEngineId}`.");
+			Console.WriteLine("Enter in a Google Engine ID.");
+
+			string googleId = Console.ReadLine()?.Trim();
+
+			Console.WriteLine($"Google Engine ID has been set to `{googleId}`.");
+
+			return googleId;
+		}
+
+		#endregion
 	}
 }
