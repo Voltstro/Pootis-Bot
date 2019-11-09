@@ -5,7 +5,6 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  frameworkVersion: 'netcoreapp2.2' 
 
 jobs:
 - job: Windows
