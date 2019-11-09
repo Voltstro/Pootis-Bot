@@ -118,9 +118,9 @@ namespace Pootis_Bot.Core
 
 		private static ConfigResult ConfigEditToken()
 		{
-			Console.WriteLine("Enter in a new token for the bot to use.");
 			Console.WriteLine($"The current token is `{Global.BotToken}`.");
 			Console.WriteLine("To exit without saving, type in `exit`.");
+			Console.WriteLine("Enter in a new token for the bot to use:");
 
 			while (true)
 			{
@@ -149,9 +149,9 @@ namespace Pootis_Bot.Core
 
 		private static ConfigResult ConfigEditPrefix()
 		{
-			Console.WriteLine("Enter in a new prefix for the bot to use.");
 			Console.WriteLine($"The current prefix is `{Global.BotPrefix}`.");
 			Console.WriteLine("To exit without saving, type in `exit`.");
+			Console.WriteLine("Enter in a new prefix for the bot to use:");
 
 			while (true)
 			{
@@ -179,9 +179,9 @@ namespace Pootis_Bot.Core
 
 		private static ConfigResult ConfigEditName()
 		{
-			Console.WriteLine("Enter in a new name for the bot to use.");
 			Console.WriteLine($"The current name of the bot is `{Global.BotName}`.");
 			Console.WriteLine("To exit without saving, type in `exit`.");
+			Console.WriteLine("Enter in a new name for the bot to use:");
 
 			while (true)
 			{
@@ -258,7 +258,7 @@ namespace Pootis_Bot.Core
 						return new ConfigResult{ResultType = ConfigResult.ResultTypes.Apis, WasModified = false};
 					}
 					default:
-						Console.WriteLine("Input either needs to be '1', '2', ect... or 'return' to exit to the config menu. ");
+						Console.WriteLine("Input either needs to be '1', '2', ect... or 'return' to exit to the config menu.");
 						break;
 				}
 			}
@@ -269,7 +269,7 @@ namespace Pootis_Bot.Core
 		private static string ConfigEditApiGiphy()
 		{
 			Console.WriteLine($"The current Giphy API key is `{Config.bot.Apis.ApiGiphyKey}`.");
-			Console.WriteLine("Enter in a Giphy API key.");
+			Console.WriteLine("Enter in a Giphy API key:");
 
 			string giphyKey = Console.ReadLine()?.Trim();
 
@@ -281,7 +281,7 @@ namespace Pootis_Bot.Core
 		private static string ConfigEditApiYouTube()
 		{
 			Console.WriteLine($"The current YouTube API key is `{Config.bot.Apis.ApiYoutubeKey}`.");
-			Console.WriteLine("Enter in a YouTube API key.");
+			Console.WriteLine("Enter in a YouTube API key:");
 
 			string youTubeKey = Console.ReadLine()?.Trim();
 
@@ -293,7 +293,7 @@ namespace Pootis_Bot.Core
 		private static string ConfigEditApiGoogleSearch()
 		{
 			Console.WriteLine($"The current Google search API key is `{Config.bot.Apis.ApiGoogleSearchKey}`.");
-			Console.WriteLine("Enter in a Google search API key.");
+			Console.WriteLine("Enter in a Google search API key:");
 
 			string googleKey = Console.ReadLine()?.Trim();
 
@@ -305,7 +305,7 @@ namespace Pootis_Bot.Core
 		private static string ConfigEditApiGoogleEngineId()
 		{
 			Console.WriteLine($"The current Google Engine ID is `{Config.bot.Apis.GoogleSearchEngineId}`.");
-			Console.WriteLine("Enter in a Google Engine ID.");
+			Console.WriteLine("Enter in a Google Engine ID:");
 
 			string googleId = Console.ReadLine()?.Trim();
 
