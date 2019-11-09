@@ -8,10 +8,21 @@ namespace Pootis_Bot.Core
 		{
 			public enum ResultTypes {Token, Prefix, Name, Apis}
 
+			/// <summary>
+			/// Was the existing result modified?
+			/// </summary>
 			public bool WasModified { get; set; }
+
+			/// <summary>
+			/// What was the result type (Token, Prefix, etc...)
+			/// </summary>
 			public ResultTypes ResultType { get; set; }
 		}
 
+		/// <summary>
+		/// Open up the config menu
+		/// </summary>
+		/// <param name="isFirstStartUp">Forces the user to set a token</param>
 		public void OpenConfig(bool isFirstStartUp = false)
 		{
 			Global.Log("Entering config menu...");
@@ -86,6 +97,7 @@ namespace Pootis_Bot.Core
 							Global.BotPrefix = Config.bot.BotPrefix;
 						}
 
+						//Update the console title if the bot name was changed
 						if (nameResult.WasModified)
 						{
 							Global.BotName = Config.bot.BotName;
