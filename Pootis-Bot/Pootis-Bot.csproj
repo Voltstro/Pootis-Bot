@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <RootNamespace>Pootis_Bot</RootNamespace>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
