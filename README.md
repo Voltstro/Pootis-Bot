@@ -24,7 +24,7 @@ Some current features that the bot can do. More feature are planed to be added
 
 - Music Service (Downloads from YouTube)
 
-- Google, YouTube and Giphy search support
+- Google, YouTube, Giphy and Wikipedia search support
 
 - [Rule reaction feature](https://pootis-bot.creepysin.com/server-setup/rulereaction/)
 
