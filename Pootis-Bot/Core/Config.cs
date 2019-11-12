@@ -14,7 +14,7 @@ namespace Pootis_Bot.Core
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "Config.json";
 
-		private const string ConfigVersion = "8";
+		private const string ConfigVersion = "9";
 
 		public static readonly ConfigFile bot;
 
@@ -64,7 +64,8 @@ namespace Pootis_Bot.Core
 				AudioSettings = new ConfigAudio
 				{
 					AudioServicesEnabled = false,
-					LogPlayStopSongToConsole = true
+					LogPlayStopSongToConsole = true,
+					MaxVideoTime = new TimeSpan(0, 7, 0)
 				},
 				CheckConnectionStatus = true,
 				CheckConnectionStatusInterval = 60000,

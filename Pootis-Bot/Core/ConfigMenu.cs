@@ -262,7 +262,12 @@ namespace Pootis_Bot.Core
 
 						if (isModified)
 						{
-							Console.WriteLine("API keys have immediately been updated, but not saved until the config menu is exited. Exited back to the main config menu.");
+							Config.bot.Apis.ApiGiphyKey = giphyKey;
+							Config.bot.Apis.ApiYoutubeKey = youtubeKey;
+							Config.bot.Apis.ApiGoogleSearchKey = googleKey;
+							Config.bot.Apis.GoogleSearchEngineId = googleSearchId;
+
+							Console.WriteLine("API keys have immediately been updated, but are not saved until the config menu is exited. Exited back to the main config menu.");
 							return new ConfigResult{ResultType = ConfigResult.ResultTypes.Apis, WasModified = true};
 						}
 

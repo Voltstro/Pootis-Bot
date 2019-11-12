@@ -33,7 +33,7 @@ namespace Pootis_Bot.Services.Audio
 				try
 				{
 					MediaStreamInfoSet videoInfo = _client.GetVideoMediaStreamInfosAsync(searchListResponse.Items[0].Id.VideoId).GetAwaiter().GetResult();
-
+					
 					string videoTitle = AudioCheckService.RemovedNotAllowedChars(searchListResponse.Items[0].Snippet.Title);
 					string videoLoc = $"Music/{videoTitle}.mp3";
 
@@ -43,6 +43,16 @@ namespace Pootis_Bot.Services.Audio
 
 					//Check to make sure the music directory is there
 					if (!Directory.Exists("Music/")) Directory.CreateDirectory("Music/");
+
+					TimeSpan videoTime = _client.GetVideoAsync(searchListResponse.Items[0].Id.VideoId).GetAwaiter()
+						.GetResult().Duration;
+
+					if (videoTime.TotalSeconds > Config.bot.AudioSettings.MaxVideoTime.TotalSeconds)
+					{
+						channel.SendMessageAsync($":musical_note: Video succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}").GetAwaiter().GetResult();
+
+						return null;
+					}
 
 					Debug.WriteLine($"[Audio Download] Downloading {videoLoc}");
 
