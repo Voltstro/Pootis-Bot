@@ -64,8 +64,6 @@ namespace Pootis_Bot.Core
 				AudioSettings = new ConfigAudio
 				{
 					AudioServicesEnabled = false,
-					InitialApplication = "External\\youtube-dl",
-					PythonArguments = "",
 					LogPlayStopSongToConsole = true
 				},
 				CheckConnectionStatus = true,

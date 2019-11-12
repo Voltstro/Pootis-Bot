@@ -17,8 +17,6 @@ namespace Pootis_Bot.Services.Audio
 			Global.Log("Downloading files for Windows...");
 
 			//Download all audio service files for Windows
-			Global.Log("Downloading YouTube-Dl for Windows...");
-			webClient.DownloadFile(windowsLibFile.YoutubeDlDownloadUrl, "External/youtube-dl.exe");
 			Global.Log("Downloading FFMPEG...");
 			webClient.DownloadFile(windowsLibFile.FfMpegDownloadUrl, "Temp/ffmpeg.zip");
 			Global.Log("Downloading libsodium.dll and opus.dll...");
@@ -40,8 +38,6 @@ namespace Pootis_Bot.Services.Audio
 			File.Delete("Temp/ffmpeg.zip");
 			Directory.Delete("temp/ffmpeg", true);
 
-			Config.bot.AudioSettings.InitialApplication = "External\\youtube-dl.exe";
-			Config.bot.AudioSettings.PythonArguments = "";
 			Config.SaveConfig();
 		}
 
