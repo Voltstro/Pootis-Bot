@@ -5,13 +5,16 @@ using Discord;
 using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
 using Pootis_Bot.Core;
-using Pootis_Bot.Modules.Fun;
 using Pootis_Bot.Services.Google;
+using YoutubeExplode;
+using YoutubeExplode.Models.MediaStreams;
 
 namespace Pootis_Bot.Services.Audio
 {
 	public class AudioDownload
 	{
+		private readonly YoutubeClient _client = new YoutubeClient();
+
 		/// <summary>
 		/// Downloads an audio file using a search string
 		/// </summary>
@@ -26,9 +29,11 @@ namespace Pootis_Bot.Services.Audio
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString());
 
 			if (searchListResponse.Items.Count != 0)
+			{
 				try
 				{
-					string videoUrl = FunCmdsConfig.ytStartLink + searchListResponse.Items[0].Id.VideoId;
+					MediaStreamInfoSet videoInfo = _client.GetVideoMediaStreamInfosAsync(searchListResponse.Items[0].Id.VideoId).GetAwaiter().GetResult();
+
 					string videoTitle = AudioCheckService.RemovedNotAllowedChars(searchListResponse.Items[0].Snippet.Title);
 					string videoLoc = $"Music/{videoTitle}.mp3";
 
@@ -36,13 +41,19 @@ namespace Pootis_Bot.Services.Audio
 					string check = AudioService.SearchAudio(videoTitle);
 					if (!string.IsNullOrWhiteSpace(check)) return videoLoc;
 
+					//Check to make sure the music directory is there
 					if (!Directory.Exists("Music/")) Directory.CreateDirectory("Music/");
+
+					Debug.WriteLine($"[Audio Download] Downloading {videoLoc}");
 
 					channel.SendMessageAsync(
 						$":musical_note: Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**");
 
-					//Use Youtube-dl to download the song and convert it to a .mp3
-					CreateYtDownloadProcess(videoUrl, videoTitle);
+					//Download the .mp3 file
+					_client.DownloadMediaStreamAsync(videoInfo.Audio.WithHighestBitrate(), videoLoc).GetAwaiter().GetResult();
+
+					Debug.WriteLine("[Audio Download] Download successful");
+
 					return videoLoc;
 				}
 				catch (Exception ex)
@@ -57,33 +68,11 @@ namespace Pootis_Bot.Services.Audio
 
 					return null;
 				}
+			}
 
 			channel.SendMessageAsync(
 				$"No result for '{search}' were found on YouTube, try typing in something different.");
 			return null;
-		}
-
-		private static void CreateYtDownloadProcess(string url, string name)
-		{
-			ProcessStartInfo processStartInfo = new ProcessStartInfo
-			{
-				FileName = Config.bot.AudioSettings.InitialApplication,
-				Arguments =
-					$" {Config.bot.AudioSettings.PythonArguments} -x --audio-format mp3 -o ./Music/\"{name}\".%(ext)s \"{url}\"",
-				CreateNoWindow = !Config.bot.AudioSettings.ShowYoutubeDlWindow,
-				RedirectStandardOutput = false,
-				UseShellExecute = Config.bot.AudioSettings.ShowYoutubeDlWindow
-			};
-
-			Process proc = new Process
-			{
-				StartInfo = processStartInfo
-			};
-
-			proc.Start();
-			proc.WaitForExit();
-
-			proc.Dispose();
 		}
 	}
 }

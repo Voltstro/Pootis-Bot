@@ -192,87 +192,85 @@ namespace Pootis_Bot.Services.Audio
 			if(Config.bot.AudioSettings.LogPlayStopSongToConsole)
 				Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
-			using (Stream output = ffmpeg.StandardOutput.BaseStream) //Start playing the song
+			await using Stream output = ffmpeg.StandardOutput.BaseStream;
+			await using (serverList.Discord = client.CreatePCMStream(AudioApplication.Music))
 			{
-				using (serverList.Discord = client.CreatePCMStream(AudioApplication.Music))
-				{
-					serverList.IsPlaying = true;
-					bool fail = false;
-					bool exit = false;
-					int bufferSize = 1024;
-					byte[] buffer = new byte[bufferSize];
+				serverList.IsPlaying = true;
+				bool fail = false;
+				bool exit = false;
+				int bufferSize = 1024;
+				byte[] buffer = new byte[bufferSize];
 
-					CancellationToken cancellation = new CancellationToken();
+				CancellationToken cancellation = new CancellationToken();
 
-					await channel.SendMessageAsync($":musical_note: Now playing **{fileName}**.");
+				await channel.SendMessageAsync($":musical_note: Now playing **{fileName}**.");
 
-					serverList.IsExit = false;
+				serverList.IsExit = false;
 
-					//To be completely honest, I don't understand much of this.
-					//Pootis-Bot and the audio services have always been difficult for me.
-					//If anyone could improve upon this I would gladly accept it!
-					while (!fail && !exit)
-						try
+				//To be completely honest, I don't understand much of this.
+				//Pootis-Bot and the audio services have always been difficult for me.
+				//If anyone could improve upon this I would gladly accept it!
+				while (!fail && !exit)
+					try
+					{
+						if (cancellation.IsCancellationRequested)
 						{
-							if (cancellation.IsCancellationRequested)
-							{
-								exit = true;
-								break;
-							}
-
-							if (serverList.IsExit)
-							{
-								exit = true;
-								break;
-							}
-
-							int read = await output.ReadAsync(buffer, 0, bufferSize, cancellation);
-							if (read == 0)
-							{
-								exit = true;
-								break;
-							}
-
-							await serverList.Discord.WriteAsync(buffer, 0, read, cancellation);
-
-							if (serverList.IsPlaying) continue;
-
-							do
-							{
-								//Do nothing, wait till is playing is true
-								await Task.Delay(100, cancellation);
-							} while (serverList.IsPlaying == false);
-						}
-						catch (OperationCanceledException)
-						{
-						}
-						catch (Exception ex)
-						{
-							await channel.SendMessageAsync($"Sorry an error occured **Error Details**\n{ex.Message}");
-
-							if(Config.bot.ReportErrorsToOwner)
-								await Global.BotOwner.SendMessageAsync(
-									$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
-
-							fail = true;
+							exit = true;
+							break;
 						}
 
-					//End
-					if(Config.bot.AudioSettings.LogPlayStopSongToConsole)
-						Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
-							ConsoleColor.Blue);
+						if (serverList.IsExit)
+						{
+							exit = true;
+							break;
+						}
 
-					await serverList.Discord.FlushAsync(cancellation);
-					serverList.Discord.Dispose();
-					serverList.IsPlaying = false;
+						int read = await output.ReadAsync(buffer, 0, bufferSize, cancellation);
+						if (read == 0)
+						{
+							exit = true;
+							break;
+						}
 
-					await channel.SendMessageAsync($":musical_note: **{fileName}** ended or was stopped.");
+						await serverList.Discord.WriteAsync(buffer, 0, read, cancellation);
 
-					//Check to make sure that ffmpeg was disposed
-					ffmpeg.Dispose();
+						if (serverList.IsPlaying) continue;
 
-					serverList.FfMpeg = null;
-				}
+						do
+						{
+							//Do nothing, wait till is playing is true
+							await Task.Delay(100, cancellation);
+						} while (serverList.IsPlaying == false);
+					}
+					catch (OperationCanceledException)
+					{
+					}
+					catch (Exception ex)
+					{
+						await channel.SendMessageAsync($"Sorry an error occured **Error Details**\n{ex.Message}");
+
+						if(Config.bot.ReportErrorsToOwner)
+							await Global.BotOwner.SendMessageAsync(
+								$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
+
+						fail = true;
+					}
+
+				//End
+				if(Config.bot.AudioSettings.LogPlayStopSongToConsole)
+					Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
+						ConsoleColor.Blue);
+
+				await serverList.Discord.FlushAsync(cancellation);
+				serverList.Discord.Dispose();
+				serverList.IsPlaying = false;
+
+				await channel.SendMessageAsync($":musical_note: **{fileName}** ended or was stopped.");
+
+				//Check to make sure that ffmpeg was disposed
+				ffmpeg.Dispose();
+
+				serverList.FfMpeg = null;
 			}
 		}
 
