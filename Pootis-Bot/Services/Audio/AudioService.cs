@@ -158,32 +158,49 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			string fileLoc = SearchAudio(search); //Search for the song in our current music directory
-
-			//The search didn't come up with anything, lets attempt to get it from YouTube
-			if (string.IsNullOrWhiteSpace(fileLoc))
+			if (string.IsNullOrWhiteSpace(search))
 			{
-				AudioDownload audioDownload = new AudioDownload();
-				string result = audioDownload.DownloadAudio(search, channel, guild);
-				if (result != null)
-					fileLoc = result;
-				else
-					return;
+				await channel.SendMessageAsync("You need to input a search!");
+				return;
 			}
 
-			string tempName = Path.GetFileName(fileLoc);
-			string fileName = tempName.Replace(".mp3", "");
+			string fileLoc;
+			string fileName;
 
-			if (serverList.IsPlaying)
+			try
 			{
-				//Kill and dispose of ffmpeg
-				serverList.FfMpeg.Kill();
-				serverList.FfMpeg.Dispose();
+				fileLoc = SearchAudio(search); //Search for the song in our current music directory
 
-				await serverList.Discord.FlushAsync();
+				//The search didn't come up with anything, lets attempt to get it from YouTube
+				if (string.IsNullOrWhiteSpace(fileLoc))
+				{
+					AudioDownload audioDownload = new AudioDownload();
+					string result = audioDownload.DownloadAudio(search, channel, guild);
+					if (result != null)
+						fileLoc = result;
+					else
+						return;
+				}
 
-				//Wait a moment
-				await Task.Delay(1000);
+				string tempName = Path.GetFileName(fileLoc);
+				fileName = tempName.Replace(".mp3", "");
+
+				if (serverList.IsPlaying)
+				{
+					//Kill and dispose of ffmpeg
+					serverList.FfMpeg.Kill();
+					serverList.FfMpeg.Dispose();
+
+					await serverList.Discord.FlushAsync();
+
+					//Wait a moment
+					await Task.Delay(1000);
+				}
+			}
+			catch (Exception ex)
+			{
+				Global.Log(ex.Message, ConsoleColor.Red);
+				return;
 			}
 
 			IAudioClient client = serverList.AudioClient;
