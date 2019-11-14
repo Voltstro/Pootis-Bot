@@ -54,16 +54,16 @@ namespace Pootis_Bot.Modules.Server
 		{
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
-			if (server.WelcomeMessageEnabled && (channel == null))
+			//The welcome message is enabled, so disable it
+			if (server.WelcomeMessageEnabled)
 			{
-				//Disable the welcome message
 				server.WelcomeMessageEnabled = false;
 
 				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync("The welcome message was disabled.");
 			}
-			else if (!server.WelcomeMessageEnabled)
+			else if (!server.WelcomeMessageEnabled) //The welcome message is not enabled
 			{
 				if (channel == null)
 				{
@@ -83,7 +83,7 @@ namespace Pootis_Bot.Modules.Server
 				}
 				else
 				{
-					//Set the welcome channel to the imputed one
+					//Set the welcome channel to the inputed one
 					server.WelcomeMessageEnabled = true;
 					server.WelcomeChannelId = channel.Id;
 
@@ -135,7 +135,7 @@ namespace Pootis_Bot.Modules.Server
 		{
 			if (id != 0)
 			{
-				if (Context.Channel.GetMessageAsync(id).Result != null)
+				if (await Context.Channel.GetMessageAsync(id) != null)
 				{
 					ServerList server = ServerListsManager.GetServer(Context.Guild);
 					server.RuleMessageId = id;
