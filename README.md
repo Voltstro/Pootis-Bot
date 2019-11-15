@@ -38,13 +38,15 @@ Some current features that the bot can do. More feature are planed to be added
 
 You can download a compiled version [here](https://pootis-bot.creepysin.com/download/all)!
 
-### Compiling Your Self
+### Contributing
 
-1. Fork the project
+1. First read [CONTRIBUTING.md](/CONTRIBUTING.md) and [/CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md).
 
-2. Clone your fork to your local machine
+2. Fork the project
 
-Visit [Pootis-Bot documentation](https://pootis-bot.creepysin.com/dev/building/) which will show you how to use the powershell scripts or how to compile with the dotnet command.
+3. Clone your fork to your local machine
+
+4. Visit [Pootis-Bot documentation](https://pootis-bot.creepysin.com/dev/building/) which will show you how to use the powershell scripts, or how to compile with the `dotnet` command.
 
 ## Authors
 
@@ -56,7 +58,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Quick Notes
 
-* This is the first piece of software that I have publicly release, there are bound to be mistakes and pieces of code that aren't "professional" or whatever
-* The name 'Pootis-Bot' was suggested by my friend. Yes, I know what game it is from
-* The robot Heavy icon is Valves
-* Thanks for Discord for generaly being awesome
+* This is the first piece of software that I have publicly released, there are bound to be mistakes and pieces of code that aren't "professional" or whatever you want to say.
+* The name 'Pootis-Bot' was suggested by my friend. Yes, I know what game it is from, I play it!
+* The robot heavy icon is Valve Corporation’s model.
+* Thanks for Discord for generaly being awesome (most of the time).
