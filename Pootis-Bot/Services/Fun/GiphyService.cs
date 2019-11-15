@@ -1,6 +1,6 @@
-﻿using System.Net;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Structs.Giphy;
 
 namespace Pootis_Bot.Services.Fun
@@ -23,12 +23,7 @@ namespace Pootis_Bot.Services.Fun
 				{
 					string input = search.Replace(" ", "+");
 
-					string json;
-					using (WebClient client = new WebClient()) //Search the term using the giphy api. More about the api here: https://developers.giphy.com/docs/
-					{
-						json = client.DownloadString(
-							$"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.ApiGiphyKey}");
-					}
+					string json = WebUtils.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.ApiGiphyKey}");
 
 					dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 

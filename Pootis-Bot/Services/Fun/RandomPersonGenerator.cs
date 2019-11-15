@@ -1,5 +1,5 @@
-﻿using System.Net;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Services.Fun
@@ -8,11 +8,7 @@ namespace Pootis_Bot.Services.Fun
 	{
 		public static RandomPersonResults GenerateRandomPerson()
 		{
-			string json;
-			using (WebClient client = new WebClient())
-			{
-				json = client.DownloadString("https://randomuser.me/api/");
-			}
+			string json = WebUtils.DownloadString("https://randomuser.me/api/");
 
 			dynamic data = JsonConvert.DeserializeObject<dynamic>(json);
 

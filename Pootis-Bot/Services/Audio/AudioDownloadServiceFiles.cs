@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
-using System.Net;
 using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Services.Audio
 {
@@ -11,16 +11,15 @@ namespace Pootis_Bot.Services.Audio
 		/// Downloads files for Windows
 		/// </summary>
 		/// <param name="windowsLibFile"></param>
-		/// <param name="webClient"></param>
-		public static void PrepareWindowFiles(LibFile windowsLibFile, WebClient webClient)
+		public static void PrepareWindowFiles(LibFile windowsLibFile)
 		{
 			Global.Log("Downloading files for Windows...");
 
 			//Download all audio service files for Windows
 			Global.Log("Downloading FFMPEG...");
-			webClient.DownloadFile(windowsLibFile.FfMpegDownloadUrl, "Temp/ffmpeg.zip");
+			WebUtils.DownloadFileAsync(windowsLibFile.FfMpegDownloadUrl, "Temp/ffmpeg.zip").GetAwaiter().GetResult();
 			Global.Log("Downloading libsodium.dll and opus.dll...");
-			webClient.DownloadFile(windowsLibFile.LibsDownloadUrl, "Temp/AudioDlls.zip");
+			WebUtils.DownloadFileAsync(windowsLibFile.LibsDownloadUrl, "Temp/AudioDlls.zip").GetAwaiter().GetResult();
 
 			//Extract required files
 			Global.Log("Extracting files...");

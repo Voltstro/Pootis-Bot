@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Services.Audio
 {
@@ -86,26 +87,26 @@ namespace Pootis_Bot.Services.Audio
 			//If the external directory doesn't exist, create it
 			if (!Directory.Exists("External/")) Directory.CreateDirectory("External/");
 
-			using (WebClient client = new WebClient())
+
+			// ReSharper disable once CommentTypo
+			//Get the audiolibfiles.json from the pootis-bot website and deserialize it.
+			Global.Log($"Gathering needed information from {AudioLibFileJsonUrl}...");
+
+			string json = WebUtils.DownloadString(AudioLibFileJsonUrl);
+
+			_libFiles = JsonConvert.DeserializeObject<List<AudioDownloadServiceFiles.LibFile>>(json);
+			Global.Log("Got what I needed.");
+
+			//Download required files depending on platform
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				AudioDownloadServiceFiles.PrepareWindowFiles(GetLibFile("Windows"));
+			else
 			{
-				// ReSharper disable once CommentTypo
-				//Get the audiolibfiles.json from the pootis-bot website and deserialize it.
-				Global.Log($"Gathering needed information from {AudioLibFileJsonUrl}...");
-				string json = client.DownloadString(AudioLibFileJsonUrl);
-				_libFiles = JsonConvert.DeserializeObject<List<AudioDownloadServiceFiles.LibFile>>(json);
-				Global.Log("Got what I needed.");
+				Global.Log("Currently platform not supported! Audio services have been disabled!");
+				Config.bot.AudioSettings.AudioServicesEnabled = false;
+				Config.SaveConfig();
 
-				//Download required files depending on platform
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-					AudioDownloadServiceFiles.PrepareWindowFiles(GetLibFile("Windows"), client);
-				else
-				{
-					Global.Log("Currently platform not supported! Audio services have been disabled!");
-					Config.bot.AudioSettings.AudioServicesEnabled = false;
-					Config.SaveConfig();
-
-					return;
-				}
+				return;
 			}
 
 			Global.Log("Done! All files needed for audio service are ready!", ConsoleColor.Blue);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
 
@@ -37,6 +38,8 @@ namespace Pootis_Bot
 			//This is just suggesting to use 64-bit
 			if (!Environment.Is64BitOperatingSystem)
 				Global.Log("This OS is a 32-bit os, 64-Bit is recommended!", ConsoleColor.Yellow);
+
+			Global.HttpClient = new HttpClient();
 
 			#region Config arguments check
 

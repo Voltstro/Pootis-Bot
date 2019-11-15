@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Discord;
 using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
+using Microsoft.Win32.SafeHandles;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Google;
 using YoutubeExplode;
@@ -13,7 +15,28 @@ namespace Pootis_Bot.Services.Audio
 {
 	public class AudioDownload
 	{
-		private readonly YoutubeClient _client = new YoutubeClient();
+		private readonly YoutubeClient _client = new YoutubeClient(Global.HttpClient);
+
+		private bool _disposed;
+
+		private readonly SafeHandle _handle = new SafeFileHandle(IntPtr.Zero, true);
+		
+		public void Dispose()
+		{ 
+			Dispose(true);
+			GC.SuppressFinalize(this);           
+		}
+		
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_disposed)
+				return; 
+      
+			if (disposing)
+				_handle.Dispose();
+
+			_disposed = true;
+		}
 
 		/// <summary>
 		/// Downloads an audio file using a search string

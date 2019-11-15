@@ -176,6 +176,7 @@ namespace Pootis_Bot.Services.Audio
 				{
 					AudioDownload audioDownload = new AudioDownload();
 					string result = audioDownload.DownloadAudio(search, channel, guild);
+					audioDownload.Dispose();
 					if (result != null)
 						fileLoc = result;
 					else
