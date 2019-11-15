@@ -92,7 +92,7 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			//Just wait a moment
-			await Task.Delay(100);
+			await Task.Delay(1000);
 
 			await serverList.AudioClient.StopAsync();
 
@@ -164,6 +164,8 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
+			IUserMessage message = await channel.SendMessageAsync($":musical_note: Searching my audio banks for '{search}'");
+
 			string fileLoc;
 			string fileName;
 
@@ -175,8 +177,9 @@ namespace Pootis_Bot.Services.Audio
 				if (string.IsNullOrWhiteSpace(fileLoc))
 				{
 					AudioDownload audioDownload = new AudioDownload();
-					string result = audioDownload.DownloadAudio(search, channel, guild);
+					string result = audioDownload.DownloadAudio(search, message, guild);
 					audioDownload.Dispose();
+
 					if (result != null)
 						fileLoc = result;
 					else
@@ -195,7 +198,7 @@ namespace Pootis_Bot.Services.Audio
 					await serverList.Discord.FlushAsync();
 
 					//Wait a moment
-					await Task.Delay(1000);
+					await Task.Delay(100);
 				}
 			}
 			catch (Exception ex)
@@ -221,7 +224,9 @@ namespace Pootis_Bot.Services.Audio
 
 				CancellationToken cancellation = new CancellationToken();
 
-				await channel.SendMessageAsync($":musical_note: Now playing **{fileName}**.");
+				await message.ModifyAsync(x => { x.Content = $":musical_note: Now playing **{fileName}**."; });
+
+				//await channel.SendMessageAsync($":musical_note: Now playing **{fileName}**.");
 
 				serverList.IsExit = false;
 
