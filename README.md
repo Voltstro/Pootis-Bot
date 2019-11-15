@@ -40,7 +40,7 @@ You can download a compiled version [here](https://pootis-bot.creepysin.com/down
 
 ### Contributing
 
-1. First read [CONTRIBUTING.md](/CONTRIBUTING.md) and [/CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md).
+1. First read [CONTRIBUTING.md](/CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md).
 
 2. Fork the project
 
