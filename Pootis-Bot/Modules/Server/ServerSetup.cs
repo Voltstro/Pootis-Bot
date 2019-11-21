@@ -43,7 +43,7 @@ namespace Pootis_Bot.Modules.Server
 
 			ServerListsManager.SaveServerList();
 
-			await Context.Channel.SendMessageAsync($"The threshold was set to {threshold}.");
+			await Context.Channel.SendMessageAsync($"The threshold for amount of users in a message was set to {threshold}.");
 		}
 
 		[Command("togglewelcomemessage")]

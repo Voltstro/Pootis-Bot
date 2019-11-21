@@ -77,7 +77,7 @@ namespace Pootis_Bot.Core.Managers
 				RuleMessageId = 0,
 				AntiSpamSettings = new ServerList.AntiSpamSettingsInfo
 				{
-					RoleToRoleMentionWarnings = 3, MentionUsersPercentage = 45, MentionUserEnabled = true
+					RoleToRoleMentionWarnings = 3, MentionUsersPercentage = 65, MentionUserEnabled = true
 				}
 			};
 
