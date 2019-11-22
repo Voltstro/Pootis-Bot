@@ -52,11 +52,6 @@ namespace Pootis_Bot.Events
 			ServerList server = ServerListsManager.GetServer(user.Guild);
 			if (!user.IsBot)
 			{
-				//Remove server data from account
-				UserAccount account = UserAccountsManager.GetAccount(user);
-				account.Servers.Remove(account.GetOrCreateServer(user.Guild.Id));
-				UserAccountsManager.SaveAccounts();
-
 				if (server.WelcomeMessageEnabled)
 				{
 					//Format the message

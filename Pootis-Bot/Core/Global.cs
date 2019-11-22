@@ -52,6 +52,14 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		public static IUser BotOwner;
 
+		/// <summary>
+		/// The bot's logged in account
+		/// </summary>
+		public static IUser BotUser;
+
+		/// <summary>
+		/// Global HTTP client
+		/// </summary>
 		public static HttpClient HttpClient;
 
 		/// <summary>

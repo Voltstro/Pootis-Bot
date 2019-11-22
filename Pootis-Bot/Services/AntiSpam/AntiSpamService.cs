@@ -47,7 +47,7 @@ namespace Pootis_Bot.Services.AntiSpam
 
 			serverAccount.Warnings++;
 
-			UserAccountsManager.CheckUserWarnStatus(user).GetAwaiter().GetResult();
+			UserAccountsManager.CheckUserWarnStatus(user);
 			UserAccountsManager.SaveAccounts();
 
 			return true;

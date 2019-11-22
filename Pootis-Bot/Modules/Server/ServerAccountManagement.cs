@@ -44,7 +44,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 
 			await Context.Channel.SendMessageAsync(Warn(user));
-			await UserAccountsManager.CheckUserWarnStatus(user);
+			UserAccountsManager.CheckUserWarnStatus(user);
 		}
 
 		[Command("getnotwarnable")]

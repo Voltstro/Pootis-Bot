@@ -65,6 +65,9 @@ namespace Pootis_Bot.Core
 			//Bot owner
 			Global.BotOwner = (await _client.GetApplicationInfoAsync()).Owner;
 
+			//Bot user
+			Global.BotUser = _client.CurrentUser;
+
 			Debug.WriteLine($"[Bot] The owner of this bot is {Global.BotOwner}");
 
 			//Set the bot status to the default game status

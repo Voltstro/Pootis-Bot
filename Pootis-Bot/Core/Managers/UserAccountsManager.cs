@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Discord.WebSocket;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Core.Managers
 {
@@ -99,16 +99,19 @@ namespace Pootis_Bot.Core.Managers
 			return newAccount;
 		}
 
-		public static async Task CheckUserWarnStatus(SocketGuildUser user)
+		public static void CheckUserWarnStatus(SocketGuildUser user)
 		{
 			if (user.IsBot)
 				return;
 
+			if(user.GuildPermissions.Administrator)
+				return;
+
 			UserAccountServerData userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
-			if (userAccount.Warnings >= 3) await user.KickAsync("Was kicked due to having 3 warnings.");
+			if (userAccount.Warnings >= 3) UserUtils.KickUser(user, (SocketUser)Global.BotUser, "Kicked for having 3 warnings.");
 
-			if (userAccount.Warnings >= 4) await user.Guild.AddBanAsync(user, 5, "Was banned due to having 4 warnings.");
+			if (userAccount.Warnings >= 4) UserUtils.BanUser(user, (SocketUser)Global.BotUser, "Banned for having 3 warnings.");
 		}
 	}
 }

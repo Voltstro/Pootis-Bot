@@ -6,6 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Modules.Server
 {
@@ -20,9 +21,16 @@ namespace Pootis_Bot.Modules.Server
 		[Summary("Kicks a user")]
 		[RequireBotPermission(GuildPermission.KickMembers)]
 		[RequireUserPermission(GuildPermission.KickMembers)]
-		public async Task KickUser(IGuildUser user, [Remainder] string reason = "")
+		public async Task KickUser(SocketGuildUser user, [Remainder] string reason = "")
 		{
-			await user.KickAsync(reason);
+			if (user.GuildPermissions.Administrator)
+			{
+				await Context.Channel.SendMessageAsync(
+					"Cannot kick this user due to them having Administrator rights!");
+				return;
+			}
+
+			UserUtils.KickUser(user, (SocketGuildUser)Context.User, reason);
 			await Context.Channel.SendMessageAsync($"The user {user.Username} was kicked.");
 		}
 
@@ -30,9 +38,16 @@ namespace Pootis_Bot.Modules.Server
 		[Summary("Bans a user")]
 		[RequireBotPermission(GuildPermission.BanMembers)]
 		[RequireUserPermission(GuildPermission.BanMembers)]
-		public async Task BanUser(IGuildUser user, int days = 0, [Remainder] string reason = "")
+		public async Task BanUser(SocketGuildUser user, [Remainder] string reason = "")
 		{
-			await user.BanAsync(days, reason);
+			if (user.GuildPermissions.Administrator)
+			{
+				await Context.Channel.SendMessageAsync(
+					"Cannot ban this user due to them having Administrator rights!");
+				return;
+			}
+
+			UserUtils.BanUser(user, (SocketGuildUser) Context.User, reason);
 			await Context.Channel.SendMessageAsync($"The user {user.Username} was banned.");
 		}
 
