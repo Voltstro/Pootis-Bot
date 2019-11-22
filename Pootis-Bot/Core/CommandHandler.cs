@@ -92,7 +92,7 @@ namespace Pootis_Bot.Core
 					return;
 
 			if (msg.HasStringPrefix(Global.BotPrefix, ref argPos)
-			    || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+			    || msg.HasMentionPrefix(Global.BotUser, ref argPos))
 			{
 				//Permissions
 				SearchResult cmdSearchResult = _commands.Search(context, argPos);

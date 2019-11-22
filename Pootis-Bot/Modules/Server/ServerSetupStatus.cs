@@ -81,7 +81,7 @@ namespace Pootis_Bot.Modules.Server
 				warningDes = "You have no warnings! :smile:";
 			embed.AddField(warningTitle, warningDes);
 
-			embed.WithFooter($"For support see {Global.websiteHome}", Context.Client.CurrentUser.GetAvatarUrl());
+			embed.WithFooter($"For support see {Global.websiteHome}", Global.BotUser.GetAvatarUrl());
 
 			await dm.SendMessageAsync("", false, embed.Build());
 		}
