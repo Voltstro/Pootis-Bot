@@ -38,12 +38,11 @@ namespace Pootis_Bot.Core
 					File.ReadAllText(ConfigFolder + "/" + ConfigFile); //If it does exist then it continues like normal.
 				bot = JsonConvert.DeserializeObject<ConfigFile>(json);
 
-				if (string.IsNullOrWhiteSpace(bot.ConfigVersion) || (bot.ConfigVersion != ConfigVersion))
-				{
-					bot.ConfigVersion = ConfigVersion;
-					SaveConfig();
-					Global.Log("Updated config to version " + ConfigVersion, ConsoleColor.Yellow);
-				}
+				if (!string.IsNullOrWhiteSpace(bot.ConfigVersion) && (bot.ConfigVersion == ConfigVersion)) return;
+
+				bot.ConfigVersion = ConfigVersion;
+				SaveConfig();
+				Global.Log("Updated config to version " + ConfigVersion, ConsoleColor.Yellow);
 			}
 		}
 
