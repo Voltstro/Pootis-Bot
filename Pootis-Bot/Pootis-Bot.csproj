@@ -13,6 +13,12 @@
     <PackageProjectUrl>https://pootis-bot.creepysin.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Creepysin/Pootis-Bot</RepositoryUrl>
     <Description>Pootis-Bot, an all in one C# Discord.NET Bot</Description>
+    <Version>0.3.6</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

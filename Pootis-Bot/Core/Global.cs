@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Core
 {
@@ -33,9 +34,7 @@ namespace Pootis_Bot.Core
 		public static readonly string[] discordServers =
 			{"https://discord.creepysin.com"};
 
-		public static readonly string version = "0.3.6";
-
-		public static readonly string aboutMessage = $"Pootis Bot --- | --- {version}\n" +
+		public static readonly string aboutMessage = $"Pootis Bot --- | --- {VersionUtils.GetAppVersion()}\n" +
 		                                             $"Created by Creepysin licensed under the MIT license. Visit {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
 		                                             "Pootis Robot icon by Valve\n" +
 		                                             "Created with Discord.NET\n" +

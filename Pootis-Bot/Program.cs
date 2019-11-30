@@ -2,16 +2,18 @@
 using System.Diagnostics;
 using System.Net.Http;
 using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio;
 
 //Pootis-Bot, Created by Creepysin 2018-2019.
 //Licensed under the MIT license
 //
-//Special Thanks
-// - EternalClickbait for XML comments and cleanup
-// - Mr. Fantastic Pootis ;D for suggesting the name and theme of the bot
+//Special Thanks:
+// - EternalClickbait for initial XML comments and code cleanup
+// - Mr. Fantastic Pootis ;D for suggesting the name and 'theme' of the bot
 // - My parents (my mum for letting me sit on my ass all day and work on this, my dad for showing C# and letting me host the bot on his server)
-// - Discord.NET for making this possible
+// - Discord and Discord.NET for making this possible
+// - And all the posts that I found on the internet that helped solved issues of mine
 
 namespace Pootis_Bot
 {
@@ -28,7 +30,7 @@ namespace Pootis_Bot
 			Console.WriteLine(@" |    |  (  <_> |  <_> )  | |  |\___ \  /_____/  |    |   (  <_> )  |  ");
 			Console.WriteLine(@" |____|   \____/ \____/|__| |__/____  >          |______  /\____/|__|  ");
 			Console.WriteLine(@"                                    \/                  \/             ");
-			Console.WriteLine($"			Version: {Global.version}");
+			Console.WriteLine($"			Version: {VersionUtils.GetAppVersion()}");
 			Console.WriteLine();
 
 			Global.Log("Starting...");

@@ -6,6 +6,7 @@ using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio;
 using Console = Pootis_Bot.ConsoleCommandHandler.Console;
 
@@ -83,7 +84,7 @@ namespace Pootis_Bot.Core
 
 		private static void VersionCmd()
 		{
-			Global.Log($"You are running version {Global.version} of Pootis-Bot!");
+			Global.Log($"You are running version {VersionUtils.GetAppVersion()} of Pootis-Bot!");
 		}
 
 		private static void AboutCmd()

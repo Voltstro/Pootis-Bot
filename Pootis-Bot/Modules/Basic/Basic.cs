@@ -8,6 +8,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 
 namespace Pootis_Bot.Modules.Basic
@@ -31,7 +32,7 @@ namespace Pootis_Bot.Modules.Basic
 			                      $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
 			                      $"\n:bookmark: [Documentation]({Global.websiteHome})" +
 			                      $"\n<:Discord:529572497130127360> [Creepysin Server]({Global.discordServers[0]})" +
-			                      "\n\nRunning Pootis-Bot version: " + Global.version +
+			                      $"\n\nRunning Pootis-Bot version: {VersionUtils.GetAppVersion()}" +
 			                      $"\nThis project is licensed under the [MIT license]({Global.githubPage}/blob/master/LICENSE.md)");
 			embed.WithColor(new Color(241, 196, 15));
 
