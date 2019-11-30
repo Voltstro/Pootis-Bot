@@ -28,17 +28,16 @@ namespace Pootis_Bot.Events
 			                      "\n\nIf you have any issues the best place to ask for assistance is on the Creepysin Server!");
 			embed.WithColor(new Color(241, 196, 15));
 
-			//Send a message to the server's default channel with the hello message
-			await guild.DefaultChannel.SendMessageAsync("", false, embed.Build());
-
-			//Send a message to Discord server's owner about setting up the bot
-			IDMChannel owner = await guild.Owner.GetOrCreateDMChannelAsync();
-			await owner.SendMessageAsync(
-				$"Thanks for using {Global.BotName}! Check out {Global.websiteServerSetup} on how to setup {Global.BotName} for your server.");
-
 			//Log that the bot joined a new guild, if enabled
 			if(Config.bot.ReportGuildEventsToOwner)
 				await Global.BotOwner.SendMessageAsync($"LOG: Joined guild {guild.Name}({guild.Id})");
+
+			//First, check to make sure the default channel isn't null
+			if (guild.DefaultChannel != null)
+			{
+				//Send a message to the server's default channel with the hello message
+				await guild.DefaultChannel.SendMessageAsync("", false, embed.Build());
+			}
 		}
 
 		public async Task LeftServer(SocketGuild guild)
