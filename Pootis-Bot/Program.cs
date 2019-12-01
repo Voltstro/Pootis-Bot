@@ -19,7 +19,7 @@ namespace Pootis_Bot
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public static void Main()
 		{
 			Debug.WriteLine("[Program] Pootis-Bot starting...");
 
@@ -35,44 +35,25 @@ namespace Pootis_Bot
 
 			Global.Log("Starting...");
 
-			string name = null, token = null, prefix = null;
-
 			//This is just suggesting to use 64-bit
 			if (!Environment.Is64BitOperatingSystem)
 				Global.Log("This OS is a 32-bit os, 64-Bit is recommended!", ConsoleColor.Yellow);
 
 			Global.HttpClient = new HttpClient();
 
-			#region Config arguments check
-
-			//Check config, if there arguments use them as the name, token and prefix
-			if (args.Length != 0)
-			{
-				if (args.Length == 1)
-					token = args[0];
-				if (args.Length == 2)
-					prefix = args[1];
-				if (args.Length == 3) name = args[2];
-			}
-
-			if (name == null) name = Config.bot.BotName;
-			if (token == null) token = Config.bot.BotToken;
-			if (prefix == null) prefix = Config.bot.BotPrefix;
-
-			#endregion
+			Global.BotName = Config.bot.BotName;
+			Global.BotPrefix = Config.bot.BotPrefix;
+			Global.BotToken = Config.bot.BotToken;
 
 			//Check the audio services, if they are enabled
 			AudioCheckService.CheckAudioService();
 
-			Console.Title = name + " Console";
+			Console.Title = $"{Global.BotName} Console";
 
 			Debug.WriteLine("[Program] Creating bot instance");
 
 			//Setup the bot, put in the name, prefix and token
 			Bot bot = new Bot();
-			Global.BotName = name;
-			Global.BotPrefix = prefix;
-			Global.BotToken = token;
 
 			Debug.WriteLine("[Program] Starting bot...");
 
