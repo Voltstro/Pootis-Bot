@@ -69,11 +69,6 @@ namespace Pootis_Bot.Core
 				channel.IsPlaying = false;
 			}
 
-			Debug.WriteLine("[Bot] Logging out...");
-			await _client.LogoutAsync();
-			Debug.WriteLine("[Bot] Logged out successfully!");
-			_client.Dispose();
-			Global.HttpClient.Dispose();
 			Environment.Exit(0);
 		}
 

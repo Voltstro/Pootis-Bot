@@ -39,6 +39,8 @@ namespace Pootis_Bot.Core
 			_client.Log += Log;
 			_client.Ready += BotReady;
 
+			AppDomain.CurrentDomain.ProcessExit += QuitEvent;
+
 			Debug.WriteLine("[Bot] Setting up events");
 
 			//Setup the remaining events
@@ -123,6 +125,19 @@ namespace Pootis_Bot.Core
 					await Task.Delay(-1); // Just run forever
 				}
 			}
+		}
+
+		private async void QuitEvent(object sender, EventArgs e)
+		{
+			IsRunning = false;
+
+			Global.HttpClient.Dispose();
+
+			if (_client == null) return;
+
+			await _client.LogoutAsync();
+
+			_client.Dispose();
 		}
 	}
 }
