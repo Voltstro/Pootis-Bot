@@ -96,9 +96,9 @@ namespace Pootis_Bot.Modules.Server
 		[RequireUserPermission(GuildPermission.ManageMessages)]
 		public async Task Purge(int messageCount = 10)
 		{
-			Task<IEnumerable<IMessage>> messages = Context.Channel.GetMessagesAsync(messageCount + 1).FlattenAsync();
+			IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(messageCount + 1).FlattenAsync();
 
-			await ((SocketTextChannel) Context.Channel).DeleteMessagesAsync(messages.Result);
+			await ((SocketTextChannel) Context.Channel).DeleteMessagesAsync(messages);
 
 			RestUserMessage message =
 				await Context.Channel.SendMessageAsync(
