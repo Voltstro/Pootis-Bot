@@ -25,7 +25,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Saves all the servers
+		///     Saves all the servers
 		/// </summary>
 		public static void SaveServerList()
 		{
@@ -33,7 +33,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Gets a server, or creates one if needed
+		///     Gets a server, or creates one if needed
 		/// </summary>
 		/// <param name="server"></param>
 		/// <returns></returns>

@@ -66,7 +66,8 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.SendAudio((SocketGuild)Context.Guild, Context.Channel, ((IVoiceState) Context.User).VoiceChannel, Context.User,
+			await _service.SendAudio((SocketGuild) Context.Guild, Context.Channel,
+				((IVoiceState) Context.User).VoiceChannel, Context.User,
 				song);
 		}
 

@@ -10,7 +10,7 @@ namespace Pootis_Bot.Services.AntiSpam
 	public class AntiSpamService
 	{
 		/// <summary>
-		/// Checks how many users are mention in a single message, if it is higher then the threshold then remove it
+		///     Checks how many users are mention in a single message, if it is higher then the threshold then remove it
 		/// </summary>
 		/// <param name="message">The message to check</param>
 		/// <param name="guild">The guild of the message</param>
@@ -36,12 +36,13 @@ namespace Pootis_Bot.Services.AntiSpam
 			int guildMemberCount = guild.Users.Count;
 			int mentionCount = message.MentionedUsers.Count;
 
-			int percentage = (mentionCount / guildMemberCount) * 100;
+			int percentage = mentionCount / guildMemberCount * 100;
 
 			if (percentage > ServerListsManager.GetServer(guild).AntiSpamSettings.MentionUsersPercentage) return false;
 
 			message.Channel.SendMessageAsync(
-				$"Hey {message.Author.Mention}, listing all members of this Discord server is not allowed!").GetAwaiter().GetResult();
+					$"Hey {message.Author.Mention}, listing all members of this Discord server is not allowed!")
+				.GetAwaiter().GetResult();
 
 			message.DeleteAsync().GetAwaiter().GetResult();
 
@@ -54,7 +55,7 @@ namespace Pootis_Bot.Services.AntiSpam
 		}
 
 		/// <summary>
-		/// Checks if a given user is allowed to @mention a certain role, and warns them if not
+		///     Checks if a given user is allowed to @mention a certain role, and warns them if not
 		/// </summary>
 		/// <param name="message">The message to check</param>
 		/// <param name="user">The author of the message</param>
@@ -75,24 +76,23 @@ namespace Pootis_Bot.Services.AntiSpam
 
 			//Go over each role a user has
 			foreach (SocketRole role in user.Roles)
+			foreach (ServerRoleToRoleMention notToMentionRoles in server.RoleToRoleMentions.Where(notToMentionRoles =>
+				role.Id == notToMentionRoles.RoleNotToMentionId))
 			{
-				foreach (ServerRoleToRoleMention notToMentionRoles in server.RoleToRoleMentions.Where(notToMentionRoles => role.Id == notToMentionRoles.RoleNotToMentionId))
+				message.DeleteAsync();
+
+				if (serverAccount.RoleToRoleMentionWarnings >=
+				    server.AntiSpamSettings.RoleToRoleMentionWarnings)
 				{
-					message.DeleteAsync();
-
-					if (serverAccount.RoleToRoleMentionWarnings >=
-					    server.AntiSpamSettings.RoleToRoleMentionWarnings)
-					{
-						message.Channel.SendMessageAsync(
-							$"Hey {user.Mention}, you have been pinging the **{RoleUtils.GetGuildRole(user.Guild, notToMentionRoles.RoleId).Name}** role, which you are not allowed to ping!\nWe though we would tell you now and a warning has been added to your account, for info see your profile.");
-						serverAccount.Warnings++;
-						UserAccountsManager.SaveAccounts();
-					}
-
-					serverAccount.RoleToRoleMentionWarnings++;
-
-					return true;
+					message.Channel.SendMessageAsync(
+						$"Hey {user.Mention}, you have been pinging the **{RoleUtils.GetGuildRole(user.Guild, notToMentionRoles.RoleId).Name}** role, which you are not allowed to ping!\nWe though we would tell you now and a warning has been added to your account, for info see your profile.");
+					serverAccount.Warnings++;
+					UserAccountsManager.SaveAccounts();
 				}
+
+				serverAccount.RoleToRoleMentionWarnings++;
+
+				return true;
 			}
 
 			return false;

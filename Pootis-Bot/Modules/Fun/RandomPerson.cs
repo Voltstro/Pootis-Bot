@@ -27,7 +27,8 @@ namespace Pootis_Bot.Modules.Fun
 			embed.WithTitle("Random Person");
 			embed.AddField("Name", $"{person.PersonTitle} {person.PersonFirstName} {person.PersonLastName}");
 			embed.AddField("Gender", Global.Title(person.PersonGender));
-			embed.AddField("Location", $":flag_{person.CountryCode.ToLower()}: {person.City}, {person.State}, {person.Country}");
+			embed.AddField("Location",
+				$":flag_{person.CountryCode.ToLower()}: {person.City}, {person.State}, {person.Country}");
 			embed.WithThumbnailUrl(person.PersonPicture);
 			embed.WithColor(FunCmdsConfig.randomPersonColor);
 

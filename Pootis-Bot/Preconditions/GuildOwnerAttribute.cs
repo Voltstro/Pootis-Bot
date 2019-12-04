@@ -8,7 +8,7 @@ namespace Pootis_Bot.Preconditions
 	public class RequireGuildOwnerAttribute : PreconditionAttribute
 	{
 		/// <summary>
-		/// Checks that a given user is the owner of a guild, and returns the result
+		///     Checks that a given user is the owner of a guild, and returns the result
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="command"></param>

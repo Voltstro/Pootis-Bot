@@ -6,7 +6,7 @@ namespace Pootis_Bot.Helpers
 	public static class UserUtils
 	{
 		/// <summary>
-		/// Kicks a user
+		///     Kicks a user
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="kicker"></param>
@@ -18,7 +18,7 @@ namespace Pootis_Bot.Helpers
 		}
 
 		/// <summary>
-		/// Bans a user
+		///     Bans a user
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="kicker"></param>

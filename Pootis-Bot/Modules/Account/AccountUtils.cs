@@ -33,7 +33,7 @@ namespace Pootis_Bot.Modules.Account
 			EmbedBuilder embed = new EmbedBuilder();
 
 			string warningText = "No :sunglasses:";
-			if (!accountServer.IsAccountNotWarnable && !((SocketGuildUser)Context.User).GuildPermissions.Administrator)
+			if (!accountServer.IsAccountNotWarnable && !((SocketGuildUser) Context.User).GuildPermissions.Administrator)
 				warningText = $"Yes\n**Warnings: ** {accountServer.Warnings}";
 
 			embed.WithCurrentTimestamp();
@@ -41,7 +41,9 @@ namespace Pootis_Bot.Modules.Account
 			embed.WithTitle(Context.User.Username + "'s Profile");
 
 			embed.AddField("Stats", $"**Level: ** {account.LevelNumber}\n**Xp: ** {account.Xp}\n", true);
-			embed.AddField("Server", $"**Points: **{accountServer.Points}\n **Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
+			embed.AddField("Server",
+				$"**Points: **{accountServer.Points}\n **Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n",
+				true);
 			embed.AddField("Account", $"**Id: **{account.Id}\n**Creation Date: **{Context.User.CreatedAt}");
 
 			embed.WithColor(userMainRole.Color);
@@ -91,7 +93,9 @@ namespace Pootis_Bot.Modules.Account
 			embed.WithTitle(user.Username + "'s Profile");
 
 			embed.AddField("Stats", $"**Level: ** {account.LevelNumber}\n**Xp: ** {account.Xp}\n", true);
-			embed.AddField("Server", $"**Points: **{accountServer.Points}\n**Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n", true);
+			embed.AddField("Server",
+				$"**Points: **{accountServer.Points}\n**Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n",
+				true);
 			embed.AddField("Account", $"**Id: **{account.Id}\n**Creation Date: **{user.CreatedAt}");
 
 			embed.WithColor(userMainRole.Color);
@@ -141,24 +145,23 @@ namespace Pootis_Bot.Modules.Account
 
 			//If there is a requirement check to make sure the user meets it first
 			if (role.RoleRequiredId != 0)
-			{
-				if (!((SocketGuildUser) Context.User).Roles.Contains(RoleUtils.GetGuildRole(Context.Guild, role.RoleRequiredId))
+				if (!((SocketGuildUser) Context.User).Roles.Contains(RoleUtils.GetGuildRole(Context.Guild,
+					role.RoleRequiredId))
 				)
 				{
 					await Context.Channel.SendMessageAsync("You do not meet the requirements to get this role!");
 					return;
 				}
-			}
 
 			SocketRole roleToGive = RoleUtils.GetGuildRole(Context.Guild, role.RoleToGiveId);
 
 			//See if the user already has the role
-			if(((SocketGuildUser) Context.User).Roles.Contains(roleToGive))
+			if (((SocketGuildUser) Context.User).Roles.Contains(roleToGive))
 			{
 				await Context.Channel.SendMessageAsync("You already have this role!");
 				return;
 			}
-			
+
 			//Give the role
 			await ((SocketGuildUser) Context.User).AddRoleAsync(roleToGive);
 			await Context.Channel.SendMessageAsync($"You have been given the **{roleToGive.Name}** role.");

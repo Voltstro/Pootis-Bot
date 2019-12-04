@@ -9,7 +9,7 @@ namespace Pootis_Bot.Core
 	public static class LevelingSystem
 	{
 		/// <summary>
-		/// Levels up a user
+		///     Levels up a user
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="channel"></param>
@@ -25,11 +25,12 @@ namespace Pootis_Bot.Core
 			UserAccountsManager.SaveAccounts();
 
 			if (oldLevel != userAccount.LevelNumber)
-				await channel.SendMessageAsync($"{user.Mention} leveled up! Now on level **{userAccount.LevelNumber}**!");
+				await channel.SendMessageAsync(
+					$"{user.Mention} leveled up! Now on level **{userAccount.LevelNumber}**!");
 		}
 
 		/// <summary>
-		/// Gives a user server points, and gives them a role if they past a certain amount of points
+		///     Gives a user server points, and gives them a role if they past a certain amount of points
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="channel"></param>
@@ -43,7 +44,8 @@ namespace Pootis_Bot.Core
 
 			//Give the user a role if they have enough points for it.
 			ServerList server = ServerListsManager.GetServer(user.Guild);
-			ServerRolePoints serverRole = server.GetServerRolePoints(userAccount.GetOrCreateServer(user.Guild.Id).Points);
+			ServerRolePoints serverRole =
+				server.GetServerRolePoints(userAccount.GetOrCreateServer(user.Guild.Id).Points);
 			if (serverRole.PointsRequired == 0) return;
 
 			await user.AddRoleAsync(RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId));

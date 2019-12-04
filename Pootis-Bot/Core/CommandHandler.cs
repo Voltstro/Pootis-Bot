@@ -16,12 +16,11 @@ namespace Pootis_Bot.Core
 {
 	public class CommandHandler
 	{
+		private const string UserNotFoundError = "User not found.";
 		private readonly AntiSpamService _antiSpam;
 		private readonly DiscordSocketClient _client;
 		private readonly CommandService _commands;
 		private readonly IServiceProvider _services;
-
-		private const string UserNotFoundError = "User not found.";
 
 		public CommandHandler(DiscordSocketClient client)
 		{
@@ -33,7 +32,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Install all the modules
+		///     Install all the modules
 		/// </summary>
 		/// <returns></returns>
 		public async Task InstallCommandsAsync()
@@ -44,14 +43,15 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Checks all the help modules in the config
+		///     Checks all the help modules in the config
 		/// </summary>
 		public void CheckHelpModules()
 		{
-			foreach (string module in HelpModulesManager.GetHelpModules().SelectMany(helpModule => helpModule.Modules.Where(module => GetModule(module) == null)))
-			{
-				Global.Log($"There is no module called {module}! Reset the help modules or fix the help modules in the config file!", ConsoleColor.Red);
-			}
+			foreach (string module in HelpModulesManager.GetHelpModules().SelectMany(helpModule =>
+				helpModule.Modules.Where(module => GetModule(module) == null)))
+				Global.Log(
+					$"There is no module called {module}! Reset the help modules or fix the help modules in the config file!",
+					ConsoleColor.Red);
 		}
 
 		private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -64,7 +64,7 @@ namespace Pootis_Bot.Core
 			SocketCommandContext context = new SocketCommandContext(_client, msg);
 
 			//This message or command come in from a dm, not a guild, so just ignore it.
-			if(context.Guild == null)
+			if (context.Guild == null)
 				return;
 
 			ServerList server = ServerListsManager.GetServer(context.Guild);
@@ -103,14 +103,15 @@ namespace Pootis_Bot.Core
 				if (perm != null)
 				{
 					bool doesUserHavePerm = false;
-					foreach (SocketRole role in ((SocketGuildUser)context.User).Roles)
+					foreach (SocketRole role in ((SocketGuildUser) context.User).Roles)
 					{
-						if(doesUserHavePerm)
+						if (doesUserHavePerm)
 							continue;
 
-						foreach (ulong unused in perm.Roles.Where(permRole => role == RoleUtils.GetGuildRole(context.Guild, permRole)))
+						foreach (ulong unused in perm.Roles.Where(permRole =>
+							role == RoleUtils.GetGuildRole(context.Guild, permRole)))
 						{
-							if(doesUserHavePerm)
+							if (doesUserHavePerm)
 								continue;
 
 							doesUserHavePerm = true;
@@ -130,16 +131,23 @@ namespace Pootis_Bot.Core
 
 				//The command either had too little arguments or too many
 				if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
+				{
 					await context.Channel.SendMessageAsync(
 						$"The command `{msg.Content.Replace(Global.BotPrefix, "")}` either has too many or too little arguments!");
+				}
 
 				//The user or bot had unmet preconditions
 				else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
+				{
 					await context.Channel.SendMessageAsync(result.ErrorReason);
+				}
 
 				//The user name imputed wasn't valid
-				else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound && result.ErrorReason == UserNotFoundError)
+				else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
+				         result.ErrorReason == UserNotFoundError)
+				{
 					await context.Channel.SendMessageAsync("You need to input a valid username!");
+				}
 
 				//Some other error, just put the error into the console
 				//and tell the user an internal error occured so they are not just left blank
@@ -150,10 +158,8 @@ namespace Pootis_Bot.Core
 
 					//If the bot owner has ReportErrorsToOwner enabled we will give them a heads up about the error
 					if (Config.bot.ReportErrorsToOwner)
-					{
 						await Global.BotOwner.SendMessageAsync(
 							$"ERROR: {result.ErrorReason}\nError occured while executing command `{msg.Content.Replace(Global.BotPrefix, "")}` on server `{context.Guild.Id}`.");
-					}
 				}
 			}
 			else
@@ -169,7 +175,8 @@ namespace Pootis_Bot.Core
 				if (account.LastServerPointsTime.Subtract(now).TotalSeconds <= -server.PointsGiveCooldownTime ||
 				    account.LastServerPointsTime.Second == 0)
 				{
-					LevelingSystem.GiveUserServerPoints((SocketGuildUser)context.User, (SocketTextChannel) context.Channel, server.PointGiveAmount);
+					LevelingSystem.GiveUserServerPoints((SocketGuildUser) context.User,
+						(SocketTextChannel) context.Channel, server.PointGiveAmount);
 
 					//No need to save since this variable has a JsonIgnore attribute
 					account.LastServerPointsTime = now;
@@ -190,7 +197,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Get a modules
+		///     Get a modules
 		/// </summary>
 		/// <param name="moduleName"></param>
 		/// <returns></returns>

@@ -81,15 +81,9 @@ namespace Pootis_Bot.Modules.Fun
 					$"**[{result.Title}]({result.ConstantUrl})** (Words: {result.WordCount})\n{result.Preview}\n\n";
 
 				//There is a character limit of 2048, so lets make sure we don't hit that
-				if (sb.Length >= 2048)
-				{
-					continue;
-				}
+				if (sb.Length >= 2048) continue;
 
-				if (sb.Length + link.Length >= 2048)
-				{
-					continue;
-				}
+				if (sb.Length + link.Length >= 2048) continue;
 
 				sb.Append(link);
 			}

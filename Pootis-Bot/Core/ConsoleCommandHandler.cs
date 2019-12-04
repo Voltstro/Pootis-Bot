@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
@@ -23,7 +22,9 @@ namespace Pootis_Bot.Core
 
 		public void SetupConsole()
 		{
-			Console console = new Console($"Unknown command! Visit {Global.websiteConsoleCommands} for a list of console commands.", ConsoleColor.Red);
+			Console console =
+				new Console($"Unknown command! Visit {Global.websiteConsoleCommands} for a list of console commands.",
+					ConsoleColor.Red);
 
 			//Add all of our commands
 			console.AddCommand("exit", "Stops the bot", ExitCmd);

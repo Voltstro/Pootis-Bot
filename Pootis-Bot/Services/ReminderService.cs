@@ -9,7 +9,7 @@ namespace Pootis_Bot.Services
 	public static class ReminderService
 	{
 		/// <summary>
-		/// Reminds a user in <paramref name="time"/> seconds of their message
+		///     Reminds a user in <paramref name="time" /> seconds of their message
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="time"></param>

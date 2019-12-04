@@ -7,7 +7,7 @@ using Pootis_Bot.Structs.Config;
 namespace Pootis_Bot.Core
 {
 	/// <summary>
-	/// Stores config for the bot!
+	///     Stores config for the bot!
 	/// </summary>
 	public static class Config
 	{
@@ -38,7 +38,7 @@ namespace Pootis_Bot.Core
 					File.ReadAllText(ConfigFolder + "/" + ConfigFile); //If it does exist then it continues like normal.
 				bot = JsonConvert.DeserializeObject<ConfigFile>(json);
 
-				if (!string.IsNullOrWhiteSpace(bot.ConfigVersion) && (bot.ConfigVersion == ConfigVersion)) return;
+				if (!string.IsNullOrWhiteSpace(bot.ConfigVersion) && bot.ConfigVersion == ConfigVersion) return;
 
 				bot.ConfigVersion = ConfigVersion;
 				SaveConfig();
@@ -76,7 +76,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Saves the config, DUH!
+		///     Saves the config, DUH!
 		/// </summary>
 		public static void SaveConfig()
 		{

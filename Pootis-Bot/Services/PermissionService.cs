@@ -22,7 +22,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		/// Lets only a certain role use a command
+		///     Lets only a certain role use a command
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="roles"></param>
@@ -87,10 +87,7 @@ namespace Pootis_Bot.Services
 				}
 
 				//Since we now know that all the roles we are assigning are not assigned, we add them to the list of roles
-				foreach (IRole iRole in iRoles)
-				{
-					server.GetCommandInfo(command).Roles.Add(iRole.Id);
-				}
+				foreach (IRole iRole in iRoles) server.GetCommandInfo(command).Roles.Add(iRole.Id);
 
 				ServerListsManager.SaveServerList();
 				await channel.SendMessageAsync(AddPermMessage(roles, command));
@@ -98,7 +95,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		/// Stops a role from being able to use a command
+		///     Stops a role from being able to use a command
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="roles"></param>
@@ -141,7 +138,7 @@ namespace Pootis_Bot.Services
 			{
 				await channel.SendMessageAsync($"The command `{command}` already has no roles assigned to it!");
 			}
-			else 
+			else
 			{
 				//Check all roles and make sure they are assigned to the command
 				foreach (IRole role in iRoles.Where(role => server.GetCommandInfo(command).GetRole(role.Id) == 0))
@@ -153,9 +150,7 @@ namespace Pootis_Bot.Services
 
 				//Now begin removing all the roles, since we know all the entered roles are already assigned to the command
 				foreach (IRole role in iRoles)
-				{
 					server.GetCommandInfo(command).Roles.Remove(server.GetCommandInfo(command).GetRole(role.Id));
-				}
 
 				//There are no more roles assigned to the command so remove it entirely
 				RemoveAllCommandsWithNoRoles(server);
@@ -166,16 +161,14 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		/// Gets all commands with no roles and removes them
+		///     Gets all commands with no roles and removes them
 		/// </summary>
 		/// <param name="server"></param>
 		public static void RemoveAllCommandsWithNoRoles(ServerList server)
 		{
-			List<ServerList.CommandInfo> cmdsToRemove = server.CommandInfos.Where(command => command.Roles.Count == 0).ToList();
-			foreach (ServerList.CommandInfo command in cmdsToRemove)
-			{
-				server.CommandInfos.Remove(command);
-			}
+			List<ServerList.CommandInfo> cmdsToRemove =
+				server.CommandInfos.Where(command => command.Roles.Count == 0).ToList();
+			foreach (ServerList.CommandInfo command in cmdsToRemove) server.CommandInfos.Remove(command);
 		}
 
 		private bool CanModifyPerm(string command)
@@ -200,9 +193,7 @@ namespace Pootis_Bot.Services
 
 				foreach (CommandInfo commandInfo in module.Commands)
 					if (commandInfo.Name == command)
-					{
 						doesCmdExist = true;
-					}
 			}
 
 			return doesCmdExist;
@@ -215,36 +206,23 @@ namespace Pootis_Bot.Services
 			{
 				return $"**{roles[0]}** role will be allowed to use the command `{command}`.";
 			}
-			else //Multiple roles
-			{
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < roles.Count; i++)
-				{
-					sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
-				}
 
-				return $"**{sb}** roles will be allowed to use the command `{command}`.";
-			}
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < roles.Count; i++) sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
+
+			return $"**{sb}** roles will be allowed to use the command `{command}`.";
 		}
 
 		private static string RemovePermMessage(IReadOnlyList<string> roles, string command, ServerList server)
 		{
 			if (server.GetCommandInfo(command) == null)
-			{
 				return $"Anyone will now be allowed to use the command `{command}`.";
-			}
 
 			//There is only one role
-			if (roles.Count == 1)
-			{
-				return $"**{roles[0]}** role will not be allowed to use the command `{command}`.";
-			}
+			if (roles.Count == 1) return $"**{roles[0]}** role will not be allowed to use the command `{command}`.";
 
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < roles.Count; i++)
-			{
-				sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
-			}
+			for (int i = 0; i < roles.Count; i++) sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");
 
 			return $"**{sb}** roles will not be allowed to use the command `{command}`.";
 		}

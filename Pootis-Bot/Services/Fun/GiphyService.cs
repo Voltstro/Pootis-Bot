@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Fun
 	public static class GiphyService
 	{
 		/// <summary>
-		/// Searches giphy for a a given gif name
+		///     Searches giphy for a a given gif name
 		/// </summary>
 		/// <param name="search">The gif name to search for</param>
 		/// <returns></returns>
@@ -23,7 +23,8 @@ namespace Pootis_Bot.Services.Fun
 				{
 					string input = search.Replace(" ", "+");
 
-					string json = WebUtils.DownloadString($"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.ApiGiphyKey}");
+					string json = WebUtils.DownloadString(
+						$"http://api.giphy.com/v1/gifs/search?q={input}&api_key={Config.bot.Apis.ApiGiphyKey}");
 
 					dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 

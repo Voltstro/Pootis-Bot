@@ -42,10 +42,8 @@ namespace Pootis_Bot.Modules.Basic
 				foreach (HelpModule helpModule in HelpModulesManager.GetHelpModules())
 				{
 					builder.Append($"\n**{helpModule.Group}** - ");
-					foreach (CommandInfo cmd in helpModule.Modules.SelectMany(module => _commandHandler.GetModule(module).Commands))
-					{
-						builder.Append($"`{cmd.Name}` ");
-					}
+					foreach (CommandInfo cmd in helpModule.Modules.SelectMany(module =>
+						_commandHandler.GetModule(module).Commands)) builder.Append($"`{cmd.Name}` ");
 				}
 
 				await Context.Channel.SendMessageAsync(builder.ToString());

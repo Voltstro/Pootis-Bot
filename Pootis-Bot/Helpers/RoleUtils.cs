@@ -7,7 +7,7 @@ namespace Pootis_Bot.Helpers
 	public class RoleUtils
 	{
 		/// <summary>
-		/// Gets a role in a guild
+		///     Gets a role in a guild
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="roleName"></param>
@@ -23,7 +23,7 @@ namespace Pootis_Bot.Helpers
 		}
 
 		/// <summary>
-		/// Gets a role in a guild
+		///     Gets a role in a guild
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="roleId"></param>

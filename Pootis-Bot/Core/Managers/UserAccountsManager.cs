@@ -34,7 +34,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Saves all the accounts
+		///     Saves all the accounts
 		/// </summary>
 		public static void SaveAccounts()
 		{
@@ -42,7 +42,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Gets a user account, or creates one if needed
+		///     Gets a user account, or creates one if needed
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
@@ -69,7 +69,7 @@ namespace Pootis_Bot.Core.Managers
 
 		//TODO: Remove this in the 1.0.0 release
 		/// <summary>
-		/// Checks for old file name (accounts.json)
+		///     Checks for old file name (accounts.json)
 		/// </summary>
 		/// <returns>Returns true if upgraded</returns>
 		private static bool CheckForOldFileName()
@@ -104,14 +104,16 @@ namespace Pootis_Bot.Core.Managers
 			if (user.IsBot)
 				return;
 
-			if(user.GuildPermissions.Administrator)
+			if (user.GuildPermissions.Administrator)
 				return;
 
 			UserAccountServerData userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
-			if (userAccount.Warnings >= 3) UserUtils.KickUser(user, (SocketUser)Global.BotUser, "Kicked for having 3 warnings.");
+			if (userAccount.Warnings >= 3)
+				UserUtils.KickUser(user, (SocketUser) Global.BotUser, "Kicked for having 3 warnings.");
 
-			if (userAccount.Warnings >= 4) UserUtils.BanUser(user, (SocketUser)Global.BotUser, "Banned for having 3 warnings.");
+			if (userAccount.Warnings >= 4)
+				UserUtils.BanUser(user, (SocketUser) Global.BotUser, "Banned for having 3 warnings.");
 		}
 	}
 }

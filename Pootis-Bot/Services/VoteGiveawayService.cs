@@ -15,7 +15,7 @@ namespace Pootis_Bot.Services
 		public static bool IsVoteRunning;
 
 		/// <summary>
-		/// Starts a vote in a text channel
+		///     Starts a vote in a text channel
 		/// </summary>
 		/// <param name="guild">The guild the channel is in</param>
 		/// <param name="channel">The channel to start the vote in</param>
@@ -146,8 +146,9 @@ namespace Pootis_Bot.Services
 			if (votes.Count == 0)
 				IsVoteRunning = false;
 		}
+
 		/// <summary>
-		/// Gets a vote from it's id
+		///     Gets a vote from it's id
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>

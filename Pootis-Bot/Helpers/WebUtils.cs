@@ -10,7 +10,8 @@ namespace Pootis_Bot.Helpers
 		public static async Task DownloadFileAsync(string url, string fileName)
 		{
 			using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-			await using Stream contentStream  = await (await Global.HttpClient.SendAsync(request)).Content.ReadAsStreamAsync(),
+			await using Stream contentStream =
+					await (await Global.HttpClient.SendAsync(request)).Content.ReadAsStreamAsync(),
 				stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
 
 			await contentStream.CopyToAsync(stream);

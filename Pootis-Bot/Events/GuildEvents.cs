@@ -8,7 +8,7 @@ using Pootis_Bot.Entities;
 namespace Pootis_Bot.Events
 {
 	/// <summary>
-	/// Handles guild client events
+	///     Handles guild client events
 	/// </summary>
 	public class GuildEvents
 	{
@@ -29,15 +29,13 @@ namespace Pootis_Bot.Events
 			embed.WithColor(new Color(241, 196, 15));
 
 			//Log that the bot joined a new guild, if enabled
-			if(Config.bot.ReportGuildEventsToOwner)
+			if (Config.bot.ReportGuildEventsToOwner)
 				await Global.BotOwner.SendMessageAsync($"LOG: Joined guild {guild.Name}({guild.Id})");
 
 			//First, check to make sure the default channel isn't null
 			if (guild.DefaultChannel != null)
-			{
 				//Send a message to the server's default channel with the hello message
 				await guild.DefaultChannel.SendMessageAsync("", false, embed.Build());
-			}
 		}
 
 		public async Task LeftServer(SocketGuild guild)
@@ -49,7 +47,7 @@ namespace Pootis_Bot.Events
 			ServerListsManager.SaveServerList();
 
 			//Log that the bot left a guild, if enabled
-			if(Config.bot.ReportGuildEventsToOwner)
+			if (Config.bot.ReportGuildEventsToOwner)
 				await Global.BotOwner.SendMessageAsync($"LOG: Left guild {guild.Name}({guild.Id})");
 		}
 	}

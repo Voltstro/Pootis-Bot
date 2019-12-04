@@ -91,9 +91,7 @@ namespace Pootis_Bot.Modules.Fun
 			StringBuilder channels = new StringBuilder();
 
 			if (searchListResponse != null)
-			{
 				foreach (SearchResult result in searchListResponse.Items)
-				{
 					switch (result.Id.Kind)
 					{
 						case "youtube#video":
@@ -105,8 +103,6 @@ namespace Pootis_Bot.Modules.Fun
 								$"**[{AudioCheckService.RemovedNotAllowedChars(result.Snippet.Title)}]({FunCmdsConfig.ytChannelStart}{result.Id.ChannelId})**\n{result.Snippet.Description}\n\n");
 							break;
 					}
-				}
-			}
 
 			embed.WithDescription($"**Videos**\n{videos}\n\n**Channels**\n{channels}");
 			embed.WithCurrentTimestamp();

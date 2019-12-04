@@ -20,7 +20,7 @@ namespace Pootis_Bot.Services.Audio
 		private static List<AudioDownloadServiceFiles.LibFile> _libFiles;
 
 		/// <summary>
-		/// Checks the audio service
+		///     Checks the audio service
 		/// </summary>
 		public static void CheckAudioService()
 		{
@@ -29,7 +29,8 @@ namespace Pootis_Bot.Services.Audio
 
 			if (!Environment.Is64BitProcess)
 			{
-				Global.Log("Audio services cannot run on a 32-bit machine/process! Audio services weren't enabled.", ConsoleColor.Blue);
+				Global.Log("Audio services cannot run on a 32-bit machine/process! Audio services weren't enabled.",
+					ConsoleColor.Blue);
 
 				Config.bot.AudioSettings.AudioServicesEnabled = false;
 				Config.SaveConfig();
@@ -38,8 +39,9 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			//Check to see if all the necessary files are here.
-			if (!File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") || !File.Exists("external/ffprobe.exe") 
-			     || !File.Exists("opus.dll") || !File.Exists("libsodium.dll")) UpdateAudioFiles();
+			if (!File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") ||
+			    !File.Exists("external/ffprobe.exe")
+			    || !File.Exists("opus.dll") || !File.Exists("libsodium.dll")) UpdateAudioFiles();
 
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
 			{
@@ -60,7 +62,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Removes not allowed characters that can't be in a windows file name
+		///     Removes not allowed characters that can't be in a windows file name
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns>Formatted string</returns>
@@ -75,7 +77,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Updates all files related to audio
+		///     Updates all files related to audio
 		/// </summary>
 		public static void UpdateAudioFiles()
 		{
@@ -99,7 +101,9 @@ namespace Pootis_Bot.Services.Audio
 
 			//Download required files depending on platform
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
 				AudioDownloadServiceFiles.PrepareWindowFiles(GetLibFile("Windows"));
+			}
 			else
 			{
 				Global.Log("Currently platform not supported! Audio services have been disabled!");

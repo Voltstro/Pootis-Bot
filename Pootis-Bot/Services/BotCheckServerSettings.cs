@@ -20,7 +20,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		/// Checks all server settings, auto vc channels, active vc channels and the welcome message
+		///     Checks all server settings, auto vc channels, active vc channels and the welcome message
 		/// </summary>
 		/// <returns></returns>
 		public async Task CheckConnectedServerSettings()
@@ -66,7 +66,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		/// Checks the server's welcome settings
+		///     Checks the server's welcome settings
 		/// </summary>
 		/// <param name="server"></param>
 		/// <returns></returns>
@@ -90,35 +90,36 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		/// Checks all the bot's auto voice channels
+		///     Checks all the bot's auto voice channels
 		/// </summary>
 		/// <param name="server"></param>
 		public static void CheckServerVoiceChannels(ServerList server)
 		{
 			//Get all the voice channels that have been deleted
-			List<ServerVoiceChannel> autoVcChannelsToDelete = (from autoVoiceChannel in server.AutoVoiceChannels let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel.Id) where vcChannel == null select autoVoiceChannel).ToList();
+			List<ServerVoiceChannel> autoVcChannelsToDelete = (from autoVoiceChannel in server.AutoVoiceChannels
+				let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel.Id)
+				where vcChannel == null
+				select autoVoiceChannel).ToList();
 
 			foreach (ServerVoiceChannel voiceChannel in autoVcChannelsToDelete)
-			{
 				server.AutoVoiceChannels.Remove(voiceChannel);
-			}
-			
+
 			ServerListsManager.SaveServerList();
 		}
 
 		/// <summary>
-		/// Checks all the bot's active auto voice channels
+		///     Checks all the bot's active auto voice channels
 		/// </summary>
 		/// <param name="server"></param>
 		public static void CheckServerActiveVoiceChannels(ServerList server)
 		{
 			//Get all the active voice channels that have been deleted, or have no one in it
-			List<ulong> autoVcChannelsToDelete = (from serverActiveAutoVoiceChannel in server.ActiveAutoVoiceChannels let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(serverActiveAutoVoiceChannel) where vcChannel == null select serverActiveAutoVoiceChannel).ToList();
+			List<ulong> autoVcChannelsToDelete = (from serverActiveAutoVoiceChannel in server.ActiveAutoVoiceChannels
+				let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(serverActiveAutoVoiceChannel)
+				where vcChannel == null
+				select serverActiveAutoVoiceChannel).ToList();
 
-			foreach (ulong voiceChannel in autoVcChannelsToDelete)
-			{
-				server.ActiveAutoVoiceChannels.Remove(voiceChannel);
-			}
+			foreach (ulong voiceChannel in autoVcChannelsToDelete) server.ActiveAutoVoiceChannels.Remove(voiceChannel);
 
 			List<ulong> autoVcWithNoUsers = (from activeAutoVoiceChannel in server.ActiveAutoVoiceChannels
 				let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(activeAutoVoiceChannel)
@@ -130,24 +131,22 @@ namespace Pootis_Bot.Services
 				_client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel).DeleteAsync();
 				server.ActiveAutoVoiceChannels.Remove(autoVoiceChannel);
 			}
-			
+
 			ServerListsManager.SaveServerList();
 		}
 
 		/// <summary>
-		/// Checks all server permission roles to see if they still exist
+		///     Checks all server permission roles to see if they still exist
 		/// </summary>
 		/// <param name="server"></param>
 		public static void CheckServerPerms(ServerList server)
 		{
 			foreach (ServerList.CommandInfo perm in server.CommandInfos)
 			{
-				List<ulong> rolesToRemove = perm.Roles.Where(role => _client.GetGuild(server.GuildId).GetRole(role) == null).ToList();
+				List<ulong> rolesToRemove =
+					perm.Roles.Where(role => _client.GetGuild(server.GuildId).GetRole(role) == null).ToList();
 
-				foreach (ulong roleToRemove in rolesToRemove)
-				{
-					perm.Roles.Remove(roleToRemove);
-				}
+				foreach (ulong roleToRemove in rolesToRemove) perm.Roles.Remove(roleToRemove);
 			}
 
 			PermissionService.RemoveAllCommandsWithNoRoles(server);
@@ -167,8 +166,9 @@ namespace Pootis_Bot.Services
 				ServerListsManager.SaveServerList();
 
 				IDMChannel dm = await _client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
-				await dm.SendMessageAsync($"Your rule reaction on the Discord server **{_client.GetGuild(server.GuildId).Name}** has been disabled due to the message being deleted.\n" +
-				                          $"You can enable it again after setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");
+				await dm.SendMessageAsync(
+					$"Your rule reaction on the Discord server **{_client.GetGuild(server.GuildId).Name}** has been disabled due to the message being deleted.\n" +
+					"You can enable it again after setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");
 			}
 		}
 	}

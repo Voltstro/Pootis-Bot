@@ -27,7 +27,7 @@ namespace Pootis_Bot.Modules.BotOwner
 		[RequireOwner]
 		public async Task AddXp(SocketGuildUser user, uint amount)
 		{
-			LevelingSystem.UserSentMessage(user, (SocketTextChannel)Context.Channel, amount);
+			LevelingSystem.UserSentMessage(user, (SocketTextChannel) Context.Channel, amount);
 
 			await Task.Delay(500);
 
@@ -40,7 +40,7 @@ namespace Pootis_Bot.Modules.BotOwner
 		[RequireOwner]
 		public async Task RemoveXp(SocketGuildUser user, uint amount)
 		{
-			LevelingSystem.UserSentMessage(user, (SocketTextChannel)Context.Channel, (uint)-amount);
+			LevelingSystem.UserSentMessage(user, (SocketTextChannel) Context.Channel, (uint) -amount);
 
 			await Task.Delay(500);
 
@@ -56,7 +56,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			SocketGuild guild = Context.Client.GetGuild(guildId);
 
 			//Make sure the bot is in a guild with the provided guildId.
-			if(guild != null)
+			if (guild != null)
 				await guild.LeaveAsync();
 			else
 				await Context.Channel.SendMessageAsync($"The bot isn't in a guild with the id of {guildId}!");
@@ -73,9 +73,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			sb.Append($"__**Guilds that {Global.BotName} is in**__\n```csharp\n");
 
 			foreach (SocketGuild guild in guilds)
-			{
 				sb.Append($" # {guild.Name}\n  └ ID: {guild.Id}\n  └ Member Count: {guild.MemberCount}");
-			}
 
 			sb.Append("```");
 
@@ -90,10 +88,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			StringBuilder cmds = new StringBuilder();
 			cmds.Append("**All commands**\n");
 
-			foreach (CommandInfo command in _cmdService.Commands)
-			{
-				cmds.Append($"`{command.Name}` ");
-			}
+			foreach (CommandInfo command in _cmdService.Commands) cmds.Append($"`{command.Name}` ");
 
 			await Context.Channel.SendMessageAsync(cmds.ToString());
 		}
@@ -106,10 +101,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			StringBuilder modules = new StringBuilder();
 			modules.Append("**All modules**\n");
 
-			foreach (ModuleInfo module in _cmdService.Modules)
-			{
-				modules.Append($"`{module.Name}` ");
-			}
+			foreach (ModuleInfo module in _cmdService.Modules) modules.Append($"`{module.Name}` ");
 
 			await Context.Channel.SendMessageAsync(modules.ToString());
 		}
@@ -138,7 +130,8 @@ namespace Pootis_Bot.Modules.BotOwner
 		{
 			if (HighLevelProfileMessageManager.GetHighLevelProfileMessage(user.Id) == null)
 			{
-				await Context.Channel.SendMessageAsync("That user already doesn't have a custom high level profile message!");
+				await Context.Channel.SendMessageAsync(
+					"That user already doesn't have a custom high level profile message!");
 				return;
 			}
 

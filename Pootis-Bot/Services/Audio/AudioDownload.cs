@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
 using Discord;
 using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
-using YoutubeExplode;
-using YoutubeExplode.Models.MediaStreams;
+using Microsoft.Win32.SafeHandles;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Google;
+using YoutubeExplode;
+using YoutubeExplode.Models.MediaStreams;
 
 namespace Pootis_Bot.Services.Audio
 {
@@ -16,21 +16,21 @@ namespace Pootis_Bot.Services.Audio
 	{
 		private readonly YoutubeClient _client = new YoutubeClient(Global.HttpClient);
 
+		private readonly SafeHandle _handle = new SafeFileHandle(IntPtr.Zero, true);
+
 		private bool _disposed;
 
-		private readonly SafeHandle _handle = new SafeFileHandle(IntPtr.Zero, true);
-		
 		public void Dispose()
-		{ 
+		{
 			Dispose(true);
-			GC.SuppressFinalize(this);           
+			GC.SuppressFinalize(this);
 		}
-		
+
 		protected virtual void Dispose(bool disposing)
 		{
 			if (_disposed)
-				return; 
-      
+				return;
+
 			if (disposing)
 				_handle.Dispose();
 
@@ -38,7 +38,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Downloads an audio file using a search string
+		///     Downloads an audio file using a search string
 		/// </summary>
 		/// <param name="search">The string to search for</param>
 		/// <param name="message">The base message</param>
@@ -51,12 +51,13 @@ namespace Pootis_Bot.Services.Audio
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString());
 
 			if (searchListResponse.Items.Count != 0)
-			{
 				try
 				{
 					//Get video details first
-					MediaStreamInfoSet videoInfo = _client.GetVideoMediaStreamInfosAsync(searchListResponse.Items[0].Id.VideoId).GetAwaiter().GetResult();
-					string videoTitle = AudioCheckService.RemovedNotAllowedChars(searchListResponse.Items[0].Snippet.Title);
+					MediaStreamInfoSet videoInfo = _client
+						.GetVideoMediaStreamInfosAsync(searchListResponse.Items[0].Id.VideoId).GetAwaiter().GetResult();
+					string videoTitle =
+						AudioCheckService.RemovedNotAllowedChars(searchListResponse.Items[0].Snippet.Title);
 					string videoLoc = $"Music/{videoTitle}.mp3";
 
 					//Do a second check to see if we have already have that video
@@ -70,17 +71,26 @@ namespace Pootis_Bot.Services.Audio
 					//Check to make sure the video doesn't succeeds the max video time
 					if (videoTime.TotalSeconds > Config.bot.AudioSettings.MaxVideoTime.TotalSeconds)
 					{
-						message.ModifyAsync(x => { x.Content = $":musical_note: Video succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}"; }).GetAwaiter().GetResult();
+						message.ModifyAsync(x =>
+						{
+							x.Content =
+								$":musical_note: Video succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}";
+						}).GetAwaiter().GetResult();
 
 						return null;
 					}
 
 					Debug.WriteLine($"[Audio Download] Downloading {videoLoc}");
 
-					message.ModifyAsync(x => { x.Content = $":musical_note: Give me a sec. Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**"; }).GetAwaiter().GetResult();
+					message.ModifyAsync(x =>
+					{
+						x.Content =
+							$":musical_note: Give me a sec. Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**";
+					}).GetAwaiter().GetResult();
 
 					//Download the .mp3 file
-					_client.DownloadMediaStreamAsync(videoInfo.Audio.WithHighestBitrate(), videoLoc).GetAwaiter().GetResult();
+					_client.DownloadMediaStreamAsync(videoInfo.Audio.WithHighestBitrate(), videoLoc).GetAwaiter()
+						.GetResult();
 
 					Debug.WriteLine("[Audio Download] Download successful");
 
@@ -89,7 +99,8 @@ namespace Pootis_Bot.Services.Audio
 				catch (Exception ex)
 				{
 					Global.Log(ex.Message, ConsoleColor.Red);
-					message.Channel.SendMessageAsync("Sorry but an error occured. Here are the details:\n" + ex.Message).GetAwaiter().GetResult();
+					message.Channel.SendMessageAsync("Sorry but an error occured. Here are the details:\n" + ex.Message)
+						.GetAwaiter().GetResult();
 
 					//Log out an error to the owner if they have it enabled
 					if (Config.bot.ReportErrorsToOwner)
@@ -98,9 +109,12 @@ namespace Pootis_Bot.Services.Audio
 
 					return null;
 				}
-			}
 
-			message.ModifyAsync(x => { x.Content = $":musical_note: No result for '{search}' were found on YouTube, try typing in something different."; }).GetAwaiter().GetResult();
+			message.ModifyAsync(x =>
+			{
+				x.Content =
+					$":musical_note: No result for '{search}' were found on YouTube, try typing in something different.";
+			}).GetAwaiter().GetResult();
 			return null;
 		}
 	}

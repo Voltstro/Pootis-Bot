@@ -30,7 +30,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			UserUtils.KickUser(user, (SocketGuildUser)Context.User, reason);
+			UserUtils.KickUser(user, (SocketGuildUser) Context.User, reason);
 			await Context.Channel.SendMessageAsync($"The user {user.Username} was kicked.");
 		}
 
@@ -67,14 +67,16 @@ namespace Pootis_Bot.Modules.Server
 			//Make sure the user being muted isn't the owner of the guild, because that would be retarded.
 			if (user.Id == Context.Guild.OwnerId)
 			{
-				await Context.Channel.SendMessageAsync("Excuse me, you are trying to mute... the owner? That is a terrible idea.");
+				await Context.Channel.SendMessageAsync(
+					"Excuse me, you are trying to mute... the owner? That is a terrible idea.");
 				return;
 			}
 
 			//Yea, muting your self isn't normal either.
 			if (user == Context.User)
 			{
-				await Context.Channel.SendMessageAsync("Are you trying to mute your self? I don't think that is normal.");
+				await Context.Channel.SendMessageAsync(
+					"Are you trying to mute your self? I don't think that is normal.");
 				return;
 			}
 
@@ -84,7 +86,7 @@ namespace Pootis_Bot.Modules.Server
 
 			UserAccountsManager.SaveAccounts();
 
-			if(accountServer.IsMuted)
+			if (accountServer.IsMuted)
 				await Context.Channel.SendMessageAsync($"**{user.Username}** is now muted.");
 			else
 				await Context.Channel.SendMessageAsync($"**{user.Username}** is now un-muted.");

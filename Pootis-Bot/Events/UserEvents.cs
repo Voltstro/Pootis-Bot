@@ -12,7 +12,7 @@ using Pootis_Bot.Structs.Server;
 namespace Pootis_Bot.Events
 {
 	/// <summary>
-	/// Handles user client events
+	///     Handles user client events
 	/// </summary>
 	public class UserEvents
 	{
@@ -51,7 +51,6 @@ namespace Pootis_Bot.Events
 		{
 			ServerList server = ServerListsManager.GetServer(user.Guild);
 			if (!user.IsBot)
-			{
 				if (server.WelcomeMessageEnabled)
 				{
 					//Format the message
@@ -61,7 +60,6 @@ namespace Pootis_Bot.Events
 					if (_client.GetChannel(server.WelcomeChannelId) is SocketTextChannel channel)
 						await channel.SendMessageAsync(addUserMention);
 				}
-			}
 		}
 
 		public async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before,
@@ -76,14 +74,15 @@ namespace Pootis_Bot.Events
 				if (voiceChannel.Name != null)
 				{
 					RestVoiceChannel createdChannel =
-						await after.VoiceChannel.Guild.CreateVoiceChannelAsync($"{voiceChannel.Name} #" + server.ActiveAutoVoiceChannels.Count + 1, x =>
-						{
-							x.CategoryId = after.VoiceChannel.CategoryId;
-							x.Bitrate = after.VoiceChannel.Bitrate;
-							x.Position = after.VoiceChannel.Position + 1;
-						});
+						await after.VoiceChannel.Guild.CreateVoiceChannelAsync(
+							$"{voiceChannel.Name} #" + server.ActiveAutoVoiceChannels.Count + 1, x =>
+							{
+								x.CategoryId = after.VoiceChannel.CategoryId;
+								x.Bitrate = after.VoiceChannel.Bitrate;
+								x.Position = after.VoiceChannel.Position + 1;
+							});
 
-					if(createdChannel.CategoryId != null)
+					if (createdChannel.CategoryId != null)
 						await createdChannel.SyncPermissionsAsync();
 
 					//Move the user who created the channel to the new channel
@@ -140,7 +139,7 @@ namespace Pootis_Bot.Events
 
 				//To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
 				foreach (ServerMusicItem channel in toRemove)
-						AudioService.currentChannels.Remove(channel);
+					AudioService.currentChannels.Remove(channel);
 			}
 		}
 
@@ -149,7 +148,7 @@ namespace Pootis_Bot.Events
 			//We remove the user's server data from the user account ONLY if they are banned since their chance of coming back if very low.
 			//If the data was deleted when they left/kicked they would also loose their warnings. I am sure you can see what the issue would be if we allowed that.
 
-			UserAccount userAccount = UserAccountsManager.GetAccount((SocketGuildUser)user);
+			UserAccount userAccount = UserAccountsManager.GetAccount((SocketGuildUser) user);
 			userAccount.Servers.Remove(userAccount.GetOrCreateServer(guild.Id));
 
 			UserAccountsManager.SaveAccounts();

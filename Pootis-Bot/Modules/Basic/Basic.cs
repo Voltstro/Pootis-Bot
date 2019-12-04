@@ -124,9 +124,9 @@ namespace Pootis_Bot.Modules.Basic
 		{
 			public int Compare(UserAccount x, UserAccount y)
 			{
-				if ((y != null) && (x != null) && (x.LevelNumber > y.LevelNumber))
+				if (y != null && x != null && x.LevelNumber > y.LevelNumber)
 					return 1;
-				if ((y != null) && (x != null) && (x.LevelNumber < y.LevelNumber))
+				if (y != null && x != null && x.LevelNumber < y.LevelNumber)
 					return -1;
 				return 0;
 			}

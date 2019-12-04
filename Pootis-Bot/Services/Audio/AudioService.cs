@@ -21,7 +21,7 @@ namespace Pootis_Bot.Services.Audio
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
 
 		/// <summary>
-		/// Joins a guild voice channel, and sends messages to a text channel on error
+		///     Joins a guild voice channel, and sends messages to a text channel on error
 		/// </summary>
 		/// <param name="guild">What guild are we in</param>
 		/// <param name="target">The voice channel we are attempting to join</param>
@@ -60,7 +60,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Leaves an audio channel
+		///     Leaves an audio channel
 		/// </summary>
 		/// <param name="guild">The current guild</param>
 		/// <param name="channel">Where the messages are sent</param>
@@ -102,9 +102,9 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Leaves the audio channel
+		///     Leaves the audio channel
 		/// </summary>
-		/// <param name="guild">The guild of <see cref="channel"/></param>
+		/// <param name="guild">The guild of <see cref="channel" /></param>
 		/// <param name="channel">The channel to use for messages</param>
 		/// <param name="user"></param>
 		/// <returns></returns>
@@ -132,7 +132,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Plays a song in a given voice channel
+		///     Plays a song in a given voice channel
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="channel"></param>
@@ -140,7 +140,8 @@ namespace Pootis_Bot.Services.Audio
 		/// <param name="user"></param>
 		/// <param name="search">The name of the song to play</param>
 		/// <returns></returns>
-		public async Task SendAudio(SocketGuild guild, IMessageChannel channel, IVoiceChannel target, IUser user, string search)
+		public async Task SendAudio(SocketGuild guild, IMessageChannel channel, IVoiceChannel target, IUser user,
+			string search)
 		{
 			ServerMusicItem serverList = GetMusicList(guild.Id);
 
@@ -164,7 +165,8 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			IUserMessage message = await channel.SendMessageAsync($":musical_note: Searching my audio banks for '{search}'");
+			IUserMessage message =
+				await channel.SendMessageAsync($":musical_note: Searching my audio banks for '{search}'");
 
 			string fileLoc;
 			string fileName;
@@ -210,7 +212,7 @@ namespace Pootis_Bot.Services.Audio
 			IAudioClient client = serverList.AudioClient;
 			Process ffmpeg = serverList.FfMpeg = GetFfmpeg(fileLoc);
 
-			if(Config.bot.AudioSettings.LogPlayStopSongToConsole)
+			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
 				Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
 
 			await using Stream output = ffmpeg.StandardOutput.BaseStream;
@@ -272,7 +274,7 @@ namespace Pootis_Bot.Services.Audio
 					{
 						await channel.SendMessageAsync($"Sorry an error occured **Error Details**\n{ex.Message}");
 
-						if(Config.bot.ReportErrorsToOwner)
+						if (Config.bot.ReportErrorsToOwner)
 							await Global.BotOwner.SendMessageAsync(
 								$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
 
@@ -280,7 +282,7 @@ namespace Pootis_Bot.Services.Audio
 					}
 
 				//End
-				if(Config.bot.AudioSettings.LogPlayStopSongToConsole)
+				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
 					Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
 						ConsoleColor.Blue);
 
@@ -298,7 +300,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Pauses audio playback for a voice channel
+		///     Pauses audio playback for a voice channel
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="channel"></param>
@@ -329,7 +331,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Searches the music directory for a downloaded audio file
+		///     Searches the music directory for a downloaded audio file
 		/// </summary>
 		/// <param name="search"></param>
 		/// <returns></returns>
@@ -344,7 +346,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Gets a process running ffmpeg
+		///     Gets a process running ffmpeg
 		/// </summary>
 		/// <param name="path"></param>
 		/// <returns></returns>

@@ -13,7 +13,8 @@ namespace Pootis_Bot.Core.Managers
 		{
 			if (DataStorage.SaveExists(HighLevelProfileMessagesFilePath))
 			{
-				HighLevelProfileMessages = DataStorage.LoadHighLevelProfileMessages(HighLevelProfileMessagesFilePath).ToList();
+				HighLevelProfileMessages =
+					DataStorage.LoadHighLevelProfileMessages(HighLevelProfileMessagesFilePath).ToList();
 			}
 			else
 			{
@@ -27,7 +28,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Wow, it saves all the high level profile messages, who would of guess?
+		///     Wow, it saves all the high level profile messages, who would of guess?
 		/// </summary>
 		public static void SaveHighLevelProfileMessages()
 		{
@@ -35,7 +36,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Adds a high level profile message for a user
+		///     Adds a high level profile message for a user
 		/// </summary>
 		/// <param name="userId"></param>
 		/// <param name="message"></param>
@@ -51,7 +52,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Get a high level profile message
+		///     Get a high level profile message
 		/// </summary>
 		/// <param name="userId"></param>
 		/// <returns></returns>

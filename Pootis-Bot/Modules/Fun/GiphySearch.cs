@@ -47,14 +47,12 @@ namespace Pootis_Bot.Modules.Fun
 
 			GiphySearchResult results = GiphyService.Search(search);
 			if (!results.IsSuccessful)
-			{
 				if (results.ErrorReason == ErrorReason.Error)
 				{
 					await Context.Channel.SendMessageAsync(
 						"Sorry, but an error occured while searching Giphy, please try again in a moment!");
 					return;
 				}
-			}
 
 			embed.WithDescription($"**By**: {results.Data.GifAuthor}\n**URL**: {results.Data.GifLink}");
 			embed.WithImageUrl(results.Data.GifUrl);

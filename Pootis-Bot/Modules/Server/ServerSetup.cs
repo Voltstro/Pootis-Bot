@@ -44,7 +44,8 @@ namespace Pootis_Bot.Modules.Server
 
 			ServerListsManager.SaveServerList();
 
-			await Context.Channel.SendMessageAsync($"The threshold for amount of users in a message was set to {threshold}.");
+			await Context.Channel.SendMessageAsync(
+				$"The threshold for amount of users in a message was set to {threshold}.");
 		}
 
 		[Command("togglewelcomemessage")]
@@ -148,7 +149,8 @@ namespace Pootis_Bot.Modules.Server
 				}
 				else
 				{
-					await Context.Channel.SendMessageAsync("That message doesn't exist! Make sure you are in the same channel as were that message is located.");
+					await Context.Channel.SendMessageAsync(
+						"That message doesn't exist! Make sure you are in the same channel as were that message is located.");
 				}
 			}
 			else
@@ -193,7 +195,7 @@ namespace Pootis_Bot.Modules.Server
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			//The rule reaction is enabled, disable it
-			if (server.RuleEnabled) 
+			if (server.RuleEnabled)
 			{
 				server.RuleEnabled = false;
 				ServerListsManager.SaveServerList();
@@ -203,7 +205,7 @@ namespace Pootis_Bot.Modules.Server
 			else //Enable the rule reaction feature, but first check to make sure everything else is setup first and is correct
 			{
 				//First, lets make sure the rule role is still valid and exists
-				if (RoleUtils.GetGuildRole(Context.Guild, server.RuleRoleId) != null) 
+				if (RoleUtils.GetGuildRole(Context.Guild, server.RuleRoleId) != null)
 				{
 					if (server.RuleMessageId != 0)
 					{
@@ -332,9 +334,8 @@ namespace Pootis_Bot.Modules.Server
 			sb.Append("__**Server Role Points**__\n");
 
 			foreach (ServerRolePoints rolePoint in server.ServerRolePoints)
-			{
-				sb.Append($"[{RoleUtils.GetGuildRole(Context.Guild, rolePoint.RoleId)}] **{rolePoint.PointsRequired}**\n");
-			}
+				sb.Append(
+					$"[{RoleUtils.GetGuildRole(Context.Guild, rolePoint.RoleId)}] **{rolePoint.PointsRequired}**\n");
 
 			await Context.Channel.SendMessageAsync(sb.ToString());
 		}

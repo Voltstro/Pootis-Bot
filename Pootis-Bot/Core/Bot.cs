@@ -10,13 +10,12 @@ namespace Pootis_Bot.Core
 {
 	public class Bot
 	{
-		private DiscordSocketClient _client;
-
 		public static bool IsRunning;
 		public static bool IsStreaming;
+		private DiscordSocketClient _client;
 
 		/// <summary>
-		/// Starts the bot
+		///     Starts the bot
 		/// </summary>
 		/// <returns></returns>
 		public async Task StartBot()
@@ -95,8 +94,8 @@ namespace Pootis_Bot.Core
 		private async Task CheckConnectionStatus()
 		{
 			while (IsRunning)
-			{
-				if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
+				if (Config.bot.CheckConnectionStatus
+				) // It is enabled then check the connection status ever so milliseconds
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
 
@@ -124,7 +123,6 @@ namespace Pootis_Bot.Core
 				{
 					await Task.Delay(-1); // Just run forever
 				}
-			}
 		}
 
 		private async void QuitEvent(object sender, EventArgs e)

@@ -5,7 +5,7 @@ namespace Pootis_Bot.Helpers
 	public class VersionUtils
 	{
 		/// <summary>
-		/// Gets the app version
+		///     Gets the app version
 		/// </summary>
 		/// <returns></returns>
 		public static string GetAppVersion()

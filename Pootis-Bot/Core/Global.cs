@@ -8,7 +8,7 @@ using Pootis_Bot.Helpers;
 namespace Pootis_Bot.Core
 {
 	/// <summary>
-	/// Contains some general config and methods.
+	///     Contains some general config and methods.
 	/// </summary>
 	public static class Global
 	{
@@ -45,22 +45,22 @@ namespace Pootis_Bot.Core
 		public static string BotStatusText;
 
 		/// <summary>
-		/// The bot owner account
+		///     The bot owner account
 		/// </summary>
 		public static IUser BotOwner;
 
 		/// <summary>
-		/// The bot's logged in account
+		///     The bot's logged in account
 		/// </summary>
 		public static IUser BotUser;
 
 		/// <summary>
-		/// Global HTTP client
+		///     Global HTTP client
 		/// </summary>
 		public static HttpClient HttpClient;
 
 		/// <summary>
-		/// Logs a message to the console
+		///     Logs a message to the console
 		/// </summary>
 		/// <param name="msg">The message? Yea the message</param>
 		/// <param name="color">The color of the message</param>
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Logs a message to the console
+		///     Logs a message to the console
 		/// </summary>
 		/// <param name="msg"></param>
 		public static void Log(string msg)
@@ -81,7 +81,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Gets... you guessed it, THE TIME NOW!!!! (12hr time)
+		///     Gets... you guessed it, THE TIME NOW!!!! (12hr time)
 		/// </summary>
 		/// <returns></returns>
 		public static string TimeNow()
@@ -90,7 +90,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Copies a directory from one place to another
+		///     Copies a directory from one place to another
 		/// </summary>
 		/// <param name="sourceDirName"></param>
 		/// <param name="destDirName"></param>
@@ -128,7 +128,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Turns A String Into A Nicer Looking One
+		///     Turns A String Into A Nicer Looking One
 		/// </summary>
 		/// <param name="s"></param>
 		/// <returns></returns>
@@ -151,7 +151,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Gets a random number
+		///     Gets a random number
 		/// </summary>
 		/// <param name="min">The minimum</param>
 		/// <param name="max">The maximum</param>
@@ -163,7 +163,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Checks if a string contains unicode characters
+		///     Checks if a string contains unicode characters
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>

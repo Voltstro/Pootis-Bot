@@ -57,9 +57,7 @@ namespace Pootis_Bot.Modules.Server
 			sb.Append("**__Permissions__**\n");
 
 			foreach (ServerList.CommandInfo perm in server.CommandInfos)
-			{
 				sb.Append($"__`{perm.Command}`__\nRoles: {FormatRoles(perm.Roles, Context.Guild)}\n\n");
-			}
 
 			await Context.Channel.SendMessageAsync(sb.ToString());
 		}
@@ -132,7 +130,7 @@ namespace Pootis_Bot.Modules.Server
 			SocketRole roleNotToMention = RoleUtils.GetGuildRole(Context.Guild, roleToChangeName);
 			SocketRole role = RoleUtils.GetGuildRole(Context.Guild, roleToNotAllowToMention);
 
-			if(roleNotToMention == null || role == null)
+			if (roleNotToMention == null || role == null)
 			{
 				await Context.Channel.SendMessageAsync(
 					$"Either the **{roleToChangeName}** role doesn't exist or the **{roleToNotAllowToMention}** role doesn't exist!");
@@ -161,7 +159,7 @@ namespace Pootis_Bot.Modules.Server
 			SocketRole roleNotToMention = RoleUtils.GetGuildRole(Context.Guild, roleToChangeName);
 			SocketRole role = RoleUtils.GetGuildRole(Context.Guild, roleAllowedToMentionName);
 
-			if(roleNotToMention == null || role == null)
+			if (roleNotToMention == null || role == null)
 			{
 				await Context.Channel.SendMessageAsync(
 					$"Either the **{roleToChangeName}** role doesn't exist or the **{roleAllowedToMentionName}** role doesn't exist!");
@@ -208,7 +206,8 @@ namespace Pootis_Bot.Modules.Server
 			builder.Append("__**Role to Roles**__\n```");
 
 			foreach (ServerRoleToRoleMention roleToRole in server.RoleToRoleMentions)
-				builder.Append($"{RoleUtils.GetGuildRole(Context.Guild, roleToRole.RoleNotToMentionId).Name} =====> {RoleUtils.GetGuildRole(Context.Guild, roleToRole.RoleId).Name}\n");
+				builder.Append(
+					$"{RoleUtils.GetGuildRole(Context.Guild, roleToRole.RoleNotToMentionId).Name} =====> {RoleUtils.GetGuildRole(Context.Guild, roleToRole.RoleId).Name}\n");
 
 			builder.Append("```");
 
