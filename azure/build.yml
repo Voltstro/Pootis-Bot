@@ -1,0 +1,6 @@
+steps:
+- script: dotnet restore -v minimal Pootis-Bot.sln
+  displayName: Restore Packages
+
+- script: dotnet build src/Pootis-Bot/Pootis-Bot.csproj --no-restore -v minimal -c $(buildConfiguration) --framework $(framework)
+  displayName: Build Project
