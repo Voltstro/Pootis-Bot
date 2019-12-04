@@ -10,10 +10,10 @@ jobs:
   pool:
     vmImage: 'windows-latest'
   steps:
-  - template: Azure/build.yml
+  - template: azure/build.yml
 
 - job: Linux
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
-  - template: Azure/build.yml
+  - template: azure/build.yml
