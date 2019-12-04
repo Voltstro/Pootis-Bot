@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Services;
 using Pootis_Bot.Structs.Server;
 
@@ -75,7 +76,7 @@ namespace Pootis_Bot.Events
 			foreach (ServerRoleToRoleMention roleToRemove in rolesToRemove)
 			{
 				await dm.SendMessageAsync(
-					$"The **{after.Name}** role was changed to not mentionable so it was deleted from the **{Global.GetGuildRole(guild, roleToRemove.RoleNotToMentionId).Name}** => **{Global.GetGuildRole(guild, roleToRemove.RoleId).Name}** role to role ping list. ({guild.Name})");
+					$"The **{after.Name}** role was changed to not mentionable so it was deleted from the **{RoleUtils.GetGuildRole(guild, roleToRemove.RoleNotToMentionId).Name}** => **{RoleUtils.GetGuildRole(guild, roleToRemove.RoleId).Name}** role to role ping list. ({guild.Name})");
 
 				server.RoleToRoleMentions.Remove(roleToRemove);
 				ServerListsManager.SaveServerList();

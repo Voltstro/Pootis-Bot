@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Modules.Account
 {
@@ -141,7 +142,7 @@ namespace Pootis_Bot.Modules.Account
 			//If there is a requirement check to make sure the user meets it first
 			if (role.RoleRequiredId != 0)
 			{
-				if (!((SocketGuildUser) Context.User).Roles.Contains(Global.GetGuildRole(Context.Guild, role.RoleRequiredId))
+				if (!((SocketGuildUser) Context.User).Roles.Contains(RoleUtils.GetGuildRole(Context.Guild, role.RoleRequiredId))
 				)
 				{
 					await Context.Channel.SendMessageAsync("You do not meet the requirements to get this role!");
@@ -149,7 +150,7 @@ namespace Pootis_Bot.Modules.Account
 				}
 			}
 
-			SocketRole roleToGive = Global.GetGuildRole(Context.Guild, role.RoleToGiveId);
+			SocketRole roleToGive = RoleUtils.GetGuildRole(Context.Guild, role.RoleToGiveId);
 
 			//See if the user already has the role
 			if(((SocketGuildUser) Context.User).Roles.Contains(roleToGive))

@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Structs.Server;
 
@@ -202,7 +203,7 @@ namespace Pootis_Bot.Modules.Server
 			else //Enable the rule reaction feature, but first check to make sure everything else is setup first and is correct
 			{
 				//First, lets make sure the rule role is still valid and exists
-				if (Global.GetGuildRole(Context.Guild, server.RuleRoleId) != null) 
+				if (RoleUtils.GetGuildRole(Context.Guild, server.RuleRoleId) != null) 
 				{
 					if (server.RuleMessageId != 0)
 					{
@@ -245,7 +246,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task SetupRuleRole([Remainder] string roleName)
 		{
 			//Get the role and check to see if it exists
-			SocketRole role = Global.GetGuildRole(Context.Guild, roleName);
+			SocketRole role = RoleUtils.GetGuildRole(Context.Guild, roleName);
 
 			if (role != null)
 			{
@@ -266,7 +267,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task AddRolePoints(uint pointsAmount, string roleName)
 		{
-			SocketRole role = Global.GetGuildRole(Context.Guild, roleName);
+			SocketRole role = RoleUtils.GetGuildRole(Context.Guild, roleName);
 			if (role == null)
 			{
 				await Context.Channel.SendMessageAsync("That role doesn't exists!");
@@ -332,7 +333,7 @@ namespace Pootis_Bot.Modules.Server
 
 			foreach (ServerRolePoints rolePoint in server.ServerRolePoints)
 			{
-				sb.Append($"[{Global.GetGuildRole(Context.Guild, rolePoint.RoleId)}] **{rolePoint.PointsRequired}**\n");
+				sb.Append($"[{RoleUtils.GetGuildRole(Context.Guild, rolePoint.RoleId)}] **{rolePoint.PointsRequired}**\n");
 			}
 
 			await Context.Channel.SendMessageAsync(sb.ToString());
@@ -344,7 +345,7 @@ namespace Pootis_Bot.Modules.Server
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task RoleGiveAdd(string roleGiveName, string roleToGive, [Remainder] string roleRequired = "")
 		{
-			SocketRole roleToAssign = Global.GetGuildRole(Context.Guild, roleToGive);
+			SocketRole roleToAssign = RoleUtils.GetGuildRole(Context.Guild, roleToGive);
 
 			//Check to make sure the role exists first
 			if (roleToAssign == null)
@@ -358,7 +359,7 @@ namespace Pootis_Bot.Modules.Server
 			//If a required role was specified, check to make sure it exists
 			if (!string.IsNullOrWhiteSpace(roleRequired))
 			{
-				socketRoleRequired = Global.GetGuildRole(Context.Guild, roleRequired);
+				socketRoleRequired = RoleUtils.GetGuildRole(Context.Guild, roleRequired);
 				if (socketRoleRequired == null)
 				{
 					await Context.Channel.SendMessageAsync($"Role {roleRequired} doesn't exist!");

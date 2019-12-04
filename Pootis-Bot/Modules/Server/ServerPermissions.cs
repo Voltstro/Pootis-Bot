@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services;
 using Pootis_Bot.Structs.Server;
@@ -129,8 +129,8 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task AddRoleToRoleMention(string roleToChangeName, string roleToNotAllowToMention)
 		{
-			SocketRole roleNotToMention = Global.GetGuildRole(Context.Guild, roleToChangeName);
-			SocketRole role = Global.GetGuildRole(Context.Guild, roleToNotAllowToMention);
+			SocketRole roleNotToMention = RoleUtils.GetGuildRole(Context.Guild, roleToChangeName);
+			SocketRole role = RoleUtils.GetGuildRole(Context.Guild, roleToNotAllowToMention);
 
 			if(roleNotToMention == null || role == null)
 			{
@@ -158,8 +158,8 @@ namespace Pootis_Bot.Modules.Server
 		[RequireGuildOwner]
 		public async Task RemoveRoleToRoleMention(string roleToChangeName, string roleAllowedToMentionName)
 		{
-			SocketRole roleNotToMention = Global.GetGuildRole(Context.Guild, roleToChangeName);
-			SocketRole role = Global.GetGuildRole(Context.Guild, roleAllowedToMentionName);
+			SocketRole roleNotToMention = RoleUtils.GetGuildRole(Context.Guild, roleToChangeName);
+			SocketRole role = RoleUtils.GetGuildRole(Context.Guild, roleAllowedToMentionName);
 
 			if(roleNotToMention == null || role == null)
 			{
@@ -208,7 +208,7 @@ namespace Pootis_Bot.Modules.Server
 			builder.Append("__**Role to Roles**__\n```");
 
 			foreach (ServerRoleToRoleMention roleToRole in server.RoleToRoleMentions)
-				builder.Append($"{Global.GetGuildRole(Context.Guild, roleToRole.RoleNotToMentionId).Name} =====> {Global.GetGuildRole(Context.Guild, roleToRole.RoleId).Name}\n");
+				builder.Append($"{RoleUtils.GetGuildRole(Context.Guild, roleToRole.RoleNotToMentionId).Name} =====> {RoleUtils.GetGuildRole(Context.Guild, roleToRole.RoleId).Name}\n");
 
 			builder.Append("```");
 
@@ -219,7 +219,7 @@ namespace Pootis_Bot.Modules.Server
 
 		private static string FormatRoles(IEnumerable<ulong> roles, SocketGuild guild)
 		{
-			return roles.Aggregate("", (current, role) => current + $"{Global.GetGuildRole(guild, role).Name}, ");
+			return roles.Aggregate("", (current, role) => current + $"{RoleUtils.GetGuildRole(guild, role).Name}, ");
 		}
 
 		#endregion

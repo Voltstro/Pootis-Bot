@@ -9,6 +9,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.AntiSpam;
 
 namespace Pootis_Bot.Core
@@ -107,7 +108,7 @@ namespace Pootis_Bot.Core
 						if(doesUserHavePerm)
 							continue;
 
-						foreach (ulong unused in perm.Roles.Where(permRole => role == Global.GetGuildRole(context.Guild, permRole)))
+						foreach (ulong unused in perm.Roles.Where(permRole => role == RoleUtils.GetGuildRole(context.Guild, permRole)))
 						{
 							if(doesUserHavePerm)
 								continue;

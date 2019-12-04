@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Core
@@ -45,10 +46,10 @@ namespace Pootis_Bot.Core
 			ServerRolePoints serverRole = server.GetServerRolePoints(userAccount.GetOrCreateServer(user.Guild.Id).Points);
 			if (serverRole.PointsRequired == 0) return;
 
-			await user.AddRoleAsync(Global.GetGuildRole(user.Guild, serverRole.RoleId));
+			await user.AddRoleAsync(RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId));
 
 			await channel.SendMessageAsync(
-				$"Congrats {user.Mention}, you got {userAccount.GetOrCreateServer(user.Guild.Id).Points} points and got the **{Global.GetGuildRole(user.Guild, serverRole.RoleId).Name}** role!");
+				$"Congrats {user.Mention}, you got {userAccount.GetOrCreateServer(user.Guild.Id).Points} points and got the **{RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId).Name}** role!");
 		}
 	}
 }

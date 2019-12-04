@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Services;
 
 namespace Pootis_Bot.Events
@@ -24,7 +25,7 @@ namespace Pootis_Bot.Events
 			{
 				if (!server.RuleEnabled) return Task.CompletedTask;
 				if (reaction.Emote.Name != server.RuleReactionEmoji) return Task.CompletedTask;
-				SocketRole role = Global.GetGuildRole(guild, server.RuleRoleId);
+				SocketRole role = RoleUtils.GetGuildRole(guild, server.RuleRoleId);
 
 				SocketGuildUser user = (SocketGuildUser) reaction.User;
 				user.AddRoleAsync(role);

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Services
 {
@@ -50,10 +50,10 @@ namespace Pootis_Bot.Services
 			//Check all roles to see if they actually exists
 			foreach (string role in roles)
 			{
-				if (Global.GetGuildRole(guild, role) != null)
+				if (RoleUtils.GetGuildRole(guild, role) != null)
 				{
 					//Add all the roles Ids
-					iRoles.Add(Global.GetGuildRole(guild, role));
+					iRoles.Add(RoleUtils.GetGuildRole(guild, role));
 					continue;
 				}
 
@@ -126,7 +126,7 @@ namespace Pootis_Bot.Services
 			//Check all the imputed roles to see if they exists
 			foreach (string role in roles)
 			{
-				IRole iRole = Global.GetGuildRole(guild, role);
+				IRole iRole = RoleUtils.GetGuildRole(guild, role);
 				if (iRole == null)
 				{
 					await channel.SendMessageAsync($"The role **{role}** doesn't exist!");
