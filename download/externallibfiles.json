@@ -1,0 +1,12 @@
+[
+  {
+    "OsPlatform": "Windows",
+    "FfmpegDownloadUrl": "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip",
+    "LibsDownloadUrl": "https://pootis-bot.creepysin.com/download/AudioDlls.zip"
+  },
+  {
+    "OsPlatform": "Linux",
+    "FfmpegDownloadUrl": "https://pootis-bot.creepysin.com/download/ffmpeg/linux/ffmpeg-linux-64.zip",
+    "LibsDownloadUrl": "https://pootis-bot.creepysin.com/download/AudioDlls.zip"
+  }
+]
