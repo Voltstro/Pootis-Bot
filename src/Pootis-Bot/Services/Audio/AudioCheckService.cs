@@ -44,10 +44,12 @@ namespace Pootis_Bot.Services.Audio
 
 			#elif LINUX
 
-			//TODO: Write Linux Code
-
+			//Check files to see if they exist
+			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
+				UpdateAudioFiles();
+			
 			#else
-
+	
 			//TODO: Write MacOs Code
 
 			#endif
@@ -93,7 +95,7 @@ namespace Pootis_Bot.Services.Audio
 			Global.Log("Downloading required files for audio services...");
 
 			//If the temp directory doesn't exist, create a new one.
-			if (!Directory.Exists("Temp/")) Directory.CreateDirectory("temp/");
+			if (!Directory.Exists("Temp/")) Directory.CreateDirectory("Temp/");
 
 			//If the external directory doesn't exist, create it
 			if (!Directory.Exists("External/")) Directory.CreateDirectory("External/");
@@ -108,8 +110,7 @@ namespace Pootis_Bot.Services.Audio
 
 			#else
 
-			//TODO: Write Linux and MacOS code
-			return;
+			AudioDownloadServiceFiles.DownloadAndPrepareLinuxFiles(GetDownloadUrls(listOfLibsFilesForOs, "Linux"));
 
 			#endif
 

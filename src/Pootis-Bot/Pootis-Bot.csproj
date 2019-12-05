@@ -25,7 +25,7 @@
     <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(OS)' == 'Linux'">
+  <PropertyGroup Condition="'$(OS)' == 'Unix'">
     <DefineConstants>LINUX</DefineConstants>
   </PropertyGroup>
 
