@@ -12,7 +12,7 @@ using YoutubeExplode.Models.MediaStreams;
 
 namespace Pootis_Bot.Services.Audio
 {
-	public class AudioDownload
+	public class AudioDownloadMusicFiles
 	{
 		private readonly YoutubeClient _client = new YoutubeClient(Global.HttpClient);
 
@@ -46,7 +46,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		public string DownloadAudio(string search, IUserMessage message, SocketGuild guild)
 		{
-			//channel.ModifyAsync( x => { x.Content = $":musical_note: Searching YouTube for '{search}'"; }).GetAwaiter().GetResult();
+			message.ModifyAsync( x => { x.Content = $":musical_note: Searching YouTube for '{search}'"; }).GetAwaiter().GetResult();
 
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString());
 

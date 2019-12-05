@@ -178,7 +178,7 @@ namespace Pootis_Bot.Services.Audio
 				//The search didn't come up with anything, lets attempt to get it from YouTube
 				if (string.IsNullOrWhiteSpace(fileLoc))
 				{
-					AudioDownload audioDownload = new AudioDownload();
+					AudioDownloadMusicFiles audioDownload = new AudioDownloadMusicFiles();
 					string result = audioDownload.DownloadAudio(search, message, guild);
 					audioDownload.Dispose();
 
