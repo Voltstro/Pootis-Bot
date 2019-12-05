@@ -48,9 +48,11 @@ namespace Pootis_Bot.Services.Audio
 			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
 				UpdateAudioFiles();
 			
-			#else
-	
-			//TODO: Write MacOs Code
+			#elif OSX
+			 
+			//Yep, you guessed it, check the files
+			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("External/ffplay") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
+				UpdateAudioFiles();
 
 			#endif
 
@@ -108,9 +110,11 @@ namespace Pootis_Bot.Services.Audio
 
 			AudioDownloadServiceFiles.DownloadAndPrepareWindowsFiles(GetDownloadUrls(listOfLibsFilesForOs, "Windows"));
 
-			#else
+			#elif LINUX
 
 			AudioDownloadServiceFiles.DownloadAndPrepareLinuxFiles(GetDownloadUrls(listOfLibsFilesForOs, "Linux"));
+
+			#elif OSX
 
 			#endif
 

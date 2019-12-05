@@ -69,6 +69,8 @@ namespace Pootis_Bot.Services.Audio
 			Directory.Delete("Temp/ffmpeg", true);
 		}
 		
+		#elif OSX
+		
 		#endif
 	}
 }

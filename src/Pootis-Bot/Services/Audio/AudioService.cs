@@ -187,6 +187,8 @@ namespace Pootis_Bot.Services.Audio
 					else
 						return;
 				}
+				
+				Debug.WriteLine(fileLoc);
 
 				string tempName = Path.GetFileName(fileLoc);
 				fileName = tempName.Replace(".mp3", "");
@@ -357,7 +359,8 @@ namespace Pootis_Bot.Services.Audio
 				FileName = FfmpegLocation,
 				Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
 				UseShellExecute = false,
-				RedirectStandardOutput = true
+				RedirectStandardOutput = true,
+				RedirectStandardInput = false
 			});
 		}
 
