@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helpers;
+using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Services.Audio
 {
 	public static class AudioCheckService
 	{
 		//Downloads a .json file that has were to get some needed libs from
-		private const string AudioLibFileJsonUrl = "https://pootis-bot.creepysin.com/download/audiolibfiles.json";
-
-		//This is for when we are downloading audio service files
-		private static List<AudioDownloadServiceFiles.LibFile> _libFiles;
+		private const string AudioLibFileJsonUrl = "https://pootis-bot.creepysin.com/download/externallibfiles.json";
 
 		/// <summary>
 		///     Checks the audio service
@@ -38,10 +35,22 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
+			#if WINDOWS
+
 			//Check to see if all the necessary files are here.
 			if (!File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") ||
 			    !File.Exists("external/ffprobe.exe")
 			    || !File.Exists("opus.dll") || !File.Exists("libsodium.dll")) UpdateAudioFiles();
+
+			#elif LINUX
+
+			//TODO: Write Linux Code
+
+			#else
+
+			//TODO: Write MacOs Code
+
+			#endif
 
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
 			{
@@ -89,41 +98,31 @@ namespace Pootis_Bot.Services.Audio
 			//If the external directory doesn't exist, create it
 			if (!Directory.Exists("External/")) Directory.CreateDirectory("External/");
 
+			List<AudioExternalLibFiles> listOfLibsFilesForOs =
+				JsonConvert.DeserializeObject<List<AudioExternalLibFiles>>(
+					WebUtils.DownloadString(AudioLibFileJsonUrl));
 
-			// ReSharper disable once CommentTypo
-			//Get the audiolibfiles.json from the pootis-bot website and deserialize it.
-			Global.Log($"Gathering needed information from {AudioLibFileJsonUrl}...");
+			#if WINDOWS
 
-			string json = WebUtils.DownloadString(AudioLibFileJsonUrl);
+			AudioDownloadServiceFiles.DownloadAndPrepareWindowsFiles(GetDownloadUrls(listOfLibsFilesForOs, "Windows"));
 
-			_libFiles = JsonConvert.DeserializeObject<List<AudioDownloadServiceFiles.LibFile>>(json);
-			Global.Log("Got what I needed.");
+			#else
 
-			//Download required files depending on platform
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				AudioDownloadServiceFiles.PrepareWindowFiles(GetLibFile("Windows"));
-			}
-			else
-			{
-				Global.Log("Currently platform not supported! Audio services have been disabled!");
-				Config.bot.AudioSettings.AudioServicesEnabled = false;
-				Config.SaveConfig();
+			//TODO: Write Linux and MacOS code
+			return;
 
-				return;
-			}
+			#endif
 
 			Global.Log("Done! All files needed for audio service are ready!", ConsoleColor.Blue);
 		}
 
-		private static AudioDownloadServiceFiles.LibFile GetLibFile(string osPlatform)
+		private static AudioExternalLibFiles GetDownloadUrls(IEnumerable<AudioExternalLibFiles> audioExternalLibFiles, string osPlatform)
 		{
-			IEnumerable<AudioDownloadServiceFiles.LibFile> result = from a in _libFiles
+			IEnumerable<AudioExternalLibFiles> result = from a in audioExternalLibFiles
 				where a.OsPlatform == osPlatform
 				select a;
 
-			AudioDownloadServiceFiles.LibFile libFile = result.FirstOrDefault();
-			return libFile;
+			return result.FirstOrDefault();
 		}
 	}
 }
