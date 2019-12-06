@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 
 namespace Pootis_Bot.Modules.Fun
@@ -91,7 +92,7 @@ namespace Pootis_Bot.Modules.Fun
 			embed.WithDescription(sb.ToString());
 			embed.WithCurrentTimestamp();
 
-			await message.ModifyAsync(x => { x.Embed = embed.Build(); });
+			await MessageUtils.ModifyMessage(message, embed);
 		}
 	}
 }

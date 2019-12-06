@@ -6,6 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Google.Apis.Customsearch.v1.Data;
 using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Google;
 
@@ -106,7 +107,7 @@ namespace Pootis_Bot.Modules.Fun
 			embed.WithDescription(description.ToString());
 			embed.WithCurrentTimestamp();
 
-			await message.ModifyAsync(x => { x.Embed = embed.Build(); });
+			await MessageUtils.ModifyMessage(message, embed);
 		}
 	}
 }

@@ -6,6 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
 using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Google;
@@ -40,8 +41,6 @@ namespace Pootis_Bot.Modules.Fun
 			}
 
 			await YtSearch(search, Context.Channel);
-
-			//await Context.Channel.SendMessageAsync("", false, YtSearch(search));
 		}
 
 		[Command("youtube", RunMode = RunMode.Async)]
@@ -107,7 +106,7 @@ namespace Pootis_Bot.Modules.Fun
 			embed.WithDescription($"**Videos**\n{videos}\n\n**Channels**\n{channels}");
 			embed.WithCurrentTimestamp();
 
-			await message.ModifyAsync(x => { x.Embed = embed.Build(); });
+			await MessageUtils.ModifyMessage(message, embed);
 		}
 	}
 }

@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Fun;
 using Pootis_Bot.Structs.Giphy;
@@ -58,7 +59,7 @@ namespace Pootis_Bot.Modules.Fun
 			embed.WithImageUrl(results.Data.GifUrl);
 			embed.WithCurrentTimestamp();
 
-			await message.ModifyAsync(x => { x.Embed = embed.Build(); });
+			await MessageUtils.ModifyMessage(message, embed);
 		}
 	}
 }
