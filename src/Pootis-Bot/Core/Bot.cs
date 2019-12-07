@@ -58,7 +58,7 @@ namespace Pootis_Bot.Core
 			Debug.WriteLine("[Bot] Installing commands...");
 
 			//Install all the Modules
-			await handler.InstallCommandsAsync();
+			await handler.SetupAsync();
 
 			//Check all help modules
 			handler.CheckHelpModules();

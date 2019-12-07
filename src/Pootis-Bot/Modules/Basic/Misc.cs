@@ -21,10 +21,8 @@ namespace Pootis_Bot.Modules.Basic
 
 		[Command("pick")]
 		[Summary("Picks between two or more things. Separate each choice with a |.")]
-		public async Task PickOne([Remainder] string message)
+		public async Task PickOne([Remainder] string[] options)
 		{
-			string[] options = message.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
-
 			Random r = new Random();
 			string selection = options[r.Next(0, options.Length)];
 			await Context.Channel.SendMessageAsync($"I choose... **{selection}**.");

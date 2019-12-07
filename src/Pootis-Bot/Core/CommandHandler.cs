@@ -11,6 +11,7 @@ using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.AntiSpam;
+using Pootis_Bot.TypeReaders;
 
 namespace Pootis_Bot.Core
 {
@@ -35,9 +36,11 @@ namespace Pootis_Bot.Core
 		///     Install all the modules
 		/// </summary>
 		/// <returns></returns>
-		public async Task InstallCommandsAsync()
+		public async Task SetupAsync()
 		{
 			_client.MessageReceived += HandleCommandAsync;
+
+			_commands.AddTypeReader(typeof(string[]), new StringArrayTypeReader());
 
 			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 		}
