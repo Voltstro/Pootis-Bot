@@ -18,6 +18,8 @@ namespace Pootis_Bot.Core
 	public class CommandHandler
 	{
 		private const string UserNotFoundError = "User not found.";
+		private const string UserNotFoundList = "This user doesn't exist: ";
+
 		private readonly AntiSpamService _antiSpam;
 		private readonly DiscordSocketClient _client;
 		private readonly CommandService _commands;
@@ -41,6 +43,7 @@ namespace Pootis_Bot.Core
 			_client.MessageReceived += HandleCommandAsync;
 
 			_commands.AddTypeReader(typeof(string[]), new StringArrayTypeReader());
+			_commands.AddTypeReader(typeof(SocketGuildUser[]), new GuildUserArrayTypeReader());
 
 			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 		}
@@ -150,6 +153,13 @@ namespace Pootis_Bot.Core
 				         result.ErrorReason == UserNotFoundError)
 				{
 					await context.Channel.SendMessageAsync("You need to input a valid username!");
+				}
+
+				else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
+				         result.ErrorReason.StartsWith(UserNotFoundList))
+				{
+					await context.Channel.SendMessageAsync(
+						$"The user `{result.ErrorReason.Replace(UserNotFoundList, "")}` wasn't found in this guild!");
 				}
 
 				//Some other error, just put the error into the console
