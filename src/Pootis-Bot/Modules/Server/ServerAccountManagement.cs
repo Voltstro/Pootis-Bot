@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -18,17 +20,17 @@ namespace Pootis_Bot.Modules.Server
 		[Command("makenotwarnable")]
 		[Alias("make not warnable")]
 		[Summary("Makes the user not warnable")]
-		public async Task NotWarnable([Remainder] IGuildUser user = null)
+		public async Task NotWarnable([Remainder] SocketGuildUser[] users)
 		{
-			await Context.Channel.SendMessageAsync(MakeNotWarnable((SocketUser) user));
+			await Context.Channel.SendMessageAsync(MakeNotWarnable(users));
 		}
 
 		[Command("makewarnable")]
 		[Alias("make warnable")]
 		[Summary("Makes the user warnable")]
-		public async Task MakeWarnable([Remainder] IGuildUser user = null)
+		public async Task Warnable([Remainder] SocketGuildUser[] users)
 		{
-			await Context.Channel.SendMessageAsync(MakeWarnable((SocketUser) user));
+			await Context.Channel.SendMessageAsync(MakeWarnable(users));
 		}
 
 		[Command("warn")]
@@ -67,43 +69,75 @@ namespace Pootis_Bot.Modules.Server
 
 		#region Functions
 
-		private static string MakeNotWarnable(SocketUser user)
+		private static string MakeNotWarnable(IEnumerable<SocketGuildUser> users)
 		{
-			if (user.IsBot)
-				return "You can not change the warnable status of a bot!";
+			List<SocketGuildUser> usersToChange = new List<SocketGuildUser>();
 
-			if (((SocketGuildUser) user).GuildPermissions.Administrator)
-				return "You cannot change the warnable status of an administrator!";
+			foreach (SocketGuildUser user in users)
+			{
+				if (user.IsBot)
+					return "You cannot change the warnable status of a bot!";
 
-			SocketGuildUser userGuild = (SocketGuildUser) user;
-			UserAccountServerData userAccount =
-				UserAccountsManager.GetAccount(userGuild).GetOrCreateServer(userGuild.Guild.Id);
+				//if (user.GuildPermissions.Administrator)
+				//	return "You cannot change the warnable status of an administrator!";
 
-			if (userAccount.IsAccountNotWarnable) return $"**{userGuild}** is already not warnable.";
+				if (UserAccountsManager.GetAccount(user).GetOrCreateServer(user.Guild.Id).IsAccountNotWarnable)
+					return $"**{user.Username}** is already not warnable!";
 
-			userAccount.IsAccountNotWarnable = true;
-			userAccount.Warnings = 0;
+				usersToChange.Add(user);
+			}
+
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < usersToChange.Count; i++)
+			{
+				UserAccountServerData userAccount =
+					UserAccountsManager.GetAccount(usersToChange[i]).GetOrCreateServer(usersToChange[i].Guild.Id);
+
+				userAccount.IsAccountNotWarnable = true;
+				userAccount.Warnings = 0;
+
+				sb.Append(i + 1 == usersToChange.Count ? usersToChange[i].Username : $"{usersToChange[i].Username}, ");
+			}
+
 			UserAccountsManager.SaveAccounts();
-			return $"**{userGuild}** was made not warnable.";
+
+			return sb.Length == 1 ? $"**{sb}** was made not warnable." : $"The accounts **{sb}** were all made not warnable.";
 		}
 
-		private static string MakeWarnable(SocketUser user)
+		private static string MakeWarnable(IEnumerable<SocketGuildUser> users)
 		{
-			if (user.IsBot)
-				return "You can not change the warnable status of a bot!";
+			List<SocketGuildUser> usersToChange = new List<SocketGuildUser>();
 
-			if (((SocketGuildUser) user).GuildPermissions.Administrator)
-				return "You cannot change the warnable status of an administrator!";
+			foreach (SocketGuildUser user in users)
+			{
+				if (user.IsBot)
+					return "You cannot change the warnable status of a bot!";
 
-			SocketGuildUser userguild = (SocketGuildUser) user;
+				//if (user.GuildPermissions.Administrator)
+				//	return "You cannot change the warnable status of an administrator!";
 
-			UserAccountServerData userAccount =
-				UserAccountsManager.GetAccount(userguild).GetOrCreateServer(userguild.Guild.Id);
-			if (userAccount.IsAccountNotWarnable == false) return $"**{user}** is already warnable.";
+				if (!UserAccountsManager.GetAccount(user).GetOrCreateServer(user.Guild.Id).IsAccountNotWarnable)
+					return $"**{user.Username}** is already warnable!";
 
-			userAccount.IsAccountNotWarnable = false;
+				usersToChange.Add(user);
+			}
+
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < usersToChange.Count; i++)
+			{
+				UserAccountServerData userAccount =
+					UserAccountsManager.GetAccount(usersToChange[i]).GetOrCreateServer(usersToChange[i].Guild.Id);
+
+				userAccount.IsAccountNotWarnable = false;
+
+				sb.Append(i + 1 == usersToChange.Count ? usersToChange[i].Username : $"{usersToChange[i].Username}, ");
+			}
+
 			UserAccountsManager.SaveAccounts();
-			return $"**{user}** was made warnable.";
+
+			return sb.Length == 1 ? $"**{sb}** was made warnable." : $"The accounts **{sb}** were all made warnable.";
 		}
 
 		private static string Warn(SocketUser user)
