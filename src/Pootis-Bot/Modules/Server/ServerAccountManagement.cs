@@ -101,7 +101,9 @@ namespace Pootis_Bot.Modules.Server
 
 			UserAccountsManager.SaveAccounts();
 
-			return sb.Length == 1 ? $"**{sb}** was made not warnable." : $"The accounts **{sb}** were all made not warnable.";
+			return sb.Length == 1
+				? $"**{sb}** was made not warnable."
+				: $"The accounts **{sb}** were all made not warnable.";
 		}
 
 		private static string MakeWarnable(IEnumerable<SocketGuildUser> users)

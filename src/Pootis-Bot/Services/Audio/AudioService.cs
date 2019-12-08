@@ -187,7 +187,7 @@ namespace Pootis_Bot.Services.Audio
 					else
 						return;
 				}
-				
+
 				Debug.WriteLine(fileLoc);
 
 				string tempName = Path.GetFileName(fileLoc);
@@ -238,6 +238,7 @@ namespace Pootis_Bot.Services.Audio
 				//Pootis-Bot and the audio services have always been difficult for me.
 				//If anyone could improve upon this I would gladly accept it!
 				while (!fail && !exit)
+				{
 					try
 					{
 						if (cancellation.IsCancellationRequested)
@@ -282,6 +283,7 @@ namespace Pootis_Bot.Services.Audio
 
 						fail = true;
 					}
+				}
 
 				//End
 				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)

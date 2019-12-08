@@ -94,6 +94,7 @@ namespace Pootis_Bot.Core
 		private async Task CheckConnectionStatus()
 		{
 			while (IsRunning)
+			{
 				if (Config.bot.CheckConnectionStatus
 				) // It is enabled then check the connection status ever so milliseconds
 				{
@@ -123,6 +124,7 @@ namespace Pootis_Bot.Core
 				{
 					await Task.Delay(-1); // Just run forever
 				}
+			}
 		}
 
 		private async void QuitEvent(object sender, EventArgs e)

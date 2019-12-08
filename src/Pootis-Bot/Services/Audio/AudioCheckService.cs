@@ -35,26 +35,24 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			#if WINDOWS
+#if WINDOWS
 
 			//Check to see if all the necessary files are here.
 			if (!File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") ||
 			    !File.Exists("external/ffprobe.exe")
 			    || !File.Exists("opus.dll") || !File.Exists("libsodium.dll")) UpdateAudioFiles();
 
-			#elif LINUX
-
+#elif LINUX
 			//Check files to see if they exist
 			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
 				UpdateAudioFiles();
-			
-			#elif OSX
-			 
+
+#elif OSX
 			//Yep, you guessed it, check the files
 			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("External/ffplay") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
 				UpdateAudioFiles();
 
-			#endif
+#endif
 
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
 			{
@@ -106,22 +104,21 @@ namespace Pootis_Bot.Services.Audio
 				JsonConvert.DeserializeObject<List<AudioExternalLibFiles>>(
 					WebUtils.DownloadString(AudioLibFileJsonUrl));
 
-			#if WINDOWS
+#if WINDOWS
 
 			AudioDownloadServiceFiles.DownloadAndPrepareWindowsFiles(GetDownloadUrls(listOfLibsFilesForOs, "Windows"));
 
-			#elif LINUX
-
+#elif LINUX
 			AudioDownloadServiceFiles.DownloadAndPrepareLinuxFiles(GetDownloadUrls(listOfLibsFilesForOs, "Linux"));
 
-			#elif OSX
-
-			#endif
+#elif OSX
+#endif
 
 			Global.Log("Done! All files needed for audio service are ready!", ConsoleColor.Blue);
 		}
 
-		private static AudioExternalLibFiles GetDownloadUrls(IEnumerable<AudioExternalLibFiles> audioExternalLibFiles, string osPlatform)
+		private static AudioExternalLibFiles GetDownloadUrls(IEnumerable<AudioExternalLibFiles> audioExternalLibFiles,
+			string osPlatform)
 		{
 			IEnumerable<AudioExternalLibFiles> result = from a in audioExternalLibFiles
 				where a.OsPlatform == osPlatform

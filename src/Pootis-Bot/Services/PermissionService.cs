@@ -202,10 +202,7 @@ namespace Pootis_Bot.Services
 		private static string AddPermMessage(IReadOnlyList<string> roles, string command)
 		{
 			//There is only one role
-			if (roles.Count == 1)
-			{
-				return $"**{roles[0]}** role will be allowed to use the command `{command}`.";
-			}
+			if (roles.Count == 1) return $"**{roles[0]}** role will be allowed to use the command `{command}`.";
 
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < roles.Count; i++) sb.Append(i == roles.Count - 1 ? roles[i] : $"{roles[i]}, ");

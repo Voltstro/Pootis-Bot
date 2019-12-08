@@ -47,7 +47,8 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		public string DownloadAudio(string search, IUserMessage message, SocketGuild guild)
 		{
-			MessageUtils.ModifyMessage(message, $":musical_note: Searching YouTube for '{search}'").GetAwaiter().GetResult();
+			MessageUtils.ModifyMessage(message, $":musical_note: Searching YouTube for '{search}'").GetAwaiter()
+				.GetResult();
 
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString());
 
@@ -72,7 +73,9 @@ namespace Pootis_Bot.Services.Audio
 					//Check to make sure the video doesn't succeeds the max video time
 					if (videoTime.TotalSeconds > Config.bot.AudioSettings.MaxVideoTime.TotalSeconds)
 					{
-						MessageUtils.ModifyMessage(message, $":musical_note: Video succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}").GetAwaiter().GetResult();
+						MessageUtils.ModifyMessage(message,
+								$":musical_note: Video succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}")
+							.GetAwaiter().GetResult();
 
 						return null;
 					}
@@ -80,7 +83,8 @@ namespace Pootis_Bot.Services.Audio
 					Debug.WriteLine($"[Audio Download] Downloading {videoLoc}");
 
 					MessageUtils.ModifyMessage(message,
-						$":musical_note: Give me a sec. Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**...").GetAwaiter().GetResult();
+							$":musical_note: Give me a sec. Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**...")
+						.GetAwaiter().GetResult();
 
 					//Download the .mp3 file
 					_client.DownloadMediaStreamAsync(videoInfo.Audio.WithHighestBitrate(), videoLoc).GetAwaiter()
@@ -93,7 +97,9 @@ namespace Pootis_Bot.Services.Audio
 				catch (Exception ex)
 				{
 					Global.Log(ex.Message, ConsoleColor.Red);
-					MessageUtils.ModifyMessage(message, $"Sorry but an error occured. Here are the details:\n{ex.Message}").GetAwaiter().GetResult();
+					MessageUtils
+						.ModifyMessage(message, $"Sorry but an error occured. Here are the details:\n{ex.Message}")
+						.GetAwaiter().GetResult();
 
 					//Log out an error to the owner if they have it enabled
 					if (Config.bot.ReportErrorsToOwner)
@@ -103,7 +109,10 @@ namespace Pootis_Bot.Services.Audio
 					return null;
 				}
 
-			MessageUtils.ModifyMessage(message, $":musical_note: No result for '{search}' were found on YouTube, try typing in something different.").GetAwaiter().GetResult();
+			MessageUtils
+				.ModifyMessage(message,
+					$":musical_note: No result for '{search}' were found on YouTube, try typing in something different.")
+				.GetAwaiter().GetResult();
 
 			return null;
 		}

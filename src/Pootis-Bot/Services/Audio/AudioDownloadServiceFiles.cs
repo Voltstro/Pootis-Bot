@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Audio
 {
 	public class AudioDownloadServiceFiles
 	{
-		#if WINDOWS
+#if WINDOWS
 
 		/// <summary>
 		///     Downloads files for Windows
@@ -41,8 +41,7 @@ namespace Pootis_Bot.Services.Audio
 			Directory.Delete("temp/ffmpeg", true);
 		}
 
-		#elif LINUX
-
+#elif LINUX
 		public static void DownloadAndPrepareLinuxFiles(AudioExternalLibFiles downloadUrls)
 		{
 			Global.Log("Downloading files for Linux...");
@@ -68,9 +67,8 @@ namespace Pootis_Bot.Services.Audio
 			File.Delete("Temp/ffmpeg.zip");
 			Directory.Delete("Temp/ffmpeg", true);
 		}
-		
-		#elif OSX
-		
-		#endif
+
+#elif OSX
+#endif
 	}
 }

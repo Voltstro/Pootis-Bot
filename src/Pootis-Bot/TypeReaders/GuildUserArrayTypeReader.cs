@@ -10,11 +10,12 @@ using Discord.WebSocket;
 namespace Pootis_Bot.TypeReaders
 {
 	/// <summary>
-	///		A <see cref="TypeReader"/> for parsing objects implementing <see cref="SocketGuildUser"/> arrays.
+	///     A <see cref="TypeReader" /> for parsing objects implementing <see cref="SocketGuildUser" /> arrays.
 	/// </summary>
 	public class GuildUserArrayTypeReader : TypeReader
 	{
-		public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input, IServiceProvider services)
+		public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input,
+			IServiceProvider services)
 		{
 			string[] users = input.Split(new[] {", ", ",", " ,", " , "}, StringSplitOptions.RemoveEmptyEntries);
 			List<SocketGuildUser> results = new List<SocketGuildUser>();
@@ -76,25 +77,29 @@ namespace Pootis_Bot.TypeReaders
 				bool userFound = false;
 
 				//By Username
-				foreach (IGuildUser guildUser in guildUsers.Where(x => string.Equals(user, x.Username, StringComparison.OrdinalIgnoreCase)))
+				foreach (IGuildUser guildUser in guildUsers.Where(x =>
+					string.Equals(user, x.Username, StringComparison.OrdinalIgnoreCase)))
 				{
-					results.Add((SocketGuildUser)guildUser);
+					results.Add((SocketGuildUser) guildUser);
 					userFound = true;
 				}
 
 				//By Nickname
-				foreach (IGuildUser guildUser in guildUsers.Where(x => string.Equals(user, x.Nickname, StringComparison.OrdinalIgnoreCase)))
+				foreach (IGuildUser guildUser in guildUsers.Where(x =>
+					string.Equals(user, x.Nickname, StringComparison.OrdinalIgnoreCase)))
 				{
-					results.Add((SocketGuildUser)guildUser);
+					results.Add((SocketGuildUser) guildUser);
 					userFound = true;
 				}
 
-				if(!userFound)
+				if (!userFound)
 					return Task.FromResult(TypeReaderResult.FromError(CommandError.ObjectNotFound,
 						$"This user doesn't exist: {user}"));
 			}
 
-			return Task.FromResult(results.Count > 0 ? TypeReaderResult.FromSuccess(results.ToArray()) : TypeReaderResult.FromError(CommandError.ObjectNotFound, "User not found."));
+			return Task.FromResult(results.Count > 0
+				? TypeReaderResult.FromSuccess(results.ToArray())
+				: TypeReaderResult.FromError(CommandError.ObjectNotFound, "User not found."));
 		}
 
 		private static SocketGuildUser GetUser(ulong id, ICommandContext context)
