@@ -11,7 +11,7 @@ using Console = Pootis_Bot.ConsoleCommandHandler.Console;
 
 namespace Pootis_Bot.Core
 {
-	public class ConsoleCommandHandler
+	public class ConsoleCommandHandler : Console
 	{
 		private readonly DiscordSocketClient _client;
 
@@ -20,34 +20,44 @@ namespace Pootis_Bot.Core
 			_client = client;
 		}
 
+		/// <summary>
+		///		Sets up the the Pootis-Bot console to handle commands and such
+		/// </summary>
 		public void SetupConsole()
 		{
-			Console console =
-				new Console($"Unknown command! Visit {Global.websiteConsoleCommands} for a list of console commands.",
-					ConsoleColor.Red);
+			UnknownCommandError =
+				$"Unknown command! Visit {Global.websiteConsoleCommands} for a list of console commands.";
+			UnknownCommandErrorColor = ConsoleColor.Red;
 
 			//Add all of our commands
-			console.AddCommand("exit", "Stops the bot", ExitCmd);
-			console.AddCommand("config", "Opens the config menu", OpenConfigCmd);
-			console.AddCommand("version", "Shows what version you are running", VersionCmd);
-			console.AddCommand("about", "Shows the about screen", AboutCmd);
-			console.AddCommand("setgame", "Allows you to change the bot's game status text", SetGameStatusCmd);
-			console.AddCommand("togglestream", "Toggles the bot's streaming status", SetStreamingStatusCmd);
-			console.AddCommand("deletemusic", "Deletes all saved music", DeleteMusicCmd);
-			console.AddCommand("toggleaudio", "Toggles the audio services", ToggleAudioCmd);
-			console.AddCommand("forceaudioupdate", "Forces the audio services files to update", ForceAudioUpdateCmd);
-			console.AddCommand("status", "Shows the bot's status", StatusCmd);
-			console.AddCommand("clear", "Clears the console", ClearCmd);
-			console.AddCommand("resethelpmodules", "Resets the help modules file", ResetHelpModulesCmd);
-			console.AddCommand("save config", "Saves the config", SaveConfigCmd);
-			console.AddCommand("save accounts", "Saves user accounts", SaveAccountsCmd);
-			console.AddCommand("save servers", "Saves the server lists file", SaveServersCmd);
+			AddCommand("exit", ExitCmd);
+			AddCommand("config", OpenConfigCmd);
+			AddCommand("version", VersionCmd);
+			AddCommand("about", AboutCmd);
+			AddCommand("setgame", SetGameStatusCmd);
+			AddCommand("togglestream", SetStreamingStatusCmd);
+			AddCommand("deletemusic", DeleteMusicCmd);
+			AddCommand("toggleaudio", ToggleAudioCmd);
+			AddCommand("forceaudioupdate", ForceAudioUpdateCmd);
+			AddCommand("status",StatusCmd);
+			AddCommand("clear", ClearCmd);
+			AddCommand("resethelpmodules", ResetHelpModulesCmd);
+			AddCommand("save config", SaveConfigCmd);
+			AddCommand("save accounts", SaveAccountsCmd);
+			AddCommand("save servers", SaveServersCmd);
 
-			console.ConsoleHandleLoop();
+			ConsoleHandleLoop();
+		}
+
+		public override void LogMessage(string message, ConsoleColor color)
+		{
+			Global.Log(message, color);
 		}
 
 		private async void ExitCmd()
 		{
+			IsExiting = true;
+
 			Bot.IsRunning = false;
 
 			Global.Log("Shutting down...");

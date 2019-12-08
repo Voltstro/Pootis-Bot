@@ -2,15 +2,20 @@
 {
 	public class ConsoleCommand
 	{
-		public ConsoleCommand(string name, string summary, Method method)
+		public ConsoleCommand(string name, Method method)
 		{
 			CommandName = name;
-			CommandSummary = summary;
 			Method = method;
 		}
 
+		/// <summary>
+		///		The command, it self
+		/// </summary>
 		public string CommandName { get; set; }
-		public string CommandSummary { get; set; }
+
+		/// <summary>
+		///		The <see cref="ConsoleCommandHandler.Method"/> to execute when the command is run
+		/// </summary>
 		public Method Method { get; set; }
 	}
 }

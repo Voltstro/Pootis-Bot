@@ -9,22 +9,20 @@ namespace Pootis_Bot.ConsoleCommandHandler
 
 	//Unity FPS sample project: https://github.com/Unity-Technologies/FPSSample
 
-	public class Console
+	public abstract class Console
 	{
 		private readonly Dictionary<string, ConsoleCommand> _consoleCommands = new Dictionary<string, ConsoleCommand>();
-		private readonly string _unknownCommandError;
-		private readonly ConsoleColor _unknownCommandErrorColor;
+
+		public string UnknownCommandError;
+		public ConsoleColor UnknownCommandErrorColor;
+
+		public bool IsExiting;
 
 		/// <summary>
-		///     New console instance
+		///     Creates a new <see cref="Console"/> instance
 		/// </summary>
-		/// <param name="unknownCommandError"></param>
-		/// <param name="unknownCommandErrorColor"></param>
-		public Console(string unknownCommandError, ConsoleColor unknownCommandErrorColor)
+		protected Console()
 		{
-			_unknownCommandError = unknownCommandError;
-			_unknownCommandErrorColor = unknownCommandErrorColor;
-
 			Debug.WriteLine("[Console] Created a new console instance.");
 		}
 
@@ -34,16 +32,16 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		/// <param name="name"></param>
 		/// <param name="summary"></param>
 		/// <param name="method"></param>
-		public void AddCommand(string name, string summary, Method method)
+		public void AddCommand(string name, Method method)
 		{
 			name = name.ToLower();
 			if (_consoleCommands.ContainsKey(name))
 			{
-				Log($"The command {name} already exists!", ConsoleColor.Red);
+				LogMessage($"The command {name} already exists!", ConsoleColor.Red);
 				return;
 			}
 
-			_consoleCommands.Add(name, new ConsoleCommand(name, summary, method));
+			_consoleCommands.Add(name, new ConsoleCommand(name, method));
 		}
 
 		/// <summary>
@@ -55,29 +53,27 @@ namespace Pootis_Bot.ConsoleCommandHandler
 			if (_consoleCommands.TryGetValue(name, out ConsoleCommand consoleCommand))
 				consoleCommand.Method();
 			else
-				Log(_unknownCommandError, _unknownCommandErrorColor);
+				LogMessage(UnknownCommandError, UnknownCommandErrorColor);
 		}
 
 		/// <summary>
-		///     Starts a infinite console input loop
+		///     Starts an infinite console input loop, until <see cref="IsExiting"/> is set to true
 		/// </summary>
 		public void ConsoleHandleLoop()
 		{
-			while (true)
+			while (!IsExiting)
 			{
 				string input = System.Console.ReadLine()?.Trim().ToLower();
 
 				ExecuteCommand(input);
 			}
-
-			// ReSharper disable once FunctionNeverReturns
 		}
 
-		private static void Log(string message, ConsoleColor color = ConsoleColor.White)
-		{
-			System.Console.ForegroundColor = color;
-			System.Console.WriteLine(message);
-			System.Console.ForegroundColor = ConsoleColor.White;
-		}
+		/// <summary>
+		///		Logs a message
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="color"></param>
+		public abstract void LogMessage(string message, ConsoleColor color);
 	}
 }
