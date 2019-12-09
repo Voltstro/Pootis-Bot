@@ -7,7 +7,7 @@ namespace Pootis_Bot.Entities
 	public class ServerList
 	{
 		/// <summary>
-		///     The id of the guild
+		///     The ID of the guild
 		/// </summary>
 		public ulong GuildId { get; set; }
 

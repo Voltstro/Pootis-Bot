@@ -94,9 +94,7 @@ namespace Pootis_Bot.Core
 				if (_antiSpam.CheckRoleMentions(msg, (SocketGuildUser) msg.Author))
 					return;
 
-			foreach (ulong item in server.BannedChannels) //Check to channel, make sure its not on the banned list
-				if (msg.Channel.Id == item)
-					return;
+			if (server.BannedChannels.Any(item => msg.Channel.Id == item)) return;
 
 			if (msg.HasStringPrefix(Global.BotPrefix, ref argPos)
 			    || msg.HasMentionPrefix(Global.BotUser, ref argPos))

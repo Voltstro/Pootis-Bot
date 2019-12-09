@@ -8,7 +8,7 @@ namespace Pootis_Bot.Core
 	public static class DataStorage
 	{
 		/// <summary>
-		///     Checks if a saved user file exists
+		///     Checks if a file exists at a path
 		/// </summary>
 		/// <param name="filePath">The path to the user save file</param>
 		/// <returns></returns>

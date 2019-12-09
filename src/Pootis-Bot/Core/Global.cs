@@ -12,26 +12,45 @@ namespace Pootis_Bot.Core
 	/// </summary>
 	public static class Global
 	{
-		//Here is a list of sites that Pootis-Bot can refer to, if your hosting your own version of the documentation you might wanna change it.
-		public static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot"; //Main github page
+		/// <summary>
+		///     The main GitHub page for the project
+		/// </summary>
+		public static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot";
 
-		public static readonly string websiteHome = "https://pootis-bot.creepysin.com"; //Main docs page
+		/// <summary>
+		///     The main docs page
+		/// </summary>
+		public static readonly string websiteHome = "https://pootis-bot.creepysin.com";
 
+		/// <summary>
+		///     Discord command list
+		/// </summary>
 		public static readonly string
 			websiteCommands =
-				"https://pootis-bot.creepysin.com/commands/discord-commands/"; //Main Discord commands list
+				"https://pootis-bot.creepysin.com/commands/discord-commands/";
 
+		/// <summary>
+		///     The website for setting up the bot on a Discord server
+		/// </summary>
 		public static readonly string
-			websiteServerSetup = "https://pootis-bot.creepysin.com/server-setup/"; //Main server-setup page
+			websiteServerSetup = "https://pootis-bot.creepysin.com/server-setup/";
 
+		/// <summary>
+		///     Console command list
+		/// </summary>
 		public static readonly string websiteConsoleCommands =
 			"https://pootis-bot.creepysin.com/commands/console-commands/";
 
-		//An array of Discord servers, add as many as you want and use it throughout the bot.
-		//Main Server 
+		/// <summary>
+		///     A <see cref="string" /> array of Discord servers, I use to have a 'Developer Creepysin Discord Server', but I shut
+		///     it down awhile ago
+		/// </summary>
 		public static readonly string[] discordServers =
 			{"https://discord.creepysin.com"};
 
+		/// <summary>
+		///     An about message, for Pootis-Bot
+		/// </summary>
 		public static readonly string aboutMessage = $"Pootis Bot --- | --- {VersionUtils.GetAppVersion()}\n" +
 		                                             $"Created by Creepysin licensed under the MIT license. Visit {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
 		                                             "Pootis Robot icon by Valve\n" +
@@ -39,9 +58,24 @@ namespace Pootis_Bot.Core
 		                                             "https://github.com/Creepysin/Pootis-Bot \n\n" +
 		                                             "Thank you for using Pootis Bot";
 
+		/// <summary>
+		///     The bot name
+		/// </summary>
 		public static string BotName;
+
+		/// <summary>
+		///     The bot prefix
+		/// </summary>
 		public static string BotPrefix;
+
+		/// <summary>
+		///     The bot token
+		/// </summary>
 		public static string BotToken;
+
+		/// <summary>
+		///     The bot's current status text
+		/// </summary>
 		public static string BotStatusText;
 
 		/// <summary>

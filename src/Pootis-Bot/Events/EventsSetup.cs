@@ -4,6 +4,10 @@ namespace Pootis_Bot.Events
 {
 	public class EventsSetup
 	{
+		/// <summary>
+		///     Sets up needed <see cref="DiscordSocketClient" /> events for Pootis-Bot
+		/// </summary>
+		/// <param name="client"></param>
 		public EventsSetup(DiscordSocketClient client)
 		{
 			//Channel events

@@ -42,7 +42,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Gets a user account, or creates one if needed
+		///     Gets a <see cref="UserAccount" />, or creates one if needed
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
@@ -51,6 +51,10 @@ namespace Pootis_Bot.Core.Managers
 			return GetOrCreateAccount(user);
 		}
 
+		/// <summary>
+		///     Gets all <see cref="UserAccount" />s
+		/// </summary>
+		/// <returns></returns>
 		public static UserAccount[] GetAllUserAccounts()
 		{
 			return Accounts.ToArray();
@@ -62,8 +66,7 @@ namespace Pootis_Bot.Core.Managers
 				where a.Id == user.Id
 				select a;
 
-			UserAccount account = result.FirstOrDefault();
-			if (account == null) account = CreateUserAccount(user);
+			UserAccount account = result.FirstOrDefault() ?? CreateUserAccount(user);
 			return account;
 		}
 

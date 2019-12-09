@@ -8,7 +8,7 @@ namespace Pootis_Bot.Entities
 	public class UserAccount
 	{
 		/// <summary>
-		///     The id of the user
+		///     The ID of the user
 		/// </summary>
 		public ulong Id { get; set; }
 
@@ -23,7 +23,7 @@ namespace Pootis_Bot.Entities
 		public string ProfileMsg { get; set; }
 
 		/// <summary>
-		///     Server specific data
+		///     A list of all the user's <see cref="UserAccountServerData" />
 		/// </summary>
 		public List<UserAccountServerData> Servers { get; set; }
 
@@ -34,7 +34,7 @@ namespace Pootis_Bot.Entities
 		public uint LevelNumber => (uint) Math.Sqrt(Xp / 30f);
 
 		/// <summary>
-		///     Gets or creates a server from the server's id
+		///     Gets or creates a <see cref="UserAccountServerData" />
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>

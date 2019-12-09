@@ -21,7 +21,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///		Sets up the the Pootis-Bot console to handle commands and such
+		///     Sets up the the Pootis-Bot's <see cref="Console" /> to handle commands and such
 		/// </summary>
 		public void SetupConsole()
 		{
@@ -39,7 +39,7 @@ namespace Pootis_Bot.Core
 			AddCommand("deletemusic", DeleteMusicCmd);
 			AddCommand("toggleaudio", ToggleAudioCmd);
 			AddCommand("forceaudioupdate", ForceAudioUpdateCmd);
-			AddCommand("status",StatusCmd);
+			AddCommand("status", StatusCmd);
 			AddCommand("clear", ClearCmd);
 			AddCommand("resethelpmodules", ResetHelpModulesCmd);
 			AddCommand("save config", SaveConfigCmd);

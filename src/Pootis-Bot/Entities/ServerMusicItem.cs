@@ -22,27 +22,27 @@ namespace Pootis_Bot.Entities
 		public bool IsExit { get; set; }
 
 		/// <summary>
-		///     Audio client
+		///     The current <see cref="IAudioClient" />
 		/// </summary>
 		public IAudioClient AudioClient { get; set; }
 
 		/// <summary>
-		///     Audio channel
+		///     The active <see cref="SocketVoiceChannel" /> the bot is playing in
 		/// </summary>
 		public SocketVoiceChannel AudioChannel { get; set; }
 
 		/// <summary>
-		///     The text message channel we started with
+		///     The <see cref="ISocketMessageChannel" /> that the first command was executed in
 		/// </summary>
 		public ISocketMessageChannel StartChannel { get; set; }
 
 		/// <summary>
-		///     Discord stream
+		///     THe <see cref="AudioOutStream" />
 		/// </summary>
 		public AudioOutStream Discord { get; set; }
 
 		/// <summary>
-		///     FFMpeg process
+		///     The ffmpeg <see cref="Process" />
 		/// </summary>
 		public Process FfMpeg { get; set; }
 	}

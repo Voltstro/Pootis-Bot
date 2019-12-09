@@ -33,7 +33,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Gets a server, or creates one if needed
+		///     Gets a <see cref="ServerList" />, or creates one if needed
 		/// </summary>
 		/// <param name="server"></param>
 		/// <returns></returns>
