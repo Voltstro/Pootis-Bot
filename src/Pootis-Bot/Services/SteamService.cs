@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using SteamWebAPI2.Interfaces;
 using SteamWebAPI2.Utilities;
 using Steam.Models.SteamCommunity;
-using Pootis_Bot.Core;
 using SteamWebAPI2.Exceptions;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Services
 {
@@ -15,6 +14,9 @@ namespace Pootis_Bot.Services
 		private static SteamUser _steamUserInterface;
 		private static PlayerService _steamPlayerInterface;
 
+		/// <summary>
+		/// Sets up the <see cref="SteamService"/>
+		/// </summary>
 		public static void SetupSteam()
 		{
 			if (IsEnabled) return;
@@ -35,6 +37,11 @@ namespace Pootis_Bot.Services
 
 		#region Steam User Methods
 
+		/// <summary>
+		/// Gets a Steam ID from a custom vanity URL, CANNOT include the https://steamcommunity.com part
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns>Returns the user ID, if found</returns>
 		public static ulong GetSteamIdFromCustomUrl(string user)
 		{
 			try
@@ -48,6 +55,11 @@ namespace Pootis_Bot.Services
 			}
 		}
 
+		/// <summary>
+		/// Gets a Steam user's <see cref="PlayerSummaryModel"/>
+		/// </summary>
+		/// <param name="steamId"></param>
+		/// <returns></returns>
 		public static PlayerSummaryModel GetSteamUserSummary(ulong steamId)
 		{
 			return _steamUserInterface.GetPlayerSummaryAsync(steamId).GetAwaiter().GetResult().Data;
@@ -57,6 +69,11 @@ namespace Pootis_Bot.Services
 
 		#region Steam Player Methods
 
+		/// <summary>
+		/// Gets a Steam user's Steam level
+		/// </summary>
+		/// <param name="steamId"></param>
+		/// <returns></returns>
 		public static uint GetSteamUserLevel(ulong steamId)
 		{
 			uint? level = _steamPlayerInterface.GetSteamLevelAsync(steamId).GetAwaiter().GetResult().Data;
@@ -64,6 +81,11 @@ namespace Pootis_Bot.Services
 			return level ?? 0;
 		}
 
+		/// <summary>
+		/// Gets a Steam user's games
+		/// </summary>
+		/// <param name="steamId"></param>
+		/// <returns></returns>
 		public static OwnedGamesResultModel GetSteamUserGames(ulong steamId)
 		{
 			return _steamPlayerInterface.GetOwnedGamesAsync(steamId, true, true).GetAwaiter().GetResult().Data;
