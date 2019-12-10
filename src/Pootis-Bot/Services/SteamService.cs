@@ -13,6 +13,7 @@ namespace Pootis_Bot.Services
 		public static bool IsEnabled;
 
 		private static SteamUser _steamUserInterface;
+		private static PlayerService _steamPlayerInterface;
 
 		public static void SetupSteam()
 		{
@@ -22,6 +23,7 @@ namespace Pootis_Bot.Services
 			{
 				SteamWebInterfaceFactory webInterface = new SteamWebInterfaceFactory(Config.bot.Apis.ApiSteamKey);
 				_steamUserInterface = webInterface.CreateSteamWebInterface<SteamUser>(Global.HttpClient);
+				_steamPlayerInterface = webInterface.CreateSteamWebInterface<PlayerService>(Global.HttpClient);
 
 				IsEnabled = true;
 			}
@@ -30,6 +32,8 @@ namespace Pootis_Bot.Services
 				throw new Exception("The config doesn't have to Steam API key set!");
 			}
 		}
+
+		#region Steam User Methods
 
 		public static ulong GetSteamIdFromCustomUrl(string user)
 		{
@@ -48,5 +52,23 @@ namespace Pootis_Bot.Services
 		{
 			return _steamUserInterface.GetPlayerSummaryAsync(steamId).GetAwaiter().GetResult().Data;
 		}
+
+		#endregion
+
+		#region Steam Player Methods
+
+		public static uint GetSteamUserLevel(ulong steamId)
+		{
+			uint? level = _steamPlayerInterface.GetSteamLevelAsync(steamId).GetAwaiter().GetResult().Data;
+
+			return level ?? 0;
+		}
+
+		public static OwnedGamesResultModel GetSteamUserGames(ulong steamId)
+		{
+			return _steamPlayerInterface.GetOwnedGamesAsync(steamId, true, true).GetAwaiter().GetResult().Data;
+		}
+
+		#endregion
 	}
 }
