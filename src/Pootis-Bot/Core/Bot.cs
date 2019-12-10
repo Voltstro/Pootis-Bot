@@ -71,6 +71,10 @@ namespace Pootis_Bot.Core
 
 			Debug.WriteLine($"[Bot] The owner of this bot is {Global.BotOwner}");
 
+			//Enable the Steam services if an api key is provided
+			if(!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiSteamKey))
+				SteamService.SetupSteam();
+
 			//Set the bot status to the default game status
 			await _client.SetGameAsync(Config.bot.DefaultGameMessage);
 			await CheckConnectionStatus();
