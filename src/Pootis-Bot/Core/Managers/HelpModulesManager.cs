@@ -23,7 +23,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Saves help modules... obviously
+		/// Saves help modules... obviously
 		/// </summary>
 		public static void SaveHelpModules()
 		{
@@ -31,7 +31,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Gets all the help modules
+		/// Gets all the help modules
 		/// </summary>
 		/// <returns></returns>
 		public static List<HelpModule> GetHelpModules()
@@ -40,7 +40,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Resets help modules to their default state
+		/// Resets help modules to their default state
 		/// </summary>
 		public static void ResetHelpModulesToDefault()
 		{

@@ -5,7 +5,7 @@ namespace Pootis_Bot.Core
 	public class ConfigMenu
 	{
 		/// <summary>
-		///     Open up the config menu
+		/// Open up the config menu
 		/// </summary>
 		/// <param name="isFirstStartUp">Forces the user to set a token</param>
 		public void OpenConfig(bool isFirstStartUp = false)
@@ -187,12 +187,12 @@ namespace Pootis_Bot.Core
 			}
 
 			/// <summary>
-			///     Was the existing result modified?
+			/// Was the existing result modified?
 			/// </summary>
 			public bool WasModified { get; set; }
 
 			/// <summary>
-			///     What was the result type (Token, Prefix, etc...)
+			/// What was the result type (Token, Prefix, etc...)
 			/// </summary>
 			public ResultTypes ResultType { get; set; }
 		}

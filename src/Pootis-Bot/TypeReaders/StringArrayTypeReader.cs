@@ -5,7 +5,7 @@ using Discord.Commands;
 namespace Pootis_Bot.TypeReaders
 {
 	/// <summary>
-	///     A <see cref="TypeReader" /> for parsing objects implementing <see cref="string" /> arrays.
+	/// A <see cref="TypeReader"/> for parsing objects implementing <see cref="string"/> arrays.
 	/// </summary>
 	public class StringArrayTypeReader : TypeReader
 	{

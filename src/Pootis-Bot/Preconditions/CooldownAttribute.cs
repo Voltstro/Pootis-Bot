@@ -12,7 +12,7 @@ namespace Pootis_Bot.Preconditions
 			new ConcurrentDictionary<CooldownInfo, DateTime>();
 
 		/// <summary>
-		///     Creates a new <see cref="CooldownAttribute" />
+		/// Creates a new <see cref="CooldownAttribute"/>
 		/// </summary>
 		/// <param name="seconds"></param>
 		public CooldownAttribute(int seconds)
@@ -23,7 +23,7 @@ namespace Pootis_Bot.Preconditions
 		private TimeSpan CooldownLength { get; }
 
 		/// <summary>
-		///     Checks if a user is on cooldown
+		/// Checks if a user is on cooldown
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="command"></param>

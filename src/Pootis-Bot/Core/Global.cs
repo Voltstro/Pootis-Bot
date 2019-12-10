@@ -8,48 +8,48 @@ using Pootis_Bot.Helpers;
 namespace Pootis_Bot.Core
 {
 	/// <summary>
-	///     Contains some general config and methods.
+	/// Contains some general config and methods.
 	/// </summary>
 	public static class Global
 	{
 		/// <summary>
-		///     The main GitHub page for the project
+		/// The main GitHub page for the project
 		/// </summary>
 		public static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot";
 
 		/// <summary>
-		///     The main docs page
+		/// The main docs page
 		/// </summary>
 		public static readonly string websiteHome = "https://pootis-bot.creepysin.com";
 
 		/// <summary>
-		///     Discord command list
+		/// Discord command list
 		/// </summary>
 		public static readonly string
 			websiteCommands =
 				"https://pootis-bot.creepysin.com/commands/discord-commands/";
 
 		/// <summary>
-		///     The website for setting up the bot on a Discord server
+		/// The website for setting up the bot on a Discord server
 		/// </summary>
 		public static readonly string
 			websiteServerSetup = "https://pootis-bot.creepysin.com/server-setup/";
 
 		/// <summary>
-		///     Console command list
+		/// Console command list
 		/// </summary>
 		public static readonly string websiteConsoleCommands =
 			"https://pootis-bot.creepysin.com/commands/console-commands/";
 
 		/// <summary>
-		///     A <see cref="string" /> array of Discord servers, I use to have a 'Developer Creepysin Discord Server', but I shut
-		///     it down awhile ago
+		/// A <see cref="string"/> array of Discord servers, I use to have a 'Developer Creepysin Discord Server', but I shut
+		/// it down awhile ago
 		/// </summary>
 		public static readonly string[] discordServers =
 			{"https://discord.creepysin.com"};
 
 		/// <summary>
-		///     An about message, for Pootis-Bot
+		/// An about message, for Pootis-Bot
 		/// </summary>
 		public static readonly string aboutMessage = $"Pootis Bot --- | --- {VersionUtils.GetAppVersion()}\n" +
 		                                             $"Created by Creepysin licensed under the MIT license. Visit {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
@@ -59,42 +59,42 @@ namespace Pootis_Bot.Core
 		                                             "Thank you for using Pootis Bot";
 
 		/// <summary>
-		///     The bot name
+		/// The bot name
 		/// </summary>
 		public static string BotName;
 
 		/// <summary>
-		///     The bot prefix
+		/// The bot prefix
 		/// </summary>
 		public static string BotPrefix;
 
 		/// <summary>
-		///     The bot token
+		/// The bot token
 		/// </summary>
 		public static string BotToken;
 
 		/// <summary>
-		///     The bot's current status text
+		/// The bot's current status text
 		/// </summary>
 		public static string BotStatusText;
 
 		/// <summary>
-		///     The bot owner account
+		/// The bot owner account
 		/// </summary>
 		public static IUser BotOwner;
 
 		/// <summary>
-		///     The bot's logged in account
+		/// The bot's logged in account
 		/// </summary>
 		public static IUser BotUser;
 
 		/// <summary>
-		///     Global HTTP client
+		/// Global HTTP client
 		/// </summary>
 		public static HttpClient HttpClient;
 
 		/// <summary>
-		///     Logs a message to the console
+		/// Logs a message to the console
 		/// </summary>
 		/// <param name="msg">The message? Yea the message</param>
 		/// <param name="color">The color of the message</param>
@@ -106,7 +106,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Logs a message to the console
+		/// Logs a message to the console
 		/// </summary>
 		/// <param name="msg"></param>
 		public static void Log(string msg)
@@ -115,7 +115,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Gets... you guessed it, THE TIME NOW!!!! (12hr time)
+		/// Gets... you guessed it, THE TIME NOW!!!! (12hr time)
 		/// </summary>
 		/// <returns></returns>
 		public static string TimeNow()
@@ -124,7 +124,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Copies a directory from one place to another
+		/// Copies a directory from one place to another
 		/// </summary>
 		/// <param name="sourceDirName"></param>
 		/// <param name="destDirName"></param>
@@ -162,7 +162,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Turns A String Into A Nicer Looking One
+		/// Turns A String Into A Nicer Looking One
 		/// </summary>
 		/// <param name="s"></param>
 		/// <returns></returns>
@@ -185,7 +185,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Gets a random number
+		/// Gets a random number
 		/// </summary>
 		/// <param name="min">The minimum</param>
 		/// <param name="max">The maximum</param>
@@ -197,7 +197,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Checks if a string contains unicode characters
+		/// Checks if a string contains unicode characters
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>

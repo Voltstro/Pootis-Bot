@@ -10,7 +10,7 @@ namespace Pootis_Bot.Services.AntiSpam
 	public class AntiSpamService
 	{
 		/// <summary>
-		///     Checks how many users are mention in a single message, if it is higher then the threshold then remove it
+		/// Checks how many users are mention in a single message, if it is higher then the threshold then remove it
 		/// </summary>
 		/// <param name="message">The message to check</param>
 		/// <param name="guild">The guild of the message</param>
@@ -55,7 +55,7 @@ namespace Pootis_Bot.Services.AntiSpam
 		}
 
 		/// <summary>
-		///     Checks if a given user is allowed to @mention a certain role, and warns them if not
+		/// Checks if a given user is allowed to @mention a certain role, and warns them if not
 		/// </summary>
 		/// <param name="message">The message to check</param>
 		/// <param name="user">The author of the message</param>

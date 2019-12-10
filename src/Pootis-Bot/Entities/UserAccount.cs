@@ -8,33 +8,33 @@ namespace Pootis_Bot.Entities
 	public class UserAccount
 	{
 		/// <summary>
-		///     The ID of the user
+		/// The ID of the user
 		/// </summary>
 		public ulong Id { get; set; }
 
 		/// <summary>
-		///     How much XP does this user have? Xp/Level number are across servers and are NOT server specific
+		/// How much XP does this user have? Xp/Level number are across servers and are NOT server specific
 		/// </summary>
 		public uint Xp { get; set; }
 
 		/// <summary>
-		///     What message does the user have set for their profile
+		/// What message does the user have set for their profile
 		/// </summary>
 		public string ProfileMsg { get; set; }
 
 		/// <summary>
-		///     A list of all the user's <see cref="UserAccountServerData" />
+		/// A list of all the user's <see cref="UserAccountServerData"/>
 		/// </summary>
 		public List<UserAccountServerData> Servers { get; set; }
 
 		/// <summary>
-		///     What level is the user on?
+		/// What level is the user on?
 		/// </summary>
 		[JsonIgnore]
 		public uint LevelNumber => (uint) Math.Sqrt(Xp / 30f);
 
 		/// <summary>
-		///     Gets or creates a <see cref="UserAccountServerData" />
+		/// Gets or creates a <see cref="UserAccountServerData"/>
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>

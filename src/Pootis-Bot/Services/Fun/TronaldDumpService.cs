@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Fun
 	public class TronaldDumpService
 	{
 		/// <summary>
-		///     Gets a random donald trump quote
+		/// Gets a random donald trump quote
 		/// </summary>
 		/// <returns></returns>
 		public static string GetRandomQuote()

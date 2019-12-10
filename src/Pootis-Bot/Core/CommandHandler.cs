@@ -35,7 +35,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Install all the modules
+		/// Install all the modules
 		/// </summary>
 		/// <returns></returns>
 		public async Task SetupAsync()
@@ -49,7 +49,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Checks all the help modules in the config
+		/// Checks all the help modules in the config
 		/// </summary>
 		public void CheckHelpModules()
 		{
@@ -208,7 +208,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Get a modules
+		/// Get a modules
 		/// </summary>
 		/// <param name="moduleName"></param>
 		/// <returns></returns>

@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Fun
 	public static class GiphyService
 	{
 		/// <summary>
-		///     Searches giphy for a a given gif name
+		/// Searches giphy for a a given gif name
 		/// </summary>
 		/// <param name="search">The gif name to search for</param>
 		/// <returns></returns>

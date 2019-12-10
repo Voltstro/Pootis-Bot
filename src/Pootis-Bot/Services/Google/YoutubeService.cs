@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Google
 	public static class YoutubeService
 	{
 		/// <summary>
-		///     Searches YouTube
+		/// Searches YouTube
 		/// </summary>
 		/// <param name="search">The string to search for</param>
 		/// <param name="appName"></param>

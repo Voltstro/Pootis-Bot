@@ -8,7 +8,7 @@ using Pootis_Bot.Entities;
 namespace Pootis_Bot.Events
 {
 	/// <summary>
-	///     Handles guild client events
+	/// Handles guild client events
 	/// </summary>
 	public class GuildEvents
 	{

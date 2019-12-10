@@ -6,7 +6,7 @@ namespace Pootis_Bot.Helpers
 	public static class MessageUtils
 	{
 		/// <summary>
-		///     Modifies a pre existing Discord message with a new message
+		/// Modifies a pre existing Discord message with a new message
 		/// </summary>
 		/// <param name="baseMessage"></param>
 		/// <param name="newMessage"></param>
@@ -17,7 +17,7 @@ namespace Pootis_Bot.Helpers
 		}
 
 		/// <summary>
-		///     Modifies a pre existing Discord message with a new embed
+		/// Modifies a pre existing Discord message with a new embed
 		/// </summary>
 		/// <param name="baseMessage"></param>
 		/// <param name="embed"></param>

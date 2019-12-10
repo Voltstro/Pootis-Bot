@@ -8,7 +8,7 @@ namespace Pootis_Bot.Core
 	public static class DataStorage
 	{
 		/// <summary>
-		///     Checks if a file exists at a path
+		/// Checks if a file exists at a path
 		/// </summary>
 		/// <param name="filePath">The path to the user save file</param>
 		/// <returns></returns>
@@ -20,7 +20,7 @@ namespace Pootis_Bot.Core
 		#region User Accounts
 
 		/// <summary>
-		///     Saves all user accounts
+		/// Saves all user accounts
 		/// </summary>
 		/// <param name="accounts">A list of all the user accounts to save</param>
 		/// <param name="filePath">Where to save the file</param>
@@ -31,7 +31,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Loads all the user accounts
+		/// Loads all the user accounts
 		/// </summary>
 		/// <param name="filePath"></param>
 		/// <returns></returns>
@@ -47,7 +47,7 @@ namespace Pootis_Bot.Core
 		#region Server List
 
 		/// <summary>
-		///     Saves a list of servers
+		/// Saves a list of servers
 		/// </summary>
 		/// <param name="serverLists">A list of servers to save</param>
 		/// <param name="filePath">Where to save to</param>
@@ -58,7 +58,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Loads a list of all the servers from file
+		/// Loads a list of all the servers from file
 		/// </summary>
 		/// <param name="filePath">The path to the server list json file</param>
 		/// <returns></returns>
@@ -74,7 +74,7 @@ namespace Pootis_Bot.Core
 		#region Help Modules
 
 		/// <summary>
-		///     Saves a list of help modules
+		/// Saves a list of help modules
 		/// </summary>
 		/// <param name="helpModules"></param>
 		/// <param name="filePath"></param>
@@ -85,7 +85,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Loads a list of all the help modules from a file
+		/// Loads a list of all the help modules from a file
 		/// </summary>
 		/// <param name="filePath"></param>
 		/// <returns></returns>
@@ -101,7 +101,7 @@ namespace Pootis_Bot.Core
 		#region High Level Profile Messages
 
 		/// <summary>
-		///     Saves custom high level profile messages
+		/// Saves custom high level profile messages
 		/// </summary>
 		/// <param name="highLevelProfileMessages"></param>
 		/// <param name="filePath"></param>
@@ -113,7 +113,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Loads custom high level profile messages
+		/// Loads custom high level profile messages
 		/// </summary>
 		/// <param name="filePath"></param>
 		/// <returns></returns>

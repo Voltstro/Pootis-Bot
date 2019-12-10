@@ -3,7 +3,7 @@
 namespace Pootis_Bot.Modules.Fun
 {
 	/// <summary>
-	///     Contains settings for fun commands
+	/// Contains settings for fun commands
 	/// </summary>
 	public static class FunCmdsConfig
 	{

@@ -11,7 +11,7 @@ namespace Pootis_Bot.Services.Audio
 #if WINDOWS
 
 		/// <summary>
-		///     Downloads files for Windows
+		/// Downloads files for Windows
 		/// </summary>
 		/// <param name="downloadUrls"></param>
 		public static void DownloadAndPrepareWindowsFiles(AudioExternalLibFiles downloadUrls)

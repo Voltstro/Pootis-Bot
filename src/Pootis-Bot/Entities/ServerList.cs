@@ -7,109 +7,109 @@ namespace Pootis_Bot.Entities
 	public class ServerList
 	{
 		/// <summary>
-		///     The ID of the guild
+		/// The ID of the guild
 		/// </summary>
 		public ulong GuildId { get; set; }
 
 		/// <summary>
-		///     How many points to give
+		/// How many points to give
 		/// </summary>
 		public uint PointGiveAmount { get; set; }
 
 		/// <summary>
-		///     What is the delay between each give points
+		/// What is the delay between each give points
 		/// </summary>
 		public int PointsGiveCooldownTime { get; set; }
 
 		/// <summary>
-		///     Channels were the bot isn't allowed to except commands from
+		/// Channels were the bot isn't allowed to except commands from
 		/// </summary>
 		public List<ulong> BannedChannels { get; set; }
 
 		/// <summary>
-		///     What role to give after a user gets a certain amount of points
+		/// What role to give after a user gets a certain amount of points
 		/// </summary>
 		public List<ServerRolePoints> ServerRolePoints { get; set; }
 
 		/// <summary>
-		///     Command permissions
+		/// Command permissions
 		/// </summary>
 		public List<CommandInfo> CommandInfos { get; set; }
 
 		/// <summary>
-		///     Role to role mentions
+		/// Role to role mentions
 		/// </summary>
 		public List<ServerRoleToRoleMention> RoleToRoleMentions { get; set; }
 
 		/// <summary>
-		///     Auto voice channels
+		/// Auto voice channels
 		/// </summary>
 		public List<ServerVoiceChannel> AutoVoiceChannels { get; set; }
 
 		/// <summary>
-		///     Any active channels that were created from an auto-vc channel
+		/// Any active channels that were created from an auto-vc channel
 		/// </summary>
 		public List<ulong> ActiveAutoVoiceChannels { get; set; }
 
 		/// <summary>
-		///     Role gives, key is role to give, Value is role to require, if one
+		/// Role gives, key is role to give, Value is role to require, if one
 		/// </summary>
 		public List<RoleGive> RoleGives { get; set; }
 
 		/// <summary>
-		///     Do we have custom welcome/goodbye messages enabled
+		/// Do we have custom welcome/goodbye messages enabled
 		/// </summary>
 		public bool WelcomeMessageEnabled { get; set; }
 
 		/// <summary>
-		///     What is the channel id were we put the messages
+		/// What is the channel id were we put the messages
 		/// </summary>
 		public ulong WelcomeChannelId { get; set; }
 
 		/// <summary>
-		///     The welcome message
+		/// The welcome message
 		/// </summary>
 		public string WelcomeMessage { get; set; }
 
 		/// <summary>
-		///     The goodbye message
+		/// The goodbye message
 		/// </summary>
 		public string WelcomeGoodbyeMessage { get; set; }
 
 		/// <summary>
-		///     Is the rule reaction feature enabled?
+		/// Is the rule reaction feature enabled?
 		/// </summary>
 		public bool RuleEnabled { get; set; }
 
 		/// <summary>
-		///     What is the message that needs to be reacted
+		/// What is the message that needs to be reacted
 		/// </summary>
 		public ulong RuleMessageId { get; set; }
 
 		/// <summary>
-		///     The channel were that gosh darn rule message is located
+		/// The channel were that gosh darn rule message is located
 		/// </summary>
 		public ulong RuleMessageChannelId { get; set; }
 
 		/// <summary>
-		///     The role that will be given to the user after reacting with the right emoji
+		/// The role that will be given to the user after reacting with the right emoji
 		/// </summary>
 		public ulong RuleRoleId { get; set; }
 
 		/// <summary>
-		///     The emoji that needs to be used
+		/// The emoji that needs to be used
 		/// </summary>
 		public string RuleReactionEmoji { get; set; }
 
 		/// <summary>
-		///     Anti-spam settings
+		/// Anti-spam settings
 		/// </summary>
 		public AntiSpamSettingsInfo AntiSpamSettings { get; set; }
 
 		#region Server Role Points Functions
 
 		/// <summary>
-		///     Gets a server role points
+		/// Gets a server role points
 		/// </summary>
 		/// <param name="pointAmount"></param>
 		/// <returns></returns>
@@ -128,7 +128,7 @@ namespace Pootis_Bot.Entities
 		#region Permissions Functions
 
 		/// <summary>
-		///     Get an command permission
+		/// Get an command permission
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns></returns>
@@ -161,12 +161,12 @@ namespace Pootis_Bot.Entities
 		public class CommandInfo
 		{
 			/// <summary>
-			///     The name of the command
+			/// The name of the command
 			/// </summary>
 			public string Command { get; set; }
 
 			/// <summary>
-			///     Roles that are allowed to use the command
+			/// Roles that are allowed to use the command
 			/// </summary>
 			public List<ulong> Roles { get; set; }
 
@@ -184,17 +184,17 @@ namespace Pootis_Bot.Entities
 		public class AntiSpamSettingsInfo
 		{
 			/// <summary>
-			///     Is the mass user anti-spam feature enabled?
+			/// Is the mass user anti-spam feature enabled?
 			/// </summary>
 			public bool MentionUserEnabled { get; set; }
 
 			/// <summary>
-			///     What is the threshold of how many users can be mentioned
+			/// What is the threshold of how many users can be mentioned
 			/// </summary>
 			public int MentionUsersPercentage { get; set; }
 
 			/// <summary>
-			///     How many times can a user violate a role to role mention before warnings are given out
+			/// How many times can a user violate a role to role mention before warnings are given out
 			/// </summary>
 			public int RoleToRoleMentionWarnings { get; set; }
 		}
@@ -202,7 +202,7 @@ namespace Pootis_Bot.Entities
 		#region Banned Channel Functions
 
 		/// <summary>
-		///     Gets a banned channel
+		/// Gets a banned channel
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -218,7 +218,7 @@ namespace Pootis_Bot.Entities
 		}
 
 		/// <summary>
-		///     Creates a banned channel
+		/// Creates a banned channel
 		/// </summary>
 		/// <param name="channelId"></param>
 		/// <returns></returns>
@@ -233,7 +233,7 @@ namespace Pootis_Bot.Entities
 		#region Auto VC Functions
 
 		/// <summary>
-		///     Gets an auto voice channel
+		/// Gets an auto voice channel
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -248,7 +248,7 @@ namespace Pootis_Bot.Entities
 		}
 
 		/// <summary>
-		///     Get an active auto voice channel
+		/// Get an active auto voice channel
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -268,7 +268,7 @@ namespace Pootis_Bot.Entities
 		#region Role To Role Functions
 
 		/// <summary>
-		///     Get a role to role ping
+		/// Get a role to role ping
 		/// </summary>
 		/// <param name="roleId"></param>
 		/// <returns></returns>
@@ -284,7 +284,7 @@ namespace Pootis_Bot.Entities
 		}
 
 		/// <summary>
-		///     Create a role to role ping
+		/// Create a role to role ping
 		/// </summary>
 		/// <param name="roleNotMention"></param>
 		/// <param name="role"></param>

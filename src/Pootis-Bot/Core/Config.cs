@@ -7,7 +7,7 @@ using Pootis_Bot.Structs.Config;
 namespace Pootis_Bot.Core
 {
 	/// <summary>
-	///     Manages the bots config
+	/// Manages the bots config
 	/// </summary>
 	public static class Config
 	{
@@ -76,7 +76,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Saves the config, DUH!
+		/// Saves the config, DUH!
 		/// </summary>
 		public static void SaveConfig()
 		{

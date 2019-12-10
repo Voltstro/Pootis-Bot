@@ -20,7 +20,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Checks all server settings, auto vc channels, active vc channels and the welcome message
+		/// Checks all server settings, auto vc channels, active vc channels and the welcome message
 		/// </summary>
 		/// <returns></returns>
 		public async Task CheckConnectedServerSettings()
@@ -66,7 +66,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Checks the server's welcome settings
+		/// Checks the server's welcome settings
 		/// </summary>
 		/// <param name="server"></param>
 		/// <returns></returns>
@@ -90,7 +90,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Checks all the bot's auto voice channels
+		/// Checks all the bot's auto voice channels
 		/// </summary>
 		/// <param name="server"></param>
 		public static void CheckServerVoiceChannels(ServerList server)
@@ -108,7 +108,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Checks all the bot's active auto voice channels
+		/// Checks all the bot's active auto voice channels
 		/// </summary>
 		/// <param name="server"></param>
 		public static void CheckServerActiveVoiceChannels(ServerList server)
@@ -136,7 +136,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Checks all server permission roles to see if they still exist
+		/// Checks all server permission roles to see if they still exist
 		/// </summary>
 		/// <param name="server"></param>
 		public static void CheckServerPerms(ServerList server)

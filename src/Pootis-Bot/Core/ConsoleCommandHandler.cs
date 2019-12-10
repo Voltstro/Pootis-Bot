@@ -21,7 +21,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Sets up the the Pootis-Bot's <see cref="Console" /> to handle commands and such
+		/// Sets up the the Pootis-Bot's <see cref="Console"/> to handle commands and such
 		/// </summary>
 		public void SetupConsole()
 		{

@@ -11,7 +11,7 @@ using Pootis_Bot.Services;
 namespace Pootis_Bot.Events
 {
 	/// <summary>
-	///     Handles reaction client events
+	/// Handles reaction client events
 	/// </summary>
 	public class ReactionEvents
 	{

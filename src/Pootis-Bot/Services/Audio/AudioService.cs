@@ -21,7 +21,7 @@ namespace Pootis_Bot.Services.Audio
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
 
 		/// <summary>
-		///     Joins a guild voice channel, and sends messages to a text channel on error
+		/// Joins a guild voice channel, and sends messages to a text channel on error
 		/// </summary>
 		/// <param name="guild">What guild are we in</param>
 		/// <param name="target">The voice channel we are attempting to join</param>
@@ -60,7 +60,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Leaves an audio channel
+		/// Leaves an audio channel
 		/// </summary>
 		/// <param name="guild">The current guild</param>
 		/// <param name="channel">Where the messages are sent</param>
@@ -102,9 +102,9 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Leaves the audio channel
+		/// Leaves the audio channel
 		/// </summary>
-		/// <param name="guild">The guild of <see cref="channel" /></param>
+		/// <param name="guild">The guild of <see cref="channel"/></param>
 		/// <param name="channel">The channel to use for messages</param>
 		/// <param name="user"></param>
 		/// <returns></returns>
@@ -132,7 +132,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Plays a song in a given voice channel
+		/// Plays a song in a given voice channel
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="channel"></param>
@@ -304,7 +304,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Pauses audio playback for a voice channel
+		/// Pauses audio playback for a voice channel
 		/// </summary>
 		/// <param name="guild"></param>
 		/// <param name="channel"></param>
@@ -335,7 +335,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Searches the music directory for a downloaded audio file
+		/// Searches the music directory for a downloaded audio file
 		/// </summary>
 		/// <param name="search"></param>
 		/// <returns></returns>
@@ -350,7 +350,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Gets a process running ffmpeg
+		/// Gets a process running ffmpeg
 		/// </summary>
 		/// <param name="path"></param>
 		/// <returns></returns>

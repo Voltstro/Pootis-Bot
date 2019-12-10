@@ -19,7 +19,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		public ConsoleColor UnknownCommandErrorColor;
 
 		/// <summary>
-		///     Creates a new <see cref="Console" /> instance
+		/// Creates a new <see cref="Console"/> instance
 		/// </summary>
 		protected Console()
 		{
@@ -27,7 +27,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		}
 
 		/// <summary>
-		///     Adds a new <see cref="ConsoleCommand" /> to the <see cref="_consoleCommands" /> list
+		/// Adds a new <see cref="ConsoleCommand"/> to the <see cref="_consoleCommands"/> list
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="method"></param>
@@ -44,7 +44,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		}
 
 		/// <summary>
-		///     Executes the <see cref="ConsoleCommand" />'s <see cref="Method" />
+		/// Executes the <see cref="ConsoleCommand"/>'s <see cref="Method"/>
 		/// </summary>
 		/// <param name="name"></param>
 		public void ExecuteCommand(string name)
@@ -56,7 +56,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		}
 
 		/// <summary>
-		///     Starts an infinite console input loop, until <see cref="IsExiting" /> is set to true
+		/// Starts an infinite console input loop, until <see cref="IsExiting"/> is set to true
 		/// </summary>
 		public void ConsoleHandleLoop()
 		{
@@ -69,7 +69,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		}
 
 		/// <summary>
-		///     Logs a message
+		/// Logs a message
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="color"></param>

@@ -15,7 +15,7 @@ namespace Pootis_Bot.Core
 		private DiscordSocketClient _client;
 
 		/// <summary>
-		///     Starts the bot
+		/// Starts the bot
 		/// </summary>
 		/// <returns></returns>
 		public async Task StartBot()

@@ -17,7 +17,7 @@ namespace Pootis_Bot.Services.Audio
 		private const string AudioLibFileJsonUrl = "https://pootis-bot.creepysin.com/download/externallibfiles.json";
 
 		/// <summary>
-		///     Checks the audio service
+		/// Checks the audio service
 		/// </summary>
 		public static void CheckAudioService()
 		{
@@ -73,7 +73,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Removes not allowed characters that can't be in a windows file name
+		/// Removes not allowed characters that can't be in a windows file name
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns>Formatted string</returns>
@@ -88,7 +88,7 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		///     Updates all files related to audio
+		/// Updates all files related to audio
 		/// </summary>
 		public static void UpdateAudioFiles()
 		{

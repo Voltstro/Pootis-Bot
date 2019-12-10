@@ -10,7 +10,7 @@ using Discord.WebSocket;
 namespace Pootis_Bot.TypeReaders
 {
 	/// <summary>
-	///     A <see cref="TypeReader" /> for parsing objects implementing <see cref="SocketGuildUser" /> arrays.
+	/// A <see cref="TypeReader"/> for parsing objects implementing <see cref="SocketGuildUser"/> arrays.
 	/// </summary>
 	public class GuildUserArrayTypeReader : TypeReader
 	{

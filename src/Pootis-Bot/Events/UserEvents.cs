@@ -12,7 +12,7 @@ using Pootis_Bot.Structs.Server;
 namespace Pootis_Bot.Events
 {
 	/// <summary>
-	///     Handles user client events
+	/// Handles user client events
 	/// </summary>
 	public class UserEvents
 	{

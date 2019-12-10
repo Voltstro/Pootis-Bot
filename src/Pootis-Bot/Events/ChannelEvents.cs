@@ -7,7 +7,7 @@ using Pootis_Bot.Services;
 namespace Pootis_Bot.Events
 {
 	/// <summary>
-	///     Handles channel client events
+	/// Handles channel client events
 	/// </summary>
 	public class ChannelEvents
 	{

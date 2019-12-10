@@ -9,7 +9,7 @@ namespace Pootis_Bot.Core
 	public static class LevelingSystem
 	{
 		/// <summary>
-		///     Levels up a user
+		/// Levels up a user
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="channel"></param>
@@ -30,7 +30,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///     Gives a user server points, and gives them a role if they past a certain amount of points
+		/// Gives a user server points, and gives them a role if they past a certain amount of points
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="channel"></param>

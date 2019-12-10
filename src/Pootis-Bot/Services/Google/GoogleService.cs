@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Google
 	public static class GoogleService
 	{
 		/// <summary>
-		///     Searches Google
+		/// Searches Google
 		/// </summary>
 		/// <param name="search"></param>
 		/// <param name="appName"></param>

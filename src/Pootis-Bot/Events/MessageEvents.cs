@@ -8,7 +8,7 @@ using Pootis_Bot.Entities;
 namespace Pootis_Bot.Events
 {
 	/// <summary>
-	///     Handles message client events
+	/// Handles message client events
 	/// </summary>
 	public class MessageEvents
 	{

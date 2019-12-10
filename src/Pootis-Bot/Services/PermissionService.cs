@@ -22,7 +22,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Lets only a certain role use a command
+		/// Lets only a certain role use a command
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="roles"></param>
@@ -95,7 +95,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Stops a role from being able to use a command
+		/// Stops a role from being able to use a command
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="roles"></param>
@@ -161,7 +161,7 @@ namespace Pootis_Bot.Services
 		}
 
 		/// <summary>
-		///     Gets all commands with no roles and removes them
+		/// Gets all commands with no roles and removes them
 		/// </summary>
 		/// <param name="server"></param>
 		public static void RemoveAllCommandsWithNoRoles(ServerList server)

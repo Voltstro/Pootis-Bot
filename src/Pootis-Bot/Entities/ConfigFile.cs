@@ -6,77 +6,77 @@ namespace Pootis_Bot.Entities
 	public class ConfigFile
 	{
 		/// <summary>
-		///     Api settings
+		/// Api settings
 		/// </summary>
 		[JsonProperty("ApiKeys")] public ConfigApis Apis;
 
 		/// <summary>
-		///     Audio settings
+		/// Audio settings
 		/// </summary>
 		public ConfigAudio AudioSettings;
 
 		/// <summary>
-		///     The bot's name
+		/// The bot's name
 		/// </summary>
 		public string BotName;
 
 		/// <summary>
-		///     The bot's prefix
+		/// The bot's prefix
 		/// </summary>
 		public string BotPrefix;
 
 		/// <summary>
-		///     The bot's token
+		/// The bot's token
 		/// </summary>
 		public string BotToken;
 
 		/// <summary>
-		///     Whether or not we should check to see if we are still connected
+		/// Whether or not we should check to see if we are still connected
 		/// </summary>
 		public bool CheckConnectionStatus;
 
 		/// <summary>
-		///     How ofter should we check if we are still connected (milliseconds)
+		/// How ofter should we check if we are still connected (milliseconds)
 		/// </summary>
 		public int CheckConnectionStatusInterval;
 
 		/// <summary>
-		///     The config version
+		/// The config version
 		/// </summary>
 		public string ConfigVersion;
 
 		/// <summary>
-		///     The default game status the bot should use
+		/// The default game status the bot should use
 		/// </summary>
 		public string DefaultGameMessage;
 
 		/// <summary>
-		///     How much xp to give?
+		/// How much xp to give?
 		/// </summary>
 		public uint LevelUpAmount;
 
 		/// <summary>
-		///     How long between each message should we wait before allowing to give more XP
+		/// How long between each message should we wait before allowing to give more XP
 		/// </summary>
 		public int LevelUpCooldown;
 
 		/// <summary>
-		///     Reports errors to the bot owner
+		/// Reports errors to the bot owner
 		/// </summary>
 		public bool ReportErrorsToOwner;
 
 		/// <summary>
-		///     Reports events such as when the bot joins/leaves a guild
+		/// Reports events such as when the bot joins/leaves a guild
 		/// </summary>
 		public bool ReportGuildEventsToOwner;
 
 		/// <summary>
-		///     What type of formatting we should use for ServerList.json and UserAccounts.json
+		/// What type of formatting we should use for ServerList.json and UserAccounts.json
 		/// </summary>
 		public Formatting ResourceFilesFormatting;
 
 		/// <summary>
-		///     Who's stream should the bot show when set in streaming mode
+		/// Who's stream should the bot show when set in streaming mode
 		/// </summary>
 		public string TwitchStreamingSite;
 	}

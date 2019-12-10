@@ -34,7 +34,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Saves all the accounts
+		/// Saves all the accounts
 		/// </summary>
 		public static void SaveAccounts()
 		{
@@ -42,7 +42,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Gets a <see cref="UserAccount" />, or creates one if needed
+		/// Gets a <see cref="UserAccount"/>, or creates one if needed
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
@@ -52,7 +52,7 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		///     Gets all <see cref="UserAccount" />s
+		/// Gets all <see cref="UserAccount"/>s
 		/// </summary>
 		/// <returns></returns>
 		public static UserAccount[] GetAllUserAccounts()
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Core.Managers
 
 		//TODO: Remove this in the 1.0.0 release
 		/// <summary>
-		///     Checks for old file name (accounts.json)
+		/// Checks for old file name (accounts.json)
 		/// </summary>
 		/// <returns>Returns true if upgraded</returns>
 		private static bool CheckForOldFileName()
