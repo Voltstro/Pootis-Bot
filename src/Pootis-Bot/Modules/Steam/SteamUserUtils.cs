@@ -44,8 +44,8 @@ namespace Pootis_Bot.Modules.Steam
 					PlayerSummaryModel userSummary = SteamService.GetSteamUserSummary(id);
 
 					string countryDetails = userSummary.CountryCode != null ? $":flag_{userSummary.CountryCode.ToLower()}: {userSummary.CountryCode}" : "No Country Provided";
-
-					embed.WithDescription("");
+					
+					embed.WithDescription($"[Backpack.tf Profile](https://backpack.tf/u/{userSummary.SteamId}) - [Rep.tf Summary](https://rep.tf/{userSummary.SteamId}) - [Steam Profile](https://steamcommunity.com/profiles/{userSummary.SteamId})");
 					embed.AddField("User Profile", $"**Username**: {userSummary.Nickname}\n" +
 					                               $"**Status**: {userSummary.UserStatus}\n" +
 					                               $"**Country**: {countryDetails}\n" +
