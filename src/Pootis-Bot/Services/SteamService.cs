@@ -31,7 +31,7 @@ namespace Pootis_Bot.Services
 			}
 			else
 			{
-				throw new Exception("The config doesn't have to Steam API key set!");
+				throw new Exception("The config doesn't have the Steam API key set!");
 			}
 		}
 
