@@ -75,7 +75,24 @@ namespace Pootis_Bot.Modules.Steam
 						//Make sure the user has a game on their account
 						if (sortedGames.Count != 0)
 						{
-							TimeSpan totalAmountOfHours = sortedGames.Aggregate(TimeSpan.Zero, (current, game) => current + game.PlaytimeForever);
+							TimeSpan totalTfHours = TimeSpan.Zero;
+							TimeSpan totalCsHours = TimeSpan.Zero;
+							TimeSpan totalDotaHours = TimeSpan.Zero;
+
+							TimeSpan totalAmountOfHours = TimeSpan.Zero;
+							foreach (OwnedGameModel game in sortedGames)
+							{
+								totalAmountOfHours += game.PlaytimeForever;
+
+								//Get hours if it is a supported game
+								// ReSharper disable once ConvertIfStatementToSwitchStatement
+								if (game.AppId == 440) //Team Fortress 2
+									totalTfHours = game.PlaytimeForever;
+								else if (game.AppId == 730) //Counter-Strike: Global Offensive (CS:GO)
+									totalCsHours = game.PlaytimeForever;
+								else if (game.AppId == 570) //Dota 2
+									totalDotaHours = game.PlaytimeForever;
+							}
 
 							string gameStatus;
 
@@ -102,6 +119,9 @@ namespace Pootis_Bot.Modules.Steam
 							}
 
 							embed.AddField("Games", $"**Games Amount**: {games.GameCount}\n{gameStatus}");
+							embed.AddField("Game Specific Hours", $"**Team Fortress 2**: {Math.Round(totalTfHours.TotalHours)}hrs\n" +
+							                                      $"**Counter-Strike: Global Offensive (CS:GO)**: {Math.Round(totalCsHours.TotalHours)}hrs\n" +
+							                                      $"**Dota 2**: {Math.Round(totalDotaHours.TotalHours)}hrs", true);
 						}
 					}
 					else
