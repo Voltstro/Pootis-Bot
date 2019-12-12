@@ -211,6 +211,8 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
+			await Task.Delay(100);
+			
 			IAudioClient client = serverList.AudioClient;
 			Process ffmpeg = serverList.FfMpeg = GetFfmpeg(fileLoc);
 
@@ -361,6 +363,7 @@ namespace Pootis_Bot.Services.Audio
 				FileName = FfmpegLocation,
 				Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
 				UseShellExecute = false,
+				CreateNoWindow = true,
 				RedirectStandardOutput = true,
 				RedirectStandardInput = false
 			});

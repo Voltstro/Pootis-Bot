@@ -36,7 +36,6 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 #if WINDOWS
-
 			//Check to see if all the necessary files are here.
 			if (!File.Exists("external/ffmpeg.exe") || !File.Exists("external/ffplay.exe") ||
 			    !File.Exists("external/ffprobe.exe")
@@ -49,9 +48,8 @@ namespace Pootis_Bot.Services.Audio
 
 #elif OSX
 			//Yep, you guessed it, check the files
-			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("External/ffplay") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
+			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("External/ffplay"))
 				UpdateAudioFiles();
-
 #endif
 
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
@@ -105,12 +103,9 @@ namespace Pootis_Bot.Services.Audio
 					WebUtils.DownloadString(AudioLibFileJsonUrl));
 
 #if WINDOWS
-
 			AudioDownloadServiceFiles.DownloadAndPrepareWindowsFiles(GetDownloadUrls(listOfLibsFilesForOs, "Windows"));
-
 #elif LINUX
 			AudioDownloadServiceFiles.DownloadAndPrepareLinuxFiles(GetDownloadUrls(listOfLibsFilesForOs, "Linux"));
-
 #elif OSX
 #endif
 
