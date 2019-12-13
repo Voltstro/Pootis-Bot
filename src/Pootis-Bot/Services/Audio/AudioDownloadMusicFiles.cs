@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 using Discord;
 using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
-using Microsoft.Win32.SafeHandles;
+using YoutubeExplode;
+using YoutubeExplode.Models.MediaStreams;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Google;
-using YoutubeExplode;
-using YoutubeExplode.Models.MediaStreams;
 
 namespace Pootis_Bot.Services.Audio
 {
@@ -60,7 +61,7 @@ namespace Pootis_Bot.Services.Audio
 						.GetVideoMediaStreamInfosAsync(searchListResponse.Items[0].Id.VideoId).GetAwaiter().GetResult();
 					string videoTitle =
 						AudioCheckService.RemovedNotAllowedChars(searchListResponse.Items[0].Snippet.Title);
-					string videoLoc = $"Music/{videoTitle}.mp3";
+					string videoLoc = $"Music/{videoTitle}";
 
 					//Do a second check to see if we have already have that video
 					string check = AudioService.SearchAudio(videoTitle);
@@ -86,19 +87,32 @@ namespace Pootis_Bot.Services.Audio
 							$":musical_note: Give me a sec. Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**...")
 						.GetAwaiter().GetResult();
 
-					//Download the .mp3 file
-					_client.DownloadMediaStreamAsync(videoInfo.Audio.WithHighestBitrate(), videoLoc).GetAwaiter()
-						.GetResult();
+					AudioStreamInfo streamInfo = videoInfo.Audio.WithHighestBitrate();
+					bool isFileMp = false;
+
+					if (streamInfo.Container.GetFileExtension() == ".mp3")
+						isFileMp = true;
+
+					string downloadLocation = $"{videoLoc}.{streamInfo.Container.GetFileExtension()}";
+
+					//Download the audio file
+					_client.DownloadMediaStreamAsync(streamInfo, downloadLocation).GetAwaiter().GetResult();
+
+					if (!isFileMp)
+					{
+						//Convert it to an mp3 file
+						ConvertAudioFileToMp3(downloadLocation, videoLoc + ".mp3");
+					}
 
 					Debug.WriteLine("[Audio Download] Download successful");
 
-					return videoLoc;
+					return videoLoc + ".mp3";
 				}
 				catch (Exception ex)
 				{
 					Global.Log(ex.Message, ConsoleColor.Red);
 					MessageUtils
-						.ModifyMessage(message, $"Sorry but an error occured. Here are the details:\n{ex.Message}")
+						.ModifyMessage(message, $"Sorry but an error occured while playing.")
 						.GetAwaiter().GetResult();
 
 					//Log out an error to the owner if they have it enabled
@@ -115,6 +129,31 @@ namespace Pootis_Bot.Services.Audio
 				.GetAwaiter().GetResult();
 
 			return null;
+		}
+
+		private static void ConvertAudioFileToMp3(string fileToConvert, string fileLocation)
+		{
+			Debug.WriteLine($"Converting {fileToConvert} to {fileLocation}...");
+
+			Process ffmpeg = Process.Start(new ProcessStartInfo
+			{
+				FileName = Config.bot.AudioSettings.FfmpegLocation,
+				Arguments = $"-i \"{fileToConvert}\" \"{fileLocation}\"",
+				CreateNoWindow = true
+			});
+
+			ffmpeg?.WaitForExit();
+
+			if (File.Exists(fileToConvert))
+			{
+				File.Delete(fileToConvert);
+			}
+			else
+			{
+				throw new FileNotFoundException("File doesn't exist!");
+			}
+
+			Debug.WriteLine("File converted!");
 		}
 	}
 }

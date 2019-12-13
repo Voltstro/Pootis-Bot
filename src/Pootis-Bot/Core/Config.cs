@@ -14,7 +14,7 @@ namespace Pootis_Bot.Core
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "Config.json";
 
-		private const string ConfigVersion = "10";
+		private const string ConfigVersion = "11";
 
 		public static readonly ConfigFile bot;
 

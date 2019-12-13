@@ -15,6 +15,11 @@ namespace Pootis_Bot.Structs.Config
 		public bool LogPlayStopSongToConsole { get; set; }
 
 		/// <summary>
+		/// The location, or command for ffmpeg
+		/// </summary>
+		public string FfmpegLocation { get; set; }
+
+		/// <summary>
 		/// Max video time
 		/// </summary>
 		public TimeSpan MaxVideoTime { get; set; }

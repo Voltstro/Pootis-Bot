@@ -15,7 +15,6 @@ namespace Pootis_Bot.Services.Audio
 {
 	public class AudioService
 	{
-		private const string FfmpegLocation = "External/ffmpeg";
 		private const string MusicDir = "Music/";
 
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
@@ -360,7 +359,7 @@ namespace Pootis_Bot.Services.Audio
 		{
 			return Process.Start(new ProcessStartInfo
 			{
-				FileName = FfmpegLocation,
+				FileName = Config.bot.AudioSettings.FfmpegLocation,
 				Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
 				UseShellExecute = false,
 				CreateNoWindow = true,
