@@ -104,6 +104,7 @@ namespace Pootis_Bot.Services.Audio
 
 #if WINDOWS
 			AudioDownloadServiceFiles.DownloadAndPrepareWindowsFiles(GetDownloadUrls(listOfLibsFilesForOs, "Windows"));
+			Config.bot.AudioSettings.FfmpegLocation = "External/ffmpeg.exe";
 #elif LINUX
 			AudioDownloadServiceFiles.DownloadAndPrepareLinuxFiles(GetDownloadUrls(listOfLibsFilesForOs, "Linux"));
 #elif OSX
