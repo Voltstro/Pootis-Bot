@@ -107,8 +107,11 @@ namespace Pootis_Bot.Services.Audio
 			Config.bot.AudioSettings.FfmpegLocation = "External/ffmpeg.exe";
 #elif LINUX
 			AudioDownloadServiceFiles.DownloadAndPrepareLinuxFiles(GetDownloadUrls(listOfLibsFilesForOs, "Linux"));
+			Config.bot.AudioSettings.FfmpegLocation = "External/ffmpeg";
 #elif OSX
+			//TODO: Implement MacOs Downloading
 #endif
+			Config.SaveConfig();
 
 			Global.Log("Done! All files needed for audio service are ready!", ConsoleColor.Blue);
 		}
