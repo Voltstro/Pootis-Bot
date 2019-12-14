@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 
@@ -53,7 +54,7 @@ namespace Pootis_Bot.Modules.Basic
 				await Context.Channel.SendMessageAsync(
 					$"Sorry, but it looks like the bot owner doesn't have the help options configured correctly.\nVisit {Global.websiteCommands} for command list.");
 
-				Global.Log("The help options are configured incorrectly!", ConsoleColor.Red);
+				Logger.Log("The help options are configured incorrectly!", LogVerbosity.Error);
 			}
 		}
 

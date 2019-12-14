@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Structs;
 
@@ -16,26 +17,26 @@ namespace Pootis_Bot.Services.Audio
 		/// <param name="downloadUrls"></param>
 		public static void DownloadAndPrepareWindowsFiles(AudioExternalLibFiles downloadUrls)
 		{
-			Global.Log("Downloading files for Windows...");
+			Logger.Log("Downloading files for Windows...");
 
 			//Download all audio service files for Windows
-			Global.Log($"Downloading ffmpeg from {downloadUrls.FfmpegDownloadUrl}");
+			Logger.Log($"Downloading ffmpeg from {downloadUrls.FfmpegDownloadUrl}");
 			WebUtils.DownloadFileAsync(downloadUrls.FfmpegDownloadUrl, "Temp/ffmpeg.zip").GetAwaiter().GetResult();
-			Global.Log($"Downloading needed DLLs from {downloadUrls.LibsDownloadUrl}");
+			Logger.Log($"Downloading needed DLLs from {downloadUrls.LibsDownloadUrl}");
 			WebUtils.DownloadFileAsync(downloadUrls.LibsDownloadUrl, "Temp/dlls.zip").GetAwaiter().GetResult();
 
 			//Extract required files
-			Global.Log("Extracting files...");
+			Logger.Log("Extracting files...");
 			ZipFile.ExtractToDirectory("Temp/dlls.zip", "./", true);
 			ZipFile.ExtractToDirectory("Temp/ffmpeg.zip", "Temp/ffmpeg/", true);
 
 			//Copy the needed parts of ffmpeg to the right directory
-			Global.Log("Setting up ffmpeg");
+			Logger.Log("Setting up ffmpeg");
 			Global.DirectoryCopy("Temp/ffmpeg/ffmpeg-latest-win64-static/bin/", "External/", true);
 			File.Copy("Temp/ffmpeg/ffmpeg-latest-win64-static/LICENSE.txt", "External/ffmpeg-license.txt", true);
 
 			//Delete unnecessary files
-			Global.Log("Cleaning up...");
+			Logger.Log("Cleaning up...");
 			File.Delete("Temp/dlls.zip");
 			File.Delete("Temp/ffmpeg.zip");
 			Directory.Delete("temp/ffmpeg", true);
@@ -44,25 +45,25 @@ namespace Pootis_Bot.Services.Audio
 #elif LINUX
 		public static void DownloadAndPrepareLinuxFiles(AudioExternalLibFiles downloadUrls)
 		{
-			Global.Log("Downloading files for Linux...");
+			Logger.Log("Downloading files for Linux...");
 
 			//Download all audio service files for Linux
-			Global.Log($"Downloading ffmpeg from {downloadUrls.FfmpegDownloadUrl}");
+			Logger.Log($"Downloading ffmpeg from {downloadUrls.FfmpegDownloadUrl}");
 			WebUtils.DownloadFileAsync(downloadUrls.FfmpegDownloadUrl, "Temp/ffmpeg.zip").GetAwaiter().GetResult();
-			Global.Log($"Downloading needed DLLs from {downloadUrls.LibsDownloadUrl}");
+			Logger.Log($"Downloading needed DLLs from {downloadUrls.LibsDownloadUrl}");
 			WebUtils.DownloadFileAsync(downloadUrls.LibsDownloadUrl, "Temp/dlls.zip").GetAwaiter().GetResult();
 
 			//Extract required files
-			Global.Log("Extracting files...");
+			Logger.Log("Extracting files...");
 			ZipFile.ExtractToDirectory("Temp/dlls.zip", "./", true);
 			ZipFile.ExtractToDirectory("Temp/ffmpeg.zip", "Temp/ffmpeg/", true);
 
 			//Copy the needed parts of ffmpeg to the right directory
-			Global.Log("Setting up ffmpeg");
+			Logger.Log("Setting up ffmpeg");
 			Global.DirectoryCopy("Temp/ffmpeg/ffmpeg-linux-64/", "External/", true);
 
 			//Delete unnecessary files
-			Global.Log("Cleaning up...");
+			Logger.Log("Cleaning up...");
 			File.Delete("Temp/dlls.zip");
 			File.Delete("Temp/ffmpeg.zip");
 			Directory.Delete("Temp/ffmpeg", true);

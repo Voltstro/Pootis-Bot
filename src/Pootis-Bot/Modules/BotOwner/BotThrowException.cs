@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 
 namespace Pootis_Bot.Modules.BotOwner
 {
@@ -20,7 +21,7 @@ namespace Pootis_Bot.Modules.BotOwner
 		public async Task ThrowExcept([Remainder] string message = "Manually thrown exception")
 #pragma warning restore 1998
 		{
-			Global.Log($"Manually thrown exception at: {Global.TimeNow()}.", ConsoleColor.Yellow);
+			Logger.Log($"Manually thrown exception at: {Global.TimeNow()}.", LogVerbosity.Warn);
 			throw new Exception(message);
 		}
 	}

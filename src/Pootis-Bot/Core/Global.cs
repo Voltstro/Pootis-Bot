@@ -94,27 +94,6 @@ namespace Pootis_Bot.Core
 		public static HttpClient HttpClient;
 
 		/// <summary>
-		/// Logs a message to the console
-		/// </summary>
-		/// <param name="msg">The message? Yea the message</param>
-		/// <param name="color">The color of the message</param>
-		public static void Log(string msg, ConsoleColor color)
-		{
-			Console.ForegroundColor = color;
-			Console.WriteLine($"[{TimeNow()}] " + msg);
-			Console.ForegroundColor = ConsoleColor.White;
-		}
-
-		/// <summary>
-		/// Logs a message to the console
-		/// </summary>
-		/// <param name="msg"></param>
-		public static void Log(string msg)
-		{
-			Console.WriteLine($"[{TimeNow()}] " + msg);
-		}
-
-		/// <summary>
 		/// Gets... you guessed it, THE TIME NOW!!!! (12hr time)
 		/// </summary>
 		/// <returns></returns>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Discord.WebSocket;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 
@@ -23,7 +24,7 @@ namespace Pootis_Bot.Core.Managers
 			{
 				if (CheckForOldFileName())
 				{
-					Global.Log("Renamed accounts.json to UserAccounts.json", ConsoleColor.Yellow);
+					Logger.Log("Renamed accounts.json to UserAccounts.json", LogVerbosity.Warn);
 					Accounts = DataStorage.LoadUserAccounts(AccountsFile).ToList();
 					return;
 				}

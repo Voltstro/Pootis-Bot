@@ -9,6 +9,7 @@ using Google.Apis.YouTube.v3.Data;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Google;
 
@@ -110,7 +111,7 @@ namespace Pootis_Bot.Services.Audio
 				}
 				catch (Exception ex)
 				{
-					Global.Log(ex.Message, ConsoleColor.Red);
+					Logger.Log(ex.Message, LogVerbosity.Error);
 					MessageUtils
 						.ModifyMessage(message, $"Sorry but an error occured while playing.")
 						.GetAwaiter().GetResult();

@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio;
 
@@ -21,7 +22,21 @@ namespace Pootis_Bot
 	{
 		public static void Main()
 		{
-			Debug.WriteLine("[Program] Pootis-Bot starting...");
+			Logger.InitiateLogger();
+
+			if (Config.bot.LogDebugMessages)
+			{
+				//Put some system info
+				Logger.Log("==== System Info ====", LogVerbosity.Debug);
+				Logger.Log($" - OS Version:          {Environment.OSVersion}", LogVerbosity.Debug);
+				Logger.Log($" - OS Name:             {RuntimeInformation.OSDescription}", LogVerbosity.Debug);
+				Logger.Log($" - System Architecture: {RuntimeInformation.OSArchitecture}", LogVerbosity.Debug);
+				Logger.Log($" - .NET Core:           {RuntimeInformation.FrameworkDescription}", LogVerbosity.Debug);
+
+				Logger.Log("=== Pootis-Bot Info ====", LogVerbosity.Debug);
+				Logger.Log($" - Version:             {VersionUtils.GetAppVersion()}", LogVerbosity.Debug);
+				Logger.Log("", LogVerbosity.Debug);
+			}
 
 			//Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
 			Console.WriteLine(@"__________              __  .__                 __________        __   ");
@@ -33,14 +48,16 @@ namespace Pootis_Bot
 			Console.WriteLine($"			Version: {VersionUtils.GetAppVersion()}");
 			Console.WriteLine();
 
-			Global.Log("Starting...");
+			Logger.Log("Pootis-Bot starting...");
 
 			//This is just suggesting to use 64-bit
 			if (!Environment.Is64BitOperatingSystem)
-				Global.Log("This OS is a 32-bit os, 64-Bit is recommended!", ConsoleColor.Yellow);
+				Logger.Log("This OS is a 32-bit os, 64-Bit is recommended!", LogVerbosity.Warn);
 
+			Logger.Log("Creating the HttpClient object...", LogVerbosity.Debug);
 			Global.HttpClient = new HttpClient();
 
+			Logger.Log("Setting up global variable...", LogVerbosity.Debug);
 			Global.BotName = Config.bot.BotName;
 			Global.BotPrefix = Config.bot.BotPrefix;
 			Global.BotToken = Config.bot.BotToken;
@@ -50,13 +67,11 @@ namespace Pootis_Bot
 
 			Console.Title = $"{Global.BotName} Console";
 
-			Debug.WriteLine("[Program] Creating bot instance");
-
 			//Setup the bot, put in the name, prefix and token
+			Logger.Log("Creating the bot instance...", LogVerbosity.Debug);
 			Bot bot = new Bot();
 
-			Debug.WriteLine("[Program] Starting bot...");
-
+			Logger.Log("Starting the bot...");
 			//Start her up!
 			bot.StartBot().GetAwaiter().GetResult();
 		}

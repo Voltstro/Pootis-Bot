@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Events;
 using Pootis_Bot.Services;
 
@@ -24,6 +25,8 @@ namespace Pootis_Bot.Core
 			IsRunning = true;
 			Global.BotStatusText = Config.bot.DefaultGameMessage;
 
+			AppDomain.CurrentDomain.ProcessExit += QuitEvent;
+
 			//Make sure the token isn't null or empty, if so open the bot config menu.
 			if (string.IsNullOrEmpty(Global.BotToken)) new ConfigMenu().OpenConfig(true);
 
@@ -37,8 +40,6 @@ namespace Pootis_Bot.Core
 			//Setup client events
 			_client.Log += Log;
 			_client.Ready += BotReady;
-
-			AppDomain.CurrentDomain.ProcessExit += QuitEvent;
 
 			Debug.WriteLine("[Bot] Setting up events");
 
@@ -84,14 +85,14 @@ namespace Pootis_Bot.Core
 		{
 			//Check the current connected server settings
 			await new BotCheckServerSettings(_client).CheckConnectedServerSettings();
-			Global.Log("Bot is now ready and online!");
+			Logger.Log("Bot is now ready and online!");
 
 			new ConsoleCommandHandler(_client).SetupConsole();
 		}
 
 		private static Task Log(LogMessage msg)
 		{
-			Global.Log(msg.Message);
+			Logger.Log(msg.Message);
 			return Task.CompletedTask;
 		}
 
@@ -109,7 +110,7 @@ namespace Pootis_Bot.Core
 					if (_client.ConnectionState != ConnectionState.Disconnected &&
 					    (_client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
 
-					Global.Log("The bot had disconnect for some reason, restarting...", ConsoleColor.Yellow);
+					Logger.Log("The bot had disconnect for some reason, restarting...", LogVerbosity.Warn);
 
 					await _client.LogoutAsync();
 					_client.Dispose();
@@ -134,6 +135,8 @@ namespace Pootis_Bot.Core
 		private async void QuitEvent(object sender, EventArgs e)
 		{
 			IsRunning = false;
+
+			Logger.EndLogger();
 
 			Global.HttpClient.Dispose();
 

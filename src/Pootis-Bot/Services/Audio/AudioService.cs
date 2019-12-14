@@ -9,6 +9,7 @@ using Discord;
 using Discord.Audio;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Services.Audio
@@ -206,7 +207,7 @@ namespace Pootis_Bot.Services.Audio
 			}
 			catch (Exception ex)
 			{
-				Global.Log(ex.Message, ConsoleColor.Red);
+				Logger.Log(ex.Message, LogVerbosity.Error);
 				return;
 			}
 
@@ -216,7 +217,7 @@ namespace Pootis_Bot.Services.Audio
 			Process ffmpeg = serverList.FfMpeg = GetFfmpeg(fileLoc);
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-				Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", ConsoleColor.Blue);
+				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", LogVerbosity.Error);
 
 			await using Stream output = ffmpeg.StandardOutput.BaseStream;
 			await using (serverList.Discord = client.CreatePCMStream(AudioApplication.Music))
@@ -288,8 +289,8 @@ namespace Pootis_Bot.Services.Audio
 
 				//End
 				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-					Global.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
-						ConsoleColor.Blue);
+					Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
+						LogVerbosity.Music);
 
 				await serverList.Discord.FlushAsync(cancellation);
 				serverList.Discord.Dispose();

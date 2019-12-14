@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Structs;
 
@@ -22,12 +23,12 @@ namespace Pootis_Bot.Services.Audio
 		public static void CheckAudioService()
 		{
 			if (!Config.bot.AudioSettings.AudioServicesEnabled) return;
-			Global.Log("Checking audio services...", ConsoleColor.Blue);
+			Logger.Log("Checking audio services...", LogVerbosity.Music);
 
 			if (!Environment.Is64BitProcess)
 			{
-				Global.Log("Audio services cannot run on a 32-bit machine/process! Audio services weren't enabled.",
-					ConsoleColor.Blue);
+				Logger.Log("Audio services cannot run on a 32-bit machine/process! Audio services weren't enabled.",
+					LogVerbosity.Music);
 
 				Config.bot.AudioSettings.AudioServicesEnabled = false;
 				Config.SaveConfig();
@@ -54,11 +55,11 @@ namespace Pootis_Bot.Services.Audio
 
 			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
 			{
-				Global.Log(
+				Logger.Log(
 					"You need to set a YouTube Data API key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3, and setting via the config menu.",
-					ConsoleColor.Red);
+					LogVerbosity.Music);
 
-				Global.Log("Audio service was disabled!", ConsoleColor.Red);
+				Logger.Log("Audio service was disabled!", LogVerbosity.Music);
 
 				Config.bot.AudioSettings.AudioServicesEnabled = false;
 				Config.SaveConfig();
@@ -66,7 +67,7 @@ namespace Pootis_Bot.Services.Audio
 			else
 			{
 				if (Config.bot.AudioSettings.AudioServicesEnabled)
-					Global.Log("Audio services are ready!", ConsoleColor.Blue);
+					Logger.Log("Audio services are ready!", LogVerbosity.Music);
 			}
 		}
 
@@ -90,7 +91,7 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		public static void UpdateAudioFiles()
 		{
-			Global.Log("Downloading required files for audio services...");
+			Logger.Log("Downloading required files for audio services...");
 
 			//If the temp directory doesn't exist, create a new one.
 			if (!Directory.Exists("Temp/")) Directory.CreateDirectory("Temp/");
@@ -113,7 +114,7 @@ namespace Pootis_Bot.Services.Audio
 #endif
 			Config.SaveConfig();
 
-			Global.Log("Done! All files needed for audio service are ready!", ConsoleColor.Blue);
+			Logger.Log("Done! All files needed for audio service are ready!", LogVerbosity.Music);
 		}
 
 		private static AudioExternalLibFiles GetDownloadUrls(IEnumerable<AudioExternalLibFiles> audioExternalLibFiles,

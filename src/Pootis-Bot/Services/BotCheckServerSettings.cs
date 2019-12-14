@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Structs.Server;
@@ -25,7 +26,7 @@ namespace Pootis_Bot.Services
 		/// <returns></returns>
 		public async Task CheckConnectedServerSettings()
 		{
-			Global.Log("Checking pre-connected server settings...");
+			Logger.Log("Checking pre-connected server settings...");
 
 			//To avoid saving possibly 100 times we will only save once if something has changed
 			bool somethingChanged = false;
@@ -54,7 +55,7 @@ namespace Pootis_Bot.Services
 			//Like all the other ones, we remove all the unnecessary servers after to avoid System.InvalidOperationException
 			foreach (ServerList toRemove in serversToRemove)
 			{
-				Global.Log($"The bot is not longer in the {toRemove.GuildId}, Removing server settings...");
+				Logger.Log($"The bot is not longer in the {toRemove.GuildId}, Removing server settings...");
 				ServerListsManager.Servers.Remove(toRemove);
 			}
 
@@ -62,7 +63,7 @@ namespace Pootis_Bot.Services
 			if (somethingChanged)
 				ServerListsManager.SaveServerList();
 
-			Global.Log("Checked all server settings.");
+			Logger.Log("Checked all server settings.");
 		}
 
 		/// <summary>

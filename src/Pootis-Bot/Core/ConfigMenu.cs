@@ -1,4 +1,5 @@
 ﻿using System;
+using Pootis_Bot.Core.Logging;
 
 namespace Pootis_Bot.Core
 {
@@ -10,7 +11,7 @@ namespace Pootis_Bot.Core
 		/// <param name="isFirstStartUp">Forces the user to set a token</param>
 		public void OpenConfig(bool isFirstStartUp = false)
 		{
-			Global.Log("Entering config menu...");
+			Logger.Log("Entering config menu...");
 
 			Console.WriteLine("");
 			Console.WriteLine("---------------------------------------------------------");
@@ -75,8 +76,8 @@ namespace Pootis_Bot.Core
 
 						//The token was modified, and it isn't the first startup, so alert the user they need to restart the bot for the new token to take effect
 						if (!isFirstStartUp && tokenResult.WasModified)
-							Global.Log("For the bot to use the new token you must restart the bot!",
-								ConsoleColor.Yellow);
+							Logger.Log("For the bot to use the new token you must restart the bot!",
+								LogVerbosity.Warn);
 
 						//Set the new prefix
 						if (prefixResult.WasModified) Global.BotPrefix = Config.bot.BotPrefix;
@@ -92,11 +93,11 @@ namespace Pootis_Bot.Core
 						if (somethingWasModified)
 						{
 							Config.SaveConfig();
-							Global.Log("Config has been saved! Exited out of the config menu.");
+							Logger.Log("Config has been saved! Exited out of the config menu.");
 						}
 						else
 						{
-							Global.Log("Nothing was changed, so nothing was saved! Exited out of the config menu.");
+							Logger.Log("Nothing was changed, so nothing was saved! Exited out of the config menu.");
 						}
 
 						return;

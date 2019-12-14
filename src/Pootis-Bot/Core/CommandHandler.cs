@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -55,9 +56,9 @@ namespace Pootis_Bot.Core
 		{
 			foreach (string module in HelpModulesManager.GetHelpModules().SelectMany(helpModule =>
 				helpModule.Modules.Where(module => GetModule(module) == null)))
-				Global.Log(
+				Logger.Log(
 					$"There is no module called {module}! Reset the help modules or fix the help modules in the config file!",
-					ConsoleColor.Red);
+					LogVerbosity.Error);
 		}
 
 		private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -164,7 +165,7 @@ namespace Pootis_Bot.Core
 				//and tell the user an internal error occured so they are not just left blank
 				else if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
 				{
-					Global.Log(result.ErrorReason, ConsoleColor.Red);
+					Logger.Log(result.ErrorReason, LogVerbosity.Error);
 					await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");
 
 					//If the bot owner has ReportErrorsToOwner enabled we will give them a heads up about the error

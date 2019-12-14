@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -51,7 +52,7 @@ namespace Pootis_Bot.Core
 
 		public override void LogMessage(string message, ConsoleColor color)
 		{
-			Global.Log(message, color);
+			Logger.Log(message);
 		}
 
 		private async void ExitCmd()
@@ -60,7 +61,7 @@ namespace Pootis_Bot.Core
 
 			Bot.IsRunning = false;
 
-			Global.Log("Shutting down...");
+			Logger.Log("Shutting down...");
 			await _client.SetGameAsync("Bot shutting down");
 			foreach (ServerMusicItem channel in AudioService.currentChannels)
 			{
@@ -90,7 +91,7 @@ namespace Pootis_Bot.Core
 
 		private static void VersionCmd()
 		{
-			Global.Log($"You are running version {VersionUtils.GetAppVersion()} of Pootis-Bot!");
+			Logger.Log($"You are running version {VersionUtils.GetAppVersion()} of Pootis-Bot!");
 		}
 
 		private static void AboutCmd()
@@ -113,7 +114,7 @@ namespace Pootis_Bot.Core
 
 			await _client.SetGameAsync(Global.BotStatusText, twitch, activity);
 
-			Global.Log($"Bot's game status was set to '{Global.BotStatusText}'");
+			Logger.Log($"Bot's game status was set to '{Global.BotStatusText}'");
 		}
 
 		private async void SetStreamingStatusCmd()
@@ -122,7 +123,7 @@ namespace Pootis_Bot.Core
 			{
 				Bot.IsStreaming = false;
 				await _client.SetGameAsync(Global.BotStatusText, "");
-				Global.Log("Bot no longer shows streaming status.");
+				Logger.Log("Bot no longer shows streaming status.");
 			}
 			else
 			{
@@ -130,7 +131,7 @@ namespace Pootis_Bot.Core
 				await _client.SetGameAsync(Global.BotStatusText, Config.bot.TwitchStreamingSite,
 					ActivityType.Streaming);
 
-				Global.Log("Bot now shows streaming status.");
+				Logger.Log("Bot now shows streaming status.");
 			}
 		}
 
@@ -156,15 +157,15 @@ namespace Pootis_Bot.Core
 
 			AudioService.currentChannels.Clear();
 
-			Global.Log("Deleting music directory...", ConsoleColor.Blue);
+			Logger.Log("Deleting music directory...", LogVerbosity.Music);
 			if (Directory.Exists("Music/"))
 			{
 				Directory.Delete("Music/", true);
-				Global.Log("Done!", ConsoleColor.Blue);
+				Logger.Log("Done!", LogVerbosity.Music);
 			}
 			else
 			{
-				Global.Log("The music directory doesn't exist!", ConsoleColor.Blue);
+				Logger.Log("The music directory doesn't exist!", LogVerbosity.Music);
 			}
 		}
 
@@ -173,15 +174,15 @@ namespace Pootis_Bot.Core
 			Config.bot.AudioSettings.AudioServicesEnabled = !Config.bot.AudioSettings.AudioServicesEnabled;
 			Config.SaveConfig();
 
-			Global.Log($"The audio service was set to {Config.bot.AudioSettings.AudioServicesEnabled}",
-				ConsoleColor.Blue);
+			Logger.Log($"The audio service was set to {Config.bot.AudioSettings.AudioServicesEnabled}",
+				LogVerbosity.Music);
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
 				AudioCheckService.CheckAudioService();
 		}
 
 		private static async void ForceAudioUpdateCmd()
 		{
-			Global.Log("Updating audio files.", ConsoleColor.Blue);
+			Logger.Log("Updating audio files.", LogVerbosity.Music);
 			foreach (ServerMusicItem channel in AudioService.currentChannels)
 				channel.AudioClient.Dispose();
 
@@ -193,12 +194,12 @@ namespace Pootis_Bot.Core
 			File.Delete("opus.dll");
 
 			AudioCheckService.UpdateAudioFiles();
-			Global.Log("Audio files were updated.", ConsoleColor.Blue);
+			Logger.Log("Audio files were updated.", LogVerbosity.Music);
 		}
 
 		private void StatusCmd()
 		{
-			Global.Log(
+			Logger.Log(
 				$"Bot status: {_client.ConnectionState.ToString()}\nServer count: {_client.Guilds.Count}\nLatency: {_client.Latency}");
 		}
 
@@ -212,25 +213,25 @@ namespace Pootis_Bot.Core
 			HelpModulesManager.ResetHelpModulesToDefault();
 			HelpModulesManager.SaveHelpModules();
 
-			Global.Log("The help modules were reset to there defaults.");
+			Logger.Log("The help modules were reset to there defaults.");
 		}
 
 		private static void SaveConfigCmd()
 		{
 			Config.SaveConfig();
-			Global.Log("Config saved!");
+			Logger.Log("Config saved!");
 		}
 
 		private static void SaveAccountsCmd()
 		{
 			UserAccountsManager.SaveAccounts();
-			Global.Log("User accounts saved!");
+			Logger.Log("User accounts saved!");
 		}
 
 		private static void SaveServersCmd()
 		{
 			ServerListsManager.SaveServerList();
-			Global.Log("Server list saved!");
+			Logger.Log("Server list saved!");
 		}
 	}
 }

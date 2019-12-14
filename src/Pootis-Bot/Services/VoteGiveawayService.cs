@@ -6,6 +6,7 @@ using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 
 namespace Pootis_Bot.Services
 {
@@ -125,7 +126,7 @@ namespace Pootis_Bot.Services
 
 			votes.Add(vote);
 
-			Global.Log($"A vote has started on the guild {guild.Name}({guild.Id})", ConsoleColor.Green);
+			Logger.Log($"A vote has started on the guild {guild.Name}({guild.Id})");
 
 			await Task.Delay(totalTime); // Wait for the vote to finish
 
@@ -140,7 +141,7 @@ namespace Pootis_Bot.Services
 
 			votes.Remove(vote);
 
-			Global.Log($"The vote on {guild.Name}({guild.Id}) has finished.", ConsoleColor.Green);
+			Logger.Log($"The vote on {guild.Name}({guild.Id}) has finished.");
 
 			//Check to make sure no other votes are running.
 			if (votes.Count == 0)

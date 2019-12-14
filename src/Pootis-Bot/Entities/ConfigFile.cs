@@ -71,6 +71,11 @@ namespace Pootis_Bot.Entities
 		public bool ReportGuildEventsToOwner;
 
 		/// <summary>
+		/// Should we put debug messages into the console and log file
+		/// </summary>
+		public bool LogDebugMessages;
+
+		/// <summary>
 		/// What type of formatting we should use for ServerList.json and UserAccounts.json
 		/// </summary>
 		public Formatting ResourceFilesFormatting;

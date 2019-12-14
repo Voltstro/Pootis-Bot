@@ -1,20 +1,21 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Structs.Config;
 
 namespace Pootis_Bot.Core
 {
 	/// <summary>
-	/// Manages the bots config
+	/// Manages the bot's config
 	/// </summary>
 	public static class Config
 	{
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "Config.json";
 
-		private const string ConfigVersion = "11";
+		private const string ConfigVersion = "12";
 
 		public static readonly ConfigFile bot;
 
@@ -30,7 +31,7 @@ namespace Pootis_Bot.Core
 
 				SaveConfig();
 
-				Global.Log("Config.json was created. Is this your first time running?", ConsoleColor.Yellow);
+				Logger.Log("Config.json was created. Is this your first time running?", LogVerbosity.Warn);
 			}
 			else
 			{
@@ -42,7 +43,7 @@ namespace Pootis_Bot.Core
 
 				bot.ConfigVersion = ConfigVersion;
 				SaveConfig();
-				Global.Log("Updated config to version " + ConfigVersion, ConsoleColor.Yellow);
+				Logger.Log("Updated config to version " + ConfigVersion, LogVerbosity.Warn);
 			}
 		}
 
