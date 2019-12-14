@@ -18,6 +18,9 @@ namespace Pootis_Bot.Core.Logging
 		private static Thread _logThread;
 		private static readonly ConcurrentQueue<string> Messages = new ConcurrentQueue<string>();
 
+		/// <summary>
+		/// Initializes the logger
+		/// </summary>
 		public static void InitiateLogger()
 		{
 			if (_logStream == null)
@@ -27,9 +30,11 @@ namespace Pootis_Bot.Core.Logging
 
 				_finalLogName = FinalLogName();
 
+				//Create our StreamWriter
 				_logStream = File.CreateText(LogDirectory + "latest.log");
 				_logStream.AutoFlush = true;
 
+				//Create a new thread for logging the messages
 				_logThread = new Thread(WriteMessages)
 				{
 					Name = "LogThread",
@@ -44,11 +49,19 @@ namespace Pootis_Bot.Core.Logging
 			}
 		}
 
+		/// <summary>
+		/// Shuts down the logger
+		/// </summary>
 		public static void EndLogger()
 		{
 			_endLogger = true;
 		}
 
+		/// <summary>
+		/// Logs a message
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="logVerbosity"></param>
 		public static void Log(string message, LogVerbosity logVerbosity = LogVerbosity.Info)
 		{
 			if (_logStream == null)
@@ -63,6 +76,7 @@ namespace Pootis_Bot.Core.Logging
 			else if(logVerbosity == LogVerbosity.Debug && Config.bot.LogDebugMessages)
 				Messages.Enqueue(formattedMessage);
 
+			//Write to the console depending on log verbosity and settings
 			switch (logVerbosity)
 			{
 				case LogVerbosity.Info:
