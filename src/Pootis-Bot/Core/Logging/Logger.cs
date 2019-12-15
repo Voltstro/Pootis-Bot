@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pootis_Bot.Core.Logging
 {
@@ -15,7 +15,6 @@ namespace Pootis_Bot.Core.Logging
 		private static bool _endLogger;
 
 		private static StreamWriter _logStream;
-		private static Thread _logThread;
 		private static readonly ConcurrentQueue<string> Messages = new ConcurrentQueue<string>();
 
 		/// <summary>
@@ -34,14 +33,8 @@ namespace Pootis_Bot.Core.Logging
 				_logStream = File.CreateText(LogDirectory + "latest.log");
 				_logStream.AutoFlush = true;
 
-				//Create a new thread for logging the messages
-				_logThread = new Thread(WriteMessages)
-				{
-					Name = "LogThread",
-					Priority = ThreadPriority.Lowest,
-					IsBackground = true
-				};
-				_logThread.Start();
+				//Run a new task for logging the messages
+				Task.Run(() => WriteMessages().GetAwaiter().GetResult());
 			}
 			else
 			{
@@ -110,12 +103,18 @@ namespace Pootis_Bot.Core.Logging
 			Console.ForegroundColor = ConsoleColor.White;
 		}
 
-		private static void WriteMessages()
+		private static async Task WriteMessages()
 		{
 			_endLogger = false;
 
 			while (!_endLogger)
 			{
+				if (Messages.Count == 0)
+				{
+					await Task.Delay(100);
+					continue;
+				}
+
 				if(Messages.TryDequeue(out string message))
 					WriteDirect(message);
 			}

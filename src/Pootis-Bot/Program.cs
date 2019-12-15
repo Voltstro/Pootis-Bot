@@ -72,6 +72,7 @@ namespace Pootis_Bot
 			Bot bot = new Bot();
 
 			Logger.Log("Starting the bot...");
+
 			//Start her up!
 			bot.StartBot().GetAwaiter().GetResult();
 		}
