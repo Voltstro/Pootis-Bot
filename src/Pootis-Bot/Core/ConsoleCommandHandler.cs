@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -46,6 +47,7 @@ namespace Pootis_Bot.Core
 			AddCommand("save config", SaveConfigCmd);
 			AddCommand("save accounts", SaveAccountsCmd);
 			AddCommand("save servers", SaveServersCmd);
+			AddCommand("info", Info);
 
 			ConsoleHandleLoop();
 		}
@@ -232,6 +234,19 @@ namespace Pootis_Bot.Core
 		{
 			ServerListsManager.SaveServerList();
 			Logger.Log("Server list saved!");
+		}
+
+		private static void Info()
+		{
+			Logger.Log("==== System Info ====");
+			Logger.Log($" - OS Version:          {Environment.OSVersion}");
+			Logger.Log($" - OS Name:             {RuntimeInformation.OSDescription}");
+			Logger.Log($" - System Architecture: {RuntimeInformation.OSArchitecture}");
+			Logger.Log($" - NET Core:            {RuntimeInformation.FrameworkDescription}");
+			Logger.Log("");
+			Logger.Log("=== Pootis-Bot Info ====");
+			Logger.Log($" - Version:             {VersionUtils.GetAppVersion()}");
+			Logger.Log($" - Discord.Net Version: {VersionUtils.GetDiscordNetVersion()}");
 		}
 	}
 }

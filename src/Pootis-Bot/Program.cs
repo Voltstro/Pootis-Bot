@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
@@ -23,20 +22,6 @@ namespace Pootis_Bot
 		public static void Main()
 		{
 			Logger.InitiateLogger();
-
-			if (Config.bot.LogDebugMessages)
-			{
-				//Put some system info
-				Logger.Log("==== System Info ====", LogVerbosity.Debug);
-				Logger.Log($" - OS Version:          {Environment.OSVersion}", LogVerbosity.Debug);
-				Logger.Log($" - OS Name:             {RuntimeInformation.OSDescription}", LogVerbosity.Debug);
-				Logger.Log($" - System Architecture: {RuntimeInformation.OSArchitecture}", LogVerbosity.Debug);
-				Logger.Log($" - .NET Core:           {RuntimeInformation.FrameworkDescription}", LogVerbosity.Debug);
-
-				Logger.Log("=== Pootis-Bot Info ====", LogVerbosity.Debug);
-				Logger.Log($" - Version:             {VersionUtils.GetAppVersion()}", LogVerbosity.Debug);
-				Logger.Log("", LogVerbosity.Debug);
-			}
 
 			//Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
 			Console.WriteLine(@"__________              __  .__                 __________        __   ");
