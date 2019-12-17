@@ -25,8 +25,6 @@ namespace Pootis_Bot.Core
 			IsRunning = true;
 			Global.BotStatusText = Config.bot.DefaultGameMessage;
 
-			AppDomain.CurrentDomain.ProcessExit += QuitEvent;
-
 			//Make sure the token isn't null or empty, if so open the bot config menu.
 			if (string.IsNullOrEmpty(Global.BotToken)) new ConfigMenu().OpenConfig(true);
 
@@ -87,7 +85,9 @@ namespace Pootis_Bot.Core
 			await new BotCheckServerSettings(_client).CheckConnectedServerSettings();
 			Logger.Log("Bot is now ready and online!");
 
-			new ConsoleCommandHandler(_client).SetupConsole();
+			#pragma warning disable 4014
+			Task.Run(() => new ConsoleCommandHandler(_client).SetupConsole());
+			#pragma warning restore 4014
 		}
 
 		private static Task Log(LogMessage msg)
@@ -130,21 +130,6 @@ namespace Pootis_Bot.Core
 					await Task.Delay(-1); // Just run forever
 				}
 			}
-		}
-
-		private async void QuitEvent(object sender, EventArgs e)
-		{
-			IsRunning = false;
-
-			Logger.EndLogger();
-
-			Global.HttpClient.Dispose();
-
-			if (_client == null) return;
-
-			await _client.LogoutAsync();
-
-			_client.Dispose();
 		}
 	}
 }

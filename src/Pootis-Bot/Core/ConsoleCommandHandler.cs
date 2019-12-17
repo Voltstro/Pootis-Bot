@@ -83,6 +83,13 @@ namespace Pootis_Bot.Core
 				channel.IsPlaying = false;
 			}
 
+			await _client.LogoutAsync();
+			_client.Dispose();
+
+			//Clean up
+			Global.HttpClient.Dispose();
+			Logger.EndLogger();
+
 			Environment.Exit(0);
 		}
 

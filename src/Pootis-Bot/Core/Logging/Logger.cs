@@ -48,6 +48,18 @@ namespace Pootis_Bot.Core.Logging
 		public static void EndLogger()
 		{
 			_endLogger = true;
+
+			while (!Messages.IsEmpty)
+			{
+				Messages.TryDequeue(out string msg);
+				_logStream.WriteLine(msg);
+			}
+
+			_logStream.WriteLine($"Goodbye! Logger shutdown at {Global.TimeNow()} on day {DateTime.Now:MM-dd}");
+
+			_logStream.Dispose();
+
+			File.Copy(LogDirectory + "latest.log", LogDirectory + _finalLogName);
 		}
 
 		/// <summary>
@@ -105,11 +117,9 @@ namespace Pootis_Bot.Core.Logging
 
 		private static async Task WriteMessages()
 		{
-			_endLogger = false;
-
 			while (!_endLogger)
 			{
-				if (Messages.Count == 0)
+				if (Messages.IsEmpty)
 				{
 					await Task.Delay(100);
 					continue;
@@ -118,18 +128,6 @@ namespace Pootis_Bot.Core.Logging
 				if(Messages.TryDequeue(out string message))
 					WriteDirect(message);
 			}
-
-			while (!Messages.IsEmpty)
-			{
-				Messages.TryDequeue(out string message);
-				WriteDirect(message);
-			}
-
-			WriteDirect($"Goodbye! Logger shutdown at {Global.TimeNow()} on day {DateTime.Now:MM-dd}");
-
-			_logStream.Dispose();
-
-			File.Copy(LogDirectory + "latest.log", LogDirectory + _finalLogName);
 
 			static void WriteDirect(string message)
 			{
