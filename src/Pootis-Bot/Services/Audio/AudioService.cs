@@ -212,12 +212,13 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			await Task.Delay(100);
-			
+
 			IAudioClient client = serverList.AudioClient;
 			Process ffmpeg = serverList.FfMpeg = GetFfmpeg(fileLoc);
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.", LogVerbosity.Error);
+				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.",
+					LogVerbosity.Error);
 
 			await using Stream output = ffmpeg.StandardOutput.BaseStream;
 			await using (serverList.Discord = client.CreatePCMStream(AudioApplication.Music))

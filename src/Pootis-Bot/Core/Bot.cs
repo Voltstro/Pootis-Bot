@@ -71,7 +71,7 @@ namespace Pootis_Bot.Core
 			Logger.Log($"The owner of this bot is {Global.BotOwner}", LogVerbosity.Debug);
 
 			//Enable the Steam services if an api key is provided
-			if(!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiSteamKey))
+			if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiSteamKey))
 				SteamService.SetupSteam();
 
 			//Set the bot status to the default game status
@@ -85,9 +85,9 @@ namespace Pootis_Bot.Core
 			await new BotCheckServerSettings(_client).CheckConnectedServerSettings();
 			Logger.Log("Bot is now ready and online!");
 
-			#pragma warning disable 4014
+#pragma warning disable 4014
 			Task.Run(() => new ConsoleCommandHandler(_client).SetupConsole());
-			#pragma warning restore 4014
+#pragma warning restore 4014
 		}
 
 		private static Task Log(LogMessage msg)

@@ -1,9 +1,9 @@
 ﻿using System;
-using SteamWebAPI2.Interfaces;
-using SteamWebAPI2.Utilities;
+using Pootis_Bot.Core;
 using Steam.Models.SteamCommunity;
 using SteamWebAPI2.Exceptions;
-using Pootis_Bot.Core;
+using SteamWebAPI2.Interfaces;
+using SteamWebAPI2.Utilities;
 
 namespace Pootis_Bot.Services
 {

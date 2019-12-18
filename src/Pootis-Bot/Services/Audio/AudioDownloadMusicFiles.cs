@@ -2,16 +2,16 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
 using Discord;
 using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
-using YoutubeExplode;
-using YoutubeExplode.Models.MediaStreams;
+using Microsoft.Win32.SafeHandles;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Google;
+using YoutubeExplode;
+using YoutubeExplode.Models.MediaStreams;
 
 namespace Pootis_Bot.Services.Audio
 {
@@ -100,10 +100,8 @@ namespace Pootis_Bot.Services.Audio
 					_client.DownloadMediaStreamAsync(streamInfo, downloadLocation).GetAwaiter().GetResult();
 
 					if (!isFileMp)
-					{
 						//Convert it to an mp3 file
 						ConvertAudioFileToMp3(downloadLocation, videoLoc + ".mp3");
-					}
 
 					Debug.WriteLine("[Audio Download] Download successful");
 
@@ -113,7 +111,7 @@ namespace Pootis_Bot.Services.Audio
 				{
 					Logger.Log(ex.Message, LogVerbosity.Error);
 					MessageUtils
-						.ModifyMessage(message, $"Sorry but an error occured while playing.")
+						.ModifyMessage(message, "Sorry but an error occured while playing.")
 						.GetAwaiter().GetResult();
 
 					//Log out an error to the owner if they have it enabled
@@ -146,13 +144,9 @@ namespace Pootis_Bot.Services.Audio
 			ffmpeg?.WaitForExit();
 
 			if (File.Exists(fileToConvert))
-			{
 				File.Delete(fileToConvert);
-			}
 			else
-			{
 				throw new FileNotFoundException("File doesn't exist!");
-			}
 
 			Debug.WriteLine("File converted!");
 		}

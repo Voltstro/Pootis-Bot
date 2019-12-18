@@ -20,14 +20,18 @@ namespace Pootis_Bot.Helpers
 		}
 
 		/// <summary>
-		/// Gets <see cref="Discord"/>'s <see cref="AssemblyInformationalVersionAttribute"/> and returns it as a <see cref="string"/>
+		/// Gets <see cref="Discord"/>'s <see cref="AssemblyInformationalVersionAttribute"/> and returns it as a
+		/// <see cref="string"/>
 		/// </summary>
 		/// <returns></returns>
 		public static string GetDiscordNetVersion()
 		{
 			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-			return (from assembly in assemblies where assembly.GetName().Name == "Discord.Net.Core" select assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion).FirstOrDefault();
+			return (from assembly in assemblies
+					where assembly.GetName().Name == "Discord.Net.Core"
+					select assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion)
+				.FirstOrDefault();
 		}
 	}
 }

@@ -61,6 +61,11 @@ namespace Pootis_Bot.Entities
 		public int LevelUpCooldown;
 
 		/// <summary>
+		/// Should we put debug messages into the console and log file
+		/// </summary>
+		public bool LogDebugMessages;
+
+		/// <summary>
 		/// Reports errors to the bot owner
 		/// </summary>
 		public bool ReportErrorsToOwner;
@@ -69,11 +74,6 @@ namespace Pootis_Bot.Entities
 		/// Reports events such as when the bot joins/leaves a guild
 		/// </summary>
 		public bool ReportGuildEventsToOwner;
-
-		/// <summary>
-		/// Should we put debug messages into the console and log file
-		/// </summary>
-		public bool LogDebugMessages;
 
 		/// <summary>
 		/// What type of formatting we should use for ServerList.json and UserAccounts.json

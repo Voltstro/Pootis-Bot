@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Steam.Models.SteamCommunity;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services;
+using Steam.Models.SteamCommunity;
 
 namespace Pootis_Bot.Modules.Steam
 {
@@ -30,9 +30,9 @@ namespace Pootis_Bot.Modules.Steam
 
 				//If the id is 0, then try and get the steam profile using a vanity url search
 				if (id == 0)
-				{
-					id = SteamService.GetSteamIdFromCustomUrl(user.StartsWith("https://steamcommunity.com/id/") ? user.Replace("https://steamcommunity.com/id/", "").ToLower() : user.ToLower());
-				}
+					id = SteamService.GetSteamIdFromCustomUrl(user.StartsWith("https://steamcommunity.com/id/")
+						? user.Replace("https://steamcommunity.com/id/", "").ToLower()
+						: user.ToLower());
 
 				//If the Id is still 0, then their is no Steam profile found
 				if (id == 0)
@@ -43,18 +43,22 @@ namespace Pootis_Bot.Modules.Steam
 				{
 					PlayerSummaryModel userSummary = SteamService.GetSteamUserSummary(id);
 
-					string countryDetails = userSummary.CountryCode != null ? $":flag_{userSummary.CountryCode.ToLower()}: {userSummary.CountryCode}" : "No Country Provided";
-					
-					embed.WithDescription($"[Backpack.tf Profile](https://backpack.tf/u/{userSummary.SteamId}) - [Rep.tf Summary](https://rep.tf/{userSummary.SteamId}) - [Steam Profile](https://steamcommunity.com/profiles/{userSummary.SteamId})");
+					string countryDetails = userSummary.CountryCode != null
+						? $":flag_{userSummary.CountryCode.ToLower()}: {userSummary.CountryCode}"
+						: "No Country Provided";
+
+					embed.WithDescription(
+						$"[Backpack.tf Profile](https://backpack.tf/u/{userSummary.SteamId}) - [Rep.tf Summary](https://rep.tf/{userSummary.SteamId}) - [Steam Profile](https://steamcommunity.com/profiles/{userSummary.SteamId})");
 					embed.AddField("User Profile", $"**Username**: {userSummary.Nickname}\n" +
 					                               $"**Status**: {userSummary.UserStatus}\n" +
 					                               $"**Country**: {countryDetails}\n" +
 					                               $"**Level**: {SteamService.GetSteamUserLevel(id)}", true);
-					
+
 					string accountDetails = $"**Last Logged Off Date**: {userSummary.LastLoggedOffDate}\n";
 
 					if (userSummary.ProfileVisibility == ProfileVisibility.Private ||
-					    userSummary.ProfileVisibility == ProfileVisibility.Unknown || userSummary.ProfileVisibility == ProfileVisibility.FriendsOnly)
+					    userSummary.ProfileVisibility == ProfileVisibility.Unknown ||
+					    userSummary.ProfileVisibility == ProfileVisibility.FriendsOnly)
 						accountDetails += "**Creation Date**: Unknown\n";
 					else
 						accountDetails += $"**Creation Date**: {userSummary.AccountCreatedDate}\n" +
@@ -70,7 +74,8 @@ namespace Pootis_Bot.Modules.Steam
 					if (games?.OwnedGames != null)
 					{
 						//Get all user games and sort them by most played
-						List<OwnedGameModel> sortedGames = games.OwnedGames.ToList().OrderByDescending(x => x.PlaytimeForever).ToList();
+						List<OwnedGameModel> sortedGames =
+							games.OwnedGames.ToList().OrderByDescending(x => x.PlaytimeForever).ToList();
 
 						//Make sure the user has a game on their account
 						if (sortedGames.Count != 0)
@@ -100,17 +105,11 @@ namespace Pootis_Bot.Modules.Steam
 							if (Math.Round(totalAmountOfHours.TotalHours) == 0)
 							{
 								if (games.GameCount == 0 && userSummary.ProfileVisibility == ProfileVisibility.Private)
-								{
 									gameStatus = "Private profile...";
-								}
 								else if (games.GameCount != 0)
-								{
 									gameStatus = "Looks like this person hides their game hours...";
-								}
 								else
-								{
 									gameStatus = "This person has never played a game on Steam... wow...";
-								}
 							}
 							else
 							{
@@ -119,9 +118,10 @@ namespace Pootis_Bot.Modules.Steam
 							}
 
 							embed.AddField("Games", $"**Games Amount**: {games.GameCount}\n{gameStatus}");
-							embed.AddField("Game Specific Hours", $"**Team Fortress 2**: {Math.Round(totalTfHours.TotalHours)}hrs\n" +
-							                                      $"**Counter-Strike: Global Offensive (CS:GO)**: {Math.Round(totalCsHours.TotalHours)}hrs\n" +
-							                                      $"**Dota 2**: {Math.Round(totalDotaHours.TotalHours)}hrs", true);
+							embed.AddField("Game Specific Hours",
+								$"**Team Fortress 2**: {Math.Round(totalTfHours.TotalHours)}hrs\n" +
+								$"**Counter-Strike: Global Offensive (CS:GO)**: {Math.Round(totalCsHours.TotalHours)}hrs\n" +
+								$"**Dota 2**: {Math.Round(totalDotaHours.TotalHours)}hrs", true);
 						}
 					}
 					else

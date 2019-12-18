@@ -69,16 +69,13 @@ namespace Pootis_Bot.Core.Logging
 		/// <param name="logVerbosity"></param>
 		public static void Log(string message, LogVerbosity logVerbosity = LogVerbosity.Info)
 		{
-			if (_logStream == null)
-			{
-				throw new Exception("The log stream hasn't been setup yet!");
-			}
+			if (_logStream == null) throw new Exception("The log stream hasn't been setup yet!");
 
 			string formattedMessage = $"[{Global.TimeNow()} {logVerbosity}] {message}";
 
-			if(logVerbosity != LogVerbosity.Debug)
+			if (logVerbosity != LogVerbosity.Debug)
 				Messages.Enqueue(formattedMessage);
-			else if(logVerbosity == LogVerbosity.Debug && Config.bot.LogDebugMessages)
+			else if (logVerbosity == LogVerbosity.Debug && Config.bot.LogDebugMessages)
 				Messages.Enqueue(formattedMessage);
 
 			//Write to the console depending on log verbosity and settings
@@ -88,10 +85,10 @@ namespace Pootis_Bot.Core.Logging
 					WriteMessageToConsole(formattedMessage, ConsoleColor.White);
 					break;
 				case LogVerbosity.Debug:
-					#if DEBUG
+#if DEBUG
 					Debug.WriteLine(formattedMessage);
-					#endif
-					if(Config.bot.LogDebugMessages)
+#endif
+					if (Config.bot.LogDebugMessages)
 						WriteMessageToConsole(formattedMessage, ConsoleColor.White);
 					break;
 				case LogVerbosity.Error:
@@ -125,7 +122,7 @@ namespace Pootis_Bot.Core.Logging
 					continue;
 				}
 
-				if(Messages.TryDequeue(out string message))
+				if (Messages.TryDequeue(out string message))
 					WriteDirect(message);
 			}
 
