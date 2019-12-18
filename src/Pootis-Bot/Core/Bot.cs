@@ -28,33 +28,33 @@ namespace Pootis_Bot.Core
 			//Make sure the token isn't null or empty, if so open the bot config menu.
 			if (string.IsNullOrEmpty(Global.BotToken)) new ConfigMenu().OpenConfig(true);
 
-			Debug.WriteLine("[Bot] Creating new client...");
+			Logger.Log("Creating new client...", LogVerbosity.Debug);
 
 			_client = new DiscordSocketClient(new DiscordSocketConfig
 			{
 				LogLevel = LogSeverity.Verbose
 			});
 
+			Logger.Log("Setting up events", LogVerbosity.Debug);
+
 			//Setup client events
 			_client.Log += Log;
 			_client.Ready += BotReady;
 
-			Debug.WriteLine("[Bot] Setting up events");
-
 			//Setup the remaining events
 			EventsSetup unused = new EventsSetup(_client);
 
-			Debug.WriteLine("[Bot] Signing in using token...");
+			Logger.Log("Signing in using token...", LogVerbosity.Debug);
 
 			await _client.LoginAsync(TokenType.Bot,
 				Global.BotToken); //Logging into the bot using the token in the config.
 			await _client.StartAsync(); //Start the client
 
-			Debug.WriteLine("[Bot] Sign in successful");
+			Logger.Log("Sign in successful!", LogVerbosity.Debug);
 
 			CommandHandler handler = new CommandHandler(_client);
 
-			Debug.WriteLine("[Bot] Installing commands...");
+			Logger.Log("Installing commands...", LogVerbosity.Debug);
 
 			//Install all the Modules
 			await handler.SetupAsync();
@@ -68,7 +68,7 @@ namespace Pootis_Bot.Core
 			//Bot user
 			Global.BotUser = _client.CurrentUser;
 
-			Debug.WriteLine($"[Bot] The owner of this bot is {Global.BotOwner}");
+			Logger.Log($"The owner of this bot is {Global.BotOwner}", LogVerbosity.Debug);
 
 			//Enable the Steam services if an api key is provided
 			if(!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiSteamKey))
@@ -105,7 +105,7 @@ namespace Pootis_Bot.Core
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
 
-					Debug.WriteLine("[Bot Connection] Checking bot connection status...");
+					Logger.Log("Checking bot connection status...", LogVerbosity.Debug);
 
 					if (_client.ConnectionState != ConnectionState.Disconnected &&
 					    (_client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
