@@ -112,8 +112,14 @@ namespace Pootis_Bot.Core
 
 					Logger.Log("The bot had disconnect for some reason, restarting...", LogVerbosity.Warn);
 
+					IsRunning = false;
+
 					await _client.LogoutAsync();
 					_client.Dispose();
+
+					Logger.EndLogger();
+
+					Global.HttpClient.Dispose();
 
 					ProcessStartInfo newPootisStart = new ProcessStartInfo("dotnet", "Pootis-Bot.dll");
 #pragma warning disable IDE0067 // Dispose objects before losing scope
