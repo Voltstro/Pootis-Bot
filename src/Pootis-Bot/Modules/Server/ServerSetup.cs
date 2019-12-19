@@ -97,6 +97,34 @@ namespace Pootis_Bot.Modules.Server
 			}
 		}
 
+		[Command("togglegoodbyemessage")]
+		[Alias("toggle goodbye message")]
+		[Summary("Enables/Disables the goodbye message")]
+		[RequireGuildOwner]
+		public async Task ToggleGoodbyeMessage()
+		{
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
+
+			if (server.GoodbyeMessageEnabled)
+				server.GoodbyeMessageEnabled = false;
+				
+			else
+			{
+				if (Context.Client.GetChannel(server.WelcomeChannelId) == null)
+				{
+					await Context.Channel.SendMessageAsync("The welcome channel isn't set yet or is invalid!");
+					return;
+				}
+
+				server.GoodbyeMessageEnabled = true;
+			}
+				
+			ServerListsManager.SaveServerList();
+
+			await Context.Channel.SendMessageAsync(
+				$"Goodbye message was set to **{server.GoodbyeMessageEnabled.ToString().ToLower()}**.");
+		}
+
 		[Command("setupwelcomemessage")]
 		[Alias("setup welcome message")]
 		[Summary(

@@ -77,6 +77,11 @@ namespace Pootis_Bot.Entities
 		public string WelcomeMessage { get; set; }
 
 		/// <summary>
+		/// Is the goodbye message enabled?
+		/// </summary>
+		public bool GoodbyeMessageEnabled { get; set; }
+
+		/// <summary>
 		/// The goodbye message
 		/// </summary>
 		public string WelcomeGoodbyeMessage { get; set; }

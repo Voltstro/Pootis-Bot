@@ -38,7 +38,7 @@ namespace Pootis_Bot.Modules.Server
 
 			//Welcome message 
 			string welcometitle = "<:Cross:537572008574189578> Welcome Message Disabled";
-			string welocmedes = "Welcome channel is disabled\n";
+			string welocmedes = "Welcome message is disabled\n";
 			if (server.WelcomeMessageEnabled)
 			{
 				welcometitle = "<:Check:537572054266806292> Welcome Message Enabled";
@@ -47,6 +47,18 @@ namespace Pootis_Bot.Modules.Server
 			}
 
 			embed.AddField(welcometitle, welocmedes);
+
+			//Goodbye message
+			string goodbyeTitle = "<:Cross:537572008574189578> Goodbye Message Disabled";
+			string goodbyeDes = "Goodbye message is disabled\n";
+			if (server.GoodbyeMessageEnabled)
+			{
+				goodbyeTitle = "<:Check:537572054266806292> Goodbye Message Enabled";
+				goodbyeDes =
+					"The goodbye message is enabled and is set to the same channel as the welcome message channel.\n";
+			}
+
+			embed.AddField(goodbyeTitle, goodbyeDes);
 
 			//Rule reaction
 			string rulereactiontitle = "<:Cross:537572008574189578> Rule Reaction Disabled";

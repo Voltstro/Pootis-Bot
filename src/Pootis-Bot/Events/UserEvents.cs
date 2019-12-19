@@ -51,7 +51,7 @@ namespace Pootis_Bot.Events
 		{
 			ServerList server = ServerListsManager.GetServer(user.Guild);
 			if (!user.IsBot)
-				if (server.WelcomeMessageEnabled)
+				if (server.GoodbyeMessageEnabled)
 				{
 					//Format the message
 					string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
