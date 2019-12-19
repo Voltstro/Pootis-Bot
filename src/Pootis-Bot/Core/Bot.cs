@@ -65,9 +65,6 @@ namespace Pootis_Bot.Core
 			//Bot owner
 			Global.BotOwner = (await _client.GetApplicationInfoAsync()).Owner;
 
-			//Bot user
-			Global.BotUser = _client.CurrentUser;
-
 			Logger.Log($"The owner of this bot is {Global.BotOwner}", LogVerbosity.Debug);
 
 			//Enable the Steam services if an api key is provided
@@ -83,6 +80,10 @@ namespace Pootis_Bot.Core
 		{
 			//Check the current connected server settings
 			await new BotCheckServerSettings(_client).CheckConnectedServerSettings();
+
+			//Bot user
+			Global.BotUser = _client.CurrentUser;
+
 			Logger.Log("Bot is now ready and online!");
 
 #pragma warning disable 4014

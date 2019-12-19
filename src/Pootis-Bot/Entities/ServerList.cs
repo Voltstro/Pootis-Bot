@@ -12,6 +12,11 @@ namespace Pootis_Bot.Entities
 		public ulong GuildId { get; set; }
 
 		/// <summary>
+		/// People who are allowed to do owner level commands, the owner of the Discord guild will always override
+		/// </summary>
+		public List<ulong> GuildOwnerIds { get; set; }
+
+		/// <summary>
 		/// How many points to give
 		/// </summary>
 		public uint PointGiveAmount { get; set; }
@@ -144,7 +149,7 @@ namespace Pootis_Bot.Entities
 
 		#endregion
 
-		#region RoleGiveFunctions
+		#region Role Give Functions
 
 		public RoleGive GetRoleGive(string roleGiveName)
 		{
@@ -154,6 +159,19 @@ namespace Pootis_Bot.Entities
 
 			RoleGive roleToRoleMention = result.FirstOrDefault();
 			return roleToRoleMention;
+		}
+
+		#endregion
+
+		#region Guild Owner Functions
+
+		public ulong GetAGuildOwner(ulong id)
+		{
+			IEnumerable<ulong> result = from a in GuildOwnerIds
+				where a == id
+				select a;
+
+			return result.FirstOrDefault();
 		}
 
 		#endregion

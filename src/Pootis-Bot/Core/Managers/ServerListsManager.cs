@@ -58,6 +58,7 @@ namespace Pootis_Bot.Core.Managers
 			ServerList newServer = new ServerList
 			{
 				GuildId = id,
+				GuildOwnerIds = new List<ulong>(),
 				PointGiveAmount = 10,
 				PointsGiveCooldownTime = 15,
 				BannedChannels = new List<ulong>(),

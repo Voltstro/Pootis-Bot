@@ -83,7 +83,7 @@ namespace Pootis_Bot.Modules.Server
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			if (server.GetBannedChannel(channel.Id) == 0)
 			{
-				ServerListsManager.GetServer(Context.Guild).CreateBannedChannel(channel.Id);
+				server.CreateBannedChannel(channel.Id);
 				ServerListsManager.SaveServerList();
 
 				await Context.Channel.SendMessageAsync(
@@ -209,6 +209,70 @@ namespace Pootis_Bot.Modules.Server
 			builder.Append("```");
 
 			await Context.Channel.SendMessageAsync(builder.ToString());
+		}
+
+		[Command("addguildowner")]
+		[Alias("addowner", "add guild owner", "add owner")]
+		[Summary("Adds a guild owner")]
+		[RequireGuildOwner(false)]
+		public async Task AddGuildOwner([Remainder] SocketGuildUser user)
+		{
+			if (user.Id == Context.Guild.OwnerId)
+			{
+				await Context.Channel.SendMessageAsync(
+					"You cannot add the guild's owner! This person will already have access to all owner commands!");
+				return;
+			}
+
+			if (user.IsBot)
+			{
+				await Context.Channel.SendMessageAsync("You cannot add a bot as an owner!");
+				return;
+			}
+
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
+			if (server.GetAGuildOwner(user.Id) != 0)
+			{
+				await Context.Channel.SendMessageAsync($"**{user.Username}** is already a owner!");
+				return;
+			}
+
+			if (!user.GuildPermissions.Administrator)
+			{
+				await Context.Channel.SendMessageAsync($"**{user.Username}** is not an administrator!");
+				return;
+			}
+
+			server.GuildOwnerIds.Add(user.Id);
+			ServerListsManager.SaveServerList();
+
+			await Context.Channel.SendMessageAsync($"The user **{user.Username}** was added as a guild owner.");
+		}
+
+		[Command("removeguildowner")]
+		[Alias("removeowner", "remove guild owner", "remove owner")]
+		[Summary("Removes a guild owner")]
+		[RequireGuildOwner(false)]
+		public async Task RemoveGuildOwner([Remainder] SocketGuildUser user)
+		{
+			if (user.Id == Context.Guild.OwnerId)
+			{
+				await Context.Channel.SendMessageAsync(
+					"You cannot remove the guild's owner! This person will already have access to all owner commands!");
+				return;
+			}
+
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
+			if (server.GetAGuildOwner(user.Id) == 0)
+			{
+				await Context.Channel.SendMessageAsync($"**{user.Username}** isn't an owner!");
+				return;
+			}
+
+			server.GuildOwnerIds.Remove(user.Id);
+			ServerListsManager.SaveServerList();
+
+			await Context.Channel.SendMessageAsync($"The user **{user.Username}** is no longer an owner.");
 		}
 
 		#region Functions
