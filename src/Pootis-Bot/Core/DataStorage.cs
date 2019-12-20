@@ -7,6 +7,12 @@ namespace Pootis_Bot.Core
 {
 	public static class DataStorage
 	{
+		private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+		{
+			DefaultValueHandling = DefaultValueHandling.Ignore,
+			NullValueHandling = NullValueHandling.Ignore
+		};
+
 		/// <summary>
 		/// Checks if a file exists at a path
 		/// </summary>
@@ -26,7 +32,7 @@ namespace Pootis_Bot.Core
 		/// <param name="filePath">Where to save the file</param>
 		public static void SaveUserAccounts(IEnumerable<UserAccount> accounts, string filePath)
 		{
-			string json = JsonConvert.SerializeObject(accounts, Config.bot.ResourceFilesFormatting);
+			string json = JsonConvert.SerializeObject(accounts, Config.bot.ResourceFilesFormatting, JsonSerializerSettings);
 			File.WriteAllText(filePath, json);
 		}
 
@@ -53,7 +59,7 @@ namespace Pootis_Bot.Core
 		/// <param name="filePath">Where to save to</param>
 		public static void SaveServerList(IEnumerable<ServerList> serverLists, string filePath)
 		{
-			string json = JsonConvert.SerializeObject(serverLists, Config.bot.ResourceFilesFormatting, new JsonSerializerSettings{ DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore});
+			string json = JsonConvert.SerializeObject(serverLists, Config.bot.ResourceFilesFormatting, JsonSerializerSettings);
 			File.WriteAllText(filePath, json);
 		}
 
