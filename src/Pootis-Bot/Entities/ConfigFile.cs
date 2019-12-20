@@ -31,7 +31,7 @@ namespace Pootis_Bot.Entities
 		public string TwitchStreamingSite { get; set; }
 
 		/// <summary>
-		/// Whether or not we should check to see if we are still connected
+		/// Should we check to see if we are still connected periodically
 		/// </summary>
 		public bool CheckConnectionStatus { get; set; }
 
@@ -71,7 +71,7 @@ namespace Pootis_Bot.Entities
 		public bool ReportGuildEventsToOwner { get; set; }
 
 		/// <summary>
-		/// What type of formatting we should use for ServerList.json and UserAccounts.json
+		/// What type of formatting should we use for ServerList.json and UserAccounts.json
 		/// </summary>
 		public Formatting ResourceFilesFormatting { get; set; }
 
