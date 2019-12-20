@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Pootis_Bot.Structs.Server;
 
@@ -64,12 +65,12 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Do we have custom welcome/goodbye messages enabled
 		/// </summary>
-		public bool WelcomeMessageEnabled { get; set; }
+		[DefaultValue(false)] public bool WelcomeMessageEnabled { get; set; }
 
 		/// <summary>
 		/// What is the channel id were we put the messages
 		/// </summary>
-		public ulong WelcomeChannelId { get; set; }
+		[DefaultValue(0)] public ulong WelcomeChannelId { get; set; }
 
 		/// <summary>
 		/// The welcome message
@@ -79,7 +80,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Is the goodbye message enabled?
 		/// </summary>
-		public bool GoodbyeMessageEnabled { get; set; }
+		[DefaultValue(false)] public bool GoodbyeMessageEnabled { get; set; }
 
 		/// <summary>
 		/// The goodbye message
@@ -89,7 +90,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Is the rule reaction feature enabled?
 		/// </summary>
-		public bool RuleEnabled { get; set; }
+		[DefaultValue(false)] public bool RuleEnabled { get; set; }
 
 		/// <summary>
 		/// What is the message that needs to be reacted

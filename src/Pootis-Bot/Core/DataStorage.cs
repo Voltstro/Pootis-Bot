@@ -53,7 +53,7 @@ namespace Pootis_Bot.Core
 		/// <param name="filePath">Where to save to</param>
 		public static void SaveServerList(IEnumerable<ServerList> serverLists, string filePath)
 		{
-			string json = JsonConvert.SerializeObject(serverLists, Config.bot.ResourceFilesFormatting);
+			string json = JsonConvert.SerializeObject(serverLists, Config.bot.ResourceFilesFormatting, new JsonSerializerSettings{ DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore});
 			File.WriteAllText(filePath, json);
 		}
 
