@@ -39,7 +39,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Command permissions
 		/// </summary>
-		public List<CommandInfo> CommandInfos { get; set; }
+		public List<CommandPermission> CommandPermissions { get; set; }
 
 		/// <summary>
 		/// Role to role mentions
@@ -142,14 +142,14 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns></returns>
-		public CommandInfo GetCommandInfo(string command)
+		public CommandPermission GetCommandInfo(string command)
 		{
-			IEnumerable<CommandInfo> result = from a in CommandInfos
+			IEnumerable<CommandPermission> result = from a in CommandPermissions
 				where a.Command == command
 				select a;
 
-			CommandInfo commandInfo = result.FirstOrDefault();
-			return commandInfo;
+			CommandPermission commandPermission = result.FirstOrDefault();
+			return commandPermission;
 		}
 
 		#endregion
@@ -181,7 +181,7 @@ namespace Pootis_Bot.Entities
 
 		#endregion
 
-		public class CommandInfo
+		public class CommandPermission
 		{
 			/// <summary>
 			/// The name of the command

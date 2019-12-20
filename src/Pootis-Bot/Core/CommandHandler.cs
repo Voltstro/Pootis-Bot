@@ -104,7 +104,7 @@ namespace Pootis_Bot.Core
 				SearchResult cmdSearchResult = _commands.Search(context, argPos);
 				if (!cmdSearchResult.IsSuccess) return;
 
-				ServerList.CommandInfo perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
+				ServerList.CommandPermission perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
 				if (perm != null)
 				{
 					bool doesUserHavePerm = false;

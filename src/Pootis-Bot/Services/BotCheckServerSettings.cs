@@ -142,7 +142,7 @@ namespace Pootis_Bot.Services
 		/// <param name="server"></param>
 		public static void CheckServerPerms(ServerList server)
 		{
-			foreach (ServerList.CommandInfo perm in server.CommandInfos)
+			foreach (ServerList.CommandPermission perm in server.CommandPermissions)
 			{
 				List<ulong> rolesToRemove =
 					perm.Roles.Where(role => _client.GetGuild(server.GuildId).GetRole(role) == null).ToList();

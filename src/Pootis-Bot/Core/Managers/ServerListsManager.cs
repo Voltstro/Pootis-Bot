@@ -63,7 +63,7 @@ namespace Pootis_Bot.Core.Managers
 				PointsGiveCooldownTime = 15,
 				BannedChannels = new List<ulong>(),
 				ServerRolePoints = new List<ServerRolePoints>(),
-				CommandInfos = new List<ServerList.CommandInfo>(),
+				CommandPermissions = new List<ServerList.CommandPermission>(),
 				RoleToRoleMentions = new List<ServerRoleToRoleMention>(),
 				AutoVoiceChannels = new List<ServerVoiceChannel>(),
 				RoleGives = new List<RoleGive>(),

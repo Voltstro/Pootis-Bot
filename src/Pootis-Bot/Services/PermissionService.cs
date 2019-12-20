@@ -66,7 +66,7 @@ namespace Pootis_Bot.Services
 				//The command didn't exist before, so we will create a new one and just add the roles
 				List<ulong> rolesIds = iRoles.Select(iRole => iRole.Id).ToList();
 
-				server.CommandInfos.Add(new ServerList.CommandInfo
+				server.CommandPermissions.Add(new ServerList.CommandPermission
 				{
 					Command = command,
 					Roles = rolesIds
@@ -166,9 +166,9 @@ namespace Pootis_Bot.Services
 		/// <param name="server"></param>
 		public static void RemoveAllCommandsWithNoRoles(ServerList server)
 		{
-			List<ServerList.CommandInfo> cmdsToRemove =
-				server.CommandInfos.Where(command => command.Roles.Count == 0).ToList();
-			foreach (ServerList.CommandInfo command in cmdsToRemove) server.CommandInfos.Remove(command);
+			List<ServerList.CommandPermission> cmdsToRemove =
+				server.CommandPermissions.Where(command => command.Roles.Count == 0).ToList();
+			foreach (ServerList.CommandPermission command in cmdsToRemove) server.CommandPermissions.Remove(command);
 		}
 
 		private bool CanModifyPerm(string command)

@@ -53,7 +53,7 @@ namespace Pootis_Bot.Modules.Server
 
 			sb.Append("**__Permissions__**\n");
 
-			foreach (ServerList.CommandInfo perm in server.CommandInfos)
+			foreach (ServerList.CommandPermission perm in server.CommandPermissions)
 				sb.Append($"__`{perm.Command}`__\nRoles: {FormatRoles(perm.Roles, Context.Guild)}\n\n");
 
 			await Context.Channel.SendMessageAsync(sb.ToString());
