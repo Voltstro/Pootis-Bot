@@ -48,11 +48,11 @@ namespace Pootis_Bot.Modules.Basic
 		[Command("reminds", RunMode = RunMode.Async)]
 		[Summary("Reminds you, duh (In Seconds)")]
 		[Alias("res")]
-		public async Task Remind(int seconds, [Remainder] string remindmsg)
+		public async Task Remind(int seconds, [Remainder] string remindMsg)
 		{
 			await Context.Channel.SendMessageAsync(
-				$"Ok, i will send you the message '{remindmsg}' in {seconds} seconds.");
-			await ReminderService.RemindAsyncSeconds(Context.User, seconds, remindmsg);
+				$"Ok, I will send you the message '{remindMsg}' in {seconds} seconds.");
+			await ReminderService.RemindAsyncSeconds(Context.User, seconds, remindMsg);
 		}
 	}
 }
