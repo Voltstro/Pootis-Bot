@@ -23,11 +23,12 @@ namespace Pootis_Bot.Services.Audio
 		/// <summary>
 		/// Joins a guild voice channel, and sends messages to a text channel on error
 		/// </summary>
-		/// <param name="guild">What guild are we in</param>
-		/// <param name="target">The voice channel we are attempting to join</param>
-		/// <param name="channel">The message channel to log errors in</param>
+		/// <param name="guild"></param>
+		/// <param name="target"></param>
+		/// <param name="channel"></param>
+		/// <param name="userId"></param>
 		/// <returns></returns>
-		public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel)
+		public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel, ulong userId)
 		{
 			if (target == null)
 			{
@@ -38,6 +39,12 @@ namespace Pootis_Bot.Services.Audio
 			ServerMusicItem serverMusic = GetMusicList(guild.Id);
 			if (serverMusic != null)
 			{
+				if (serverMusic.AudioChannel.GetUser(userId) != null)
+				{
+					await channel.SendMessageAsync(":musical_note: I am already in the same audio channel as you!");
+					return;
+				}
+
 				await channel.SendMessageAsync(
 					":musical_note: Sorry, but I am already playing in a different audio channel at the moment.");
 
@@ -147,7 +154,7 @@ namespace Pootis_Bot.Services.Audio
 
 			if (serverList == null)
 			{
-				await JoinAudio(guild, target, channel);
+				await JoinAudio(guild, target, channel, user.Id);
 
 				serverList = GetMusicList(guild.Id);
 			}

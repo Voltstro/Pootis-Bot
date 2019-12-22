@@ -36,7 +36,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.JoinAudio(Context.Guild, ((IVoiceState) Context.User).VoiceChannel, Context.Channel);
+			await _service.JoinAudio(Context.Guild, ((IVoiceState) Context.User).VoiceChannel, Context.Channel, Context.User.Id);
 		}
 
 		[Command("leave", RunMode = RunMode.Async)]
