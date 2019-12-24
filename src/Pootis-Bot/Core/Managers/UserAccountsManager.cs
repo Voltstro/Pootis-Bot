@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Discord.WebSocket;
-using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 
@@ -21,13 +19,6 @@ namespace Pootis_Bot.Core.Managers
 			}
 			else
 			{
-				if (CheckForOldFileName())
-				{
-					Logger.Log("Renamed accounts.json to UserAccounts.json", LogVerbosity.Warn);
-					Accounts = DataStorage.LoadUserAccounts(AccountsFile).ToList();
-					return;
-				}
-
 				Accounts = new List<UserAccount>();
 				SaveAccounts();
 			}
@@ -68,19 +59,6 @@ namespace Pootis_Bot.Core.Managers
 
 			UserAccount account = result.FirstOrDefault() ?? CreateUserAccount(user);
 			return account;
-		}
-
-		//TODO: Remove this in the 1.0.0 release
-		/// <summary>
-		/// Checks for old file name (accounts.json)
-		/// </summary>
-		/// <returns>Returns true if upgraded</returns>
-		private static bool CheckForOldFileName()
-		{
-			if (!DataStorage.SaveExists("Resources/accounts.json")) return false;
-
-			File.Move("Resources/accounts.json", AccountsFile);
-			return true;
 		}
 
 		private static UserAccount CreateUserAccount(SocketGuildUser user)
