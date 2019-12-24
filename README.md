@@ -8,7 +8,7 @@
 [![Discord](https://img.shields.io/badge/Discord-Creepysin-7289da.svg?style=flat-square&logo=discord)](https://discord.creepysin.com) 
 [![YouTube](https://img.shields.io/badge/Youtube-Creepysin-red.svg?style=flat-square&logo=youtube)](https://www.youtube.com/Creepysin)
 
-Pootis-Bot, an all in one, open-source Discord bot written in the C# language using [Discord.NET](https://github.com/RogueException/Discord.Net)
+Pootis-Bot, a multipurpose, open-source Discord bot written in the C# language using [Discord.NET](https://github.com/RogueException/Discord.Net)
 
 # Bot Features
 
