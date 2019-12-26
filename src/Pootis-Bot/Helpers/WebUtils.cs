@@ -24,5 +24,16 @@ namespace Pootis_Bot.Helpers
 
 			return content.ReadAsStringAsync().Result;
 		}
+
+		public static string DownloadString(string url, string scheme, string parameter)
+		{
+			using HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+
+			requestMessage.Headers.Add(scheme, parameter);;
+			using HttpResponseMessage response = Global.HttpClient.SendAsync(requestMessage).Result;
+			using HttpContent content = response.Content;
+
+			return content.ReadAsStringAsync().Result;
+		}
 	}
 }

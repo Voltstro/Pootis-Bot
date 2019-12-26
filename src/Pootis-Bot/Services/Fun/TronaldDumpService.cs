@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Services.Fun
@@ -15,7 +16,7 @@ namespace Pootis_Bot.Services.Fun
 		{
 			try
 			{
-				string json = WebUtils.DownloadString("https://api.tronalddump.io/random/quote");
+				string json = WebUtils.DownloadString("https://api.tronalddump.io/random/quote", "accept", "application/hal+json");
 
 				dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 
@@ -23,6 +24,7 @@ namespace Pootis_Bot.Services.Fun
 			}
 			catch (Exception ex)
 			{
+				Logger.Log($"Error occured while trying to get random Trump Quote: {ex.Message}", LogVerbosity.Error);
 				return "**ERROR**: " + ex.Message;
 			}
 		}
@@ -31,7 +33,7 @@ namespace Pootis_Bot.Services.Fun
 		{
 			try
 			{
-				string json = WebUtils.DownloadString($"https://api.tronalddump.io/search/quote?query={search}");
+				string json = WebUtils.DownloadString($"https://api.tronalddump.io/search/quote?query={search}", "accept", "application/hal+json");
 
 				dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 				if (dataObject._embedded.quotes.Count == 0) return "No quotes found for that search!";
@@ -44,6 +46,7 @@ namespace Pootis_Bot.Services.Fun
 			}
 			catch (Exception ex)
 			{
+				Logger.Log($"Error occured while trying to get Trump Quote: {ex.Message}", LogVerbosity.Error);
 				return "**ERROR**: " + ex.Message;
 			}
 		}
