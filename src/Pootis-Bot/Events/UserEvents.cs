@@ -75,7 +75,7 @@ namespace Pootis_Bot.Events
 				{
 					RestVoiceChannel createdChannel =
 						await after.VoiceChannel.Guild.CreateVoiceChannelAsync(
-							$"{voiceChannel.Name} #" + server.ActiveAutoVoiceChannels.Count + 1, x =>
+							$"{voiceChannel.Name} #" + (server.ActiveAutoVoiceChannels.Count + 1), x =>
 							{
 								x.CategoryId = after.VoiceChannel.CategoryId;
 								x.Bitrate = after.VoiceChannel.Bitrate;
