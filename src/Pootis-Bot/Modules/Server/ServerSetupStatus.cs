@@ -46,7 +46,7 @@ namespace Pootis_Bot.Modules.Server
 					$"Welcome message is enabled and is set to the channel **{((SocketTextChannel) Context.Client.GetChannel(server.WelcomeChannelId)).Name}**\n";
 			}
 
-			embed.AddField(welcometitle, welocmedes);
+			embed.AddField(welcometitle, welocmedes, true);
 
 			//Goodbye message
 			string goodbyeTitle = "<:Cross:537572008574189578> Goodbye Message Disabled";
@@ -58,7 +58,7 @@ namespace Pootis_Bot.Modules.Server
 					"The goodbye message is enabled and is set to the same channel as the welcome message channel.\n";
 			}
 
-			embed.AddField(goodbyeTitle, goodbyeDes);
+			embed.AddField(goodbyeTitle, goodbyeDes, true);
 
 			//Rule reaction
 			string rulereactiontitle = "<:Cross:537572008574189578> Rule Reaction Disabled";
@@ -67,7 +67,7 @@ namespace Pootis_Bot.Modules.Server
 			{
 				rulereactiontitle = "<:Check:537572054266806292> Rule Reaction Enabled";
 				rulereactiondes =
-					$"The rule reaction feature is enabled and is set to the message id '{server.RuleMessageId}' with the emoji '{server.RuleReactionEmoji}'";
+					$"The rule reaction feature is enabled and is set to the message ID '[{server.RuleMessageId}](https://discordapp.com/channels/{Context.Guild.Id}/{server.RuleMessageChannelId}/{server.RuleMessageId})' with the emoji '{server.RuleReactionEmoji}'";
 			}
 
 			embed.AddField(rulereactiontitle, rulereactiondes);
@@ -89,6 +89,8 @@ namespace Pootis_Bot.Modules.Server
 				warningDes += "<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("mute") == null)
 				warningDes += "<:Cross:537572008574189578> The command `mute` doesn't have a permission added to it!\n";
+			if(server.GetCommandInfo("addvcchannel") == null)
+				warningDes += "<:Cross:537572008574189578> The command `addvcchannel` doesn't have a permission added to it!\n";
 			else
 				warningDes = "You have no warnings! :smile:";
 			embed.AddField(warningTitle, warningDes);
