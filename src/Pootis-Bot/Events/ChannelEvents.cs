@@ -23,8 +23,7 @@ namespace Pootis_Bot.Events
 			BotCheckServerSettings.CheckServerActiveVoiceChannels(server);
 
 			//Check the bot's rule message channel
-			//TODO: When you delete a channel, even though its not the channel were the rule message is located, this will still be triggered and disable the rule reaction feature
-			//await BotCheckServerSettings.CheckServerRuleMessageChannel(server);
+			await BotCheckServerSettings.CheckServerRuleMessageChannel(server);
 		}
 	}
 }

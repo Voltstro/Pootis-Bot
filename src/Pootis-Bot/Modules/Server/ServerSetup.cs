@@ -158,7 +158,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("setuprulesmessage")]
-		[Summary("Sets the rules message by the message id. Needs to be in the same channel with the message!")]
+		[Summary("Sets the message that needs to be reacted to. You need to run the command in the same channel were the message is located!")]
 		[Alias("setup rules message")]
 		[RequireGuildOwner]
 		public async Task SetupRuleMessage(ulong id = 0)
@@ -169,21 +169,22 @@ namespace Pootis_Bot.Modules.Server
 				{
 					ServerList server = ServerListsManager.GetServer(Context.Guild);
 					server.RuleMessageId = id;
+					server.RuleMessageChannelId = Context.Channel.Id;
 
 					ServerListsManager.SaveServerList();
 
 					await Context.Channel.SendMessageAsync(
-						$"The rule message was set to the message with the id of **{id}**.");
+						$"The rule message was set to the message with the ID of **{id}**.");
 				}
 				else
 				{
 					await Context.Channel.SendMessageAsync(
-						"That message doesn't exist! Make sure you are in the same channel as were that message is located.");
+						"Cannot find a message with that ID! Make sure you are in the same channel were the message is located.");
 				}
 			}
 			else
 			{
-				await Context.Channel.SendMessageAsync("The rules message was disabled");
+				await Context.Channel.SendMessageAsync("The rules message was disabled.");
 				ServerList server = ServerListsManager.GetServer(Context.Guild);
 				server.RuleMessageId = 0;
 
