@@ -37,16 +37,16 @@ namespace Pootis_Bot.Modules.Server
 			embed.WithCurrentTimestamp();
 
 			//Welcome message 
-			string welcometitle = "<:Cross:537572008574189578> Welcome Message Disabled";
-			string welocmedes = "Welcome message is disabled\n";
+			string welcomeMessageTitle = "<:Cross:537572008574189578> Welcome Message Disabled";
+			string welcomeMessageDescription = "Welcome message is disabled\n";
 			if (server.WelcomeMessageEnabled)
 			{
-				welcometitle = "<:Check:537572054266806292> Welcome Message Enabled";
-				welocmedes =
+				welcomeMessageTitle = "<:Check:537572054266806292> Welcome Message Enabled";
+				welcomeMessageDescription =
 					$"Welcome message is enabled and is set to the channel **{((SocketTextChannel) Context.Client.GetChannel(server.WelcomeChannelId)).Name}**\n";
 			}
 
-			embed.AddField(welcometitle, welocmedes, true);
+			embed.AddField(welcomeMessageTitle, welcomeMessageDescription, true);
 
 			//Goodbye message
 			string goodbyeTitle = "<:Cross:537572008574189578> Goodbye Message Disabled";
@@ -61,39 +61,39 @@ namespace Pootis_Bot.Modules.Server
 			embed.AddField(goodbyeTitle, goodbyeDes, true);
 
 			//Rule reaction
-			string rulereactiontitle = "<:Cross:537572008574189578> Rule Reaction Disabled";
-			string rulereactiondes = "Rule reaction is disabled.\n";
+			string ruleReactionTitle = "<:Cross:537572008574189578> Rule Reaction Disabled";
+			string ruleReactionDescription = "Rule reaction is disabled.\n";
 			if (server.RuleEnabled)
 			{
-				rulereactiontitle = "<:Check:537572054266806292> Rule Reaction Enabled";
-				rulereactiondes =
+				ruleReactionTitle = "<:Check:537572054266806292> Rule Reaction Enabled";
+				ruleReactionDescription =
 					$"The rule reaction feature is enabled and is set to the message ID '[{server.RuleMessageId}](https://discordapp.com/channels/{Context.Guild.Id}/{server.RuleMessageChannelId}/{server.RuleMessageId})' with the emoji '{server.RuleReactionEmoji}'";
 			}
 
-			embed.AddField(rulereactiontitle, rulereactiondes);
+			embed.AddField(ruleReactionTitle, ruleReactionDescription);
 
 			//Warnings for commands
-			string warningTitle = "Warnings";
-			string warningDes = "";
+			const string warningsTitle = "Warnings";
+			string warningsDescription = "";
 			if (server.GetCommandInfo("warn") == null)
-				warningDes += "<:Cross:537572008574189578> The command `warn` doesn't have a permission added to it!\n";
+				warningsDescription += "<:Cross:537572008574189578> The command `warn` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("makewarnable") == null)
-				warningDes +=
+				warningsDescription +=
 					"<:Cross:537572008574189578> The command `makewarnable` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("makenotwarnable") == null)
-				warningDes +=
+				warningsDescription +=
 					"<:Cross:537572008574189578> The command `makenotwarnable` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("ban") == null)
-				warningDes += "<:Cross:537572008574189578> The command `ban` doesn't have a permission added to it!\n";
+				warningsDescription += "<:Cross:537572008574189578> The command `ban` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("kick") == null)
-				warningDes += "<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
+				warningsDescription += "<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("mute") == null)
-				warningDes += "<:Cross:537572008574189578> The command `mute` doesn't have a permission added to it!\n";
+				warningsDescription += "<:Cross:537572008574189578> The command `mute` doesn't have a permission added to it!\n";
 			if(server.GetCommandInfo("addvcchannel") == null)
-				warningDes += "<:Cross:537572008574189578> The command `addvcchannel` doesn't have a permission added to it!\n";
+				warningsDescription += "<:Cross:537572008574189578> The command `addvcchannel` doesn't have a permission added to it!\n";
 			else
-				warningDes = "You have no warnings! :smile:";
-			embed.AddField(warningTitle, warningDes);
+				warningsDescription = "You have no warnings! :smile:";
+			embed.AddField(warningsTitle, warningsDescription);
 
 			embed.WithFooter($"For support see {Global.websiteHome}", Global.BotUser.GetAvatarUrl());
 
@@ -116,7 +116,7 @@ namespace Pootis_Bot.Modules.Server
 			embed.WithTitle("Anti-Spam Setup Status");
 			embed.WithColor(new Color(255, 81, 168));
 			embed.WithDescription(
-				$"<:Menu:537572055760109568> Here is your anti-spam setup status for **{Context.Guild.Name}**.\nSee [here]({Global.websiteServerSetup}) for more help.\n\n");
+				$"<:Menu:537572055760109568> Here is your anti-spam setup status for **{Context.Guild.Name}**.\nSee [here]({Global.websiteServerSetup + "anti-spam/"}) for more help.\n\n");
 			embed.WithThumbnailUrl(Context.Guild.IconUrl);
 			embed.WithCurrentTimestamp();
 
