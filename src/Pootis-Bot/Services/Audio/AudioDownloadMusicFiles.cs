@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Discord;
 using Discord.WebSocket;
 using Google.Apis.YouTube.v3.Data;
@@ -21,6 +22,13 @@ namespace Pootis_Bot.Services.Audio
 
 		private readonly SafeHandle _handle = new SafeFileHandle(IntPtr.Zero, true);
 
+		private readonly CancellationTokenSource _cancellationSource;
+		private readonly CancellationToken _downloadCancellationToken;
+
+		private readonly IUserMessage _message;
+
+		private bool hasFinishedDownloading;
+
 		private bool _disposed;
 
 		public void Dispose()
@@ -34,22 +42,33 @@ namespace Pootis_Bot.Services.Audio
 			if (_disposed)
 				return;
 
+			_cancellationSource.Cancel();
+			if(!hasFinishedDownloading)
+				_message.DeleteAsync().GetAwaiter().GetResult();
+
 			if (disposing)
 				_handle.Dispose();
 
 			_disposed = true;
 		}
 
+		public AudioDownloadMusicFiles(IUserMessage message)
+		{
+			_cancellationSource = new CancellationTokenSource();
+			_downloadCancellationToken = _cancellationSource.Token;
+
+			this._message = message;
+		}
+
 		/// <summary>
 		/// Downloads an audio file using a search string
 		/// </summary>
 		/// <param name="search">The string to search for</param>
-		/// <param name="message">The base message</param>
 		/// <param name="guild"></param>
 		/// <returns></returns>
-		public string DownloadAudio(string search, IUserMessage message, SocketGuild guild)
+		public string DownloadAudio(string search, SocketGuild guild)
 		{
-			MessageUtils.ModifyMessage(message, $":musical_note: Searching YouTube for '{search}'").GetAwaiter()
+			MessageUtils.ModifyMessage(_message, $":musical_note: Searching YouTube for '{search}'").GetAwaiter()
 				.GetResult();
 
 			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString());
@@ -68,6 +87,9 @@ namespace Pootis_Bot.Services.Audio
 					string check = AudioService.SearchAudio(videoTitle);
 					if (!string.IsNullOrWhiteSpace(check)) return videoLoc;
 
+					if (_cancellationSource.IsCancellationRequested)
+						return null;
+
 					//Get the video time
 					TimeSpan videoTime = _client.GetVideoAsync(searchListResponse.Items[0].Id.VideoId).GetAwaiter()
 						.GetResult().Duration;
@@ -75,35 +97,30 @@ namespace Pootis_Bot.Services.Audio
 					//Check to make sure the video doesn't succeeds the max video time
 					if (videoTime.TotalSeconds > Config.bot.AudioSettings.MaxVideoTime.TotalSeconds)
 					{
-						MessageUtils.ModifyMessage(message,
+						MessageUtils.ModifyMessage(_message,
 								$":musical_note: Video succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}")
 							.GetAwaiter().GetResult();
 
 						return null;
 					}
 
-					Debug.WriteLine($"[Audio Download] Downloading {videoLoc}");
-
-					MessageUtils.ModifyMessage(message,
+					MessageUtils.ModifyMessage(_message,
 							$":musical_note: Give me a sec. Downloading **{videoTitle}** from **{searchListResponse.Items[0].Snippet.ChannelTitle}**...")
 						.GetAwaiter().GetResult();
 
 					AudioStreamInfo streamInfo = videoInfo.Audio.WithHighestBitrate();
-					bool isFileMp = false;
-
-					if (streamInfo.Container.GetFileExtension() == ".mp3")
-						isFileMp = true;
+					bool isFileMp = streamInfo.Container.GetFileExtension() == ".mp3";
 
 					string downloadLocation = $"{videoLoc}.{streamInfo.Container.GetFileExtension()}";
 
 					//Download the audio file
-					_client.DownloadMediaStreamAsync(streamInfo, downloadLocation).GetAwaiter().GetResult();
+					_client.DownloadMediaStreamAsync(streamInfo, downloadLocation, null, _downloadCancellationToken).GetAwaiter().GetResult();
 
 					if (!isFileMp)
-						//Convert it to an mp3 file
+						//Convert it to an .mp3 file
 						ConvertAudioFileToMp3(downloadLocation, videoLoc + ".mp3");
 
-					Debug.WriteLine("[Audio Download] Download successful");
+					hasFinishedDownloading = true;
 
 					return videoLoc + ".mp3";
 				}
@@ -111,7 +128,7 @@ namespace Pootis_Bot.Services.Audio
 				{
 					Logger.Log(ex.Message, LogVerbosity.Error);
 					MessageUtils
-						.ModifyMessage(message, "Sorry but an error occured while playing.")
+						.ModifyMessage(_message, "Sorry but an error occured while playing.")
 						.GetAwaiter().GetResult();
 
 					//Log out an error to the owner if they have it enabled
@@ -123,14 +140,14 @@ namespace Pootis_Bot.Services.Audio
 				}
 
 			MessageUtils
-				.ModifyMessage(message,
+				.ModifyMessage(_message,
 					$":musical_note: No result for '{search}' were found on YouTube, try typing in something different.")
 				.GetAwaiter().GetResult();
 
 			return null;
 		}
 
-		private static void ConvertAudioFileToMp3(string fileToConvert, string fileLocation)
+		private void ConvertAudioFileToMp3(string fileToConvert, string fileLocation)
 		{
 			Debug.WriteLine($"Converting {fileToConvert} to {fileLocation}...");
 
@@ -141,7 +158,20 @@ namespace Pootis_Bot.Services.Audio
 				CreateNoWindow = true
 			});
 
-			ffmpeg?.WaitForExit();
+			while (ffmpeg != null && !ffmpeg.HasExited)
+			{
+				if (_downloadCancellationToken.IsCancellationRequested)
+				{
+					ffmpeg.Kill(true);
+					ffmpeg.Dispose();
+					File.Delete(fileLocation);
+					File.Delete(fileToConvert);
+
+					return;
+				}
+
+				Thread.Sleep(100);
+			}
 
 			if (File.Exists(fileToConvert))
 				File.Delete(fileToConvert);

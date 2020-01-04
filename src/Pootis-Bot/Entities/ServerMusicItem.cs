@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Discord.Audio;
 using Discord.WebSocket;
+using Pootis_Bot.Services.Audio;
 
 namespace Pootis_Bot.Entities
 {
@@ -20,6 +21,11 @@ namespace Pootis_Bot.Entities
 		/// Are we ending the current song
 		/// </summary>
 		public bool IsExit { get; set; }
+
+		/// <summary>
+		/// The active <see cref="AudioDownloadMusicFiles"/>
+		/// </summary>
+		public AudioDownloadMusicFiles AudioMusicFilesDownloader { get; set; }
 
 		/// <summary>
 		/// The current <see cref="IAudioClient"/>
