@@ -27,9 +27,9 @@ namespace Pootis_Bot.Services.Audio
 		/// <param name="guild"></param>
 		/// <param name="target"></param>
 		/// <param name="channel"></param>
-		/// <param name="userId"></param>
+		/// <param name="user"></param>
 		/// <returns></returns>
-		public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel, ulong userId)
+		public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel, IUser user)
 		{
 			if (target == null)
 			{
@@ -40,7 +40,7 @@ namespace Pootis_Bot.Services.Audio
 			ServerMusicItem serverMusic = GetMusicList(guild.Id);
 			if (serverMusic != null)
 			{
-				if (serverMusic.AudioChannel.GetUser(userId) != null)
+				if (serverMusic.AudioChannel.GetUser(user.Id) != null)
 				{
 					await channel.SendMessageAsync(":musical_note: I am already in the same audio channel as you!");
 					return;
@@ -98,10 +98,10 @@ namespace Pootis_Bot.Services.Audio
 			{
 				serverList.FfMpeg.Kill();
 				serverList.FfMpeg.Dispose();
-			}
 
-			//Just wait a moment
-			await Task.Delay(1000);
+				//Just wait a moment
+				await Task.Delay(1000);
+			}
 
 			await serverList.AudioClient.StopAsync();
 
@@ -156,7 +156,7 @@ namespace Pootis_Bot.Services.Audio
 
 			if (serverMusicList == null)
 			{
-				await JoinAudio(guild, target, channel, user.Id);
+				await JoinAudio(guild, target, channel, user);
 
 				serverMusicList = GetMusicList(guild.Id);
 			}
