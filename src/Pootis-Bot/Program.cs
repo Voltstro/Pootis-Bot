@@ -5,7 +5,7 @@ using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio;
 
-//Pootis-Bot, Created by Creepysin 2018-2019.
+//Pootis-Bot, Created by Creepysin 2018-2020.
 //Licensed under the MIT license
 //
 //Special Thanks:

@@ -79,17 +79,17 @@ namespace Pootis_Bot.Core
 		public static string BotStatusText;
 
 		/// <summary>
-		/// The bot owner account
+		/// The bot owner's <see cref="IUser"/> account
 		/// </summary>
 		public static IUser BotOwner;
 
 		/// <summary>
-		/// The bot's logged in account
+		/// The bot's logged in <see cref="IUser"/> account
 		/// </summary>
 		public static IUser BotUser;
 
 		/// <summary>
-		/// Global HTTP client
+		/// Global <see cref="System.Net.Http.HttpClient"/>
 		/// </summary>
 		public static HttpClient HttpClient;
 
