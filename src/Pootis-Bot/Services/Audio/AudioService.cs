@@ -11,6 +11,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Services.Audio
 {
@@ -60,7 +61,8 @@ namespace Pootis_Bot.Services.Audio
 				IsExit = false,
 				AudioClient = audio,
 				AudioChannel = (SocketVoiceChannel) target,
-				StartChannel = (ISocketMessageChannel) channel
+				StartChannel = (ISocketMessageChannel) channel,
+				AudioMusicFilesDownloader = null
 			};
 
 			currentChannels.Add(item);
@@ -213,9 +215,6 @@ namespace Pootis_Bot.Services.Audio
 					serverMusicList.FfMpeg.Dispose();
 
 					await serverMusicList.Discord.FlushAsync();
-
-					//Wait a moment
-					await Task.Delay(100);
 				}
 			}
 			catch (Exception ex)
@@ -231,7 +230,7 @@ namespace Pootis_Bot.Services.Audio
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
 				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.",
-					LogVerbosity.Error);
+					LogVerbosity.Music);
 
 			await using Stream output = ffmpeg.StandardOutput.BaseStream;
 			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music))
@@ -239,14 +238,12 @@ namespace Pootis_Bot.Services.Audio
 				serverMusicList.IsPlaying = true;
 				bool fail = false;
 				bool exit = false;
-				int bufferSize = 1024;
+				const int bufferSize = 1024;
 				byte[] buffer = new byte[bufferSize];
 
 				CancellationToken cancellation = new CancellationToken();
 
-				await message.ModifyAsync(x => { x.Content = $":musical_note: Now playing **{fileName}**."; });
-
-				//await channel.SendMessageAsync($":musical_note: Now playing **{fileName}**.");
+				await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{fileName}**.");
 
 				serverMusicList.IsExit = false;
 

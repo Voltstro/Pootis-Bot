@@ -27,7 +27,7 @@ namespace Pootis_Bot.Services.Audio
 
 		private readonly IUserMessage _message;
 
-		private bool hasFinishedDownloading;
+		private bool _hasFinishedDownloading;
 
 		private bool _disposed;
 
@@ -43,7 +43,7 @@ namespace Pootis_Bot.Services.Audio
 				return;
 
 			_cancellationSource.Cancel();
-			if(!hasFinishedDownloading)
+			if(!_hasFinishedDownloading)
 				_message.DeleteAsync().GetAwaiter().GetResult();
 
 			if (disposing)
@@ -83,9 +83,14 @@ namespace Pootis_Bot.Services.Audio
 						AudioCheckService.RemovedNotAllowedChars(searchListResponse.Items[0].Snippet.Title);
 					string videoLoc = $"Music/{videoTitle}";
 
-					//Do a second check to see if we have already have that video
-					string check = AudioService.SearchAudio(videoTitle);
-					if (!string.IsNullOrWhiteSpace(check)) return videoLoc;
+					//Search again, except this time we will use the exact video title
+					string secondSearch = AudioService.SearchAudio(videoTitle);
+					if (!string.IsNullOrWhiteSpace(secondSearch))
+					{
+						_hasFinishedDownloading = true; //Set this to true anyway, so when disposing it doesn't delete the message
+
+						return videoLoc + ".mp3";
+					}
 
 					if (_cancellationSource.IsCancellationRequested)
 						return null;
@@ -120,7 +125,10 @@ namespace Pootis_Bot.Services.Audio
 						//Convert it to an .mp3 file
 						ConvertAudioFileToMp3(downloadLocation, videoLoc + ".mp3");
 
-					hasFinishedDownloading = true;
+					if (_cancellationSource.IsCancellationRequested)
+						return null;
+
+					_hasFinishedDownloading = true;
 
 					return videoLoc + ".mp3";
 				}
