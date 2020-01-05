@@ -5,18 +5,32 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Helpers
 {
+	/// <summary>
+	/// Provides some basic functions for interacting with the <see cref="Global.HttpClient"/>
+	/// </summary>
 	public static class WebUtils
 	{
-		public static async Task DownloadFileAsync(string url, string fileName)
+		/// <summary>
+		/// Downloads a file from the internet
+		/// </summary>
+		/// <param name="url">The url of the file you want to download</param>
+		/// <param name="filePath">The full file path (including name) of where you want to place the downloaded file</param>
+		/// <returns></returns>
+		public static async Task DownloadFileAsync(string url, string filePath)
 		{
 			using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
 			await using Stream contentStream =
 					await (await Global.HttpClient.SendAsync(request)).Content.ReadAsStreamAsync(),
-				stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
+				stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
 
 			await contentStream.CopyToAsync(stream);
 		}
 
+		/// <summary>
+		/// Download and returns a string
+		/// </summary>
+		/// <param name="url">The url of the string you want to download</param>
+		/// <returns></returns>
 		public static string DownloadString(string url)
 		{
 			using HttpResponseMessage response = Global.HttpClient.GetAsync(url).Result;
@@ -25,11 +39,18 @@ namespace Pootis_Bot.Helpers
 			return content.ReadAsStringAsync().Result;
 		}
 
+		/// <summary>
+		/// Downloads and returns a string (but with a header)
+		/// </summary>
+		/// <param name="url">The url of the string you want to download</param>
+		/// <param name="scheme">The name of scheme of the header</param>
+		/// <param name="parameter">The value you want that header to have</param>
+		/// <returns></returns>
 		public static string DownloadString(string url, string scheme, string parameter)
 		{
 			using HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
 
-			requestMessage.Headers.Add(scheme, parameter);;
+			requestMessage.Headers.Add(scheme, parameter);
 			using HttpResponseMessage response = Global.HttpClient.SendAsync(requestMessage).Result;
 			using HttpContent content = response.Content;
 
