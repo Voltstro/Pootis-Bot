@@ -40,7 +40,7 @@ namespace Pootis_Bot.Modules.Audio
 		}
 
 		[Command("leave", RunMode = RunMode.Async)]
-		[Summary("Leaves the current voice channel thats it in")]
+		[Summary("Leaves the current voice channel that the bot is it in")]
 		public async Task LeaveCmd()
 		{
 			if (!Config.bot.AudioSettings.AudioServicesEnabled) //Check to see if the audio service is enabled 

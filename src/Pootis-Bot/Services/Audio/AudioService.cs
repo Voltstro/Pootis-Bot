@@ -22,12 +22,12 @@ namespace Pootis_Bot.Services.Audio
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
 
 		/// <summary>
-		/// Joins a guild voice channel, and sends messages to a text channel on error
+		/// Joins a voice channel
 		/// </summary>
-		/// <param name="guild"></param>
-		/// <param name="target"></param>
-		/// <param name="channel"></param>
-		/// <param name="user"></param>
+		/// <param name="guild">The <see cref="IGuild"/> where the voice channel is in</param>
+		/// <param name="target">The target <see cref="IVoiceChannel"/> to join</param>
+		/// <param name="channel">The <see cref="IMessageChannel"/> to log messages to</param>
+		/// <param name="user">The <see cref="IUser"/> who requested this command</param>
 		/// <returns></returns>
 		public async Task JoinAudio(IGuild guild, IVoiceChannel target, IMessageChannel channel, IUser user)
 		{
@@ -54,7 +54,7 @@ namespace Pootis_Bot.Services.Audio
 
 			IAudioClient audio = await target.ConnectAsync(); //Connect to the voice channel
 
-			ServerMusicItem item = new ServerMusicItem //Added it to the currentChannels list
+			ServerMusicItem item = new ServerMusicItem //Add it to the currentChannels list
 			{
 				GuildId = guild.Id,
 				IsPlaying = false,
@@ -69,11 +69,11 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Leaves an audio channel
+		/// Leaves the current voice channel the bot is in
 		/// </summary>
-		/// <param name="guild">The current guild</param>
-		/// <param name="channel">Where the messages are sent</param>
-		/// <param name="user"></param>
+		/// <param name="guild">The <see cref="IGuild"/> where the channel to leave is in</param>
+		/// <param name="channel">The <see cref="IMessageChannel"/> to log messages to</param>
+		/// <param name="user">The <see cref="IUser"/> who requested this command</param>
 		/// <returns></returns>
 		public async Task LeaveAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
@@ -85,7 +85,7 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			//Check to see if the user is in the playing audio channel
+			//Check to see if the user is in the playing voice channel
 			if (serverList.AudioChannel.GetUser(user.Id) == null)
 			{
 				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
@@ -94,6 +94,7 @@ namespace Pootis_Bot.Services.Audio
 
 			serverList.IsExit = true;
 
+			//Close ffmpeg if it is running
 			if (serverList.FfMpeg != null)
 			{
 				serverList.FfMpeg.Kill();
@@ -111,11 +112,11 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Leaves the audio channel
+		/// Stops playing the current song
 		/// </summary>
-		/// <param name="guild">The guild of <see cref="channel"/></param>
-		/// <param name="channel">The channel to use for messages</param>
-		/// <param name="user"></param>
+		/// <param name="guild">The guild of <see cref="IMessageChannel"/></param>
+		/// <param name="channel">The <see cref="IMessageChannel"/> to use for messages</param>
+		/// <param name="user">The <see cref="IUser"/> who requested this command</param>
 		/// <returns></returns>
 		public async Task StopAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
@@ -143,17 +144,18 @@ namespace Pootis_Bot.Services.Audio
 		/// <summary>
 		/// Plays a song in a given voice channel
 		/// </summary>
-		/// <param name="guild"></param>
-		/// <param name="channel"></param>
-		/// <param name="target"></param>
-		/// <param name="user"></param>
-		/// <param name="search">The name of the song to play</param>
+		/// <param name="guild">The <see cref="SocketGuild"/> where we are playing in</param>
+		/// <param name="channel">The <see cref="IMessageChannel"/> to log messages to</param>
+		/// <param name="target">The target <see cref="IVoiceChannel"/> to play music in</param>
+		/// <param name="user">The <see cref="IUser"/> who requested this command</param>
+		/// <param name="search">The query to search for</param>
 		/// <returns></returns>
 		public async Task SendAudio(SocketGuild guild, IMessageChannel channel, IVoiceChannel target, IUser user,
 			string search)
 		{
 			ServerMusicItem serverMusicList = GetMusicList(guild.Id);
 
+			//Join the voice channel the user is in if we are already not in a voice channel
 			if (serverMusicList == null)
 			{
 				await JoinAudio(guild, target, channel, user);
@@ -161,13 +163,14 @@ namespace Pootis_Bot.Services.Audio
 				serverMusicList = GetMusicList(guild.Id);
 			}
 
-			//Check to see if the user is in the playing audio channel
+			//Check to see if the user is in the playing voice channel
 			if (serverMusicList.AudioChannel.GetUser(user.Id) == null)
 			{
 				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
 				return;
 			}
 
+			//Make sure the search isn't empty or null
 			if (string.IsNullOrWhiteSpace(search))
 			{
 				await channel.SendMessageAsync("You need to input a search!");
@@ -182,23 +185,25 @@ namespace Pootis_Bot.Services.Audio
 
 			try
 			{
-				fileLoc = SearchAudio(search); //Search for the song in our current music directory
+				fileLoc = SearchAudio(search); //Search for the song in the music directory
 
 				//The search didn't come up with anything, lets attempt to get it from YouTube
 				if (string.IsNullOrWhiteSpace(fileLoc))
 				{
+					//There is already a download going on, so cancel it
 					if (serverMusicList.AudioMusicFilesDownloader != null)
 					{
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
-						await Task.Delay(100); //Wait a moment
+						await Task.Delay(100); //Wait a moment so the previous download can cancel and clean up
 					}
 
+					//Search and download a .mp3 file
 					serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message);
 					string result = serverMusicList.AudioMusicFilesDownloader.DownloadAudio(search, guild);
 					serverMusicList.AudioMusicFilesDownloader.Dispose();
 
 					if (result != null)
-						fileLoc = result;
+						fileLoc = result; //The search was successful and we downloaded the .mp3 for the query
 					else
 						return;
 				}
@@ -206,8 +211,9 @@ namespace Pootis_Bot.Services.Audio
 				Debug.WriteLine(fileLoc);
 
 				string tempName = Path.GetFileName(fileLoc);
-				fileName = tempName.Replace(".mp3", "");
+				fileName = tempName.Replace(".mp3", ""); //This is so we say "Now playing Epic Song" instead of "Now playing Epic Song.mp3"
 
+				//There is already a song playing, cancel it
 				if (serverMusicList.IsPlaying)
 				{
 					//Kill and dispose of ffmpeg
@@ -225,17 +231,19 @@ namespace Pootis_Bot.Services.Audio
 
 			await Task.Delay(100);
 
-			IAudioClient client = serverMusicList.AudioClient;
-			Process ffmpeg = serverMusicList.FfMpeg = GetFfmpeg(fileLoc);
+			IAudioClient client = serverMusicList.AudioClient; //Make a reference to our AudioClient so it is easier
+			Process ffmpeg = serverMusicList.FfMpeg = GetFfmpeg(fileLoc); //Start ffmpeg
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
 				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.",
 					LogVerbosity.Music);
 
-			await using Stream output = ffmpeg.StandardOutput.BaseStream;
-			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music))
+			await using Stream output = ffmpeg.StandardOutput.BaseStream; //ffmpeg base stream
+			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music)) //Create an outgoing pcm stream
 			{
 				serverMusicList.IsPlaying = true;
+				serverMusicList.IsExit = false;
+
 				bool fail = false;
 				bool exit = false;
 				const int bufferSize = 1024;
@@ -245,11 +253,6 @@ namespace Pootis_Bot.Services.Audio
 
 				await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{fileName}**.");
 
-				serverMusicList.IsExit = false;
-
-				//To be completely honest, I don't understand much of this.
-				//Pootis-Bot and the audio services have always been difficult for me.
-				//If anyone could improve upon and explain why their solution is better I would gladly accept it!
 				while (!fail && !exit)
 				{
 					try
@@ -266,6 +269,7 @@ namespace Pootis_Bot.Services.Audio
 							break;
 						}
 
+						//Read our ffmpeg stream
 						int read = await output.ReadAsync(buffer, 0, bufferSize, cancellation);
 						if (read == 0)
 						{
@@ -273,10 +277,12 @@ namespace Pootis_Bot.Services.Audio
 							break;
 						}
 
+						//Write it to the audio out stream
 						await serverMusicList.Discord.WriteAsync(buffer, 0, read, cancellation);
 
 						if (serverMusicList.IsPlaying) continue;
 
+						//For pausing the song
 						do
 						{
 							//Do nothing, wait till is playing is true
@@ -288,7 +294,7 @@ namespace Pootis_Bot.Services.Audio
 					}
 					catch (Exception ex)
 					{
-						await channel.SendMessageAsync($"Sorry an error occured **Error Details**\n{ex.Message}");
+						await channel.SendMessageAsync($"Sorry, but an error occured while playing!");
 
 						if (Config.bot.ReportErrorsToOwner)
 							await Global.BotOwner.SendMessageAsync(
@@ -298,11 +304,11 @@ namespace Pootis_Bot.Services.Audio
 					}
 				}
 
-				//End
 				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
 					Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
 						LogVerbosity.Music);
 
+				//Clean up
 				await serverMusicList.Discord.FlushAsync(cancellation);
 				serverMusicList.Discord.Dispose();
 				serverMusicList.IsPlaying = false;
@@ -311,24 +317,23 @@ namespace Pootis_Bot.Services.Audio
 
 				//Check to make sure that ffmpeg was disposed
 				ffmpeg.Dispose();
-
 				serverMusicList.FfMpeg = null;
 			}
 		}
 
 		/// <summary>
-		/// Pauses audio playback for a voice channel
+		/// Pauses the current music playback
 		/// </summary>
-		/// <param name="guild"></param>
-		/// <param name="channel"></param>
-		/// <param name="user"></param>
+		/// <param name="guild">The <see cref="IGuild"/> that it is in</param>
+		/// <param name="channel">The <see cref="IMessageChannel"/> to log messages to</param>
+		/// <param name="user">The <see cref="IUser"/> who requested the command</param>
 		/// <returns></returns>
 		public async Task PauseAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
 			if (guild == null) return;
 
 			ServerMusicItem musicList = GetMusicList(guild.Id);
-			if (musicList == null)
+			if (musicList == null) //The bot isn't in any voice channels
 			{
 				await channel.SendMessageAsync(":musical_note: There is no music being played!");
 				return;
@@ -341,17 +346,18 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			musicList.IsPlaying = !musicList.IsPlaying; //Toggle pause status
+			//Toggle pause status
+			musicList.IsPlaying = !musicList.IsPlaying; 
 
 			if (musicList.IsPlaying) await channel.SendMessageAsync(":musical_note: Current song has been un-paused.");
 			else await channel.SendMessageAsync(":musical_note: Current song has been paused.");
 		}
 
 		/// <summary>
-		/// Searches the music directory for a downloaded audio file
+		/// Searches music folder for similar or same results to <see cref="search"/>
 		/// </summary>
-		/// <param name="search"></param>
-		/// <returns></returns>
+		/// <param name="search">The name of the song to search for</param>
+		/// <returns>Returns the first found similar or matching result</returns>
 		public static string SearchAudio(string search)
 		{
 			if (!Directory.Exists(MusicDir)) Directory.CreateDirectory(MusicDir);
@@ -363,10 +369,10 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 		/// <summary>
-		/// Gets a process running ffmpeg
+		/// Creates and returns a ffmpeg <see cref="Process"/>
 		/// </summary>
-		/// <param name="path"></param>
-		/// <returns></returns>
+		/// <param name="path">The path of the song to play</param>
+		/// <returns>Returns the newly created ffmpeg <see cref="Process"/></returns>
 		private static Process GetFfmpeg(string path)
 		{
 			return Process.Start(new ProcessStartInfo
@@ -382,10 +388,10 @@ namespace Pootis_Bot.Services.Audio
 
 		#region List Fuctions
 
-		private ServerMusicItem GetMusicList(ulong guildid)
+		private static ServerMusicItem GetMusicList(ulong guildId)
 		{
 			IEnumerable<ServerMusicItem> result = from a in currentChannels
-				where a.GuildId == guildid
+				where a.GuildId == guildId
 				select a;
 
 			ServerMusicItem list = result.FirstOrDefault();
