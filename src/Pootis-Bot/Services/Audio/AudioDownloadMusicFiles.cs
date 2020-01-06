@@ -147,8 +147,12 @@ namespace Pootis_Bot.Services.Audio
 				Logger.Log($"The downloaded video file extension is '{streamInfo.Container.GetFileExtension()}'.", LogVerbosity.Debug);
 				if (streamInfo.Container.GetFileExtension() != _downloadFileContainer)
 				{
-					ConvertAudioFileToMp3(downloadLocation,
-						$"{_downloadLocation}{videoTitle}.{_downloadFileContainer}");
+					if(!ConvertAudioFileToMp3(downloadLocation,
+						$"{_downloadLocation}{videoTitle}.{_downloadFileContainer}"))
+					{
+						MessageUtils.ModifyMessage(_message, "Sorry, but there was an issue downloading the song! Try again later.").GetAwaiter().GetResult();
+						return null;
+					}
 				}
 
 				downloadLocation = $"{_downloadLocation}{videoTitle}.{_downloadFileContainer}";
