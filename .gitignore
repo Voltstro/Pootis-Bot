@@ -29,8 +29,6 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
-# Uncomment if you have tasks that create the project's static files in wwwroot
-#wwwroot/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
@@ -43,22 +41,11 @@ Generated\ Files/
 *.VisualState.xml
 TestResult.xml
 
-# Build Results of an ATL Project
-[Dd]ebugPS/
-[Rr]eleasePS/
-dlldata.c
-
-# Benchmark Results
-BenchmarkDotNet.Artifacts/
-
 # .NET Core
 project.lock.json
 project.fragment.lock.json
 artifacts/
 **/Properties/launchSettings.json
-
-# StyleCop
-StyleCopReport.xml
 
 # Files built by Visual Studio
 *_i.c
@@ -88,34 +75,11 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
-# Chutzpah Test files
-_Chutzpah*
-
-# Visual C++ cache files
-ipch/
-*.aps
-*.ncb
-*.opendb
-*.opensdf
-*.sdf
-*.cachefile
-*.VC.db
-*.VC.VC.opendb
-
 # Visual Studio profiler
 *.psess
 *.vsp
 *.vspx
 *.sap
-
-# Visual Studio Trace Files
-*.e2e
-
-# TFS 2012 Local Workspace
-$tf/
-
-# Guidance Automation Toolkit
-*.gpState
 
 # ReSharper is a .NET coding add-in
 _ReSharper*/
@@ -153,16 +117,6 @@ AutoTest.Net/
 
 # Installshield output folder
 [Ee]xpress/
-
-# DocProject is a documentation generator add-in
-DocProject/buildhelp/
-DocProject/Help/*.HxT
-DocProject/Help/*.HxC
-DocProject/Help/*.hhc
-DocProject/Help/*.hhk
-DocProject/Help/*.hhp
-DocProject/Help/Html2
-DocProject/Help/html
 
 # Click-Once directory
 publish/
@@ -223,17 +177,6 @@ ClientBin/
 *.pfx
 *.publishsettings
 orleans.codegen.cs
-
-# Including strong name files can present a security risk 
-# (https://github.com/github/gitignore/pull/2483#issue-259490424)
-#*.snk
-
-# Since there are multiple workflows, uncomment next line to ignore bower_components
-# (https://github.com/github/gitignore/pull/1529#issuecomment-104372622)
-#bower_components/
-
-# RIA/Silverlight projects
-Generated_Code/
 
 # Backup & report files from converting an old project file
 # to a newer Visual Studio version. Backup files are not needed,
@@ -301,15 +244,8 @@ paket-files/
 __pycache__/
 *.pyc
 
-# Cake - Uncomment if you are using it
-# tools/**
-# !tools/packages.config
-
 # Tabs Studio
 *.tss
-
-# Telerik's JustMock configuration file
-*.jmconfig
 
 # BizTalk build output
 *.btp.cs
@@ -331,4 +267,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
-.DS_Store
+
+# Mac OS
+*.DS_Store
