@@ -119,7 +119,7 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			//Do a search in our music directory using the EXACT title
-			string searchResult = AudioService.SearchAudio(AudioCheckService.RemovedNotAllowedChars(youTubeVideo.Title));
+			string searchResult = AudioService.SearchMusicDirectory(AudioCheckService.RemovedNotAllowedChars(youTubeVideo.Title));
 			if (!string.IsNullOrWhiteSpace(searchResult))
 			{
 				_hasFinishedDownloading =

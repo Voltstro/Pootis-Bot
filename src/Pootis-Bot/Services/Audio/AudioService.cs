@@ -224,7 +224,7 @@ namespace Pootis_Bot.Services.Audio
 					await MessageUtils.ModifyMessage(message,
 						$":musical_note: Searching my audio banks for '{search}'");
 
-					fileLoc = SearchAudio(search);
+					fileLoc = SearchMusicDirectory(search);
 
 					//Search YouTube
 					if (string.IsNullOrWhiteSpace(fileLoc))
@@ -269,7 +269,7 @@ namespace Pootis_Bot.Services.Audio
 			await Task.Delay(100);
 
 			IAudioClient client = serverMusicList.AudioClient; //Make a reference to our AudioClient so it is easier
-			serverMusicList.FfMpeg = GetFfmpeg(fileLoc); //Start ffmpeg
+			serverMusicList.FfMpeg = CreateFfmpeg(fileLoc); //Start ffmpeg
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
 				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.",
@@ -404,7 +404,7 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		/// <param name="search">The name of the song to search for</param>
 		/// <returns>Returns the first found similar or matching result</returns>
-		public static string SearchAudio(string search)
+		public static string SearchMusicDirectory(string search)
 		{
 			if (!Directory.Exists(MusicDir)) Directory.CreateDirectory(MusicDir);
 
@@ -419,7 +419,7 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		/// <param name="path">The path of the song to play</param>
 		/// <returns>Returns the newly created ffmpeg <see cref="Process"/></returns>
-		private static Process GetFfmpeg(string path)
+		private static Process CreateFfmpeg(string path)
 		{
 			return Process.Start(new ProcessStartInfo
 			{
