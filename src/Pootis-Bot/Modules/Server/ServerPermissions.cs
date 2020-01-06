@@ -275,6 +275,27 @@ namespace Pootis_Bot.Modules.Server
 			await Context.Channel.SendMessageAsync($"The user **{user.Username}** is no longer an owner.");
 		}
 
+		[Command("guildowners")]
+		[Alias("guild owners", "listguildowners", "list guild owners")]
+		[Summary("Lists all the owners of the server")]
+		[RequireGuildOwner]
+		public async Task GuildOwners()
+		{
+			ServerList server = ServerListsManager.GetServer(Context.Guild);
+
+			StringBuilder builder = new StringBuilder();
+			builder.Append("__**Guild Owners**__\n```");
+			builder.Append($"{Context.Guild.Owner} (Server Owner)\n");
+
+			foreach (ulong id in server.GuildOwnerIds)
+				builder.Append(
+					$"{Context.Guild.GetUser(id)}\n");
+
+			builder.Append("```");
+
+			await Context.Channel.SendMessageAsync(builder.ToString());
+		}
+
 		#region Functions
 
 		private static string FormatRoles(IEnumerable<ulong> roles, SocketGuild guild)
