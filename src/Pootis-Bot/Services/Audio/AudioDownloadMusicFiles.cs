@@ -58,6 +58,14 @@ namespace Pootis_Bot.Services.Audio
 			_disposed = true;
 		}
 
+		/// <summary>
+		/// A class for downloading audio files so that we can play them with the <see cref="AudioService"/>
+		/// </summary>
+		/// <param name="message">The 'base' message that we will modify over time to tell the user what we are up to</param>
+		/// <param name="guild">The guild that the command was executed in</param>
+		/// <param name="maxVideoTime">The max video length we will download</param>
+		/// <param name="downloadLocation">The place to download to</param>
+		/// <param name="audioFileContainer">The audio files container</param>
 		public AudioDownloadMusicFiles(IUserMessage message, SocketGuild guild, TimeSpan maxVideoTime, string downloadLocation = "Music/", string audioFileContainer = "mp3")
 		{
 			//Setup our cancellation token
@@ -71,6 +79,11 @@ namespace Pootis_Bot.Services.Audio
 			_downloadFileContainer = audioFileContainer;
 		}
 
+		/// <summary>
+		/// Downloads and converts a video to an audio file (Searches videos with title)
+		/// </summary>
+		/// <param name="search">What song we are searching for</param>
+		/// <returns></returns>
 		public string DownloadAudioByTitle(string search)
 		{
 			_hasFinishedDownloading = false;
@@ -84,6 +97,11 @@ namespace Pootis_Bot.Services.Audio
 
 		}
 
+		/// <summary>
+		/// Downloads and converts a video to an audio file (Directly with the video ID)
+		/// </summary>
+		/// <param name="videoId">The video ID</param>
+		/// <returns></returns>
 		public string DownloadAudioById(string videoId)
 		{
 			_hasFinishedDownloading = false;
