@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Discord;
 using Discord.Audio;
 using Discord.WebSocket;
@@ -178,67 +180,102 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			IUserMessage message =
-				await channel.SendMessageAsync($":musical_note: Searching my audio banks for '{search}'");
+				await channel.SendMessageAsync($" Preparing to search for '{search}'");
 
 			string fileLoc;
 			string fileName;
 
 			try
 			{
-				fileLoc = SearchAudio(search); //Search for the song in the music directory
-
-				//The search didn't come up with anything, lets attempt to get it from YouTube
-				if (string.IsNullOrWhiteSpace(fileLoc))
+				//We are downloading a direct URL
+				if (WebUtils.IsStringValidUrl(search))
 				{
-					//There is already a download going on, so cancel it
-					if (serverMusicList.AudioMusicFilesDownloader != null)
+					if (search.Contains("www.youtube.com/"))
 					{
+						await MessageUtils.ModifyMessage(message, ":musical_note: Processing YouTube URL...");
+
+						Uri uri = new Uri(search);
+
+						//Get video ID
+						NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
+
+						string videoId = query.AllKeys.Contains("v") ? query["v"] : uri.Segments.Last();
+
+						if (videoId == "/")
+						{
+							await MessageUtils.ModifyMessage(message, ":musical_note: The imputed URL is not a valid YouTube URL!");
+							return;
+						}
+
+						await StopMusicFileDownloader();
+						serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
+						fileLoc = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
+
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
-						await Task.Delay(100); //Wait a moment so the previous download can cancel and clean up
 					}
-
-					//Search and download a .mp3 file
-					serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message);
-					string result = serverMusicList.AudioMusicFilesDownloader.DownloadAudio(search, guild);
-					serverMusicList.AudioMusicFilesDownloader.Dispose();
-
-					if (result != null)
-						fileLoc = result; //The search was successful and we downloaded the .mp3 for the query
 					else
+					{
+						await MessageUtils.ModifyMessage(message, ":musical_note: The imputed URL is not a YouTube URL!");
 						return;
+					}
+				}
+				else //Search and download normally
+				{
+					await MessageUtils.ModifyMessage(message,
+						$":musical_note: Searching my audio banks for '{search}'");
+
+					fileLoc = SearchAudio(search);
+
+					//Search YouTube
+					if (string.IsNullOrWhiteSpace(fileLoc))
+					{
+						await StopMusicFileDownloader();
+						serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
+						fileLoc = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
+						serverMusicList.AudioMusicFilesDownloader.Dispose();
+					}
 				}
 
-				Debug.WriteLine(fileLoc);
+				if(fileLoc == null)
+					return;
+
+				Logger.Log($"Playing song from {fileLoc}", LogVerbosity.Debug);
 
 				string tempName = Path.GetFileName(fileLoc);
-				fileName = tempName.Replace(".mp3", ""); //This is so we say "Now playing Epic Song" instead of "Now playing Epic Song.mp3"
+				fileName = tempName.Replace(".mp3", ""); //This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
 
 				//There is already a song playing, cancel it
 				if (serverMusicList.IsPlaying)
 				{
-					//Kill and dispose of ffmpeg
-					serverMusicList.FfMpeg.Kill();
-					serverMusicList.FfMpeg.Dispose();
+					serverMusicList.IsExit = true;
+
+					while (serverMusicList.FfMpeg != null)
+					{
+						await Task.Delay(100);
+					}
 
 					await serverMusicList.Discord.FlushAsync();
+
+					//Wait a moment
+					await Task.Delay(100);
 				}
 			}
 			catch (Exception ex)
 			{
-				Logger.Log(ex.Message, LogVerbosity.Error);
+				Logger.Log(ex.ToString(), LogVerbosity.Error);
 				return;
 			}
 
 			await Task.Delay(100);
 
 			IAudioClient client = serverMusicList.AudioClient; //Make a reference to our AudioClient so it is easier
-			Process ffmpeg = serverMusicList.FfMpeg = GetFfmpeg(fileLoc); //Start ffmpeg
+			serverMusicList.FfMpeg = GetFfmpeg(fileLoc); //Start ffmpeg
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
 				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.",
 					LogVerbosity.Music);
 
-			await using Stream output = ffmpeg.StandardOutput.BaseStream; //ffmpeg base stream
+			await using Stream output = serverMusicList.FfMpeg.StandardOutput.BaseStream; //ffmpeg base stream
 			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music)) //Create an outgoing pcm stream
 			{
 				serverMusicList.IsPlaying = true;
@@ -316,8 +353,17 @@ namespace Pootis_Bot.Services.Audio
 				await channel.SendMessageAsync($":musical_note: **{fileName}** ended or was stopped.");
 
 				//Check to make sure that ffmpeg was disposed
-				ffmpeg.Dispose();
+				serverMusicList.FfMpeg.Dispose();
 				serverMusicList.FfMpeg = null;
+			}
+
+			async Task StopMusicFileDownloader()
+			{
+				if (serverMusicList.AudioMusicFilesDownloader != null)
+				{
+					serverMusicList.AudioMusicFilesDownloader.Dispose();
+					await Task.Delay(100); //Wait a moment so the previous download can cancel and clean up
+				}
 			}
 		}
 

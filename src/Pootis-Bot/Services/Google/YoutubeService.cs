@@ -13,13 +13,14 @@ namespace Pootis_Bot.Services.Google
 		/// <param name="search">The string to search for</param>
 		/// <param name="appName"></param>
 		/// <param name="maxResults">The maximum amount of results</param>
+		/// <param name="searchType">The search type</param>
 		/// <returns></returns>
-		public static SearchListResponse Search(string search, string appName, int maxResults = 10)
+		public static SearchListResponse Search(string search, string appName, int maxResults = 10, string searchType = "video,channel")
 		{
-			return SearchYoutube(search, appName, maxResults);
+			return SearchYoutube(search, appName, maxResults, searchType);
 		}
 
-		private static SearchListResponse SearchYoutube(string search, string appName, int maxResults)
+		private static SearchListResponse SearchYoutube(string search, string appName, int maxResults, string searchType)
 		{
 			try
 			{
@@ -37,6 +38,7 @@ namespace Pootis_Bot.Services.Google
 					SearchResource.ListRequest searchListRequest = youtube.Search.List("snippet");
 					searchListRequest.Q = search;
 					searchListRequest.MaxResults = maxResults;
+					searchListRequest.Type = searchType;
 
 					youtubeSearch = searchListRequest.Execute();
 				}
