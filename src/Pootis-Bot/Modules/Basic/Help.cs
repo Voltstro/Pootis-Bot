@@ -36,6 +36,7 @@ namespace Pootis_Bot.Modules.Basic
 			try
 			{
 				StringBuilder builder = new StringBuilder();
+				List<string> existingCommands = new List<string>();
 				builder.Append(
 					$"```# Pootis-Bot Normal Commands```\nFor more help on a specific command do `{Global.BotPrefix}help [command]`.\n");
 
@@ -43,8 +44,13 @@ namespace Pootis_Bot.Modules.Basic
 				foreach (HelpModule helpModule in HelpModulesManager.GetHelpModules())
 				{
 					builder.Append($"\n**{helpModule.Group}** - ");
-					foreach (CommandInfo cmd in helpModule.Modules.SelectMany(module =>
-						_commandHandler.GetModule(module).Commands)) builder.Append($"`{cmd.Name}` ");
+					foreach (CommandInfo command in helpModule.Modules.SelectMany(module => _commandHandler.GetModule(module).Commands))
+					{
+						if (existingCommands.Contains(command.Name)) continue;
+
+						builder.Append($"`{command.Name}` ");
+						existingCommands.Add(command.Name);
+					}
 				}
 
 				await Context.Channel.SendMessageAsync(builder.ToString());
