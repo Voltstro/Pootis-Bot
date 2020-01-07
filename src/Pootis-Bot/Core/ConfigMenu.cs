@@ -121,6 +121,7 @@ namespace Pootis_Bot.Core
 			Console.WriteLine("2 - Youtube API Key");
 			Console.WriteLine("3 - Google API Key");
 			Console.WriteLine("4 - Google Search Id");
+			Console.WriteLine("5 - Steam API Key");
 			Console.WriteLine("");
 			Console.WriteLine("At any time type 'return' to return back to the bot configuration menu.");
 
@@ -128,6 +129,7 @@ namespace Pootis_Bot.Core
 			string youtubeKey = Config.bot.Apis.ApiYoutubeKey;
 			string googleKey = Config.bot.Apis.ApiGoogleSearchKey;
 			string googleSearchId = Config.bot.Apis.GoogleSearchEngineId;
+			string steamKey = Config.bot.Apis.ApiSteamKey;
 
 			while (true)
 			{
@@ -147,6 +149,9 @@ namespace Pootis_Bot.Core
 					case "4":
 						googleSearchId = ConfigEditApiGoogleEngineId();
 						break;
+					case "5":
+						steamKey = ConfigEditApiSteam();
+						break;
 					case "return":
 					{
 						bool isModified = giphyKey != Config.bot.Apis.ApiGiphyKey ||
@@ -154,15 +159,23 @@ namespace Pootis_Bot.Core
 						                  googleKey != Config.bot.Apis.ApiGoogleSearchKey ||
 						                  googleSearchId != Config.bot.Apis.GoogleSearchEngineId;
 
-						if (isModified)
+						bool isSteamKeyModified = steamKey != Config.bot.Apis.ApiSteamKey;
+
+						if (isModified || isSteamKeyModified)
 						{
 							Config.bot.Apis.ApiGiphyKey = giphyKey;
 							Config.bot.Apis.ApiYoutubeKey = youtubeKey;
 							Config.bot.Apis.ApiGoogleSearchKey = googleKey;
 							Config.bot.Apis.GoogleSearchEngineId = googleSearchId;
+							Config.bot.Apis.ApiSteamKey = steamKey;
 
-							Console.WriteLine(
-								"API keys have immediately been updated, but are not saved until the config menu is exited. Exited back to the main config menu.");
+							if (isModified && !isSteamKeyModified)
+								Console.WriteLine("API keys have immediately been updated, but are not saved until the config menu is exited. Exited back to the main config menu.");
+							if (isModified && isSteamKeyModified)
+								Console.WriteLine("Steam API key will not be updated until the bot is restarted. The rest of of keys have been immediately updated, but are not saved(including the Steam key) until the config menu is exited. Exited back to the main config menu.");
+							else
+								Console.WriteLine("The Steam API will continue using the old key until the bot is restarted, the new key it self will be saved when the config menu is exited. Exited back to the main config menu.");
+
 							return new ConfigResult {ResultType = ConfigResult.ResultTypes.Apis, WasModified = true};
 						}
 
@@ -344,6 +357,18 @@ namespace Pootis_Bot.Core
 			Console.WriteLine($"Google Engine ID has been set to `{googleId}`.");
 
 			return googleId;
+		}
+
+		private static string ConfigEditApiSteam()
+		{
+			Console.WriteLine($"The current Steam API key is `{Config.bot.Apis.GoogleSearchEngineId}`.");
+			Console.WriteLine("Enter in a Steam API Key:");
+
+			string steamKey = Console.ReadLine()?.Trim();
+
+			Console.WriteLine($"Steam API Key has been set to `{steamKey}`.");
+
+			return steamKey;
 		}
 
 		#endregion
