@@ -1,6 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Modules.Account;
+using Pootis_Bot.Modules.Audio;
+using Pootis_Bot.Modules.Basic;
+using Pootis_Bot.Modules.Fun;
+using Pootis_Bot.Modules.Steam;
 
 namespace Pootis_Bot.Core.Managers
 {
@@ -55,21 +60,21 @@ namespace Pootis_Bot.Core.Managers
 			HelpModule basic = new HelpModule
 			{
 				Group = "Basic",
-				Modules = new List<string> {"BasicCommands", "Misc"}
+				Modules = new List<string> {nameof(BasicCommands), nameof(Misc)}
 			};
 			helpModules.Add(basic);
 
 			HelpModule utils = new HelpModule
 			{
 				Group = "Utils",
-				Modules = new List<string> {"Utils"}
+				Modules = new List<string> {nameof(Utils)}
 			};
 			helpModules.Add(utils);
 
 			HelpModule account = new HelpModule
 			{
 				Group = "Account",
-				Modules = new List<string> {"AccountDataManagement", "AccountUtils"}
+				Modules = new List<string> {nameof(AccountDataManagement), nameof(AccountUtils)}
 			};
 			helpModules.Add(account);
 
@@ -77,14 +82,14 @@ namespace Pootis_Bot.Core.Managers
 			{
 				Group = "Fun",
 				Modules = new List<string>
-					{"GiphySearch", "GoogleSearch", "YoutubeSearch", "TronaldDump", "RandomPerson", "WikipediaSearch", "SteamUserUtils"}
+					{nameof(GiphySearch), nameof(GoogleSearch), nameof(YoutubeSearch), nameof(WikipediaSearch), nameof(RandomPerson), nameof(TronaldDump), nameof(SteamUserUtils)}
 			};
 			helpModules.Add(fun);
 
 			HelpModule audio = new HelpModule
 			{
 				Group = "Audio",
-				Modules = new List<string> {"Music"}
+				Modules = new List<string> {nameof(Music)}
 			};
 			helpModules.Add(audio);
 
