@@ -224,7 +224,7 @@ namespace Pootis_Bot.Core
 			HelpModulesManager.ResetHelpModulesToDefault();
 			HelpModulesManager.SaveHelpModules();
 
-			Logger.Log("The help modules were reset to there defaults.");
+			Logger.Log("The help modules were reset to their defaults.");
 		}
 
 		private static void SaveConfigCmd()
