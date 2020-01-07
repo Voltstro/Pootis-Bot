@@ -75,9 +75,15 @@ namespace Pootis_Bot.Modules.Basic
 
 			SearchResult result = _cmdService.Search(Context, query);
 			if (result.IsSuccess)
-				foreach (CommandMatch command in result.Commands)
-					embed.AddField(command.Command.Name,
-						$"Summary: {command.Command.Summary}\nAlias: {FormatAliases(command.Command)}\nUsage: `{command.Command.Name} {FormatParms(command.Command)}`");
+			{
+				foreach (CommandMatch commandMatch in result.Commands)
+				{
+					embed.AddField(commandMatch.Command.Name,
+						$"**Summary**: {commandMatch.Command.Summary}\n" +
+						$"**Alias**: {FormatAliases(commandMatch.Command)}\n" +
+						$"**Usage**: `{commandMatch.Command.Name}{FormatParameters(commandMatch.Command)}`");
+				}
+			}
 
 			if (embed.Fields.Count == 0)
 				embed.WithDescription("Nothing was found for " + query);
@@ -85,7 +91,7 @@ namespace Pootis_Bot.Modules.Basic
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
 
-		private string FormatAliases(CommandInfo commandInfo)
+		private static string FormatAliases(CommandInfo commandInfo)
 		{
 			IReadOnlyList<string> aliases = commandInfo.Aliases;
 
@@ -104,23 +110,26 @@ namespace Pootis_Bot.Modules.Basic
 			return format.ToString();
 		}
 
-		private string FormatParms(CommandInfo commandInfo)
+		private static string FormatParameters(CommandInfo commandInfo)
 		{
-			IReadOnlyList<ParameterInfo> parms = commandInfo.Parameters;
+			IReadOnlyList<ParameterInfo> parameters = commandInfo.Parameters;
+			
+			if (parameters.Count == 0)
+				return "";
 
 			StringBuilder format = new StringBuilder();
-			int count = parms.Count;
-			if (count != 0) format.Append("[");
-			int currentCount = 1;
-			foreach (ParameterInfo parm in parms)
+			format.Append(" ");
+
+			for (int i = 0; i < parameters.Count; i++)
 			{
-				format.Append(parm);
+				if (parameters[i].IsOptional && !parameters[i].IsRemainder)
+					format.Append($"[?{parameters[i].Name}]");
+				else
+					format.Append($"[{parameters[i].Name}]");
 
-				if (currentCount != count) format.Append(", ");
-				currentCount += 1;
+				if (i != (parameters.Count - 1))
+					format.Append(" ");
 			}
-
-			if (count != 0) format.Append("]");
 
 			return format.ToString();
 		}
