@@ -65,6 +65,8 @@ namespace Pootis_Bot.Core
 
 			Logger.Log("Shutting down...");
 			await _client.SetGameAsync("Bot shutting down");
+
+			Logger.Log("Stopping audio services...", LogVerbosity.Music);
 			foreach (ServerMusicItem channel in AudioService.currentChannels)
 			{
 				channel.IsExit = true;
@@ -80,7 +82,7 @@ namespace Pootis_Bot.Core
 
 				await channel.AudioClient.StopAsync();
 
-				channel.IsPlaying = false;
+				Logger.Log($"Ended {channel.GuildId} audio session.", LogVerbosity.Debug);
 			}
 
 			await _client.LogoutAsync();
