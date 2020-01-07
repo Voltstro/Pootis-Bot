@@ -180,10 +180,10 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			IUserMessage message =
-				await channel.SendMessageAsync($" Preparing to search for '{search}'");
+				await channel.SendMessageAsync($":musical_note: Preparing to search for '{search}'");
 
-			string fileLoc;
-			string fileName;
+			string songFileLocation;
+			string songName;
 
 			try
 			{
@@ -198,7 +198,6 @@ namespace Pootis_Bot.Services.Audio
 
 						//Get video ID
 						NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
-
 						string videoId = query.AllKeys.Contains("v") ? query["v"] : uri.Segments.Last();
 
 						if (videoId == "/")
@@ -209,7 +208,7 @@ namespace Pootis_Bot.Services.Audio
 
 						await StopMusicFileDownloader();
 						serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
-						fileLoc = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
+						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
 
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
 					}
@@ -224,25 +223,25 @@ namespace Pootis_Bot.Services.Audio
 					await MessageUtils.ModifyMessage(message,
 						$":musical_note: Searching my audio banks for '{search}'");
 
-					fileLoc = SearchMusicDirectory(search);
+					songFileLocation = SearchMusicDirectory(search);
 
 					//Search YouTube
-					if (string.IsNullOrWhiteSpace(fileLoc))
+					if (string.IsNullOrWhiteSpace(songFileLocation))
 					{
 						await StopMusicFileDownloader();
 						serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
-						fileLoc = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
+						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
 					}
 				}
 
-				if(fileLoc == null)
+				if(songFileLocation == null)
 					return;
 
-				Logger.Log($"Playing song from {fileLoc}", LogVerbosity.Debug);
+				Logger.Log($"Playing song from {songFileLocation}", LogVerbosity.Debug);
 
-				string tempName = Path.GetFileName(fileLoc);
-				fileName = tempName.Replace(".mp3", ""); //This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
+				string songFileName = Path.GetFileName(songFileLocation);
+				songName = songFileName.Replace(".mp3", ""); //This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
 
 				//There is already a song playing, cancel it
 				if (serverMusicList.IsPlaying)
@@ -269,13 +268,13 @@ namespace Pootis_Bot.Services.Audio
 			await Task.Delay(100);
 
 			IAudioClient client = serverMusicList.AudioClient; //Make a reference to our AudioClient so it is easier
-			serverMusicList.FfMpeg = CreateFfmpeg(fileLoc); //Start ffmpeg
+			Process ffmpeg = serverMusicList.FfMpeg = CreateFfmpeg(songFileLocation); //Start ffmpeg
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-				Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has started.",
+				Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has started.",
 					LogVerbosity.Music);
 
-			await using Stream output = serverMusicList.FfMpeg.StandardOutput.BaseStream; //ffmpeg base stream
+			await using Stream output = ffmpeg.StandardOutput.BaseStream; //ffmpeg base stream
 			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music)) //Create an outgoing pcm stream
 			{
 				serverMusicList.IsPlaying = true;
@@ -288,7 +287,7 @@ namespace Pootis_Bot.Services.Audio
 
 				CancellationToken cancellation = new CancellationToken();
 
-				await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{fileName}**.");
+				await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{songName}**.");
 
 				while (!fail && !exit)
 				{
@@ -342,7 +341,7 @@ namespace Pootis_Bot.Services.Audio
 				}
 
 				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-					Logger.Log($"The song '{fileName}' on server {guild.Name}({guild.Id}) has stopped.",
+					Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
 						LogVerbosity.Music);
 
 				//Clean up
@@ -350,10 +349,10 @@ namespace Pootis_Bot.Services.Audio
 				serverMusicList.Discord.Dispose();
 				serverMusicList.IsPlaying = false;
 
-				await channel.SendMessageAsync($":musical_note: **{fileName}** ended or was stopped.");
+				await channel.SendMessageAsync($":musical_note: **{songName}** ended or was stopped.");
 
 				//Check to make sure that ffmpeg was disposed
-				serverMusicList.FfMpeg.Dispose();
+				ffmpeg.Dispose();
 				serverMusicList.FfMpeg = null;
 			}
 
