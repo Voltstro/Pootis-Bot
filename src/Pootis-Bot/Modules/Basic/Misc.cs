@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
+using Pootis_Bot.Core;
 using Pootis_Bot.Services;
+using Pootis_Bot.Services.Voting;
 
 namespace Pootis_Bot.Modules.Basic
 {
@@ -11,13 +14,6 @@ namespace Pootis_Bot.Modules.Basic
 		// Original Author  - Creepysin
 		// Description      - Misc commands
 		// Contributors     - Creepysin, 
-
-		private readonly VoteGiveawayService _voteGiveawayService;
-
-		public Misc()
-		{
-			_voteGiveawayService = new VoteGiveawayService();
-		}
 
 		[Command("pick")]
 		[Summary("Picks between two or more things. Separate each choice with a |.")]
@@ -39,10 +35,21 @@ namespace Pootis_Bot.Modules.Basic
 
 		[Command("vote", RunMode = RunMode.Async)]
 		[Summary("Starts a vote")]
-		public async Task Vote(string time, string title, string description, string yesEmoji, string noEmoji)
+		public async Task Vote(string title, string description, TimeSpan time, string yesEmoji, string noEmoji)
 		{
-			await _voteGiveawayService.StartVote(Context.Guild, Context.Channel, Context.User, time, title, description,
-				yesEmoji, noEmoji);
+			if (!Global.ContainsUnicodeCharacter(yesEmoji))
+			{
+				await Context.Channel.SendMessageAsync("Your yes emoji is not a unicode!");
+				return;
+			}
+
+			if (!Global.ContainsUnicodeCharacter(noEmoji))
+			{
+				await Context.Channel.SendMessageAsync("Your no emoji is not a unicode!");
+				return;
+			}
+
+			await VotingService.StartVote(title, description, time, yesEmoji, noEmoji, Context.Guild, Context.Channel, Context.User);
 		}
 
 		[Command("reminds", RunMode = RunMode.Async)]

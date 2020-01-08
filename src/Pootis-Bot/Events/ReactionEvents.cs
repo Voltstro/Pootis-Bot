@@ -7,6 +7,7 @@ using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services;
+using Pootis_Bot.Services.Voting;
 
 namespace Pootis_Bot.Events
 {
@@ -32,15 +33,14 @@ namespace Pootis_Bot.Events
 			}
 			else
 			{
-				if (VoteGiveawayService.IsVoteRunning
-				) // If there is a vote going on then check to make sure the reaction doesn't have anything to do with that.
+				if (reaction.MessageId != 0 && server.GetVote(reaction.MessageId) != null)
 				{
-					foreach (VoteGiveawayService.Vote vote in VoteGiveawayService.votes.Where(vote =>
-						reaction.MessageId == vote.VoteMessageId))
-						if (reaction.Emote.Name == vote.YesEmoji)
-							vote.YesCount++;
-
-						else if (reaction.Emote.Name == vote.NoEmoji) vote.NoCount++;
+					Vote vote = server.GetVote(reaction.MessageId);
+					if (reaction.Emote.Name == vote.YesEmoji)
+						vote.YesCount++;
+					else if(reaction.Emote.Name == vote.NoEmoji)
+						vote.NoCount++;
+					ServerListsManager.SaveServerList();
 				}
 				else
 				{

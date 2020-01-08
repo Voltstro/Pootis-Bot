@@ -25,10 +25,10 @@ namespace Pootis_Bot.Events
 
 		public async Task UserJoined(SocketGuildUser user)
 		{
-			ServerList server = ServerListsManager.GetServer(user.Guild);
-
 			if (!user.IsBot)
 			{
+				ServerList server = ServerListsManager.GetServer(user.Guild);
+
 				//Pre create the user account
 				UserAccountsManager.GetAccount(user);
 				UserAccountsManager.SaveAccounts();
@@ -41,25 +41,47 @@ namespace Pootis_Bot.Events
 					string addServerName = addUserMention.Replace("[server]", user.Guild.Name);
 
 					//Welcomes the new user with the server's message
-					if (_client.GetChannel(server.WelcomeChannelId) is SocketTextChannel channel)
+					SocketTextChannel channel =
+						_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
+
+					if (channel != null)
 						await channel.SendMessageAsync(addServerName);
+					else
+					{
+						server.WelcomeMessageEnabled = false;
+						server.WelcomeChannelId = 0;
+
+						ServerListsManager.SaveServerList();
+					}
 				}
 			}
 		}
 
 		public async Task UserLeft(SocketGuildUser user)
 		{
-			ServerList server = ServerListsManager.GetServer(user.Guild);
 			if (!user.IsBot)
+			{
+				ServerList server = ServerListsManager.GetServer(user.Guild);
 				if (server.GoodbyeMessageEnabled)
 				{
 					//Format the message
 					string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
 
 					//Get the welcome channel and send the message
-					if (_client.GetChannel(server.WelcomeChannelId) is SocketTextChannel channel)
+					SocketTextChannel channel =
+						_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
+
+					if (channel != null)
 						await channel.SendMessageAsync(addUserMention);
+					else
+					{
+						server.WelcomeMessageEnabled = false;
+						server.WelcomeChannelId = 0;
+
+						ServerListsManager.SaveServerList();
+					}
 				}
+			}
 		}
 
 		public async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before,

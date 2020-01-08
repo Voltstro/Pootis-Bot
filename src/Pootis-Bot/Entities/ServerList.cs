@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Pootis_Bot.Services.Voting;
 using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Entities
@@ -111,6 +112,13 @@ namespace Pootis_Bot.Entities
 		/// The emoji that needs to be used
 		/// </summary>
 		public string RuleReactionEmoji { get; set; }
+
+		private List<Vote> _votes;
+		public List<Vote> Votes
+		{
+			get { return _votes ??= new List<Vote>(); }
+			set => _votes = value;
+		}
 
 		/// <summary>
 		/// Anti-spam settings
@@ -318,6 +326,20 @@ namespace Pootis_Bot.Entities
 			ServerRoleToRoleMention roleToRole = new ServerRoleToRoleMention(roleNotMention, role);
 			RoleToRoleMentions.Add(roleToRole);
 			return roleToRole;
+		}
+
+		#endregion
+
+		#region Votes
+
+		public Vote GetVote(ulong messageId)
+		{
+			IEnumerable<Vote> result = from a in Votes
+				where a.VoteMessageId == messageId
+				select a;
+
+			Vote vote = result.FirstOrDefault();
+			return vote;
 		}
 
 		#endregion

@@ -7,6 +7,7 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Services.Voting;
 using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Services
@@ -43,13 +44,20 @@ namespace Pootis_Bot.Services
 					continue;
 				}
 
-
 				await CheckServerWelcomeSettings(server);
 				await CheckServerRuleMessageChannel(server);
 
 				CheckServerVoiceChannels(server);
 				CheckServerActiveVoiceChannels(server);
 				CheckServerPerms(server);
+
+				//Start up all votes
+				foreach (Vote serverVote in server.Votes)
+				{
+#pragma warning disable 4014
+					Task.Run(() => VotingService.RunVote(serverVote, _client.GetGuild(server.GuildId)));
+#pragma warning restore 4014
+				}
 			}
 
 			//Like all the other ones, we remove all the unnecessary servers after to avoid System.InvalidOperationException
