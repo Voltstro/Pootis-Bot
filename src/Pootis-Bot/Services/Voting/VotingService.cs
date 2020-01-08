@@ -111,7 +111,19 @@ namespace Pootis_Bot.Services.Voting
 			IMessage message = await guild.GetTextChannel(vote.VoteMessageChannelId).GetMessageAsync(vote.VoteMessageId);
 			await MessageUtils.ModifyMessage(message as IUserMessage, embed);
 
-			//Remove our vote
+			//Send the user who started the vote a message about their vote is over
+			if (user != null)
+			{
+				EmbedBuilder userDmEmbed = new EmbedBuilder();
+				userDmEmbed.WithTitle("Vote: " + vote.VoteTitle);
+				userDmEmbed.WithDescription($"Your vote that you started on the **{guild.Name}** guild is now over.\n" +
+				                            $"You can see the results [here](https://discordapp.com/channels/{guild.Id}/{vote.VoteMessageChannelId}/{vote.VoteMessageId}).");
+
+				IDMChannel userDm = await user.GetOrCreateDMChannelAsync();
+				await userDm.SendMessageAsync("", false, userDmEmbed.Build());
+			}
+
+			//Remove our vote from the server's vote list
 			ServerListsManager.GetServer(guild).Votes.Remove(vote);
 			ServerListsManager.SaveServerList();
 		}
