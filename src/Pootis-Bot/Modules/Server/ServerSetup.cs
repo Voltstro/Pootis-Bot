@@ -85,7 +85,7 @@ namespace Pootis_Bot.Modules.Server
 				}
 				else
 				{
-					//Set the welcome channel to the inputed one
+					//Set the welcome channel to the imputed one
 					server.WelcomeMessageEnabled = true;
 					server.WelcomeChannelId = channel.Id;
 
@@ -112,7 +112,7 @@ namespace Pootis_Bot.Modules.Server
 			{
 				if (Context.Client.GetChannel(server.WelcomeChannelId) == null)
 				{
-					await Context.Channel.SendMessageAsync("The welcome channel isn't set yet or is invalid!");
+					await Context.Channel.SendMessageAsync("The welcome channel isn't set, or is invalid!");
 					return;
 				}
 
