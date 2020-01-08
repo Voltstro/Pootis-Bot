@@ -161,7 +161,8 @@ namespace Pootis_Bot.Modules.Server
 		[Summary("Sets the message that needs to be reacted to. You need to run the command in the same channel were the message is located!")]
 		[Alias("setup rules message")]
 		[RequireGuildOwner]
-		public async Task SetupRuleMessage(ulong id = 0)
+		[RequireBotPermission(GuildPermission.ManageMessages)]
+		public async Task SetupRuleMessage(ulong id = 0, bool silenceMessage = false)
 		{
 			if (id != 0)
 			{
@@ -173,8 +174,12 @@ namespace Pootis_Bot.Modules.Server
 
 					ServerListsManager.SaveServerList();
 
-					await Context.Channel.SendMessageAsync(
-						$"The rule message was set to the message with the ID of **{id}**.");
+					if (!silenceMessage)
+						await Context.Channel.SendMessageAsync(
+							$"The rule message was set to the message with the ID of **{id}**.");
+					else
+						await Context.Message.DeleteAsync();
+
 				}
 				else
 				{
@@ -184,9 +189,10 @@ namespace Pootis_Bot.Modules.Server
 			}
 			else
 			{
-				await Context.Channel.SendMessageAsync("The rules message was disabled.");
+				await Context.Channel.SendMessageAsync("The rules message was removed.");
 				ServerList server = ServerListsManager.GetServer(Context.Guild);
 				server.RuleMessageId = 0;
+				server.RuleEnabled = false;
 
 				ServerListsManager.SaveServerList();
 			}
@@ -219,6 +225,7 @@ namespace Pootis_Bot.Modules.Server
 		[Alias("toggle rule reaction")]
 		[RequireGuildOwner]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
+		[RequireBotPermission(GuildPermission.AddReactions)]
 		public async Task ToggleRuleReaction()
 		{
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
@@ -245,6 +252,10 @@ namespace Pootis_Bot.Modules.Server
 							server.RuleEnabled = true;
 
 							ServerListsManager.SaveServerList();
+
+							IUserMessage rulesMessage = (IUserMessage) await Context.Guild.GetTextChannel(server.RuleMessageChannelId)
+								.GetMessageAsync(server.RuleMessageId);
+							await rulesMessage.AddReactionAsync(new Emoji(server.RuleReactionEmoji));
 
 							await Context.Channel.SendMessageAsync("The rule reaction feature is enabled.");
 						}
