@@ -10,6 +10,18 @@ namespace Pootis_Bot.Services.Voting
 {
 	public class VotingService
 	{
+		/// <summary>
+		/// Starts and adds a new vote to a server
+		/// </summary>
+		/// <param name="voteTitle"></param>
+		/// <param name="voteDescription"></param>
+		/// <param name="lastTime"></param>
+		/// <param name="yesEmoji"></param>
+		/// <param name="noEmoji"></param>
+		/// <param name="guild"></param>
+		/// <param name="channel"></param>
+		/// <param name="userWhoExecuted"></param>
+		/// <returns></returns>
 		public static async Task StartVote(string voteTitle, string voteDescription, TimeSpan lastTime, string yesEmoji, string noEmoji, SocketGuild guild, IMessageChannel channel, SocketUser userWhoExecuted)
 		{
 			//Setup Emojis
@@ -53,6 +65,12 @@ namespace Pootis_Bot.Services.Voting
 			await RunVote(newVote, guild);
 		}
 
+		/// <summary>
+		/// Executes and waits for a vote to end
+		/// </summary>
+		/// <param name="vote"></param>
+		/// <param name="guild"></param>
+		/// <returns></returns>
 		public static async Task RunVote(Vote vote, SocketGuild guild)
 		{
 			//Get the time difference
