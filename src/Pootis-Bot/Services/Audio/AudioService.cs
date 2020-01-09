@@ -202,19 +202,22 @@ namespace Pootis_Bot.Services.Audio
 
 						if (videoId == "/")
 						{
-							await MessageUtils.ModifyMessage(message, ":musical_note: The imputed URL is not a valid YouTube URL!");
+							await MessageUtils.ModifyMessage(message,
+								":musical_note: The imputed URL is not a valid YouTube URL!");
 							return;
 						}
 
 						await StopMusicFileDownloader();
-						serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
+						serverMusicList.AudioMusicFilesDownloader =
+							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
 						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
 
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
 					}
 					else
 					{
-						await MessageUtils.ModifyMessage(message, ":musical_note: The imputed URL is not a YouTube URL!");
+						await MessageUtils.ModifyMessage(message,
+							":musical_note: The imputed URL is not a YouTube URL!");
 						return;
 					}
 				}
@@ -229,19 +232,21 @@ namespace Pootis_Bot.Services.Audio
 					if (string.IsNullOrWhiteSpace(songFileLocation))
 					{
 						await StopMusicFileDownloader();
-						serverMusicList.AudioMusicFilesDownloader = new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
+						serverMusicList.AudioMusicFilesDownloader =
+							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
 						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
 					}
 				}
 
-				if(songFileLocation == null)
+				if (songFileLocation == null)
 					return;
 
 				Logger.Log($"Playing song from {songFileLocation}", LogVerbosity.Debug);
 
 				string songFileName = Path.GetFileName(songFileLocation);
-				songName = songFileName.Replace(".mp3", ""); //This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
+				songName = songFileName.Replace(".mp3",
+					""); //This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
 
 				//There is already a song playing, cancel it
 				if (serverMusicList.IsPlaying)
@@ -275,7 +280,8 @@ namespace Pootis_Bot.Services.Audio
 					LogVerbosity.Music);
 
 			await using Stream output = ffmpeg.StandardOutput.BaseStream; //ffmpeg base stream
-			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music)) //Create an outgoing pcm stream
+			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music)
+			) //Create an outgoing pcm stream
 			{
 				serverMusicList.IsPlaying = true;
 				serverMusicList.IsExit = false;
@@ -330,7 +336,7 @@ namespace Pootis_Bot.Services.Audio
 					}
 					catch (Exception ex)
 					{
-						await channel.SendMessageAsync($"Sorry, but an error occured while playing!");
+						await channel.SendMessageAsync("Sorry, but an error occured while playing!");
 
 						if (Config.bot.ReportErrorsToOwner)
 							await Global.BotOwner.SendMessageAsync(
@@ -392,7 +398,7 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			//Toggle pause status
-			musicList.IsPlaying = !musicList.IsPlaying; 
+			musicList.IsPlaying = !musicList.IsPlaying;
 
 			if (musicList.IsPlaying) await channel.SendMessageAsync(":musical_note: Current song has been un-paused.");
 			else await channel.SendMessageAsync(":musical_note: Current song has been paused.");

@@ -22,7 +22,8 @@ namespace Pootis_Bot.Services.Voting
 		/// <param name="channel"></param>
 		/// <param name="userWhoExecuted"></param>
 		/// <returns></returns>
-		public static async Task StartVote(string voteTitle, string voteDescription, TimeSpan lastTime, string yesEmoji, string noEmoji, SocketGuild guild, IMessageChannel channel, SocketUser userWhoExecuted)
+		public static async Task StartVote(string voteTitle, string voteDescription, TimeSpan lastTime, string yesEmoji,
+			string noEmoji, SocketGuild guild, IMessageChannel channel, SocketUser userWhoExecuted)
 		{
 			//Setup Emojis
 			Emoji yesEmote = new Emoji(yesEmoji);
@@ -57,7 +58,8 @@ namespace Pootis_Bot.Services.Voting
 			ServerListsManager.SaveServerList();
 
 			embed.WithTitle(voteTitle);
-			embed.WithDescription(voteDescription + $"\nReact to this message with {yesEmoji} to say **YES** or react with {noEmoji} to say **NO**.");
+			embed.WithDescription(voteDescription +
+			                      $"\nReact to this message with {yesEmoji} to say **YES** or react with {noEmoji} to say **NO**.");
 			embed.WithFooter($"Vote started by: {userWhoExecuted}", userWhoExecuted.GetAvatarUrl());
 
 			await MessageUtils.ModifyMessage(voteMessage, embed);
@@ -77,7 +79,8 @@ namespace Pootis_Bot.Services.Voting
 			TimeSpan timeDifference = DateTime.Now.Subtract(vote.VoteStartTime);
 			TimeSpan timeTillRun = vote.VoteLastTime.Subtract(timeDifference);
 
-			Logger.Log($"Started running a vote, will end in {timeTillRun.TotalMilliseconds} milliseconds.", LogVerbosity.Debug);
+			Logger.Log($"Started running a vote, will end in {timeTillRun.TotalMilliseconds} milliseconds.",
+				LogVerbosity.Debug);
 
 			//If the vote is is already less then 700 milliseconds till it ends, then just end it now
 			if (timeTillRun.TotalMilliseconds < 700)
@@ -94,21 +97,23 @@ namespace Pootis_Bot.Services.Voting
 
 		private static async Task EndVote(Vote vote, SocketGuild guild)
 		{
-			Logger.Log($"The vote ended.", LogVerbosity.Debug);
+			Logger.Log("The vote ended.", LogVerbosity.Debug);
 
 			SocketUser user = guild.GetUser(vote.VoteStarterUserId);
 
 			//Create a new embed with the results
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle(vote.VoteTitle);
-			embed.WithDescription(vote.VoteDescription + $"\nThe vote is now over! Here are the results:\n**Yes**: {vote.YesCount}\n**No**: {vote.NoCount}");
+			embed.WithDescription(vote.VoteDescription +
+			                      $"\nThe vote is now over! Here are the results:\n**Yes**: {vote.YesCount}\n**No**: {vote.NoCount}");
 			if (user != null)
 				embed.WithFooter($"Vote started by: {user}", user.GetAvatarUrl());
 			else
 				embed.WithFooter("Vote started by: a person who left the guild :(");
-			
+
 			//Modify the message
-			IMessage message = await guild.GetTextChannel(vote.VoteMessageChannelId).GetMessageAsync(vote.VoteMessageId);
+			IMessage message =
+				await guild.GetTextChannel(vote.VoteMessageChannelId).GetMessageAsync(vote.VoteMessageId);
 			await MessageUtils.ModifyMessage(message as IUserMessage, embed);
 
 			//Send the user who started the vote a message about their vote is over

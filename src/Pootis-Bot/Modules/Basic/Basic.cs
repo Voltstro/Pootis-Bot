@@ -66,7 +66,9 @@ namespace Pootis_Bot.Modules.Basic
 		[Cooldown(5)]
 		public async Task Top10()
 		{
-			List<UserAccount> serverUsers = (from user in Context.Guild.Users where !user.IsBot && !user.IsWebhook select UserAccountsManager.GetAccount(user)).ToList();
+			List<UserAccount> serverUsers = (from user in Context.Guild.Users
+				where !user.IsBot && !user.IsWebhook
+				select UserAccountsManager.GetAccount(user)).ToList();
 
 			serverUsers.Sort(new SortUserAccount());
 			serverUsers.Reverse();

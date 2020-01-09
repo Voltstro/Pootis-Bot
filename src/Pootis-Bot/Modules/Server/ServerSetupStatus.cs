@@ -76,7 +76,8 @@ namespace Pootis_Bot.Modules.Server
 			const string warningsTitle = "Warnings";
 			string warningsDescription = "";
 			if (server.GetCommandInfo("warn") == null)
-				warningsDescription += "<:Cross:537572008574189578> The command `warn` doesn't have a permission added to it!\n";
+				warningsDescription +=
+					"<:Cross:537572008574189578> The command `warn` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("makewarnable") == null)
 				warningsDescription +=
 					"<:Cross:537572008574189578> The command `makewarnable` doesn't have a permission added to it!\n";
@@ -84,13 +85,17 @@ namespace Pootis_Bot.Modules.Server
 				warningsDescription +=
 					"<:Cross:537572008574189578> The command `makenotwarnable` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("ban") == null)
-				warningsDescription += "<:Cross:537572008574189578> The command `ban` doesn't have a permission added to it!\n";
+				warningsDescription +=
+					"<:Cross:537572008574189578> The command `ban` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("kick") == null)
-				warningsDescription += "<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
+				warningsDescription +=
+					"<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
 			if (server.GetCommandInfo("mute") == null)
-				warningsDescription += "<:Cross:537572008574189578> The command `mute` doesn't have a permission added to it!\n";
-			if(server.GetCommandInfo("addvcchannel") == null)
-				warningsDescription += "<:Cross:537572008574189578> The command `addvcchannel` doesn't have a permission added to it!\n";
+				warningsDescription +=
+					"<:Cross:537572008574189578> The command `mute` doesn't have a permission added to it!\n";
+			if (server.GetCommandInfo("addvcchannel") == null)
+				warningsDescription +=
+					"<:Cross:537572008574189578> The command `addvcchannel` doesn't have a permission added to it!\n";
 			else
 				warningsDescription = "You have no warnings! :smile:";
 			embed.AddField(warningsTitle, warningsDescription);

@@ -11,8 +11,10 @@ namespace Pootis_Bot.Preconditions
 	{
 		private readonly bool _allowOtherOwners;
 
-		public RequireGuildOwnerAttribute(bool allowOtherGuildOwners = true) =>
+		public RequireGuildOwnerAttribute(bool allowOtherGuildOwners = true)
+		{
 			_allowOtherOwners = allowOtherGuildOwners;
+		}
 
 		/// <summary>
 		/// Checks that a given user is the owner of a guild, and returns the result

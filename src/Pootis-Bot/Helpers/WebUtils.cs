@@ -7,10 +7,27 @@ using Pootis_Bot.Core;
 namespace Pootis_Bot.Helpers
 {
 	/// <summary>
-	/// Provides some basic functions for interacting with the <see cref="Global.HttpClient"/>, as well as some other web related functions
+	/// Provides some basic functions for interacting with the <see cref="Global.HttpClient"/>, as well as some other web
+	/// related functions
 	/// </summary>
 	public static class WebUtils
 	{
+		#region Other Web Related methods
+
+		/// <summary>
+		/// Checks if a string is a URL
+		/// </summary>
+		/// <param name="url"></param>
+		/// <returns></returns>
+		public static bool IsStringValidUrl(string url)
+		{
+			const string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
+			Regex rgx = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+			return rgx.IsMatch(url);
+		}
+
+		#endregion
+
 		#region HttpClient Methods
 
 		/// <summary>
@@ -58,22 +75,6 @@ namespace Pootis_Bot.Helpers
 			using HttpContent content = response.Content;
 
 			return content.ReadAsStringAsync().Result;
-		}
-
-		#endregion
-
-		#region Other Web Related methods
-
-		/// <summary>
-		/// Checks if a string is a URL
-		/// </summary>
-		/// <param name="url"></param>
-		/// <returns></returns>
-		public static bool IsStringValidUrl(string url)
-		{
-			const string pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
-			Regex rgx = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-			return rgx.IsMatch(url);
 		}
 
 		#endregion

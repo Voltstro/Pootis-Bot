@@ -32,7 +32,8 @@ namespace Pootis_Bot.Core
 		/// <param name="filePath">Where to save the file</param>
 		public static void SaveUserAccounts(IEnumerable<UserAccount> accounts, string filePath)
 		{
-			string json = JsonConvert.SerializeObject(accounts, Config.bot.ResourceFilesFormatting, JsonSerializerSettings);
+			string json =
+				JsonConvert.SerializeObject(accounts, Config.bot.ResourceFilesFormatting, JsonSerializerSettings);
 			File.WriteAllText(filePath, json);
 		}
 
@@ -59,7 +60,8 @@ namespace Pootis_Bot.Core
 		/// <param name="filePath">Where to save to</param>
 		public static void SaveServerList(IEnumerable<ServerList> serverLists, string filePath)
 		{
-			string json = JsonConvert.SerializeObject(serverLists, Config.bot.ResourceFilesFormatting, JsonSerializerSettings);
+			string json = JsonConvert.SerializeObject(serverLists, Config.bot.ResourceFilesFormatting,
+				JsonSerializerSettings);
 			File.WriteAllText(filePath, json);
 		}
 

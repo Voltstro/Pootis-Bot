@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Discord;
 using Discord.Commands;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services;
@@ -49,7 +48,8 @@ namespace Pootis_Bot.Modules.Basic
 				return;
 			}
 
-			await VotingService.StartVote(title, description, time, yesEmoji, noEmoji, Context.Guild, Context.Channel, Context.User);
+			await VotingService.StartVote(title, description, time, yesEmoji, noEmoji, Context.Guild, Context.Channel,
+				Context.User);
 		}
 
 		[Command("reminds", RunMode = RunMode.Async)]

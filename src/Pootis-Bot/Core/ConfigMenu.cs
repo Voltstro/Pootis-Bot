@@ -170,11 +170,14 @@ namespace Pootis_Bot.Core
 							Config.bot.Apis.ApiSteamKey = steamKey;
 
 							if (isModified && !isSteamKeyModified)
-								Console.WriteLine("API keys have immediately been updated, but are not saved until the config menu is exited. Exited back to the main config menu.");
+								Console.WriteLine(
+									"API keys have immediately been updated, but are not saved until the config menu is exited. Exited back to the main config menu.");
 							if (isModified && isSteamKeyModified)
-								Console.WriteLine("Steam API key will not be updated until the bot is restarted. The rest of of keys have been immediately updated, but are not saved(including the Steam key) until the config menu is exited. Exited back to the main config menu.");
+								Console.WriteLine(
+									"Steam API key will not be updated until the bot is restarted. The rest of of keys have been immediately updated, but are not saved(including the Steam key) until the config menu is exited. Exited back to the main config menu.");
 							else
-								Console.WriteLine("The Steam API will continue using the old key until the bot is restarted, the new key it self will be saved when the config menu is exited. Exited back to the main config menu.");
+								Console.WriteLine(
+									"The Steam API will continue using the old key until the bot is restarted, the new key it self will be saved when the config menu is exited. Exited back to the main config menu.");
 
 							return new ConfigResult {ResultType = ConfigResult.ResultTypes.Apis, WasModified = true};
 						}

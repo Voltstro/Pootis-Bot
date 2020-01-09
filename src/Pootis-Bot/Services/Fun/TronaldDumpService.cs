@@ -16,7 +16,8 @@ namespace Pootis_Bot.Services.Fun
 		{
 			try
 			{
-				string json = WebUtils.DownloadString("https://api.tronalddump.io/random/quote", "accept", "application/hal+json");
+				string json = WebUtils.DownloadString("https://api.tronalddump.io/random/quote", "accept",
+					"application/hal+json");
 
 				dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 
@@ -33,7 +34,8 @@ namespace Pootis_Bot.Services.Fun
 		{
 			try
 			{
-				string json = WebUtils.DownloadString($"https://api.tronalddump.io/search/quote?query={search}", "accept", "application/hal+json");
+				string json = WebUtils.DownloadString($"https://api.tronalddump.io/search/quote?query={search}",
+					"accept", "application/hal+json");
 
 				dynamic dataObject = JsonConvert.DeserializeObject<dynamic>(json);
 				if (dataObject._embedded.quotes.Count == 0) return "No quotes found for that search!";

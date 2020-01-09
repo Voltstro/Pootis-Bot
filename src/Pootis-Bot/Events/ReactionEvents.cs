@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
-using Pootis_Bot.Services;
 using Pootis_Bot.Services.Voting;
 
 namespace Pootis_Bot.Events
@@ -38,7 +36,7 @@ namespace Pootis_Bot.Events
 					Vote vote = server.GetVote(reaction.MessageId);
 					if (reaction.Emote.Name == vote.YesEmoji)
 						vote.YesCount++;
-					else if(reaction.Emote.Name == vote.NoEmoji)
+					else if (reaction.Emote.Name == vote.NoEmoji)
 						vote.NoCount++;
 					ServerListsManager.SaveServerList();
 				}

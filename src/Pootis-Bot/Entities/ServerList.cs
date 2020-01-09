@@ -8,6 +8,8 @@ namespace Pootis_Bot.Entities
 {
 	public class ServerList
 	{
+		private List<Vote> _votes;
+
 		/// <summary>
 		/// The ID of the guild
 		/// </summary>
@@ -66,12 +68,14 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Do we have custom welcome/goodbye messages enabled
 		/// </summary>
-		[DefaultValue(false)] public bool WelcomeMessageEnabled { get; set; }
+		[DefaultValue(false)]
+		public bool WelcomeMessageEnabled { get; set; }
 
 		/// <summary>
 		/// What is the channel id were we put the messages
 		/// </summary>
-		[DefaultValue(0)] public ulong WelcomeChannelId { get; set; }
+		[DefaultValue(0)]
+		public ulong WelcomeChannelId { get; set; }
 
 		/// <summary>
 		/// The welcome message
@@ -81,7 +85,8 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Is the goodbye message enabled?
 		/// </summary>
-		[DefaultValue(false)] public bool GoodbyeMessageEnabled { get; set; }
+		[DefaultValue(false)]
+		public bool GoodbyeMessageEnabled { get; set; }
 
 		/// <summary>
 		/// The goodbye message
@@ -91,7 +96,8 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Is the rule reaction feature enabled?
 		/// </summary>
-		[DefaultValue(false)] public bool RuleEnabled { get; set; }
+		[DefaultValue(false)]
+		public bool RuleEnabled { get; set; }
 
 		/// <summary>
 		/// What is the message that needs to be reacted
@@ -113,7 +119,6 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		public string RuleReactionEmoji { get; set; }
 
-		private List<Vote> _votes;
 		public List<Vote> Votes
 		{
 			get { return _votes ??= new List<Vote>(); }
@@ -186,6 +191,20 @@ namespace Pootis_Bot.Entities
 				select a;
 
 			return result.FirstOrDefault();
+		}
+
+		#endregion
+
+		#region Votes
+
+		public Vote GetVote(ulong messageId)
+		{
+			IEnumerable<Vote> result = from a in Votes
+				where a.VoteMessageId == messageId
+				select a;
+
+			Vote vote = result.FirstOrDefault();
+			return vote;
 		}
 
 		#endregion
@@ -326,20 +345,6 @@ namespace Pootis_Bot.Entities
 			ServerRoleToRoleMention roleToRole = new ServerRoleToRoleMention(roleNotMention, role);
 			RoleToRoleMentions.Add(roleToRole);
 			return roleToRole;
-		}
-
-		#endregion
-
-		#region Votes
-
-		public Vote GetVote(ulong messageId)
-		{
-			IEnumerable<Vote> result = from a in Votes
-				where a.VoteMessageId == messageId
-				select a;
-
-			Vote vote = result.FirstOrDefault();
-			return vote;
 		}
 
 		#endregion

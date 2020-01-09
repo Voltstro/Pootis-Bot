@@ -15,12 +15,14 @@ namespace Pootis_Bot.Services.Google
 		/// <param name="maxResults">The maximum amount of results</param>
 		/// <param name="searchType">The search type</param>
 		/// <returns></returns>
-		public static SearchListResponse Search(string search, string appName, int maxResults = 10, string searchType = "video,channel")
+		public static SearchListResponse Search(string search, string appName, int maxResults = 10,
+			string searchType = "video,channel")
 		{
 			return SearchYoutube(search, appName, maxResults, searchType);
 		}
 
-		private static SearchListResponse SearchYoutube(string search, string appName, int maxResults, string searchType)
+		private static SearchListResponse SearchYoutube(string search, string appName, int maxResults,
+			string searchType)
 		{
 			try
 			{

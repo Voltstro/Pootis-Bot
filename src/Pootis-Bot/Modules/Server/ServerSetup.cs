@@ -106,8 +106,10 @@ namespace Pootis_Bot.Modules.Server
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			if (server.GoodbyeMessageEnabled)
+			{
 				server.GoodbyeMessageEnabled = false;
-				
+			}
+
 			else
 			{
 				if (Context.Client.GetChannel(server.WelcomeChannelId) == null)
@@ -118,7 +120,7 @@ namespace Pootis_Bot.Modules.Server
 
 				server.GoodbyeMessageEnabled = true;
 			}
-				
+
 			ServerListsManager.SaveServerList();
 
 			await Context.Channel.SendMessageAsync(
@@ -158,7 +160,8 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("setuprulesmessage")]
-		[Summary("Sets the message that needs to be reacted to. You need to run the command in the same channel were the message is located!")]
+		[Summary(
+			"Sets the message that needs to be reacted to. You need to run the command in the same channel were the message is located!")]
 		[Alias("setup rules message")]
 		[RequireGuildOwner]
 		[RequireBotPermission(GuildPermission.ManageMessages)]
@@ -179,7 +182,6 @@ namespace Pootis_Bot.Modules.Server
 							$"The rule message was set to the message with the ID of **{id}**.");
 					else
 						await Context.Message.DeleteAsync();
-
 				}
 				else
 				{
@@ -253,7 +255,8 @@ namespace Pootis_Bot.Modules.Server
 
 							ServerListsManager.SaveServerList();
 
-							IUserMessage rulesMessage = (IUserMessage) await Context.Guild.GetTextChannel(server.RuleMessageChannelId)
+							IUserMessage rulesMessage = (IUserMessage) await Context.Guild
+								.GetTextChannel(server.RuleMessageChannelId)
 								.GetMessageAsync(server.RuleMessageId);
 							await rulesMessage.AddReactionAsync(new Emoji(server.RuleReactionEmoji));
 

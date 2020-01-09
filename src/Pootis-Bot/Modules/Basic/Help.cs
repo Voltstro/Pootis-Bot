@@ -44,7 +44,8 @@ namespace Pootis_Bot.Modules.Basic
 				foreach (HelpModule helpModule in HelpModulesManager.GetHelpModules())
 				{
 					builder.Append($"\n**{helpModule.Group}** - ");
-					foreach (CommandInfo command in helpModule.Modules.SelectMany(module => _commandHandler.GetModule(module).Commands))
+					foreach (CommandInfo command in helpModule.Modules.SelectMany(module =>
+						_commandHandler.GetModule(module).Commands))
 					{
 						if (existingCommands.Contains(command.Name)) continue;
 
@@ -75,15 +76,11 @@ namespace Pootis_Bot.Modules.Basic
 
 			SearchResult result = _cmdService.Search(Context, query);
 			if (result.IsSuccess)
-			{
 				foreach (CommandMatch commandMatch in result.Commands)
-				{
 					embed.AddField(commandMatch.Command.Name,
 						$"**Summary**: {commandMatch.Command.Summary}\n" +
 						$"**Alias**: {FormatAliases(commandMatch.Command)}\n" +
 						$"**Usage**: `{commandMatch.Command.Name}{FormatParameters(commandMatch.Command)}`");
-				}
-			}
 
 			if (embed.Fields.Count == 0)
 				embed.WithDescription("Nothing was found for " + query);
@@ -113,7 +110,7 @@ namespace Pootis_Bot.Modules.Basic
 		private static string FormatParameters(CommandInfo commandInfo)
 		{
 			IReadOnlyList<ParameterInfo> parameters = commandInfo.Parameters;
-			
+
 			if (parameters.Count == 0)
 				return "";
 
@@ -127,7 +124,7 @@ namespace Pootis_Bot.Modules.Basic
 				else
 					format.Append($"[{parameters[i].Name}]");
 
-				if (i != (parameters.Count - 1))
+				if (i != parameters.Count - 1)
 					format.Append(" ");
 			}
 

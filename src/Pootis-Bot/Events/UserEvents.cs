@@ -45,7 +45,9 @@ namespace Pootis_Bot.Events
 						_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
 
 					if (channel != null)
+					{
 						await channel.SendMessageAsync(addServerName);
+					}
 					else
 					{
 						server.WelcomeMessageEnabled = false;
@@ -72,7 +74,9 @@ namespace Pootis_Bot.Events
 						_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
 
 					if (channel != null)
+					{
 						await channel.SendMessageAsync(addUserMention);
+					}
 					else
 					{
 						server.WelcomeMessageEnabled = false;

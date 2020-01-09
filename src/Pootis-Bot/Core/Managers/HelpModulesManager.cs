@@ -82,7 +82,10 @@ namespace Pootis_Bot.Core.Managers
 			{
 				Group = "Fun",
 				Modules = new List<string>
-					{nameof(GiphySearch), nameof(GoogleSearch), nameof(YoutubeSearch), nameof(WikipediaSearch), nameof(RandomPerson), nameof(TronaldDump), nameof(SteamUserUtils)}
+				{
+					nameof(GiphySearch), nameof(GoogleSearch), nameof(YoutubeSearch), nameof(WikipediaSearch),
+					nameof(RandomPerson), nameof(TronaldDump), nameof(SteamUserUtils)
+				}
 			};
 			helpModules.Add(fun);
 

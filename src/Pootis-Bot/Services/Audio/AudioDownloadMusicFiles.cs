@@ -21,21 +21,42 @@ namespace Pootis_Bot.Services.Audio
 {
 	public class AudioDownloadMusicFiles : IDisposable
 	{
-		private readonly YoutubeClient _client = new YoutubeClient(Global.HttpClient);
-		
 		private readonly CancellationTokenSource _cancellationSource;
+		private readonly YoutubeClient _client = new YoutubeClient(Global.HttpClient);
 		private readonly CancellationToken _downloadCancellationToken;
-
-		private readonly IUserMessage _message;
-		private readonly SocketGuild _guild;
-		private readonly TimeSpan _maxAudioTime;
-		private readonly string _downloadLocation;
 		private readonly string _downloadFileContainer;
+		private readonly string _downloadLocation;
+		private readonly SocketGuild _guild;
 
 		private readonly SafeHandle _handle = new SafeFileHandle(IntPtr.Zero, true);
+		private readonly TimeSpan _maxAudioTime;
+
+		private readonly IUserMessage _message;
 		private bool _disposed;
 
 		private bool _hasFinishedDownloading;
+
+		/// <summary>
+		/// A class for downloading audio files so that we can play them with the <see cref="AudioService"/>
+		/// </summary>
+		/// <param name="message">The 'base' message that we will modify over time to tell the user what we are up to</param>
+		/// <param name="guild">The guild that the command was executed in</param>
+		/// <param name="maxVideoTime">The max video length we will download</param>
+		/// <param name="downloadLocation">The place to download to</param>
+		/// <param name="audioFileContainer">The audio files container</param>
+		public AudioDownloadMusicFiles(IUserMessage message, SocketGuild guild, TimeSpan maxVideoTime,
+			string downloadLocation = "Music/", string audioFileContainer = "mp3")
+		{
+			//Setup our cancellation token
+			_cancellationSource = new CancellationTokenSource();
+			_downloadCancellationToken = _cancellationSource.Token;
+
+			_message = message;
+			_guild = guild;
+			_maxAudioTime = maxVideoTime;
+			_downloadLocation = downloadLocation;
+			_downloadFileContainer = audioFileContainer;
+		}
 
 		public void Dispose()
 		{
@@ -49,34 +70,13 @@ namespace Pootis_Bot.Services.Audio
 				return;
 
 			_cancellationSource.Cancel();
-			if(!_hasFinishedDownloading)
+			if (!_hasFinishedDownloading)
 				_message.DeleteAsync().GetAwaiter().GetResult();
 
 			if (disposing)
 				_handle.Dispose();
 
 			_disposed = true;
-		}
-
-		/// <summary>
-		/// A class for downloading audio files so that we can play them with the <see cref="AudioService"/>
-		/// </summary>
-		/// <param name="message">The 'base' message that we will modify over time to tell the user what we are up to</param>
-		/// <param name="guild">The guild that the command was executed in</param>
-		/// <param name="maxVideoTime">The max video length we will download</param>
-		/// <param name="downloadLocation">The place to download to</param>
-		/// <param name="audioFileContainer">The audio files container</param>
-		public AudioDownloadMusicFiles(IUserMessage message, SocketGuild guild, TimeSpan maxVideoTime, string downloadLocation = "Music/", string audioFileContainer = "mp3")
-		{
-			//Setup our cancellation token
-			_cancellationSource = new CancellationTokenSource();
-			_downloadCancellationToken = _cancellationSource.Token;
-
-			_message = message;
-			_guild = guild;
-			_maxAudioTime = maxVideoTime;
-			_downloadLocation = downloadLocation;
-			_downloadFileContainer = audioFileContainer;
 		}
 
 		/// <summary>
@@ -88,13 +88,16 @@ namespace Pootis_Bot.Services.Audio
 		{
 			_hasFinishedDownloading = false;
 
-			IList<SearchResult> youTubeSearchVideoResults = YoutubeService.Search(search, GetType().ToString(), 10, "video").Items;
+			IList<SearchResult> youTubeSearchVideoResults =
+				YoutubeService.Search(search, GetType().ToString(), 10, "video").Items;
 			if (youTubeSearchVideoResults.Count != 0)
 				return DownloadAudioById(youTubeSearchVideoResults.FirstOrDefault()?.Id.VideoId);
 
-			MessageUtils.ModifyMessage(_message, $":musical_note: The search `{search}` didn't find anything, try searching for something different.").GetAwaiter().GetResult();
+			MessageUtils
+				.ModifyMessage(_message,
+					$":musical_note: The search `{search}` didn't find anything, try searching for something different.")
+				.GetAwaiter().GetResult();
 			return null;
-
 		}
 
 		/// <summary>
@@ -113,13 +116,15 @@ namespace Pootis_Bot.Services.Audio
 			}
 			catch (ArgumentException)
 			{
-				MessageUtils.ModifyMessage(_message, ":musical_note: That YouTube URL is invalid!").GetAwaiter().GetResult();
+				MessageUtils.ModifyMessage(_message, ":musical_note: That YouTube URL is invalid!").GetAwaiter()
+					.GetResult();
 				_hasFinishedDownloading = true;
 				return null;
 			}
 
 			//Do a search in our music directory using the EXACT title
-			string searchResult = AudioService.SearchMusicDirectory(AudioCheckService.RemovedNotAllowedChars(youTubeVideo.Title));
+			string searchResult =
+				AudioService.SearchMusicDirectory(AudioCheckService.RemovedNotAllowedChars(youTubeVideo.Title));
 			if (!string.IsNullOrWhiteSpace(searchResult))
 			{
 				_hasFinishedDownloading =
@@ -130,7 +135,8 @@ namespace Pootis_Bot.Services.Audio
 
 			if (youTubeVideo.Duration <= _maxAudioTime) return DownloadAudio(youTubeVideo);
 
-			MessageUtils.ModifyMessage(_message, $":musical_note: Video succeeds max time of {_maxAudioTime}").GetAwaiter().GetResult();
+			MessageUtils.ModifyMessage(_message, $":musical_note: Video succeeds max time of {_maxAudioTime}")
+				.GetAwaiter().GetResult();
 			return null;
 		}
 
@@ -162,23 +168,26 @@ namespace Pootis_Bot.Services.Audio
 				if (_cancellationSource.IsCancellationRequested)
 					return null;
 
-				Logger.Log($"The downloaded video file extension is '{streamInfo.Container.GetFileExtension()}'.", LogVerbosity.Debug);
+				Logger.Log($"The downloaded video file extension is '{streamInfo.Container.GetFileExtension()}'.",
+					LogVerbosity.Debug);
 				if (streamInfo.Container.GetFileExtension() != _downloadFileContainer)
 				{
 					if (_cancellationSource.IsCancellationRequested)
 						return null;
 
-					if(!ConvertAudioFileToMp3(downloadLocation,
+					if (!ConvertAudioFileToMp3(downloadLocation,
 						$"{_downloadLocation}{videoTitle}.{_downloadFileContainer}"))
 					{
-						if(!_disposed)
-							MessageUtils.ModifyMessage(_message, "Sorry, but there was an issue downloading the song! Try again later.").GetAwaiter().GetResult();
+						if (!_disposed)
+							MessageUtils.ModifyMessage(_message,
+									"Sorry, but there was an issue downloading the song! Try again later.").GetAwaiter()
+								.GetResult();
 						return null;
 					}
 				}
 
 				downloadLocation = $"{_downloadLocation}{videoTitle}.{_downloadFileContainer}";
-				_hasFinishedDownloading = true; 
+				_hasFinishedDownloading = true;
 
 				//We have finished downloading
 				return downloadLocation;
@@ -231,7 +240,7 @@ namespace Pootis_Bot.Services.Audio
 			}
 
 			//Delete our old file
-			if(File.Exists(fileToConvert))
+			if (File.Exists(fileToConvert))
 				File.Delete(fileToConvert);
 			else //Were the fuck is our fileToConvert then?? This should never happen but it is here anyway
 				return false;

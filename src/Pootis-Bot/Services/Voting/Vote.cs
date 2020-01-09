@@ -8,7 +8,7 @@ namespace Pootis_Bot.Services.Voting
 		/// The message ID to react onto
 		/// </summary>
 		public ulong VoteMessageId { get; set; }
-		
+
 		/// <summary>
 		/// The channel were the vote is happening
 		/// </summary>
