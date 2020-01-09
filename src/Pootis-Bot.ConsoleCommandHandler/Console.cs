@@ -30,8 +30,9 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		/// Adds a new <see cref="ConsoleCommand"/> to the <see cref="_consoleCommands"/> list
 		/// </summary>
 		/// <param name="name"></param>
+		/// <param name="summary"></param>
 		/// <param name="method"></param>
-		public void AddCommand(string name, Method method)
+		public void AddCommand(string name, string summary, Method method)
 		{
 			name = name.ToLower();
 			if (_consoleCommands.ContainsKey(name))
@@ -40,7 +41,16 @@ namespace Pootis_Bot.ConsoleCommandHandler
 				return;
 			}
 
-			_consoleCommands.Add(name, new ConsoleCommand(name, method));
+			_consoleCommands.Add(name, new ConsoleCommand(name, summary, method));
+		}
+
+		/// <summary>
+		/// Returns all <see cref="ConsoleCommand"/>s installed in this <see cref="Console"/> instance
+		/// </summary>
+		/// <returns></returns>
+		public Dictionary<string, ConsoleCommand> GetAllInstalledConsoleCommands()
+		{
+			return _consoleCommands;
 		}
 
 		/// <summary>

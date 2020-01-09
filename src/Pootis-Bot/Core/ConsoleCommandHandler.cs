@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.ConsoleCommandHandler;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
@@ -28,33 +31,50 @@ namespace Pootis_Bot.Core
 		public void SetupConsole()
 		{
 			UnknownCommandError =
-				$"Unknown command! Visit {Global.websiteConsoleCommands} for a list of console commands.";
+				$"Unknown command! Type `help` for help.";
 			UnknownCommandErrorColor = ConsoleColor.Red;
 
 			//Add all of our commands
-			AddCommand("exit", ExitCmd);
-			AddCommand("config", OpenConfigCmd);
-			AddCommand("version", VersionCmd);
-			AddCommand("about", AboutCmd);
-			AddCommand("setgame", SetGameStatusCmd);
-			AddCommand("togglestream", SetStreamingStatusCmd);
-			AddCommand("deletemusic", DeleteMusicCmd);
-			AddCommand("toggleaudio", ToggleAudioCmd);
-			AddCommand("forceaudioupdate", ForceAudioUpdateCmd);
-			AddCommand("status", StatusCmd);
-			AddCommand("clear", ClearCmd);
-			AddCommand("resethelpmodules", ResetHelpModulesCmd);
-			AddCommand("save config", SaveConfigCmd);
-			AddCommand("save accounts", SaveAccountsCmd);
-			AddCommand("save servers", SaveServersCmd);
-			AddCommand("info", Info);
+			AddCommand("help", "Lists all commands", HelpCmd);
+			AddCommand("exit", "Shuts down the bot", ExitCmd);
+			AddCommand("config", "Opens the config menu", OpenConfigCmd);
+			AddCommand("version", "Returns the current version of the bot you are using", VersionCmd);
+			AddCommand("about", "Returns a simple about screen", AboutCmd);
+			AddCommand("setgame", "Enters into the setgame menu", SetGameStatusCmd);
+			AddCommand("togglestream", "Toggles the bot between streaming mode and not", SetStreamingStatusCmd);
+			AddCommand("deletemusic", "Delets all saved music", DeleteMusicCmd);
+			AddCommand("toggleaudio", "Toggles having the audio services enabled and disabled", ToggleAudioCmd);
+			AddCommand("forceaudioupdate", "Forces the audio services files to update", ForceAudioUpdateCmd);
+			AddCommand("status", "Shows the bot's current status", StatusCmd);
+			AddCommand("clear", "Clears the screen", ClearCmd);
+			AddCommand("resethelpmodules", "Resets the help modules to the default", ResetHelpModulesCmd);
+			AddCommand("save config", "Saves the config file", SaveConfigCmd);
+			AddCommand("save accounts", "Saves the accounts file", SaveAccountsCmd);
+			AddCommand("save servers", "Saves the server list file", SaveServersCmd);
+			AddCommand("info", "Displays system and bot info", Info);
 
 			ConsoleHandleLoop();
 		}
 
 		public override void LogMessage(string message, ConsoleColor color)
 		{
-			Logger.Log(message);
+			Logger.Log(message, LogVerbosity.Error);
+		}
+
+		private void HelpCmd()
+		{
+			Dictionary<string, ConsoleCommand> commands = GetAllInstalledConsoleCommands();
+			StringBuilder commandsWithSummary = new StringBuilder();
+			commandsWithSummary.Append("==== Command List ====\n");
+
+			foreach ((string _, ConsoleCommand command) in commands)
+			{
+				commandsWithSummary.Append($"`{command.CommandName}` - {command.CommandSummary}\n");
+			}
+
+			commandsWithSummary.Append($"For more info visit {Global.websiteConsoleCommands}");
+
+			System.Console.WriteLine(commandsWithSummary);
 		}
 
 		private async void ExitCmd()
