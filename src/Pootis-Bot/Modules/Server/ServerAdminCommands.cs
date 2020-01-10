@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -16,6 +17,8 @@ namespace Pootis_Bot.Modules.Server
 		// Original Author  - Creepysin
 		// Description      - Commands for admins
 		// Contributors     - Creepysin, 
+
+		private const int MaxPurgeCount = 100;
 
 		[Command("kick")]
 		[Summary("Kicks a user")]
@@ -98,10 +101,23 @@ namespace Pootis_Bot.Modules.Server
 		[RequireUserPermission(GuildPermission.ManageMessages)]
 		public async Task Purge(int messageCount = 10)
 		{
-			IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(messageCount + 1).FlattenAsync();
+			if (messageCount > MaxPurgeCount)
+			{
+				await Context.Channel.SendMessageAsync($"You can only delete {MaxPurgeCount} messages at a time!");
+				return;
+			}
 
-			await ((SocketTextChannel) Context.Channel).DeleteMessagesAsync(messages);
-
+			try
+			{
+				IEnumerable<IMessage> messages = await Context.Channel.GetMessagesAsync(messageCount).FlattenAsync();
+				await ((SocketTextChannel) Context.Channel).DeleteMessagesAsync(messages);
+			}
+			catch (ArgumentOutOfRangeException)
+			{
+				await Context.Channel.SendMessageAsync("There are not enough messages to delete in this channel with your specified message delete count.");
+				return;
+			}
+			
 			RestUserMessage message =
 				await Context.Channel.SendMessageAsync(
 					$"{messageCount} message were deleted, this message will be deleted in a moment.");
