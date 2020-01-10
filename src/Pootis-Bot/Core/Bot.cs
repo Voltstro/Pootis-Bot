@@ -57,7 +57,7 @@ namespace Pootis_Bot.Core
 			Logger.Log("Installing commands...", LogVerbosity.Debug);
 
 			//Install all the Modules
-			await handler.SetupAsync();
+			await handler.SetupCommandHandlingAsync();
 
 			//Check all help modules
 			handler.CheckHelpModules();

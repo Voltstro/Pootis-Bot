@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -36,17 +35,20 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		/// Install all the modules
+		/// Install all the modules and sets up for command handling
 		/// </summary>
 		/// <returns></returns>
-		public async Task SetupAsync()
+		public async Task SetupCommandHandlingAsync()
 		{
-			_client.MessageReceived += HandleCommandAsync;
-
+			//Add our custom type readers
 			_commands.AddTypeReader(typeof(string[]), new StringArrayTypeReader());
 			_commands.AddTypeReader(typeof(SocketGuildUser[]), new GuildUserArrayTypeReader());
 
+			//Add our modules and setup the module manager so other classes can access module info
 			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+			DiscordModuleManager.SetupModuleManager(_commands);
+
+			_client.MessageReceived += HandleCommandAsync;
 		}
 
 		/// <summary>
@@ -55,7 +57,7 @@ namespace Pootis_Bot.Core
 		public void CheckHelpModules()
 		{
 			foreach (string module in HelpModulesManager.GetHelpModules().SelectMany(helpModule =>
-				helpModule.Modules.Where(module => GetModule(module) == null)))
+				helpModule.Modules.Where(module => DiscordModuleManager.GetModule(module) == null)))
 				Logger.Log(
 					$"There is no module called {module}! Reset the help modules or fix the help modules in the config file!",
 					LogVerbosity.Error);
@@ -100,127 +102,141 @@ namespace Pootis_Bot.Core
 			if (msg.HasStringPrefix(Global.BotPrefix, ref argPos)
 			    || msg.HasMentionPrefix(Global.BotUser, ref argPos))
 			{
-				//Permissions
-				SearchResult cmdSearchResult = _commands.Search(context, argPos);
-				if (!cmdSearchResult.IsSuccess) return;
-
-				ServerList.CommandPermission perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
-				if (perm != null)
+				//Check user's permission to use command
+				if (!CheckUserPermission(context, server, argPos))
 				{
-					bool doesUserHavePerm = false;
-					foreach (SocketRole role in ((SocketGuildUser) context.User).Roles)
-					{
-						if (doesUserHavePerm)
-							continue;
-
-						foreach (ulong unused in perm.Roles.Where(permRole =>
-							role == RoleUtils.GetGuildRole(context.Guild, permRole)))
-						{
-							if (doesUserHavePerm)
-								continue;
-
-							doesUserHavePerm = true;
-						}
-					}
-
-					if (!doesUserHavePerm && context.User.Id != context.Guild.OwnerId)
-					{
-						await context.Channel.SendMessageAsync(
-							"You do not have permission to use that command on this guild!");
-						return;
-					}
+					await context.Channel.SendMessageAsync(
+						"You do not have permission to use that command on this guild!");
+					return;
 				}
 
 				//Result
 				IResult result = await _commands.ExecuteAsync(context, argPos, _services);
-
-				//The command either had too little arguments or too many
-				if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
-				{
-					await context.Channel.SendMessageAsync(
-						$"The command `{msg.Content.Replace(Global.BotPrefix, "")}` either has too many or too little arguments!");
-				}
-
-				//The user or bot had unmet preconditions
-				else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
-				{
-					await context.Channel.SendMessageAsync(result.ErrorReason);
-				}
-
-				//The user name imputed wasn't valid
-				else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
-				         result.ErrorReason == UserNotFoundError)
-				{
-					await context.Channel.SendMessageAsync("You need to input a valid username!");
-				}
-
-				else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
-				         result.ErrorReason.StartsWith(UserNotFoundList))
-				{
-					await context.Channel.SendMessageAsync(
-						$"The user `{result.ErrorReason.Replace(UserNotFoundList, "")}` wasn't found in this guild!");
-				}
-
-				//Some other error, just put the error into the console
-				//and tell the user an internal error occured so they are not just left blank
-				else if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
-				{
-					Logger.Log(result.ErrorReason, LogVerbosity.Error);
-					await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");
-
-					//If the bot owner has ReportErrorsToOwner enabled we will give them a heads up about the error
-					if (Config.bot.ReportErrorsToOwner)
-						await Global.BotOwner.SendMessageAsync(
-							$"ERROR: {result.ErrorReason}\nError occured while executing command `{msg.Content.Replace(Global.BotPrefix, "")}` on server `{context.Guild.Id}`.");
-				}
+				await HandleCommandResult(context, msg, result);
 			}
 			else
 			{
 				//Since it isn't a command we do level up stuff
-
 				UserAccountServerData account = UserAccountsManager
 					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
 				DateTime now = DateTime.Now;
 
-				//Server points
-				// ReSharper disable once CompareOfFloatsByEqualityOperator
-				if (account.LastServerPointsTime.Subtract(now).TotalSeconds <= -server.PointsGiveCooldownTime ||
-				    account.LastServerPointsTime.Second == 0)
-				{
-					LevelingSystem.GiveUserServerPoints((SocketGuildUser) context.User,
-						(SocketTextChannel) context.Channel, server.PointGiveAmount);
-
-					//No need to save since this variable has a JsonIgnore attribute
-					account.LastServerPointsTime = now;
-				}
-
-				//Only level it up if the last message was the level up cooldown.
-				// ReSharper disable once CompareOfFloatsByEqualityOperator
-				if (account.LastLevelUpTime.Subtract(now).TotalSeconds <= -Config.bot.LevelUpCooldown ||
-				    account.LastLevelUpTime.Second == 0)
-				{
-					LevelingSystem.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel,
-						Config.bot.LevelUpAmount);
-
-					//We don't need to save the accounts file since the LastLevelUpTime has a json ignore tag
-					account.LastLevelUpTime = now;
-				}
+				HandleUserXpLevel(account, context, now);
+				HandleUserPointsLevel(account, server, context, now);
 			}
 		}
 
-		/// <summary>
-		/// Get a modules
-		/// </summary>
-		/// <param name="moduleName"></param>
-		/// <returns></returns>
-		public ModuleInfo GetModule(string moduleName)
+		private bool CheckUserPermission(SocketCommandContext context, ServerList server, int argPos)
 		{
-			IEnumerable<ModuleInfo> result = from a in _commands.Modules
-				where a.Name == moduleName
-				select a;
+			//Get the command first
+			SearchResult cmdSearchResult = _commands.Search(context, argPos);
+			if (!cmdSearchResult.IsSuccess) return true;
 
-			ModuleInfo module = result.FirstOrDefault();
-			return module;
+			ServerList.CommandPermission perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
+			if (perm == null) return true;
+			
+			//If they are an administrator they override permissions
+			if(((SocketGuildUser) context.User).GuildPermissions.Administrator)
+				return true;
+
+			bool doesUserHavePerm = false;
+			foreach (SocketRole role in ((SocketGuildUser) context.User).Roles)
+			{
+				if (doesUserHavePerm)
+					continue;
+
+				foreach (ulong unused in perm.Roles.Where(permRole =>
+					role == RoleUtils.GetGuildRole(context.Guild, permRole)))
+				{
+					if (doesUserHavePerm)
+						continue;
+
+					doesUserHavePerm = true;
+				}
+			}
+
+			return doesUserHavePerm || context.User.Id == context.Guild.OwnerId;
 		}
+
+		private static async Task HandleCommandResult(SocketCommandContext context, SocketUserMessage msg, IResult result)
+		{
+			//The command either had too little arguments or too many
+			if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
+			{
+				await context.Channel.SendMessageAsync(
+					$"The command `{msg.Content.Replace(Global.BotPrefix, "")}` either has too many or too little arguments!");
+			}
+
+			//The user or bot had unmet preconditions
+			else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
+			{
+				await context.Channel.SendMessageAsync(result.ErrorReason);
+			}
+
+			//The user name imputed wasn't valid
+			else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
+			         result.ErrorReason == UserNotFoundError)
+			{
+				await context.Channel.SendMessageAsync("You need to input a valid username!");
+			}
+
+			else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
+			         result.ErrorReason.StartsWith(UserNotFoundList))
+			{
+				await context.Channel.SendMessageAsync(
+					$"The user `{result.ErrorReason.Replace(UserNotFoundList, "")}` wasn't found in this guild!");
+			}
+
+			//Some other error, just put the error into the console
+			//and tell the user an internal error occured so they are not just left blank
+			else if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+			{
+				Logger.Log(result.ErrorReason, LogVerbosity.Error);
+				await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");
+
+				//If the bot owner has ReportErrorsToOwner enabled we will give them a heads up about the error
+				if (Config.bot.ReportErrorsToOwner)
+					await Global.BotOwner.SendMessageAsync(
+						$"ERROR: {result.ErrorReason}\nError occured while executing command `{msg.Content.Replace(Global.BotPrefix, "")}` on server `{context.Guild.Id}`.");
+			}
+		}
+
+		#region User Level Up Stuff
+
+		private static void HandleUserXpLevel(UserAccountServerData account, SocketCommandContext context, DateTime now)
+		{
+			//TODO: Rewrite this stuff
+
+			//Only level it up if the last message was the level up cooldown.
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			if (account.LastLevelUpTime.Subtract(now).TotalSeconds <= -Config.bot.LevelUpCooldown ||
+			    account.LastLevelUpTime.Second == 0)
+			{
+				LevelingSystem.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel,
+					Config.bot.LevelUpAmount);
+
+				//We don't need to save the accounts file since the LastLevelUpTime has a json ignore tag
+				account.LastLevelUpTime = now;
+			}
+		}
+
+		private static void HandleUserPointsLevel(UserAccountServerData account, ServerList server, SocketCommandContext context, DateTime now)
+		{
+			//TODO: Rewrite this stuff
+
+			//Server points
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			if (account.LastServerPointsTime.Subtract(now).TotalSeconds <= -server.PointsGiveCooldownTime ||
+			    account.LastServerPointsTime.Second == 0)
+			{
+				LevelingSystem.GiveUserServerPoints((SocketGuildUser) context.User,
+					(SocketTextChannel) context.Channel, server.PointGiveAmount);
+
+				//No need to save since this variable has a JsonIgnore attribute
+				account.LastServerPointsTime = now;
+			}
+		}
+
+		#endregion
 	}
 }

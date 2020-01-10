@@ -20,12 +20,10 @@ namespace Pootis_Bot.Modules.Basic
 		// Contributors     - Creepysin, 
 
 		private readonly CommandService _cmdService;
-		private readonly CommandHandler _commandHandler;
 
-		public Help(CommandService commandService, CommandHandler cmdHandler)
+		public Help(CommandService commandService)
 		{
 			_cmdService = commandService;
-			_commandHandler = cmdHandler;
 		}
 
 		[Command("help")]
@@ -45,7 +43,7 @@ namespace Pootis_Bot.Modules.Basic
 				{
 					builder.Append($"\n**{helpModule.Group}** - ");
 					foreach (CommandInfo command in helpModule.Modules.SelectMany(module =>
-						_commandHandler.GetModule(module).Commands))
+						DiscordModuleManager.GetModule(module).Commands))
 					{
 						if (existingCommands.Contains(command.Name)) continue;
 

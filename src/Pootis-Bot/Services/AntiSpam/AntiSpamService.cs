@@ -85,7 +85,7 @@ namespace Pootis_Bot.Services.AntiSpam
 				    server.AntiSpamSettings.RoleToRoleMentionWarnings)
 				{
 					message.Channel.SendMessageAsync(
-						$"Hey {user.Mention}, you have been pinging the **{RoleUtils.GetGuildRole(user.Guild, notToMentionRoles.RoleId).Name}** role, which you are not allowed to ping!\nWe though we would tell you now and a warning has been added to your account, for info see your profile.");
+						$"Hey {user.Mention}, you have been pinging the **{RoleUtils.GetGuildRole(user.Guild, notToMentionRoles.RoleId).Name}** role, which you are not allowed to ping!\nA warning has been added to your account, for info see your profile.");
 					serverAccount.Warnings++;
 					UserAccountsManager.SaveAccounts();
 				}
