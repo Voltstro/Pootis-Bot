@@ -18,35 +18,6 @@ namespace Pootis_Bot.Modules.Server
 		// Description      - Helps the server owner set up the bot for use
 		// Contributors     - Creepysin, 
 
-		[Command("togglementionuser")]
-		[Alias("toggle mention user")]
-		[Summary("Enables / Disables the mention user anti-spam feature")]
-		[RequireGuildOwner]
-		public async Task ToggleMentionUserSpam()
-		{
-			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			server.AntiSpamSettings.MentionUserEnabled = !server.AntiSpamSettings.MentionUserEnabled;
-
-			ServerListsManager.SaveServerList();
-			await Context.Channel.SendMessageAsync(
-				$"Mention user anti-spam was set to {server.AntiSpamSettings.MentionUserEnabled}.");
-		}
-
-		[Command("setmentionuserthreshold")]
-		[Alias("set mention user threshold")]
-		[Summary("Set how much of a percentage of a servers users need to be mention before it is considered spam")]
-		[RequireGuildOwner]
-		public async Task SetMentionUserThreshold(int threshold)
-		{
-			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			server.AntiSpamSettings.MentionUsersPercentage = threshold;
-
-			ServerListsManager.SaveServerList();
-
-			await Context.Channel.SendMessageAsync(
-				$"The threshold for amount of users in a message was set to {threshold}.");
-		}
-
 		[Command("addrolepoints")]
 		[Alias("addpointsrole", "add points role", "add role points")]
 		[Summary("Adds a role to give after a user gets a certain amount of points")]
