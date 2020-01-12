@@ -6,7 +6,7 @@ using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 
-namespace Pootis_Bot.Modules.Server
+namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetupOptRoles : ModuleBase<SocketCommandContext>
 	{

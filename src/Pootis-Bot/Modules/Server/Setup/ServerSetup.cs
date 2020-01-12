@@ -1,12 +1,6 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Pootis_Bot.Core.Managers;
-using Pootis_Bot.Entities;
-using Pootis_Bot.Helpers;
+﻿using Discord.Commands;
 
-namespace Pootis_Bot.Modules.Server
+namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetup : ModuleBase<SocketCommandContext>
 	{

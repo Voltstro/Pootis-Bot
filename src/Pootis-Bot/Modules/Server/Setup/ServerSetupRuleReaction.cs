@@ -8,7 +8,7 @@ using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 
-namespace Pootis_Bot.Modules.Server
+namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetupRuleReaction : ModuleBase<SocketCommandContext>
 	{
