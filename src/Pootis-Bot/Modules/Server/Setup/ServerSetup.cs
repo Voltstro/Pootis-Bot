@@ -1,4 +1,9 @@
-﻿using Discord.Commands;
+﻿using System.Text;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Pootis_Bot.Core;
+using Pootis_Bot.Preconditions;
 
 namespace Pootis_Bot.Modules.Server.Setup
 {
@@ -6,10 +11,41 @@ namespace Pootis_Bot.Modules.Server.Setup
 	{
 		// Module Information
 		// Original Author  - Creepysin
-		// Description      - Helps the server owner set up the bot for use
+		// Description      - Provides setup commands
 		// Contributors     - Creepysin, 
 
-		
+		private readonly string[] _setupModules = {nameof(ServerSetupOptRoles), nameof(ServerSetupPointRoles), nameof(ServerSetupPointRoles), nameof(ServerSetupRuleReaction), nameof(ServerSetupWelcomeGoodbyeMessage), nameof(ServerSetupStatus)};
+
+		[Command("setup")]
+		[Summary("Provides basic help for server setup")]
+		[RequireGuildOwner]
+		public async Task ServerSetupHelp()
+		{
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle("Server Setup Basic Help");
+
+			StringBuilder info = new StringBuilder();
+			info.Append($"Here are all the commands related to setting up your Discord server with {Global.BotName}! For more information or help, read the setup docs [here]({Global.websiteServerSetup}).\n\n");
+
+			foreach (string module in _setupModules)
+			{
+				ModuleInfo moduleInfo = DiscordModuleManager.GetModule(module);
+				if (moduleInfo == null) continue;
+
+				info.Append($"**{moduleInfo.Name}**\n");
+
+				for (int i = 0; i < moduleInfo.Commands.Count; i++)
+				{
+					info.Append($"`{moduleInfo.Commands[i].Name}` ");
+					if (i + 1 == moduleInfo.Commands.Count)
+						info.Append("\n");
+				}
+			}
+
+			embed.WithDescription(info.ToString());
+
+			await Context.Channel.SendMessageAsync("", false, embed.Build());
+		}
 
 		//TODO: Add the ability to change the server points amount
 	}

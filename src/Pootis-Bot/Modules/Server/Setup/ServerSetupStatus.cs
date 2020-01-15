@@ -16,10 +16,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Description      - Server setup status messages
 		// Contributors     - Creepysin, 
 
-		[Command("setup")]
+		[Command("setup status")]
 		[Summary("Displays setup info")]
 		[RequireGuildOwner]
-		[Cooldown(10)]
 		public async Task Setup()
 		{
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
@@ -108,7 +107,6 @@ namespace Pootis_Bot.Modules.Server.Setup
 		[Command("setup spam")]
 		[Summary("Shows setup info regarding the server's anti-spam settings")]
 		[RequireGuildOwner]
-		[Cooldown(10)]
 		public async Task SetupSpam()
 		{
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
