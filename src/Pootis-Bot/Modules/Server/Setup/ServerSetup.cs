@@ -46,7 +46,5 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
-
-		//TODO: Add the ability to change the server points amount
 	}
 }
