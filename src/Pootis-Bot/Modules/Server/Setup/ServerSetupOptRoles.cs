@@ -10,6 +10,11 @@ namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetupOptRoles : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Provides commands for setting up opt roles
+		// Contributors     - Creepysin, 
+
 		//TODO: We are gonna rename theses as 'Opt Roles'. So as in they are roles you opt into.
 		[Command("setup add optrole")]
 		[Summary("Adds a opt role")]

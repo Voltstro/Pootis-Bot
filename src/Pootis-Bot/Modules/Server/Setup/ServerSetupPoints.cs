@@ -7,6 +7,11 @@ namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetupPoints : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Provides commands for server points
+		// Contributors     - Creepysin, 
+
 		[Command("setup set points")]
 		[Summary("Sets the amount of points given")]
 		[RequireGuildOwner]

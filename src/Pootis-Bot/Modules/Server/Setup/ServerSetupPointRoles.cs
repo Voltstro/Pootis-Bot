@@ -12,6 +12,11 @@ namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetupPointRoles : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Provides commands for point roles
+		// Contributors     - Creepysin, 
+
 		[Command("setup add pointrole")]
 		[Summary("Automatically assigns a user a role when they reach X amount of points")]
 		[RequireGuildOwner]
