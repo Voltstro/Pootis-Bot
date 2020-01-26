@@ -71,6 +71,13 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 			embed.AddField(ruleReactionTitle, ruleReactionDescription);
 
+			//Server Points
+			const string serverPointsTitle = "Server Points";
+			string serverPointsDescription =
+				$"**Points Given**: {server.PointGiveAmount}\n**Cooldown** (seconds): {server.PointsGiveCooldownTime}";
+
+			embed.AddField(serverPointsTitle, serverPointsDescription);
+
 			//Warnings for commands
 			const string warningsTitle = "Warnings";
 			string warningsDescription = "";
