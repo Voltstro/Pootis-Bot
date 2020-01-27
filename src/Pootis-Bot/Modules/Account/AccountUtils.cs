@@ -134,7 +134,7 @@ namespace Pootis_Bot.Modules.Account
 		public async Task Role([Remainder] string roleGiveName)
 		{
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			RoleGive role = server.GetRoleGive(roleGiveName);
+			OptRole role = server.GetOptRole(roleGiveName);
 
 			//Check to make sure the role give exists first
 			if (role == null)

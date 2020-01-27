@@ -8,8 +8,6 @@ namespace Pootis_Bot.Entities
 {
 	public class ServerList
 	{
-		private List<Vote> _votes;
-
 		/// <summary>
 		/// The ID of the guild
 		/// </summary>
@@ -61,9 +59,9 @@ namespace Pootis_Bot.Entities
 		public List<ulong> ActiveAutoVoiceChannels { get; set; }
 
 		/// <summary>
-		/// Role gives, key is role to give, Value is role to require, if one
+		/// Opt Roles, roles that users can opt into
 		/// </summary>
-		public List<RoleGive> RoleGives { get; set; }
+		public List<OptRole> RoleGives { get; set; }
 
 		/// <summary>
 		/// Do we have custom welcome/goodbye messages enabled
@@ -119,8 +117,11 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		public string RuleReactionEmoji { get; set; }
 
+		private List<Vote> _votes;
+
 		public List<Vote> Votes
 		{
+			//We need to do this because when someone with 1.0 upgrades to 1.1 they won't have votes in their current ServerList.json
 			get { return _votes ??= new List<Vote>(); }
 			set => _votes = value;
 		}
@@ -168,15 +169,15 @@ namespace Pootis_Bot.Entities
 
 		#endregion
 
-		#region Role Give Functions
+		#region Opt Role Functions
 
-		public RoleGive GetRoleGive(string roleGiveName)
+		public OptRole GetOptRole(string roleGiveName)
 		{
-			IEnumerable<RoleGive> result = from a in RoleGives
+			IEnumerable<OptRole> result = from a in RoleGives
 				where a.Name == roleGiveName
 				select a;
 
-			RoleGive roleToRoleMention = result.FirstOrDefault();
+			OptRole roleToRoleMention = result.FirstOrDefault();
 			return roleToRoleMention;
 		}
 

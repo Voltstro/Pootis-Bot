@@ -1,6 +1,6 @@
 ﻿namespace Pootis_Bot.Entities
 {
-	public class RoleGive
+	public class OptRole
 	{
 		public string Name { get; set; }
 

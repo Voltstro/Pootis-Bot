@@ -15,30 +15,28 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Description      - Provides commands for setting up opt roles
 		// Contributors     - Creepysin, 
 
-		//TODO: We are gonna rename theses as 'Opt Roles'. So as in they are roles you opt into.
 		[Command("setup add optrole")]
 		[Summary("Adds a opt role")]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
-		public async Task RoleGiveAdd(string optRoleBaseName, string roleToGiveName, [Remainder] string requiredRole = "")
+		public async Task AddOptRole(string optRoleBaseName, string roleToAssignName, [Remainder] string requiredRoleName = "")
 		{
-			SocketRole roleToAssign = RoleUtils.GetGuildRole(Context.Guild, roleToGiveName);
+			SocketRole roleToAssign = RoleUtils.GetGuildRole(Context.Guild, roleToAssignName);
 
 			//Check to make sure the role exists first
 			if (roleToAssign == null)
 			{
-				await Context.Channel.SendMessageAsync($"No role under the name '{roleToGiveName}' exists!");
+				await Context.Channel.SendMessageAsync("You need to input a valid role to give!");
 				return;
 			}
 
-			SocketRole socketRoleRequired = null;
-
 			//If a required role was specified, check to make sure it exists
-			if (!string.IsNullOrWhiteSpace(requiredRole))
+			SocketRole requiredRole = null;
+			if (!string.IsNullOrWhiteSpace(requiredRoleName))
 			{
-				socketRoleRequired = RoleUtils.GetGuildRole(Context.Guild, requiredRole);
-				if (socketRoleRequired == null)
+				requiredRole = RoleUtils.GetGuildRole(Context.Guild, requiredRoleName);
+				if (requiredRole == null)
 				{
-					await Context.Channel.SendMessageAsync($"Role {requiredRole} doesn't exist!");
+					await Context.Channel.SendMessageAsync($"Role {requiredRoleName} doesn't exist!");
 					return;
 				}
 			}
@@ -46,26 +44,26 @@ namespace Pootis_Bot.Modules.Server.Setup
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			//Check to make sure a role give doesn't already exist first
-			if (server.GetRoleGive(optRoleBaseName) != null)
+			if (server.GetOptRole(optRoleBaseName) != null)
 			{
 				await Context.Channel.SendMessageAsync($"A opt role with the name '{optRoleBaseName}' already exist!");
 				return;
 			}
 
-			RoleGive roleGive = new RoleGive
+			OptRole roleGive = new OptRole
 			{
 				Name = optRoleBaseName,
 				RoleToGiveId = roleToAssign.Id,
 				RoleRequiredId = 0
 			};
 
-			if (socketRoleRequired != null)
-				roleGive.RoleRequiredId = socketRoleRequired.Id;
+			if (requiredRole != null)
+				roleGive.RoleRequiredId = requiredRole.Id;
 
 			server.RoleGives.Add(roleGive);
 			ServerListsManager.SaveServerList();
 
-			await Context.Channel.SendMessageAsync($"The opt role was created with the name of **{optRoleBaseName}**.");
+			await Context.Channel.SendMessageAsync($"An opt role with the name `{optRoleBaseName}` was created.");
 		}
 
 		[Command("setup remove optrole")]
@@ -75,10 +73,10 @@ namespace Pootis_Bot.Modules.Server.Setup
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 
 			//Make sure the opt role exists first
-			RoleGive optRole = server.GetRoleGive(optRoleName);
+			OptRole optRole = server.GetOptRole(optRoleName);
 			if (optRole == null)
 			{
-				await Context.Channel.SendMessageAsync($"There is no opt role with the name '{optRoleName}''.");
+				await Context.Channel.SendMessageAsync($"There is no opt role with the name '{optRoleName}'.");
 				return;
 			}
 
@@ -86,7 +84,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			server.RoleGives.Remove(optRole);
 			ServerListsManager.SaveServerList();
 
-			await Context.Channel.SendMessageAsync($"Removed opt role '{optRoleName}'.");
+			await Context.Channel.SendMessageAsync($"An opt role with the name `{optRoleName}` was removed.");
 		}
 	}
 }

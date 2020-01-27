@@ -59,6 +59,7 @@ namespace Pootis_Bot.Modules.Server
 			await Context.Channel.SendMessageAsync(sb.ToString());
 		}
 
+		//TODO: Banned channels stuff in their own class
 		[Command("getbannedchannels")]
 		[Alias("get banned channels")]
 		[Summary("Gets all banned channels")]
@@ -118,6 +119,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 		}
 
+		//TODO: Move role pings to their own setup class
 		[Command("addroleping")]
 		[Alias("add role ping")]
 		[Summary("Adds a role to role ping")]
@@ -147,6 +149,7 @@ namespace Pootis_Bot.Modules.Server
 				$"The **{roleNotToMention.Name}** role will not be allowed to mention the **{role.Name}** role.");
 		}
 
+		//TODO: Move role pings to their own setup class
 		[Command("removeroleping")]
 		[Alias("remove role ping")]
 		[Summary("Removes a role to role ping")]
@@ -191,6 +194,7 @@ namespace Pootis_Bot.Modules.Server
 			}
 		}
 
+		//TODO: Move role pings to their own setup class
 		[Command("rolepings")]
 		[Alias("role pings")]
 		[Summary("Gets all role to role pings")]
@@ -211,6 +215,7 @@ namespace Pootis_Bot.Modules.Server
 			await Context.Channel.SendMessageAsync(builder.ToString());
 		}
 
+		//TODO: Guild owners should be their own class as well
 		[Command("addguildowner")]
 		[Alias("addowner", "add guild owner", "add owner")]
 		[Summary("Adds a guild owner")]

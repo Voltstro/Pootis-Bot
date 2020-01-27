@@ -52,6 +52,8 @@ namespace Pootis_Bot.Modules.Basic
 				Context.User);
 		}
 
+		//TODO: Add `votes` and `vote stop` command, move vote commands into their own class
+
 		[Command("reminds", RunMode = RunMode.Async)]
 		[Summary("Reminds you, duh (In Seconds)")]
 		[Alias("res")]
