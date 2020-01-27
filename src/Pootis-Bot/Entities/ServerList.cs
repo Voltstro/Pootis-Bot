@@ -19,6 +19,11 @@ namespace Pootis_Bot.Entities
 		public List<ulong> GuildOwnerIds { get; set; }
 
 		/// <summary>
+		/// Command permissions
+		/// </summary>
+		public List<CommandPermission> CommandPermissions { get; set; }
+
+		/// <summary>
 		/// How many points to give (seconds)
 		/// </summary>
 		public uint PointGiveAmount { get; set; }
@@ -37,11 +42,6 @@ namespace Pootis_Bot.Entities
 		/// What role to give after a user gets a certain amount of points
 		/// </summary>
 		public List<ServerRolePoints> ServerRolePoints { get; set; }
-
-		/// <summary>
-		/// Command permissions
-		/// </summary>
-		public List<CommandPermission> CommandPermissions { get; set; }
 
 		/// <summary>
 		/// Role to role mentions
@@ -100,21 +100,25 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// What is the message that needs to be reacted
 		/// </summary>
+		[DefaultValue(0)]
 		public ulong RuleMessageId { get; set; }
 
 		/// <summary>
 		/// The channel were that gosh darn rule message is located
 		/// </summary>
+		[DefaultValue(0)]
 		public ulong RuleMessageChannelId { get; set; }
 
 		/// <summary>
 		/// The role that will be given to the user after reacting with the right emoji
 		/// </summary>
+		[DefaultValue(0)]
 		public ulong RuleRoleId { get; set; }
 
 		/// <summary>
 		/// The emoji that needs to be used
 		/// </summary>
+		[DefaultValue(null)]
 		public string RuleReactionEmoji { get; set; }
 
 		private List<Vote> _votes;
