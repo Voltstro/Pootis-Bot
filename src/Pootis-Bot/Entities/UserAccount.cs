@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -20,6 +21,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// What message does the user have set for their profile
 		/// </summary>
+		[DefaultValue("")]
 		public string ProfileMsg { get; set; }
 
 		/// <summary>
