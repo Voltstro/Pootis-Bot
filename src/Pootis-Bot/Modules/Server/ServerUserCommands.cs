@@ -11,6 +11,11 @@ namespace Pootis_Bot.Modules.Server
 {
 	public class ServerUserCommands : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Commands for users, but are more server-to-server related
+		// Contributors     - Creepysin, 
+
 		[Command("role")]
 		[Alias("get optrole", "optrole", "getrole")]
 		[Summary("Gives you an opt role, if it exists and if you meet conditions (if any).")]

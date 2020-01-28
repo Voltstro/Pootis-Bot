@@ -8,6 +8,11 @@ namespace Pootis_Bot.Modules.Server
 {
 	public class ServerSpamSettings : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Commands for spam settings
+		// Contributors     - Creepysin, 
+
 		[Command("spam toggle mentionuserspam")]
 		[Summary("Enables / Disables the mention user anti-spam feature")]
 		[RequireGuildOwner]
