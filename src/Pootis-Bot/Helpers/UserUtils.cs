@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Linq;
+using Discord;
 using Discord.WebSocket;
 
 namespace Pootis_Bot.Helpers
@@ -27,6 +28,12 @@ namespace Pootis_Bot.Helpers
 		public static void BanUser(SocketGuildUser user, SocketUser kicker, string message)
 		{
 			user.BanAsync(0, $"{message} | Banned by {kicker.Username}").GetAwaiter().GetResult();
+		}
+
+		public static bool UserHaveRole(this SocketGuildUser user, ulong roleId)
+		{
+			IRole role = user.Roles.FirstOrDefault(x => x.Id == roleId);
+			return role != null;
 		}
 	}
 }

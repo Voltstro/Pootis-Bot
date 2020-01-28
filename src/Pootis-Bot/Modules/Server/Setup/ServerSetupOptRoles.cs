@@ -46,10 +46,11 @@ namespace Pootis_Bot.Modules.Server.Setup
 			//Check to make sure a role give doesn't already exist first
 			if (server.GetOptRole(optRoleBaseName) != null)
 			{
-				await Context.Channel.SendMessageAsync($"A opt role with the name '{optRoleBaseName}' already exist!");
+				await Context.Channel.SendMessageAsync($"An opt role with the name '{optRoleBaseName}' already exists!");
 				return;
 			}
 
+			//Create and add our new opt role
 			OptRole roleGive = new OptRole
 			{
 				Name = optRoleBaseName,
