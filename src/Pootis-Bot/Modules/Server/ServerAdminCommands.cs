@@ -33,7 +33,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			UserUtils.KickUser(user, (SocketGuildUser) Context.User, reason);
+			user.KickUser((SocketGuildUser) Context.User, reason);
 			await Context.Channel.SendMessageAsync($"The user {user.Username} was kicked.");
 		}
 
@@ -50,7 +50,7 @@ namespace Pootis_Bot.Modules.Server
 				return;
 			}
 
-			UserUtils.BanUser(user, (SocketGuildUser) Context.User, reason);
+			user.BanUser((SocketGuildUser) Context.User, reason);
 			await Context.Channel.SendMessageAsync($"The user {user.Username} was banned.");
 		}
 
