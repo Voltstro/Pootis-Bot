@@ -10,6 +10,11 @@ namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetupGuildOwners : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Commands related to setting up guild owners
+		// Contributors     - Creepysin, 
+
 		[Command("setup add guildowner")]
 		[Summary("Adds a guild owner")]
 		[RequireGuildOwner(false)]
