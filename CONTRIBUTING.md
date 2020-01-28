@@ -85,6 +85,10 @@ embed.WithTitle("This is not correct!");
 
 Oh also, all structs are stored in the [Structs folder](/src/Pootis-Bot/Structs).
 
+### Modules
+
+Please read the [README.md in the `src/Pootis-Bot/Modules` directory](src/Pootis-Bot/Modules/README.md) for infomation on Discord command modules.
+
 ## Community
 
 If you would like to chat with us, you can so on our [Discord Server](https://discord.creepysin.com). I(Creepysin) am basically active all day
