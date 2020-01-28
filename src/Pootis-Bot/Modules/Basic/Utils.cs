@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Modules.Basic
 {
@@ -19,14 +20,15 @@ namespace Pootis_Bot.Modules.Basic
 		[Summary("Check if user has a role")]
 		public async Task HasRole(string roleName, SocketGuildUser user)
 		{
-			IRole role = (user as IGuildUser).Guild.Roles.FirstOrDefault(x => x.Name == roleName);
+			//Get the role
+			IRole role = RoleUtils.GetGuildRole(Context.Guild, roleName);
 			if (role == null)
 			{
 				await Context.Channel.SendMessageAsync("That role doesn't exist!");
 				return;
 			}
 
-			if (user.Roles.Contains(role))
+			if (user.UserHaveRole(role.Id))
 				await Context.Channel.SendMessageAsync($"**{user.Username}** has the role **{role.Name}**.");
 			else
 				await Context.Channel.SendMessageAsync($"**{user.Username}** doesn't have the role **{role}**.");
