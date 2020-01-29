@@ -59,66 +59,6 @@ namespace Pootis_Bot.Modules.Server
 			await Context.Channel.SendMessageAsync(sb.ToString());
 		}
 
-		//TODO: Banned channels stuff in their own class
-		[Command("getbannedchannels")]
-		[Alias("get banned channels")]
-		[Summary("Gets all banned channels")]
-		[RequireGuildOwner]
-		public async Task GetBannedChannels()
-		{
-			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			StringBuilder final = new StringBuilder();
-			final.Append("**All banned channels**: \n");
-
-			foreach (ulong channel in server.BannedChannels) final.Append($"<#{channel}> (**Id**: {channel})\n");
-
-			await Context.Channel.SendMessageAsync(final.ToString());
-		}
-
-		[Command("addbannedchannel")]
-		[Alias("add banned channel")]
-		[Summary("Adds a banned channel")]
-		[RequireGuildOwner]
-		public async Task AddBannedChannel(SocketTextChannel channel)
-		{
-			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			if (server.GetBannedChannel(channel.Id) == 0)
-			{
-				server.CreateBannedChannel(channel.Id);
-				ServerListsManager.SaveServerList();
-
-				await Context.Channel.SendMessageAsync(
-					$"Channel **{channel.Name}** has been added to the banned channels list for your server.");
-			}
-			else
-			{
-				await Context.Channel.SendMessageAsync(
-					$" Channel **{channel.Name}** is already apart of the banned channel list!");
-			}
-		}
-
-		[Command("removebannedchannel")]
-		[Alias("remove banned channel")]
-		[Summary("Removes a banned channel")]
-		[RequireGuildOwner]
-		public async Task RemoveBannedChannel(SocketTextChannel channel)
-		{
-			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			if (server.GetBannedChannel(channel.Id) != 0)
-			{
-				server.BannedChannels.Remove(channel.Id);
-				ServerListsManager.SaveServerList();
-
-				await Context.Channel.SendMessageAsync(
-					$"Channel **{channel.Name}** was removed from the banned channel list.");
-			}
-			else
-			{
-				await Context.Channel.SendMessageAsync(
-					$"Channel **{channel.Name}** isn't apart of the banned channel list!");
-			}
-		}
-
 		//TODO: Move role pings to their own setup class
 		[Command("addroleping")]
 		[Alias("add role ping")]
