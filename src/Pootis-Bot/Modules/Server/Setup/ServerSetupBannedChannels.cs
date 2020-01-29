@@ -10,6 +10,11 @@ namespace Pootis_Bot.Modules.Server.Setup
 {
 	public class ServerSetupBannedChannels : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Commands related to banning/banned channels
+		// Contributors     - Creepysin, 
+
 		[Command("setup bannedchannels")]
 		[Alias("setup banned channels")]
 		[Summary("Gets all banned channels")]
