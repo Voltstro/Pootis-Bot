@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace Pootis_Bot.Services.Voting
 {
+	/// <summary>
+	/// A <see cref="Vote"/>, you know? Were people can choose between options, like what a vote IS!
+	/// </summary>
 	public class Vote
 	{
 		/// <summary>

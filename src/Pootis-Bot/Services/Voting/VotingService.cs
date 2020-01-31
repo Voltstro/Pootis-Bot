@@ -9,6 +9,9 @@ using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Services.Voting
 {
+	/// <summary>
+	/// The back end for votes running on guilds
+	/// </summary>
 	public class VotingService
 	{
 		/// <summary>
