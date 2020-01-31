@@ -6,16 +6,6 @@ namespace Pootis_Bot.Entities
 	public class ConfigFile
 	{
 		/// <summary>
-		/// Api settings
-		/// </summary>
-		[JsonProperty("ApiKeys")] public ConfigApis Apis;
-
-		/// <summary>
-		/// Audio settings
-		/// </summary>
-		public ConfigAudio AudioSettings;
-
-		/// <summary>
 		/// The config version
 		/// </summary>
 		public string ConfigVersion { get; set; }
@@ -84,5 +74,15 @@ namespace Pootis_Bot.Entities
 		/// What type of formatting should we use for ServerList.json and UserAccounts.json
 		/// </summary>
 		public Formatting ResourceFilesFormatting { get; set; }
+
+		/// <summary>
+		/// Api settings
+		/// </summary>
+		[JsonProperty("ApiKeys")] public ConfigApis Apis;
+
+		/// <summary>
+		/// Audio settings
+		/// </summary>
+		public ConfigAudio AudioSettings;
 	}
 }
