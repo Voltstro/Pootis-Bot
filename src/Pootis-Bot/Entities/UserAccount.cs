@@ -25,6 +25,12 @@ namespace Pootis_Bot.Entities
 		public string ProfileMsg { get; set; }
 
 		/// <summary>
+		/// The ID of the vote that was the user's last vote
+		/// </summary>
+		[DefaultValue(0)]
+		public ulong UserLastVoteId { get; set; }
+
+		/// <summary>
 		/// A list of all the user's <see cref="UserAccountServerData"/>
 		/// </summary>
 		public List<UserAccountServerData> Servers { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -50,8 +51,13 @@ namespace Pootis_Bot.Services.Voting
 				NoEmoji = noEmoji,
 				YesEmoji = yesEmoji,
 				VoteLastTime = lastTime,
-				VoteStartTime = DateTime.Now
+				VoteStartTime = DateTime.Now,
+				CancellationToken = new CancellationTokenSource()
 			};
+
+			//User last vote
+			UserAccountsManager.GetAccount((SocketGuildUser) userWhoExecuted).UserLastVoteId = voteMessage.Id;
+			UserAccountsManager.SaveAccounts();
 
 			//Add our vote to the server list
 			ServerListsManager.GetServer(guild).Votes.Add(newVote);
@@ -90,16 +96,41 @@ namespace Pootis_Bot.Services.Voting
 			}
 
 			//Do our task delay
-			await Task.Delay(Convert.ToInt32(Math.Round(timeTillRun.TotalMilliseconds, 0)));
+			try
+			{
+				await Task.Delay(Convert.ToInt32(Math.Round(timeTillRun.TotalMilliseconds, 0)),
+					vote.CancellationToken.Token);
 
-			await EndVote(vote, guild);
+				if (vote.CancellationToken.IsCancellationRequested)
+					return;
+
+				await EndVote(vote, guild);
+			}
+			catch (TaskCanceledException)
+			{
+				//Don't need to do anything
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				Logger.Log($"Some error occured while a vote was ended, here are the details: {ex}", LogVerbosity.Error);
+#else
+				Logger.Log($"Some error occured while a vote was ended, here is the message: {ex.Message}", LogVerbosity.Debug);
+#endif
+			}
 		}
 
-		private static async Task EndVote(Vote vote, SocketGuild guild)
+		public static async Task EndVote(Vote vote, SocketGuild guild)
 		{
 			Logger.Log("The vote ended.", LogVerbosity.Debug);
 
+			vote.CancellationToken.Cancel();
+
 			SocketUser user = guild.GetUser(vote.VoteStarterUserId);
+
+			//Remove from user's last vote
+			UserAccountsManager.GetAccount((SocketGuildUser) user).UserLastVoteId = 0;
+			UserAccountsManager.SaveAccounts();
 
 			//Create a new embed with the results
 			EmbedBuilder embed = new EmbedBuilder();

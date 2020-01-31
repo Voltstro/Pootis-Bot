@@ -32,28 +32,6 @@ namespace Pootis_Bot.Modules.Basic
 			await Context.Channel.SendMessageAsync("The number was: " + random);
 		}
 
-		[Command("vote", RunMode = RunMode.Async)]
-		[Summary("Starts a vote")]
-		public async Task Vote(string title, string description, TimeSpan time, string yesEmoji, string noEmoji)
-		{
-			if (!Global.ContainsUnicodeCharacter(yesEmoji))
-			{
-				await Context.Channel.SendMessageAsync("Your yes emoji is not a unicode!");
-				return;
-			}
-
-			if (!Global.ContainsUnicodeCharacter(noEmoji))
-			{
-				await Context.Channel.SendMessageAsync("Your no emoji is not a unicode!");
-				return;
-			}
-
-			await VotingService.StartVote(title, description, time, yesEmoji, noEmoji, Context.Guild, Context.Channel,
-				Context.User);
-		}
-
-		//TODO: Add `votes` and `vote stop` command, move vote commands into their own class
-
 		[Command("reminds", RunMode = RunMode.Async)]
 		[Summary("Reminds you, duh (In Seconds)")]
 		[Alias("res")]

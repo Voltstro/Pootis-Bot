@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Pootis_Bot.Services.Voting
 {
@@ -58,5 +59,10 @@ namespace Pootis_Bot.Services.Voting
 		/// The amount of people who have said 'no'
 		/// </summary>
 		public int NoCount { get; set; }
+
+		/// <summary>
+		/// The cancellation token, to cancel or end a vote
+		/// </summary>
+		public CancellationTokenSource CancellationToken { get; set; }
 	}
 }
