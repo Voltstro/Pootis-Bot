@@ -69,7 +69,7 @@ namespace Pootis_Bot.Services.Voting
 			embed.WithTitle(voteTitle);
 			embed.WithDescription(voteDescription +
 			                      $"\nReact to this message with {yesEmoji} to say **YES** or react with {noEmoji} to say **NO**.");
-			embed.WithFooter($"Vote started by: {userWhoExecuted}", userWhoExecuted.GetAvatarUrl());
+			embed.WithFooter($"Vote started by {userWhoExecuted} at {DateTime.Now:g} and will end at {DateTime.Now.Add(lastTime):g}.", userWhoExecuted.GetAvatarUrl());
 
 			await MessageUtils.ModifyMessage(voteMessage, embed);
 
@@ -148,7 +148,7 @@ namespace Pootis_Bot.Services.Voting
 			embed.WithDescription(vote.VoteDescription +
 			                      $"\nThe vote is now over! Here are the results:\n**Yes**: {vote.YesCount}\n**No**: {vote.NoCount}");
 			if (user != null)
-				embed.WithFooter($"Vote started by: {user}", user.GetAvatarUrl());
+				embed.WithFooter($"Vote started by {user} and ended at {DateTime.Now:g}.", user.GetAvatarUrl());
 			else
 				embed.WithFooter("Vote started by: a person who left the guild :(");
 
