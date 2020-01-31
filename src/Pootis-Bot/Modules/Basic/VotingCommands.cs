@@ -11,6 +11,11 @@ namespace Pootis_Bot.Modules.Basic
 {
 	public class VotingCommands : ModuleBase<SocketCommandContext>
 	{
+		// Module Information
+		// Original Author  - Creepysin
+		// Description      - Provides commands for votes
+		// Contributors     - Creepysin, 
+
 		[Command("vote", RunMode = RunMode.Async)]
 		[Summary("Starts a vote")]
 		public async Task Vote(string title, string description, TimeSpan time, string yesEmoji, string noEmoji)

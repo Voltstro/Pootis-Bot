@@ -120,6 +120,13 @@ namespace Pootis_Bot.Services.Voting
 			}
 		}
 
+		/// <summary>
+		/// Ends a vote running on a guild
+		/// <para>If the vote is running, it will END it!</para>
+		/// </summary>
+		/// <param name="vote">The vote to end</param>
+		/// <param name="guild"></param>
+		/// <returns></returns>
 		public static async Task EndVote(Vote vote, SocketGuild guild)
 		{
 			Logger.Log("The vote ended.", LogVerbosity.Debug);

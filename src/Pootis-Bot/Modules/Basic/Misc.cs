@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord.Commands;
-using Pootis_Bot.Core;
 using Pootis_Bot.Services;
-using Pootis_Bot.Services.Voting;
 
 namespace Pootis_Bot.Modules.Basic
 {
