@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using Discord;
 using Pootis_Bot.Helpers;
@@ -173,18 +172,6 @@ namespace Pootis_Bot.Core
 		{
 			Random random = new Random();
 			return random.Next(min, max);
-		}
-
-		/// <summary>
-		/// Checks if a string contains unicode characters
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		public static bool ContainsUnicodeCharacter(string input)
-		{
-			const int maxAnsiCode = 255;
-
-			return input.Any(c => c > maxAnsiCode);
 		}
 	}
 }

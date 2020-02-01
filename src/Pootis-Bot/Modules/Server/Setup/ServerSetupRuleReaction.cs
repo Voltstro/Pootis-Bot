@@ -2,7 +2,6 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -93,7 +92,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		[RequireGuildOwner]
 		public async Task SetRuleEmoji(string unicodeEmoji)
 		{
-			if (!Global.ContainsUnicodeCharacter(unicodeEmoji))
+			if (!unicodeEmoji.ContainsUnicodeCharacter())
 			{
 				await Context.Channel.SendMessageAsync(
 					"This emoji is not unicode. Copy the emoji you want to be reacted with from here: https://unicode.org/emoji/charts/full-emoji-list.html");
@@ -149,7 +148,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			}
 
 			//Check the emoji
-			if (!Global.ContainsUnicodeCharacter(server.RuleReactionEmoji))
+			if (!server.RuleReactionEmoji.ContainsUnicodeCharacter())
 			{
 				await Context.Channel.SendMessageAsync("The emoji that is meant to be used is invalid!");
 				return;
