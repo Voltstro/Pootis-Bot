@@ -13,7 +13,7 @@ namespace Pootis_Bot.Helpers
 		/// </summary>
 		/// <param name="str"></param>
 		/// <returns></returns>
-		public static string RemoveWhitespace(this string str) => string.Join("",
+		public static string RemoveWhitespace(this string str) => String.Join("",
 			str.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
 
 		/// <summary>
@@ -27,6 +27,31 @@ namespace Pootis_Bot.Helpers
 			const int maxAnsiCode = 255;
 
 			return input.Any(c => c > maxAnsiCode);
+		}
+
+		/// <summary>
+		/// Makes a <see cref="string"/> into a title.
+		/// <para>So like this: Awesome Epic Title</para>
+		/// </summary>
+		/// <param name="title">The string to change</param>
+		/// <returns></returns>
+		public static string Title(this string title)
+		{
+			char[] array = title.ToCharArray();
+
+			//Handle the first letter in the string.
+			if (array.Length >= 1)
+				if (char.IsLower(array[0]))
+					array[0] = char.ToUpper(array[0]);
+
+			//Scan through the letters, checking for spaces.
+			// ... Uppercase the lowercase letters following spaces.
+			for (int i = 1; i < array.Length; i++)
+				if (array[i - 1] == ' ')
+					if (char.IsLower(array[i]))
+						array[i] = char.ToUpper(array[i]);
+
+			return new string(array);
 		}
 	}
 }

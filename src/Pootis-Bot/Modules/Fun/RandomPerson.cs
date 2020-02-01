@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Pootis_Bot.Core;
+using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Fun;
 using Pootis_Bot.Structs;
@@ -26,7 +26,7 @@ namespace Pootis_Bot.Modules.Fun
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Random Person");
 			embed.AddField("Name", $"{person.PersonTitle} {person.PersonFirstName} {person.PersonLastName}");
-			embed.AddField("Gender", Global.Title(person.PersonGender));
+			embed.AddField("Gender", person.PersonGender.Title());
 			embed.AddField("Location",
 				$":flag_{person.CountryCode.ToLower()}: {person.City}, {person.State}, {person.Country}");
 			embed.WithThumbnailUrl(person.PersonPicture);
