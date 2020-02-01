@@ -6,6 +6,7 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services.Voting;
+using Pootis_Bot.TypeReaders;
 
 namespace Pootis_Bot.Modules.Basic
 {
@@ -18,7 +19,7 @@ namespace Pootis_Bot.Modules.Basic
 
 		[Command("vote", RunMode = RunMode.Async)]
 		[Summary("Starts a vote")]
-		public async Task Vote(string title, string description, TimeSpan time, string yesEmoji, string noEmoji)
+		public async Task Vote(string title, string description, string yesEmoji, string noEmoji, [Remainder] [OverrideTypeReader(typeof(TimeSpanCustomReader))] TimeSpan time)
 		{
 			if (!Global.ContainsUnicodeCharacter(yesEmoji))
 			{
