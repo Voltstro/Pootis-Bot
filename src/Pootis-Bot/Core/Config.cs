@@ -15,7 +15,7 @@ namespace Pootis_Bot.Core
 		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "Config.json";
 
-		private const string ConfigVersion = "12";
+		private const string ConfigVersion = "13";
 
 		public static readonly ConfigFile bot;
 
@@ -61,16 +61,21 @@ namespace Pootis_Bot.Core
 				TwitchStreamingSite = "https://www.twitch.tv/creepysin",
 				LevelUpCooldown = 15,
 				LevelUpAmount = 10,
+				CheckConnectionStatus = true,
+				CheckConnectionStatusInterval = 60000,
+				DefaultGameMessage = "Use $help for help.",
+				Apis = new ConfigApis(),
 				AudioSettings = new ConfigAudio
 				{
 					AudioServicesEnabled = false,
 					LogPlayStopSongToConsole = true,
 					MaxVideoTime = new TimeSpan(0, 7, 0)
 				},
-				CheckConnectionStatus = true,
-				CheckConnectionStatusInterval = 60000,
-				DefaultGameMessage = "Use $help for help.",
-				Apis = new ConfigApis()
+				VoteSettings = new VoteSettings
+				{
+					MaxRunningVotesPerGuild = 3,
+					MaxVoteTime = new TimeSpan(7, 0, 0, 0)
+				}
 			};
 
 			return newConfig;

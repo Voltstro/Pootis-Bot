@@ -84,5 +84,7 @@ namespace Pootis_Bot.Entities
 		/// Audio settings
 		/// </summary>
 		public ConfigAudio AudioSettings;
+
+		public VoteSettings VoteSettings;
 	}
 }

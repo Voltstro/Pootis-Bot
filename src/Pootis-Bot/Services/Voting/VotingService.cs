@@ -3,8 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
+using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Services.Voting
@@ -29,6 +31,20 @@ namespace Pootis_Bot.Services.Voting
 		public static async Task StartVote(string voteTitle, string voteDescription, TimeSpan lastTime, string yesEmoji,
 			string noEmoji, SocketGuild guild, IMessageChannel channel, SocketUser userWhoExecuted)
 		{
+			if (lastTime.TotalMilliseconds > Config.bot.VoteSettings.MaxVoteTime.TotalMilliseconds)
+			{
+				await channel.SendMessageAsync("The vote time succeeds the maximum allowed time for a vote to last!");
+				return;
+			}
+
+			ServerList server = ServerListsManager.GetServer(guild);
+			if (server.Votes.Count >= Config.bot.VoteSettings.MaxRunningVotesPerGuild)
+			{
+				await channel.SendMessageAsync(
+					$"There are already {Config.bot.VoteSettings.MaxRunningVotesPerGuild} votes running on this guild right now!\nEnd a vote to start a new one.");
+				return;
+			}
+
 			//Setup Emojis
 			Emoji yesEmote = new Emoji(yesEmoji);
 			Emoji noEmote = new Emoji(noEmoji);
@@ -63,7 +79,7 @@ namespace Pootis_Bot.Services.Voting
 			UserAccountsManager.SaveAccounts();
 
 			//Add our vote to the server list
-			ServerListsManager.GetServer(guild).Votes.Add(newVote);
+			server.Votes.Add(newVote);
 			ServerListsManager.SaveServerList();
 
 			embed.WithTitle(voteTitle);
