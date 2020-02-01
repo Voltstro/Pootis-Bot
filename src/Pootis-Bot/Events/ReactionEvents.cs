@@ -27,33 +27,42 @@ namespace Pootis_Bot.Events
 			if(user.IsBot)
 				return Task.CompletedTask;
 
+			//Something happened, make sure the message ID isn't 0, this is just in case
+			if(reaction.MessageId == 0)
+				return Task.CompletedTask;
+
 			SocketGuild guild = ((SocketGuildChannel) channel).Guild;
 			ServerList server = ServerListsManager.GetServer(guild);
 
-			if (reaction.MessageId == server.RuleMessageId) //Check to see if the reaction is on the right message
+			//If the message the user reacted to is the rules message
+			if (reaction.MessageId == server.RuleMessageId && server.RuleEnabled)
 			{
-				if (!server.RuleEnabled) return Task.CompletedTask;
-				if (reaction.Emote.Name != server.RuleReactionEmoji) return Task.CompletedTask;
-				SocketRole role = RoleUtils.GetGuildRole(guild, server.RuleRoleId);
+				if (reaction.Emote.Name != server.RuleReactionEmoji) //Check to make sure it is the right emoji
+					return Task.CompletedTask;
 
+				//Add the role
+				SocketRole role = RoleUtils.GetGuildRole(guild, server.RuleRoleId);
 				user.AddRoleAsync(role);
+
+				return Task.CompletedTask;
 			}
-			else
+
+			//If this message is a vote
+			if (server.GetVote(reaction.MessageId) != null)
 			{
-				if (reaction.MessageId != 0 && server.GetVote(reaction.MessageId) != null)
-				{
-					Vote vote = server.GetVote(reaction.MessageId);
-					if (reaction.Emote.Name == vote.YesEmoji)
-						vote.YesCount++;
-					else if (reaction.Emote.Name == vote.NoEmoji)
-						vote.NoCount++;
-					ServerListsManager.SaveServerList();
-				}
-				else
-				{
-					LevelingSystem.UserSentMessage(user, (SocketTextChannel) reaction.Channel, 5);
-				}
+				Vote vote = server.GetVote(reaction.MessageId);
+				if (reaction.Emote.Name == vote.YesEmoji)
+					vote.YesCount++;
+				else if (reaction.Emote.Name == vote.NoEmoji)
+					vote.NoCount++;
+
+				ServerListsManager.SaveServerList();
+
+				return Task.CompletedTask;
 			}
+
+			//So the reaction wasn't anything important, so add some XP to the user
+			LevelingSystem.UserSentMessage(user, (SocketTextChannel) reaction.Channel, 5);
 
 			return Task.CompletedTask;
 		}
