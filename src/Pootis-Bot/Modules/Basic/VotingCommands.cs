@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -39,22 +40,25 @@ namespace Pootis_Bot.Modules.Basic
 
 		[Command("vote end", RunMode = RunMode.Async)]
 		[Summary("Ends a vote")]
-		public async Task EndVote([Remainder] ulong voteId = 0)
+		public async Task EndVote([Remainder] string voteId = "0")
 		{
-			//Cancel last vote the user started
-			if (voteId == 0)
+			//The input is just a number
+			if(ulong.TryParse(voteId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id))
 			{
-				UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser)Context.User);
-				if (user.UserLastVoteId != 0)
-					await VotingService.EndVote(
-						ServerListsManager.GetServer(Context.Guild).GetVote(user.UserLastVoteId), Context.Guild);
-				else
-					await Context.Channel.SendMessageAsync(
-						"You don't appear to have any votes running, if you do, put in the ID of the vote message with this command as well!");
-			}
-			else
-			{
-				Vote vote = ServerListsManager.GetServer(Context.Guild).GetVote(voteId);
+				//Cancel last vote the user started
+				if (id == 0)
+				{
+					UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser)Context.User);
+					if (user.UserLastVoteId != 0)
+						await VotingService.EndVote(
+							ServerListsManager.GetServer(Context.Guild).GetVote(user.UserLastVoteId), Context.Guild);
+					else
+						await Context.Channel.SendMessageAsync(
+							"You don't appear to have any votes running, if you do, put in the ID of the vote message with this command as well!");
+					return;
+				}
+
+				Vote vote = ServerListsManager.GetServer(Context.Guild).GetVote(id);
 				if (vote == null)
 				{
 					await Context.Channel.SendMessageAsync("There are no votes with that ID!");
@@ -65,13 +69,37 @@ namespace Pootis_Bot.Modules.Basic
 				{
 					await VotingService.EndVote(vote, Context.Guild);
 					await Context.Channel.SendMessageAsync("That vote was ended.");
+					return;
 				}
-				else if (vote.VoteStarterUserId != Context.User.Id)
+				if (vote.VoteStarterUserId != Context.User.Id)
 				{
 					await VotingService.EndVote(vote, Context.Guild);
 					await Context.Channel.SendMessageAsync("Your vote was ended.");
+					return;
 				}
 			}
+
+			//End all votes
+			if (voteId.RemoveWhitespace() == "*")
+			{
+				if (!((SocketGuildUser) Context.User).GuildPermissions.ManageMessages)
+				{
+					await Context.Channel.SendMessageAsync("You don't have permissions to end all votes!");
+					return;
+				}
+
+				Vote[] votes = ServerListsManager.GetServer(Context.Guild).Votes.ToArray();
+				foreach (Vote vote in votes)
+				{
+					await VotingService.EndVote(vote, Context.Guild);
+				}
+
+				await Context.Channel.SendMessageAsync("All votes were ended.");
+				return;
+			}
+
+			await Context.Channel.SendMessageAsync(
+				"Unknown argument! Either needs to be none or a message ID to end a vote, or `*` to end all.");
 		}
 	}
 }
