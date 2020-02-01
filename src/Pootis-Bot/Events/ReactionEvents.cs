@@ -17,6 +17,16 @@ namespace Pootis_Bot.Events
 		public Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel,
 			SocketReaction reaction)
 		{
+			SocketGuildUser user = (SocketGuildUser) reaction.User;
+
+			//Make sure user isn't null
+			if (user == null)
+				return Task.CompletedTask;
+
+			//Make sure the user isn't a bot as well
+			if(user.IsBot)
+				return Task.CompletedTask;
+
 			SocketGuild guild = ((SocketGuildChannel) channel).Guild;
 			ServerList server = ServerListsManager.GetServer(guild);
 
@@ -26,7 +36,6 @@ namespace Pootis_Bot.Events
 				if (reaction.Emote.Name != server.RuleReactionEmoji) return Task.CompletedTask;
 				SocketRole role = RoleUtils.GetGuildRole(guild, server.RuleRoleId);
 
-				SocketGuildUser user = (SocketGuildUser) reaction.User;
 				user.AddRoleAsync(role);
 			}
 			else
@@ -42,9 +51,7 @@ namespace Pootis_Bot.Events
 				}
 				else
 				{
-					if (!((SocketGuildUser) reaction.User).IsBot)
-						LevelingSystem.UserSentMessage((SocketGuildUser) reaction.User,
-							(SocketTextChannel) reaction.Channel, 5);
+					LevelingSystem.UserSentMessage(user, (SocketTextChannel) reaction.Channel, 5);
 				}
 			}
 
