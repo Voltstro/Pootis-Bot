@@ -76,7 +76,7 @@ namespace Pootis_Bot.Entities
 		public Formatting ResourceFilesFormatting { get; set; }
 
 		/// <summary>
-		/// Api settings
+		/// API settings
 		/// </summary>
 		[JsonProperty("ApiKeys")] public ConfigApis Apis;
 
@@ -85,6 +85,9 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		public ConfigAudio AudioSettings;
 
+		/// <summary>
+		/// Setting related to voting
+		/// </summary>
 		public VoteSettings VoteSettings;
 	}
 }
