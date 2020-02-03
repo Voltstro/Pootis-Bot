@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -17,8 +18,10 @@ namespace Pootis_Bot.Core
 {
 	public class CommandHandler
 	{
-		private const string UserNotFoundError = "User not found.";
-		private const string UserNotFoundList = "This user doesn't exist: ";
+		private readonly Dictionary<string, string> _errors = new Dictionary<string, string>
+		{
+			["User not found."] = "You need to input a valid username for your username argument!"
+		};
 
 		private readonly AntiSpamService _antiSpam;
 		private readonly DiscordSocketClient _client;
@@ -158,38 +161,36 @@ namespace Pootis_Bot.Core
 			return doesUserHavePerm || context.User.Id == context.Guild.OwnerId;
 		}
 
-		private static async Task HandleCommandResult(SocketCommandContext context, SocketUserMessage msg, IResult result)
+		private async Task HandleCommandResult(SocketCommandContext context, IMessage msg, IResult result)
 		{
+			//The user had unmet preconditions
+			if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
+			{
+				await context.Channel.SendMessageAsync(result.ErrorReason);
+				return;
+			}
+
 			//The command either had too little arguments or too many
 			if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
 			{
 				await context.Channel.SendMessageAsync(
 					$"The command `{msg.Content.Replace(Global.BotPrefix, "")}` either has too many or too little arguments!");
+				return;
 			}
 
-			//The user or bot had unmet preconditions
-			else if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
+			if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound)
 			{
-				await context.Channel.SendMessageAsync(result.ErrorReason);
-			}
-
-			//The user name imputed wasn't valid
-			else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
-			         result.ErrorReason == UserNotFoundError)
-			{
-				await context.Channel.SendMessageAsync("You need to input a valid username!");
-			}
-
-			else if (!result.IsSuccess && result.Error == CommandError.ObjectNotFound &&
-			         result.ErrorReason.StartsWith(UserNotFoundList))
-			{
-				await context.Channel.SendMessageAsync(
-					$"The user `{result.ErrorReason.Replace(UserNotFoundList, "")}` wasn't found in this guild!");
+				//Handle custom errors
+				foreach (KeyValuePair<string, string> error in _errors.Where(error => result.ErrorReason.StartsWith(error.Key)))
+				{
+					await context.Channel.SendMessageAsync(error.Value);
+					return;
+				}
 			}
 
 			//Some other error, just put the error into the console
 			//and tell the user an internal error occured so they are not just left blank
-			else if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+			if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
 			{
 				Logger.Log(result.ErrorReason, LogVerbosity.Error);
 				await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");

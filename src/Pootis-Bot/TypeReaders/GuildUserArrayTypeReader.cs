@@ -37,7 +37,7 @@ namespace Pootis_Bot.TypeReaders
 					SocketGuildUser guildUser = GetUser(id, context);
 					if (guildUser == null)
 						return Task.FromResult(TypeReaderResult.FromError(CommandError.ObjectNotFound,
-							$"This user doesn't exist: {user}"));
+							$"User not found."));
 
 					results.Add(guildUser);
 					continue;
@@ -49,7 +49,7 @@ namespace Pootis_Bot.TypeReaders
 					SocketGuildUser guildUser = GetUser(id, context);
 					if (guildUser == null)
 						return Task.FromResult(TypeReaderResult.FromError(CommandError.ObjectNotFound,
-							$"This user doesn't exist: {user}"));
+							$"User not found."));
 
 					results.Add(guildUser);
 					continue;
@@ -68,7 +68,7 @@ namespace Pootis_Bot.TypeReaders
 
 					if (guildUser == null)
 						return Task.FromResult(TypeReaderResult.FromError(CommandError.ObjectNotFound,
-							$"This user doesn't exist: {user}"));
+							$"User not found."));
 
 					results.Add(guildUser);
 					continue;
@@ -94,7 +94,7 @@ namespace Pootis_Bot.TypeReaders
 
 				if (!userFound)
 					return Task.FromResult(TypeReaderResult.FromError(CommandError.ObjectNotFound,
-						$"This user doesn't exist: {user}"));
+						$"User not found."));
 			}
 
 			return Task.FromResult(results.Count > 0
