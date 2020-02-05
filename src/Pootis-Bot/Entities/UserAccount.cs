@@ -42,6 +42,12 @@ namespace Pootis_Bot.Entities
 		public uint LevelNumber => (uint) Math.Sqrt(Xp / 30f);
 
 		/// <summary>
+		/// What was the last time the user got XP?
+		/// </summary>
+		[JsonIgnore]
+		public DateTime LastLevelUpTime { get; set; }
+
+		/// <summary>
 		/// Gets or creates a <see cref="UserAccountServerData"/>
 		/// </summary>
 		/// <param name="id"></param>

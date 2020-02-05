@@ -37,12 +37,6 @@ namespace Pootis_Bot.Entities
 		public DateTime LastServerPointsTime { get; set; }
 
 		/// <summary>
-		/// What was their last level up time?
-		/// </summary>
-		[JsonIgnore]
-		public DateTime LastLevelUpTime { get; set; }
-
-		/// <summary>
 		/// How many warnings has this user got from pinging a role they were not allowed to?
 		/// </summary>
 		[JsonIgnore]

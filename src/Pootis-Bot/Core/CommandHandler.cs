@@ -125,7 +125,7 @@ namespace Pootis_Bot.Core
 					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
 				DateTime now = DateTime.Now;
 
-				HandleUserXpLevel(account, context, now);
+				HandleUserXpLevel(user, context, now);
 				HandleUserPointsLevel(account, server, context, now);
 			}
 		}
@@ -205,7 +205,7 @@ namespace Pootis_Bot.Core
 
 		#region User Level Up Stuff
 
-		private static void HandleUserXpLevel(UserAccountServerData account, SocketCommandContext context, DateTime now)
+		private static void HandleUserXpLevel(UserAccount account, SocketCommandContext context, DateTime now)
 		{
 			if (!(now.Subtract(account.LastLevelUpTime).TotalSeconds >=
 			      Config.bot.LevelUpCooldown)) return;
@@ -220,19 +220,15 @@ namespace Pootis_Bot.Core
 
 		private static void HandleUserPointsLevel(UserAccountServerData account, ServerList server, SocketCommandContext context, DateTime now)
 		{
-			//TODO: Rewrite this stuff
-
 			//Server points
-			// ReSharper disable once CompareOfFloatsByEqualityOperator
-			if (account.LastServerPointsTime.Subtract(now).TotalSeconds <= -server.PointsGiveCooldownTime ||
-			    account.LastServerPointsTime.Second == 0)
-			{
-				LevelingSystem.GiveUserServerPoints((SocketGuildUser) context.User,
-					(SocketTextChannel) context.Channel, server.PointGiveAmount);
+			if (!(now.Subtract(account.LastServerPointsTime).TotalSeconds >= 
+			      server.PointsGiveCooldownTime)) return;
 
-				//No need to save since this variable has a JsonIgnore attribute
-				account.LastServerPointsTime = now;
-			}
+			LevelingSystem.GiveUserServerPoints((SocketGuildUser) context.User,
+				(SocketTextChannel) context.Channel, server.PointGiveAmount);
+
+			//No need to save since this variable has a JsonIgnore attribute
+			account.LastServerPointsTime = now;
 		}
 
 		#endregion

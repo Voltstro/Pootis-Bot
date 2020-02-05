@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -27,6 +28,8 @@ namespace Pootis_Bot.Core
 			if (oldLevel != userAccount.LevelNumber)
 				await channel.SendMessageAsync(
 					$"{user.Mention} leveled up! Now on level **{userAccount.LevelNumber}**!");
+
+			Logger.Log($"{user.Username} now has {userAccount.Xp} XP", LogVerbosity.Debug);
 		}
 
 		/// <summary>
@@ -37,21 +40,23 @@ namespace Pootis_Bot.Core
 		/// <param name="amount"></param>
 		public static async void GiveUserServerPoints(SocketGuildUser user, SocketTextChannel channel, uint amount)
 		{
-			UserAccount userAccount = UserAccountsManager.GetAccount(user);
-			userAccount.GetOrCreateServer(user.Guild.Id).Points += amount;
+			UserAccountServerData userAccount = UserAccountsManager.GetAccount(user).GetOrCreateServer(user.Guild.Id);
+			userAccount.Points += amount;
 
 			UserAccountsManager.SaveAccounts();
 
 			//Give the user a role if they have enough points for it.
 			ServerList server = ServerListsManager.GetServer(user.Guild);
 			ServerRolePoints serverRole =
-				server.GetServerRolePoints(userAccount.GetOrCreateServer(user.Guild.Id).Points);
-			if (serverRole.PointsRequired == 0) return;
+				server.GetServerRolePoints(userAccount.Points);
 
+			Logger.Log($"{user.Username} now has {userAccount.Points} points on guild {user.Guild.Id}", LogVerbosity.Debug);
+
+			if (serverRole.PointsRequired == 0) return;
 			await user.AddRoleAsync(RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId));
 
 			await channel.SendMessageAsync(
-				$"Congrats {user.Mention}, you got {userAccount.GetOrCreateServer(user.Guild.Id).Points} points and got the **{RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId).Name}** role!");
+				$"Congrats {user.Mention}, you got {userAccount.Points} points and got the **{RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId).Name}** role!");
 		}
 	}
 }
