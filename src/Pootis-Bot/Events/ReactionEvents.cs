@@ -62,7 +62,7 @@ namespace Pootis_Bot.Events
 			}
 
 			//So the reaction wasn't anything important, so add some XP to the user
-			LevelingSystem.UserSentMessage(user, (SocketTextChannel) reaction.Channel, 5);
+			LevelingSystem.GiveUserXp(user, (SocketTextChannel) reaction.Channel, 5);
 
 			return Task.CompletedTask;
 		}

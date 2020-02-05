@@ -14,7 +14,7 @@ namespace Pootis_Bot.Core
 		/// <param name="user"></param>
 		/// <param name="channel"></param>
 		/// <param name="amount"></param>
-		public static async void UserSentMessage(SocketGuildUser user, SocketTextChannel channel, uint amount)
+		public static async void GiveUserXp(SocketGuildUser user, SocketTextChannel channel, uint amount)
 		{
 			UserAccount userAccount = UserAccountsManager.GetAccount(user);
 			uint oldLevel = userAccount.LevelNumber;

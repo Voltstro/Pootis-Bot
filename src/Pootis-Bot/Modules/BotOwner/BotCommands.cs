@@ -27,7 +27,7 @@ namespace Pootis_Bot.Modules.BotOwner
 		[RequireOwner]
 		public async Task AddXp(SocketGuildUser user, uint amount)
 		{
-			LevelingSystem.UserSentMessage(user, (SocketTextChannel) Context.Channel, amount);
+			LevelingSystem.GiveUserXp(user, (SocketTextChannel) Context.Channel, amount);
 
 			await Task.Delay(500);
 
@@ -40,7 +40,7 @@ namespace Pootis_Bot.Modules.BotOwner
 		[RequireOwner]
 		public async Task RemoveXp(SocketGuildUser user, uint amount)
 		{
-			LevelingSystem.UserSentMessage(user, (SocketTextChannel) Context.Channel, (uint) -amount);
+			LevelingSystem.GiveUserXp(user, (SocketTextChannel) Context.Channel, (uint) -amount);
 
 			await Task.Delay(500);
 

@@ -211,7 +211,7 @@ namespace Pootis_Bot.Core
 			      Config.bot.LevelUpCooldownTime.TotalSeconds)) return;
 
 			//Give the user the XP
-			LevelingSystem.UserSentMessage((SocketGuildUser)context.User, 
+			LevelingSystem.GiveUserXp((SocketGuildUser)context.User, 
 				(SocketTextChannel)context.Channel, Config.bot.LevelUpAmount);
 
 			//Set the user's last level up time to now
