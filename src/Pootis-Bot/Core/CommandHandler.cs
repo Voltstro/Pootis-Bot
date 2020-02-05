@@ -207,19 +207,15 @@ namespace Pootis_Bot.Core
 
 		private static void HandleUserXpLevel(UserAccountServerData account, SocketCommandContext context, DateTime now)
 		{
-			//TODO: Rewrite this stuff
+			if (!(now.Subtract(account.LastLevelUpTime).TotalSeconds >=
+			      Config.bot.LevelUpCooldownTime.TotalSeconds)) return;
 
-			//Only level it up if the last message was the level up cooldown.
-			// ReSharper disable once CompareOfFloatsByEqualityOperator
-			if (account.LastLevelUpTime.Subtract(now).TotalSeconds <= -Config.bot.LevelUpCooldown ||
-			    account.LastLevelUpTime.Second == 0)
-			{
-				LevelingSystem.UserSentMessage((SocketGuildUser) context.User, (SocketTextChannel) context.Channel,
-					Config.bot.LevelUpAmount);
+			//Give the user the XP
+			LevelingSystem.UserSentMessage((SocketGuildUser)context.User, 
+				(SocketTextChannel)context.Channel, Config.bot.LevelUpAmount);
 
-				//We don't need to save the accounts file since the LastLevelUpTime has a json ignore tag
-				account.LastLevelUpTime = now;
-			}
+			//Set the user's last level up time to now
+			account.LastLevelUpTime = now;
 		}
 
 		private static void HandleUserPointsLevel(UserAccountServerData account, ServerList server, SocketCommandContext context, DateTime now)
