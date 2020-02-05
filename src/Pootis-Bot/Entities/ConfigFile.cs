@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Pootis_Bot.Structs.Config;
 
 namespace Pootis_Bot.Entities
@@ -52,14 +51,8 @@ namespace Pootis_Bot.Entities
 		public uint LevelUpAmount { get; set; }
 
 		/// <summary>
-		/// How long between each message should we wait before allowing to give more XP
+		/// The time between leveling up
 		/// </summary>
-		public TimeSpan LevelUpCooldownTime { get; set; }
-
-			/// <summary>
-		/// Obsolete: Use LevelUpCooldownTime now
-		/// </summary>
-		[JsonIgnore]
 		public int LevelUpCooldown { get; set; }
 
 		/// <summary>

@@ -208,7 +208,7 @@ namespace Pootis_Bot.Core
 		private static void HandleUserXpLevel(UserAccountServerData account, SocketCommandContext context, DateTime now)
 		{
 			if (!(now.Subtract(account.LastLevelUpTime).TotalSeconds >=
-			      Config.bot.LevelUpCooldownTime.TotalSeconds)) return;
+			      Config.bot.LevelUpCooldown)) return;
 
 			//Give the user the XP
 			LevelingSystem.GiveUserXp((SocketGuildUser)context.User, 
