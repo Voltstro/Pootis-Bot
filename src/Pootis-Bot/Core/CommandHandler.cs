@@ -55,18 +55,6 @@ namespace Pootis_Bot.Core
 			_client.MessageReceived += HandleCommandAsync;
 		}
 
-		/// <summary>
-		/// Checks all the help modules in the config
-		/// </summary>
-		public void CheckHelpModules()
-		{
-			foreach (string module in HelpModulesManager.GetHelpModules().SelectMany(helpModule =>
-				helpModule.Modules.Where(module => DiscordModuleManager.GetModule(module) == null)))
-				Logger.Log(
-					$"There is no module called {module}! Reset the help modules or fix the help modules in the config file!",
-					LogVerbosity.Error);
-		}
-
 		private async Task HandleCommandAsync(SocketMessage messageParam)
 		{
 			//Check the message to make sure it isn't a bot or such and get the SocketUserMessage and context

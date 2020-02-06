@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Modules.Account;
 using Pootis_Bot.Modules.Audio;
@@ -42,6 +43,18 @@ namespace Pootis_Bot.Core.Managers
 		public static List<HelpModule> GetHelpModules()
 		{
 			return _helpModules;
+		}
+
+		/// <summary>
+		/// Checks all the help modules in the config
+		/// </summary>
+		public static void CheckHelpModules()
+		{
+			foreach (string module in _helpModules.SelectMany(helpModule =>
+				helpModule.Modules.Where(module => DiscordModuleManager.GetModule(module) == null)))
+				Logger.Log(
+					$"There is no module called {module}! Reset the help modules or fix the help modules in the config file!",
+					LogVerbosity.Error);
 		}
 
 		/// <summary>

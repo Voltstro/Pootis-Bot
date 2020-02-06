@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Core.Logging;
+using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Events;
 using Pootis_Bot.Services;
 
@@ -60,7 +61,7 @@ namespace Pootis_Bot.Core
 			await handler.SetupCommandHandlingAsync();
 
 			//Check all help modules
-			handler.CheckHelpModules();
+			HelpModulesManager.CheckHelpModules();
 
 			//Bot owner
 			Global.BotOwner = (await _client.GetApplicationInfoAsync()).Owner;
