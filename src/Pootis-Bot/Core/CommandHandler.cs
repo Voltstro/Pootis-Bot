@@ -125,8 +125,16 @@ namespace Pootis_Bot.Core
 			return true;
 		}
 
+		/// <summary>
+		/// Checks the message for spam, and if the user is muted
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <param name="context"></param>
+		/// <param name="user"></param>
+		/// <returns></returns>
 		private bool CheckMessageSpam(SocketUserMessage msg, SocketCommandContext context, UserAccount user)
 		{
+			//TODO: Better muting system
 			//Check if the user is muted, if so delete the message, oh and make sure it ISN'T the owner of the guild
 			if (user.GetOrCreateServer(context.Guild.Id).IsMuted && user.Id != context.Guild.OwnerId)
 			{
