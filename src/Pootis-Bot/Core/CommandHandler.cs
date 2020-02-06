@@ -149,6 +149,13 @@ namespace Pootis_Bot.Core
 			return true;
 		}
 
+		/// <summary>
+		/// Check the user to see if they have permissions to use the command
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="server"></param>
+		/// <param name="argPos"></param>
+		/// <returns></returns>
 		private bool CheckUserPermission(SocketCommandContext context, ServerList server, int argPos)
 		{
 			//Get the command first
