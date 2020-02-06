@@ -69,15 +69,8 @@ namespace Pootis_Bot.Core
 
 		private async Task HandleCommandAsync(SocketMessage messageParam)
 		{
-			if (!(messageParam is SocketUserMessage msg)) return;
-
-			if (msg.Author.IsBot) //Check to see if user is bot, if is bot return.
-				return;
-
-			SocketCommandContext context = new SocketCommandContext(_client, msg);
-
-			//This message or command come in from a dm, not a guild, so just ignore it.
-			if (context.Guild == null)
+			//Check the message to make sure it isn't a bot or such and get the SocketUserMessage and context
+			if(!CheckMessage(messageParam, out SocketUserMessage msg, out SocketCommandContext context))
 				return;
 
 			ServerList server = ServerListsManager.GetServer(context.Guild);
@@ -128,6 +121,32 @@ namespace Pootis_Bot.Core
 				HandleUserXpLevel(user, context, now);
 				HandleUserPointsLevel(account, server, context, now);
 			}
+		}
+
+		/// <summary>
+		/// Checks the message to make sure it isn't a bot and gets the <see cref="SocketUserMessage"/> and <see cref="SocketCommandContext"/>
+		/// </summary>
+		/// <param name="message">The message to check</param>
+		/// <param name="msg">The <see cref="SocketUserMessage"/> to give back</param>
+		/// <param name="context">The <see cref="SocketCommandContext"/></param>
+		/// <returns>Returns false if it failed the check</returns>
+		private bool CheckMessage(SocketMessage message, out SocketUserMessage msg, out SocketCommandContext context)
+		{
+			msg = null;
+			context = null;
+			if (!(message is SocketUserMessage userMessage)) return false;
+			msg = userMessage;
+
+			context = new SocketCommandContext(_client, msg);
+
+			if (message.Author.IsBot)
+				return false;
+
+			// ReSharper disable once ConvertIfStatementToReturnStatement
+			if (message.Author.IsWebhook)
+				return false;
+
+			return true;
 		}
 
 		private bool CheckUserPermission(SocketCommandContext context, ServerList server, int argPos)
