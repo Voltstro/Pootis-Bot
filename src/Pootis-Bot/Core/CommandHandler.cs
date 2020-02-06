@@ -188,6 +188,13 @@ namespace Pootis_Bot.Core
 			return doesUserHavePerm || context.User.Id == context.Guild.OwnerId;
 		}
 
+		/// <summary>
+		/// Handles the end command result, and whether or not we need to post an error
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="msg"></param>
+		/// <param name="result"></param>
+		/// <returns></returns>
 		private async Task HandleCommandResult(SocketCommandContext context, IMessage msg, IResult result)
 		{
 			//The user had unmet preconditions
