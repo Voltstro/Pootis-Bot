@@ -9,7 +9,6 @@ using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services;
-using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Modules.Server
 {
