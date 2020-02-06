@@ -65,24 +65,12 @@ namespace Pootis_Bot.Core
 			UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser) context.User);
 			int argPos = 0;
 
-			//Check if the user is muted, if so delete the message, oh and make sure it ISN'T the owner of the guild
-			if (user.GetOrCreateServer(context.Guild.Id).IsMuted && user.Id != context.Guild.OwnerId)
-			{
-				await msg.DeleteAsync();
-				return;
-			}
-
-			//Someone has mention more than 2 users, check with the anti-spam
-			if (msg.MentionedUsers.Count >= 2)
-				if (_antiSpam.CheckMentionUsers(msg, context.Guild))
-					return;
-
-			//There are role mentions
-			if (msg.MentionedRoles.Count >= 1)
-				if (_antiSpam.CheckRoleMentions(msg, (SocketGuildUser) msg.Author))
-					return;
-
+			//If the message is in a banned channel then ignore it
 			if (server.BannedChannels.Any(item => msg.Channel.Id == item)) return;
+
+			//Checks the message with the anti spam services
+			if(!CheckMessageSpam(msg, context, user))
+				return;
 
 			if (msg.HasStringPrefix(Global.BotPrefix, ref argPos)
 			    || msg.HasMentionPrefix(Global.BotUser, ref argPos))
@@ -95,7 +83,7 @@ namespace Pootis_Bot.Core
 					return;
 				}
 
-				//Result
+				//Execute the command and handle the result
 				IResult result = await _commands.ExecuteAsync(context, argPos, _services);
 				await HandleCommandResult(context, msg, result);
 			}
@@ -133,6 +121,28 @@ namespace Pootis_Bot.Core
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (message.Author.IsWebhook)
 				return false;
+
+			return true;
+		}
+
+		private bool CheckMessageSpam(SocketUserMessage msg, SocketCommandContext context, UserAccount user)
+		{
+			//Check if the user is muted, if so delete the message, oh and make sure it ISN'T the owner of the guild
+			if (user.GetOrCreateServer(context.Guild.Id).IsMuted && user.Id != context.Guild.OwnerId)
+			{
+				msg.DeleteAsync().GetAwaiter().GetResult();
+				return false;
+			}
+
+			//Someone has mention more than 2 users, check with the anti-spam
+			if (msg.MentionedUsers.Count >= 2)
+				if (_antiSpam.CheckMentionUsers(msg, context.Guild))
+					return false;
+
+			//There are role mentions
+			if (msg.MentionedRoles.Count >= 1)
+				if (_antiSpam.CheckRoleMentions(msg, (SocketGuildUser) msg.Author))
+					return false;
 
 			return true;
 		}
