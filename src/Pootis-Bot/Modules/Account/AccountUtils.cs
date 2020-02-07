@@ -44,7 +44,9 @@ namespace Pootis_Bot.Modules.Account
 			embed.AddField("Server",
 				$"**Points: **{accountServer.Points}\n **Warnable: **{warningText}\n**Main Role: **{userMainRole.Name}\n",
 				true);
-			embed.AddField("Account", $"**Id: **{account.Id}\n**Creation Date: **{Context.User.CreatedAt}");
+
+			embed.AddField("Account",
+				$"**Id: **{account.Id}\n**Creation Date: **{Context.User.CreatedAt.DateTime.ToUniversalTime():yyyy MMMM dd h:mm tt UTC}");
 
 			embed.WithColor(userMainRole.Color);
 
