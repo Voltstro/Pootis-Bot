@@ -52,10 +52,10 @@ namespace Pootis_Bot.Core
 			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 			DiscordModuleManager.SetupModuleManager(_commands);
 
-			_client.MessageReceived += HandleCommandAsync;
+			_client.MessageReceived += HandleMessage;
 		}
 
-		private Task HandleCommandAsync(SocketMessage messageParam)
+		private Task HandleMessage(SocketMessage messageParam)
 		{
 			//Check the message to make sure it isn't a bot or such and get the SocketUserMessage and context
 			if(!CheckMessage(messageParam, out SocketUserMessage msg, out SocketCommandContext context))
