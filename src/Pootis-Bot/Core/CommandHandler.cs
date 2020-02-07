@@ -185,26 +185,8 @@ namespace Pootis_Bot.Core
 			if (perm == null) return true;
 			
 			//If they are an administrator they override permissions
-			if(((SocketGuildUser) context.User).GuildPermissions.Administrator)
-				return true;
-
-			bool doesUserHavePerm = false;
-			foreach (SocketRole role in ((SocketGuildUser) context.User).Roles)
-			{
-				if (doesUserHavePerm)
-					continue;
-
-				foreach (ulong unused in perm.Roles.Where(permRole =>
-					role == RoleUtils.GetGuildRole(context.Guild, permRole)))
-				{
-					if (doesUserHavePerm)
-						continue;
-
-					doesUserHavePerm = true;
-				}
-			}
-
-			return doesUserHavePerm || context.User.Id == context.Guild.OwnerId;
+			return ((SocketGuildUser) context.User).GuildPermissions.Administrator ||
+			       ((SocketGuildUser) context.User).Roles.Any(role => perm.Roles.Any(permRole => role == RoleUtils.GetGuildRole(context.Guild, permRole)));
 		}
 
 		/// <summary>
