@@ -157,7 +157,7 @@ namespace Pootis_Bot.Entities
 		#region Permissions Functions
 
 		/// <summary>
-		/// Get an command permission
+		/// Gets a command permission
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns></returns>
