@@ -55,48 +55,61 @@ namespace Pootis_Bot.Core
 			_client.MessageReceived += HandleCommandAsync;
 		}
 
-		private async Task HandleCommandAsync(SocketMessage messageParam)
+		private Task HandleCommandAsync(SocketMessage messageParam)
 		{
 			//Check the message to make sure it isn't a bot or such and get the SocketUserMessage and context
 			if(!CheckMessage(messageParam, out SocketUserMessage msg, out SocketCommandContext context))
-				return;
+				return Task.CompletedTask;
 
 			ServerList server = ServerListsManager.GetServer(context.Guild);
 			UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser) context.User);
-			int argPos = 0;
-
+			
 			//If the message is in a banned channel then ignore it
-			if (server.BannedChannels.Any(item => msg.Channel.Id == item)) return;
+			if (server.BannedChannels.Any(item => msg.Channel.Id == item)) return Task.CompletedTask;
 
 			//Checks the message with the anti spam services
 			if(!CheckMessageSpam(msg, context, user))
-				return;
+				return Task.CompletedTask;
 
-			if (msg.HasStringPrefix(Global.BotPrefix, ref argPos)
-			    || msg.HasMentionPrefix(Global.BotUser, ref argPos))
-			{
-				//Check user's permission to use command
-				if (!CheckUserPermission(context, server, argPos))
-				{
-					await context.Channel.SendMessageAsync(
-						"You do not have permission to use that command on this guild!");
-					return;
-				}
+			//Handle the command
+			if (HandleCommand(msg, context, server)) return Task.CompletedTask;
 
-				//Execute the command and handle the result
-				IResult result = await _commands.ExecuteAsync(context, argPos, _services);
-				await HandleCommandResult(context, msg, result);
+			//Since it isn't a command we do level up stuff
+			UserAccountServerData account = UserAccountsManager
+				.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
+			DateTime now = DateTime.Now;
+
+			HandleUserXpLevel(user, context, now);
+			HandleUserPointsLevel(account, server, context, now);
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Executes the command
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <param name="context"></param>
+		/// <param name="server"></param>
+		/// <returns>Returns false if it isn't a command with a prefix</returns>
+		private bool HandleCommand(IUserMessage msg, SocketCommandContext context, ServerList server)
+		{
+			int argPos = 0;
+			if (!msg.HasStringPrefix(Global.BotPrefix, ref argPos) &&
+			    !msg.HasMentionPrefix(Global.BotUser, ref argPos)) return false;
+
+			//Check user's permission to use command
+			if (!CheckUserPermission(context, server, argPos))
+			{ context.Channel.SendMessageAsync(
+					"You do not have permission to use that command on this guild!").GetAwaiter().GetResult();
+				return true;
 			}
-			else
-			{
-				//Since it isn't a command we do level up stuff
-				UserAccountServerData account = UserAccountsManager
-					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
-				DateTime now = DateTime.Now;
 
-				HandleUserXpLevel(user, context, now);
-				HandleUserPointsLevel(account, server, context, now);
-			}
+			//Execute the command and handle the result
+			IResult result = _commands.ExecuteAsync(context, argPos, _services).GetAwaiter().GetResult(); 
+			HandleCommandResult(context, msg, result).GetAwaiter().GetResult();
+
+			return true;
 		}
 
 		/// <summary>
