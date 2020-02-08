@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -15,6 +17,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Original Author  - Creepysin
 		// Description      - Server setup status messages
 		// Contributors     - Creepysin, 
+
+		private readonly string[] _warningCommands =
+			{"warn", "makewarnable", "makenotwarnable", "ban", "kick", "mute", "addvcchannel"};
 
 		[Command("setup status")]
 		[Summary("Displays setup info")]
@@ -80,31 +85,19 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 			//Warnings for commands
 			const string warningsTitle = "Warnings";
-			string warningsDescription = "";
-			if (server.GetCommandInfo("warn") == null)
-				warningsDescription +=
-					"<:Cross:537572008574189578> The command `warn` doesn't have a permission added to it!\n";
-			if (server.GetCommandInfo("makewarnable") == null)
-				warningsDescription +=
-					"<:Cross:537572008574189578> The command `makewarnable` doesn't have a permission added to it!\n";
-			if (server.GetCommandInfo("makenotwarnable") == null)
-				warningsDescription +=
-					"<:Cross:537572008574189578> The command `makenotwarnable` doesn't have a permission added to it!\n";
-			if (server.GetCommandInfo("ban") == null)
-				warningsDescription +=
-					"<:Cross:537572008574189578> The command `ban` doesn't have a permission added to it!\n";
-			if (server.GetCommandInfo("kick") == null)
-				warningsDescription +=
-					"<:Cross:537572008574189578> The command `kick` doesn't have a permission added to it!\n";
-			if (server.GetCommandInfo("mute") == null)
-				warningsDescription +=
-					"<:Cross:537572008574189578> The command `mute` doesn't have a permission added to it!\n";
-			if (server.GetCommandInfo("addvcchannel") == null)
-				warningsDescription +=
-					"<:Cross:537572008574189578> The command `addvcchannel` doesn't have a permission added to it!\n";
-			else
-				warningsDescription = "You have no warnings! :smile:";
-			embed.AddField(warningsTitle, warningsDescription);
+
+			StringBuilder warnings = new StringBuilder();
+			foreach (string command in _warningCommands.Where(warningCommand => server.GetCommandInfo(warningCommand) == null))
+			{
+				warnings.Append(
+						$"<:Cross:537572008574189578> The command `{command}` doesn't have a permission added to it!\n");
+			}
+
+			//There are no warnings
+			if (warnings.Length == 0)
+				warnings.Append("You have no warnings! :smile:");
+
+			embed.AddField(warningsTitle, warnings.ToString());
 
 			embed.WithFooter($"For support see {Global.websiteHome}", Global.BotUser.GetAvatarUrl());
 
