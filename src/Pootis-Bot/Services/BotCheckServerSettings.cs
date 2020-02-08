@@ -34,7 +34,8 @@ namespace Pootis_Bot.Services
 
 			List<ServerList> serversToRemove = new List<ServerList>();
 
-			foreach (ServerList server in ServerListsManager.Servers)
+			ServerList[] servers = ServerListsManager.GetServers();
+			foreach (ServerList server in servers)
 			{
 				//The bot is not longer in this guild, remove it from the server settings
 				if (_client.GetGuild(server.GuildId) == null)
@@ -64,7 +65,7 @@ namespace Pootis_Bot.Services
 			foreach (ServerList toRemove in serversToRemove)
 			{
 				Logger.Log($"The bot is not longer in the {toRemove.GuildId}, Removing server settings...");
-				ServerListsManager.Servers.Remove(toRemove);
+				ServerListsManager.RemoveServer(toRemove);
 			}
 
 			//If a server was updated then save the ServerList.json file

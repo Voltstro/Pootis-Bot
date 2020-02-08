@@ -42,7 +42,7 @@ namespace Pootis_Bot.Events
 		{
 			//Remove the server settings from the serverlist.json file
 			ServerList server = ServerListsManager.GetServer(guild);
-			ServerListsManager.Servers.Remove(server);
+			ServerListsManager.RemoveServer(server);
 
 			ServerListsManager.SaveServerList();
 

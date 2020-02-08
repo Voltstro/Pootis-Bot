@@ -9,7 +9,7 @@ namespace Pootis_Bot.Core.Managers
 	public class ServerListsManager
 	{
 		private const string ServerListFile = "Resources/ServerList.json";
-		public static List<ServerList> Servers;
+		private static readonly List<ServerList> Servers;
 
 		static ServerListsManager()
 		{
@@ -30,6 +30,23 @@ namespace Pootis_Bot.Core.Managers
 		public static void SaveServerList()
 		{
 			DataStorage.SaveServerList(Servers, ServerListFile);
+		}
+
+		/// <summary>
+		/// Gets all servers
+		/// </summary>
+		public static ServerList[] GetServers()
+		{
+			return Servers.ToArray();
+		}
+
+		/// <summary>
+		/// Removes a server from the server list
+		/// </summary>
+		/// <param name="server"></param>
+		public static void RemoveServer(ServerList server)
+		{
+			Servers.Remove(server);
 		}
 
 		/// <summary>
