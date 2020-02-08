@@ -64,12 +64,12 @@ namespace Pootis_Bot.Core
 			ServerList server = ServerListsManager.GetServer(context.Guild);
 			UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser) context.User);
 			
-			//If the message is in a banned channel then ignore it
-			if (server.BannedChannels.Any(item => msg.Channel.Id == item)) return Task.CompletedTask;
-
 			//Checks the message with the anti spam services
 			if(!CheckMessageSpam(msg, context, user))
 				return Task.CompletedTask;
+
+			//If the message is in a banned channel then ignore it
+			if (server.BannedChannels.Any(item => msg.Channel.Id == item)) return Task.CompletedTask;
 
 			//Handle the command
 			if (HandleCommand(msg, context, server)) return Task.CompletedTask;
