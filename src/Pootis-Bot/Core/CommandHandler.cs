@@ -75,12 +75,12 @@ namespace Pootis_Bot.Core
 			if (HandleCommand(msg, context, server)) return Task.CompletedTask;
 
 			//Since it isn't a command we do level up stuff
-			UserAccountServerData account = UserAccountsManager
+			UserAccountServerData userServerData = UserAccountsManager
 				.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
 			DateTime now = DateTime.Now;
 
 			HandleUserXpLevel(user, context, now);
-			HandleUserPointsLevel(account, server, context, now);
+			HandleUserPointsLevel(userServerData, server, context, now);
 
 			return Task.CompletedTask;
 		}
