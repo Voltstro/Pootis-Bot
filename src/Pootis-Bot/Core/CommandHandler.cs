@@ -69,7 +69,7 @@ namespace Pootis_Bot.Core
 				return Task.CompletedTask;
 
 			//If the message is in a banned channel then ignore it
-			if (server.BannedChannels.Any(item => msg.Channel.Id == item)) return Task.CompletedTask;
+			if (server.BannedChannels.Contains(msg.Channel.Id)) return Task.CompletedTask;
 
 			//Handle the command
 			if (HandleCommand(msg, context, server)) return Task.CompletedTask;
