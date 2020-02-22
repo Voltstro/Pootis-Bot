@@ -80,6 +80,10 @@ namespace Pootis_Bot.Core.Managers
 			return newAccount;
 		}
 
+		/// <summary>
+		/// Checks a user's warn status
+		/// </summary>
+		/// <param name="user"></param>
 		public static void CheckUserWarnStatus(SocketGuildUser user)
 		{
 			if (user.IsBot)
@@ -91,10 +95,10 @@ namespace Pootis_Bot.Core.Managers
 			UserAccountServerData userAccount = GetAccount(user).GetOrCreateServer(user.Guild.Id);
 
 			if (userAccount.Warnings >= 3)
-				UserUtils.KickUser(user, (SocketUser) Global.BotUser, "Kicked for having 3 warnings.");
+				user.KickUser((SocketUser) Global.BotUser, "Kicked for having 3 warnings.");
 
 			if (userAccount.Warnings >= 4)
-				UserUtils.BanUser(user, (SocketUser) Global.BotUser, "Banned for having 3 warnings.");
+				user.BanUser((SocketUser) Global.BotUser, "Banned for having 3 warnings.");
 		}
 	}
 }
