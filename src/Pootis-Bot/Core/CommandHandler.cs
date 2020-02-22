@@ -47,6 +47,7 @@ namespace Pootis_Bot.Core
 			//Add our custom type readers
 			_commands.AddTypeReader(typeof(string[]), new StringArrayTypeReader());
 			_commands.AddTypeReader(typeof(SocketGuildUser[]), new GuildUserArrayTypeReader());
+			_commands.AddTypeReader(typeof(Emoji), new EmojiTypeReader());
 
 			//Add our modules and setup the module manager so other classes can access module info
 			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);

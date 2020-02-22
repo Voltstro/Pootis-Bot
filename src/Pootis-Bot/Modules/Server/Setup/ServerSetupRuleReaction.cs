@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -90,20 +91,13 @@ namespace Pootis_Bot.Modules.Server.Setup
 		[Command("setup set ruleemoji")]
 		[Summary("Sets the emoji that users have to use to gain access")]
 		[RequireGuildOwner]
-		public async Task SetRuleEmoji(string unicodeEmoji)
+		public async Task SetRuleEmoji([Remainder] Emoji emoji)
 		{
-			if (!unicodeEmoji.ContainsUnicodeCharacter())
-			{
-				await Context.Channel.SendMessageAsync(
-					"This emoji is not unicode. Copy the emoji you want to be reacted with from here: https://unicode.org/emoji/charts/full-emoji-list.html");
-			}
-			else
-			{
-				ServerListsManager.GetServer(Context.Guild).RuleReactionEmoji = unicodeEmoji;
-				ServerListsManager.SaveServerList();
+			ServerListsManager.GetServer(Context.Guild).RuleReactionEmoji = emoji.Name;
+			ServerListsManager.SaveServerList();
 
-				await Context.Channel.SendMessageAsync($"The emoji was set to '{unicodeEmoji}'.");
-			}
+			Logger.Log(emoji.Name);
+			await Context.Channel.SendMessageAsync($"The emoji was set to '{emoji.Name}'.");
 		}
 
 		#endregion
