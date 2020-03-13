@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
@@ -81,23 +79,6 @@ namespace Pootis_Bot.Services.Audio
 				if (Config.bot.AudioSettings.AudioServicesEnabled)
 					Logger.Log("Audio services are ready!", LogVerbosity.Music);
 			}
-		}
-
-		/// <summary>
-		/// Removes not allowed characters that can't be in a windows file name
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns>Formatted string</returns>
-		public static string RemovedNotAllowedChars(string input)
-		{
-			//TODO: Re-write this when I move all string stuff to one class
-
-			//Remove quotes and other symbols
-			string unQuoted = input.Replace("&quot;", "'").Replace(":", "").Replace("|", "-").Replace("\"", "'");
-
-			string decoded = WebUtility.HtmlDecode(unQuoted);
-			//Remove html formatting tags
-			return Regex.Replace(decoded, "<.*?>", string.Empty);
 		}
 
 		/// <summary>

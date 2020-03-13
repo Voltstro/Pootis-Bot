@@ -185,7 +185,7 @@ namespace Pootis_Bot.Services.Audio
 			string songFileLocation;
 			string songName;
 
-			search = AudioCheckService.RemovedNotAllowedChars(search);
+			search.RemoveIllegalChars();
 
 			try
 			{

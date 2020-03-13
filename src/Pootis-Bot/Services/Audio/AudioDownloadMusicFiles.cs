@@ -124,7 +124,7 @@ namespace Pootis_Bot.Services.Audio
 
 			//Do a search in our music directory using the EXACT title
 			string searchResult =
-				AudioService.SearchMusicDirectory(AudioCheckService.RemovedNotAllowedChars(youTubeVideo.Title));
+				AudioService.SearchMusicDirectory(youTubeVideo.Title.RemoveIllegalChars());
 			if (!string.IsNullOrWhiteSpace(searchResult))
 			{
 				_hasFinishedDownloading =
@@ -148,10 +148,10 @@ namespace Pootis_Bot.Services.Audio
 				if (_cancellationSource.IsCancellationRequested)
 					return null;
 
-				string videoTitle = AudioCheckService.RemovedNotAllowedChars(youTubeVideo.Title);
+				string videoTitle = youTubeVideo.Title.RemoveIllegalChars();
 
 				MessageUtils.ModifyMessage(_message,
-						$":musical_note: Give me a sec. Downloading **{youTubeVideo.Title}** from **{youTubeVideo.Author}**...")
+						$":musical_note: Give me a sec. Downloading **{videoTitle}** from **{youTubeVideo.Author}**...")
 					.GetAwaiter().GetResult();
 
 				//Get our video stream info

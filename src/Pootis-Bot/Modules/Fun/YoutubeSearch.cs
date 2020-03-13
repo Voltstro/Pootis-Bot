@@ -8,7 +8,6 @@ using Google.Apis.YouTube.v3.Data;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
-using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Google;
 using SearchResult = Google.Apis.YouTube.v3.Data.SearchResult;
 
@@ -95,11 +94,11 @@ namespace Pootis_Bot.Modules.Fun
 					{
 						case "youtube#video":
 							videos.Append(
-								$"**[{AudioCheckService.RemovedNotAllowedChars(result.Snippet.Title)}]({FunCmdsConfig.ytStartLink}{result.Id.VideoId})**\n{result.Snippet.Description}\n\n");
+								$"**[{result.Snippet.Title.RemoveIllegalChars()}]({FunCmdsConfig.ytStartLink}{result.Id.VideoId})**\n{result.Snippet.Description}\n\n");
 							break;
 						case "youtube#channel":
 							channels.Append(
-								$"**[{AudioCheckService.RemovedNotAllowedChars(result.Snippet.Title)}]({FunCmdsConfig.ytChannelStart}{result.Id.ChannelId})**\n{result.Snippet.Description}\n\n");
+								$"**[{result.Snippet.Title.RemoveIllegalChars()}]({FunCmdsConfig.ytChannelStart}{result.Id.ChannelId})**\n{result.Snippet.Description}\n\n");
 							break;
 					}
 

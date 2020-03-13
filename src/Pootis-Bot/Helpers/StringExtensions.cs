@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Pootis_Bot.Helpers
@@ -8,6 +9,19 @@ namespace Pootis_Bot.Helpers
 	/// </summary>
 	public static class StringExtensions
 	{
+		private static readonly Dictionary<string, string> IllegalChars = new Dictionary<string, string>
+		{
+			["\\"] = " ",
+			["/"] = " ",
+			[":"] = "-",
+			["*"] = " ",
+			["?"] = "",
+			["\""] = "'",
+			["<"] = " ",
+			[">"] = " ",
+			["|"] = "-"
+		};
+
 		/// <summary>
 		/// Removes whitespaces from a string
 		/// </summary>
@@ -52,6 +66,22 @@ namespace Pootis_Bot.Helpers
 						array[i] = char.ToUpper(array[i]);
 
 			return new string(array);
+		}
+
+		
+		/// <summary>
+		/// Removes not allowed characters that can't be in a windows file name
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns>Formatted string</returns>
+		public static string RemoveIllegalChars(this string input)
+		{
+			foreach ((string illegalChar, string replaceMent) in IllegalChars)
+			{
+				input = input.Replace(illegalChar, replaceMent);
+			}
+
+			return input;
 		}
 	}
 }
