@@ -7,7 +7,6 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.Modules.Account
 {
@@ -127,46 +126,6 @@ namespace Pootis_Bot.Modules.Account
 			UserAccountsManager.SaveAccounts();
 
 			await Context.Channel.SendMessageAsync($"Your public profile message was set to '{message}'");
-		}
-
-		[Command("role")]
-		[Alias("rolegive")]
-		[Summary("Gives you a role (If requirements are met)")]
-		[RequireBotPermission(GuildPermission.ManageRoles)]
-		public async Task Role([Remainder] string roleGiveName)
-		{
-			ServerList server = ServerListsManager.GetServer(Context.Guild);
-			OptRole role = server.GetOptRole(roleGiveName);
-
-			//Check to make sure the role give exists first
-			if (role == null)
-			{
-				await Context.Channel.SendMessageAsync($"There is no role to give with the name of '{roleGiveName}'.");
-				return;
-			}
-
-			//If there is a requirement check to make sure the user meets it first
-			if (role.RoleRequiredId != 0)
-				if (!((SocketGuildUser) Context.User).Roles.Contains(RoleUtils.GetGuildRole(Context.Guild,
-					role.RoleRequiredId))
-				)
-				{
-					await Context.Channel.SendMessageAsync("You do not meet the requirements to get this role!");
-					return;
-				}
-
-			SocketRole roleToGive = RoleUtils.GetGuildRole(Context.Guild, role.RoleToGiveId);
-
-			//See if the user already has the role
-			if (((SocketGuildUser) Context.User).Roles.Contains(roleToGive))
-			{
-				await Context.Channel.SendMessageAsync("You already have this role!");
-				return;
-			}
-
-			//Give the role
-			await ((SocketGuildUser) Context.User).AddRoleAsync(roleToGive);
-			await Context.Channel.SendMessageAsync($"You have been given the **{roleToGive.Name}** role.");
 		}
 	}
 }

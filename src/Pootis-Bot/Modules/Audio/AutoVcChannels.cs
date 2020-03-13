@@ -9,7 +9,7 @@ using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Modules.Audio
 {
-	public class VoiceChannels : ModuleBase<ICommandContext>
+	public class AutoVcChannels : ModuleBase<ICommandContext>
 	{
 		// Module Information
 		// Original Author  - Creepysin
@@ -21,7 +21,7 @@ namespace Pootis_Bot.Modules.Audio
 		[RequireBotPermission(GuildPermission.MoveMembers)]
 		[RequireUserPermission(GuildPermission.ManageChannels)]
 		[Cooldown(5)]
-		public async Task AddVoiceChannel(string baseName)
+		public async Task AddAutoVoiceChannel(string baseName)
 		{
 			RestVoiceChannel channel =
 				await ((SocketGuild) Context.Guild).CreateVoiceChannelAsync($"➕ New {baseName} VC");
