@@ -116,13 +116,16 @@ namespace Pootis_Bot.Entities
 		public ulong RuleRoleId { get; set; }
 
 		/// <summary>
-		/// The emoji that needs to be used
+		/// The emoji that needs to be used to gain entry to the server
 		/// </summary>
 		[DefaultValue(null)]
 		public string RuleReactionEmoji { get; set; }
 
 		private List<Vote> _votes;
 
+		/// <summary>
+		/// Votes that are running on the server
+		/// </summary>
 		public List<Vote> Votes
 		{
 			//We need to do this because when someone with 1.0 upgrades to 1.1 they won't have votes in their current ServerList.json
