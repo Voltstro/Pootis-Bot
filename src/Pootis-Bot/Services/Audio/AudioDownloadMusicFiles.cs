@@ -194,7 +194,11 @@ namespace Pootis_Bot.Services.Audio
 			}
 			catch (Exception ex)
 			{
+#if DEBUG
+				Logger.Log(ex.ToString(), LogVerbosity.Error);
+#else
 				Logger.Log(ex.Message, LogVerbosity.Error);
+#endif
 
 				MessageUtils
 					.ModifyMessage(_message, "Sorry, but there was an issue downloading the song! Try again later.")
@@ -204,6 +208,9 @@ namespace Pootis_Bot.Services.Audio
 				if (Config.bot.ReportErrorsToOwner)
 					Global.BotOwner.SendMessageAsync(
 						$"ERROR: {ex.Message}\nError occured while trying to search or download a video from YouTube on guild `{_guild.Id}`.");
+
+				//Mark this as true so our error doesn't get deleted
+				_hasFinishedDownloading = true;
 
 				return null;
 			}

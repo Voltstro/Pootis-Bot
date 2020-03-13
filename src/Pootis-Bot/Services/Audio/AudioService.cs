@@ -185,6 +185,8 @@ namespace Pootis_Bot.Services.Audio
 			string songFileLocation;
 			string songName;
 
+			search = AudioCheckService.RemovedNotAllowedChars(search);
+
 			try
 			{
 				//We are downloading a direct URL

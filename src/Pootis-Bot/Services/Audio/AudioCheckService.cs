@@ -90,8 +90,10 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns>Formatted string</returns>
 		public static string RemovedNotAllowedChars(string input)
 		{
+			//TODO: Re-write this when I move all string stuff to one class
+
 			//Remove quotes and other symbols
-			string unQuoted = input.Replace("&quot;", "'").Replace(":", "").Replace("|", "-");
+			string unQuoted = input.Replace("&quot;", "'").Replace(":", "").Replace("|", "-").Replace("\"", "'");
 
 			string decoded = WebUtility.HtmlDecode(unQuoted);
 			//Remove html formatting tags
