@@ -77,8 +77,8 @@ namespace Pootis_Bot.Modules.Server
 				if (user.IsBot)
 					return "You cannot change the warnable status of a bot!";
 
-				//if (user.GuildPermissions.Administrator)
-				//	return "You cannot change the warnable status of an administrator!";
+				if (user.GuildPermissions.Administrator)
+					return "You cannot change the warnable status of an administrator!";
 
 				if (UserAccountsManager.GetAccount(user).GetOrCreateServer(user.Guild.Id).IsAccountNotWarnable)
 					return $"**{user.Username}** is already not warnable!";
@@ -101,7 +101,7 @@ namespace Pootis_Bot.Modules.Server
 
 			UserAccountsManager.SaveAccounts();
 
-			return sb.Length == 1
+			return usersToChange.Count == 1
 				? $"**{sb}** was made not warnable."
 				: $"The accounts **{sb}** were all made not warnable.";
 		}
@@ -115,8 +115,8 @@ namespace Pootis_Bot.Modules.Server
 				if (user.IsBot)
 					return "You cannot change the warnable status of a bot!";
 
-				//if (user.GuildPermissions.Administrator)
-				//	return "You cannot change the warnable status of an administrator!";
+				if (user.GuildPermissions.Administrator)
+					return "You cannot change the warnable status of an administrator!";
 
 				if (!UserAccountsManager.GetAccount(user).GetOrCreateServer(user.Guild.Id).IsAccountNotWarnable)
 					return $"**{user.Username}** is already warnable!";
@@ -138,7 +138,7 @@ namespace Pootis_Bot.Modules.Server
 
 			UserAccountsManager.SaveAccounts();
 
-			return sb.Length == 1 ? $"**{sb}** was made warnable." : $"The accounts **{sb}** were all made warnable.";
+			return usersToChange.Count == 1 ? $"**{sb}** was made warnable." : $"The accounts **{sb}** were all made warnable.";
 		}
 
 		private static string Warn(SocketUser user)
