@@ -14,7 +14,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Description      - Provides setup commands
 		// Contributors     - Creepysin, 
 
-		private readonly string[] _setupModules = {nameof(ServerSetupStatus), nameof(ServerSetupOptRoles), nameof(ServerSetupPointRoles), nameof(ServerSetupPoints), nameof(ServerSetupRuleReaction), nameof(ServerSetupWelcomeGoodbyeMessage)};
+		private readonly string[] _setupModules = {nameof(ServerSetupStatus), nameof(ServerSetupBannedChannels), nameof(ServerSetupOptRoles),
+			nameof(ServerSetupPointRoles), nameof(ServerSetupPoints), nameof(ServerSetupRuleReaction),
+			nameof(ServerSetupWelcomeGoodbyeMessage), nameof(ServerSetupWarnings)};
 
 		[Command("setup")]
 		[Summary("Provides basic help for server setup")]
