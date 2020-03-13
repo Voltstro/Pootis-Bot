@@ -78,6 +78,8 @@ namespace Pootis_Bot.Core.Managers
 				GuildOwnerIds = new List<ulong>(),
 				PointGiveAmount = 10,
 				PointsGiveCooldownTime = 15,
+				WarningsKickAmount = 3,
+				WarningsBanAmount = 4,
 				BannedChannels = new List<ulong>(),
 				ServerRolePoints = new List<ServerRolePoints>(),
 				CommandPermissions = new List<ServerList.CommandPermission>(),

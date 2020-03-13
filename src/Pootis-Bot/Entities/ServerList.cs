@@ -34,6 +34,16 @@ namespace Pootis_Bot.Entities
 		public int PointsGiveCooldownTime { get; set; }
 
 		/// <summary>
+		/// The amount of warnings required before kick
+		/// </summary>
+		public int WarningsKickAmount { get; set; }
+
+		/// <summary>
+		/// The amount of warnings required before kick
+		/// </summary>
+		public int WarningsBanAmount { get; set; }
+
+		/// <summary>
 		/// Channels were the bot isn't allowed to except commands from
 		/// </summary>
 		public List<ulong> BannedChannels { get; set; }

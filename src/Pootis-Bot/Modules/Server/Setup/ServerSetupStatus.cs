@@ -83,6 +83,13 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 			embed.AddField(serverPointsTitle, serverPointsDescription);
 
+			//Warnings for kick/ban
+			const string serverWarnsKickBanTitle = "Warning Settings";
+			string serverWarnsDescription =
+				$"**Warnings for kick**: {server.WarningsKickAmount}\n**Warnings for ban**: {server.WarningsBanAmount}";
+
+			embed.AddField(serverWarnsKickBanTitle, serverWarnsDescription);
+
 			//Warnings for commands
 			const string warningsTitle = "Warnings";
 

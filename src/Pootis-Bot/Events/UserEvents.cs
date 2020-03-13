@@ -174,7 +174,12 @@ namespace Pootis_Bot.Events
 			//We remove the user's server data from the user account ONLY if they are banned since their chance of coming back if very low.
 			//If the data was deleted when they left/kicked they would also loose their warnings. I am sure you can see what the issue would be if we allowed that.
 
-			UserAccount userAccount = UserAccountsManager.GetAccount((SocketGuildUser) user);
+			UserAccount userAccount = UserAccountsManager.GetAccountById(user.Id);
+
+			//This should NEVER be true, but if it does SOMEHOW happen then well it is here just in case...
+			if(userAccount == null)
+				return Task.CompletedTask;
+
 			userAccount.Servers.Remove(userAccount.GetOrCreateServer(guild.Id));
 
 			UserAccountsManager.SaveAccounts();
