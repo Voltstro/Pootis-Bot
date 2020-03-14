@@ -11,7 +11,7 @@ using Pootis_Bot.TypeReaders;
 
 namespace Pootis_Bot.Modules.Basic
 {
-	public class VotingCommands : ModuleBase<SocketCommandContext>
+	public class Voting : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
 		// Original Author  - Creepysin

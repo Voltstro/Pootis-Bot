@@ -73,7 +73,7 @@ namespace Pootis_Bot.Core.Managers
 			HelpModule basic = new HelpModule
 			{
 				Group = "Basic",
-				Modules = new List<string> {nameof(BasicCommands), nameof(Misc)}
+				Modules = new List<string> {nameof(Basic), nameof(Misc)}
 			};
 			helpModules.Add(basic);
 
@@ -83,6 +83,13 @@ namespace Pootis_Bot.Core.Managers
 				Modules = new List<string> {nameof(Utils)}
 			};
 			helpModules.Add(utils);
+
+			HelpModule voting = new HelpModule
+			{
+				Group = "Voting",
+				Modules = new List<string> {nameof(Voting)}
+			};
+			helpModules.Add(voting);
 
 			HelpModule account = new HelpModule
 			{

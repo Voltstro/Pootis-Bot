@@ -13,7 +13,7 @@ using Pootis_Bot.Preconditions;
 
 namespace Pootis_Bot.Modules.Basic
 {
-	public class BasicCommands : ModuleBase<SocketCommandContext>
+	public class Basic : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
 		// Original Author  - Creepysin

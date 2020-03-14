@@ -42,7 +42,7 @@ namespace Pootis_Bot.Core
 			AddCommand("about", "Returns a simple about screen", AboutCmd);
 			AddCommand("setgame", "Enters into the setgame menu", SetGameStatusCmd);
 			AddCommand("togglestream", "Toggles the bot between streaming mode and not", SetStreamingStatusCmd);
-			AddCommand("deletemusic", "Delets all saved music", DeleteMusicCmd);
+			AddCommand("deletemusic", "Deletes all saved music", DeleteMusicCmd);
 			AddCommand("toggleaudio", "Toggles having the audio services enabled and disabled", ToggleAudioCmd);
 			AddCommand("forceaudioupdate", "Forces the audio services files to update", ForceAudioUpdateCmd);
 			AddCommand("status", "Shows the bot's current status", StatusCmd);
