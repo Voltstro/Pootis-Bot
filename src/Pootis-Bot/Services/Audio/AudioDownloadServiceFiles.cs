@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
@@ -61,6 +62,9 @@ namespace Pootis_Bot.Services.Audio
 			//Copy the needed parts of ffmpeg to the right directory
 			Logger.Log("Setting up ffmpeg");
 			Global.DirectoryCopy("Temp/ffmpeg/ffmpeg-linux-64/", "External/", true);
+			
+			//Because linux, we need the right permissions
+			ChmodFile("External/ffmpeg", "700");
 
 			//Delete unnecessary files
 			Logger.Log("Cleaning up...");
@@ -70,6 +74,24 @@ namespace Pootis_Bot.Services.Audio
 		}
 
 #elif OSX
+#endif
+		
+#if LINUX || OXS
+		private static void ChmodFile(string file, string flag)
+		{
+			Process process = new Process{StartInfo = new ProcessStartInfo
+			{
+				RedirectStandardOutput = true,
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				WindowStyle = ProcessWindowStyle.Hidden,
+				FileName = "/bin/bash",
+				Arguments = $"-c \"chmod {flag} {file}\""
+			}};
+
+			process.Start();
+			process.WaitForExit();
+		}
 #endif
 	}
 }

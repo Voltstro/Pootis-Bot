@@ -320,6 +320,8 @@ namespace Pootis_Bot.Services.Audio
 							exit = true;
 							break;
 						}
+						
+						await output.FlushAsync(cancellation);
 
 						//Write it to the audio out stream
 						await serverMusicList.Discord.WriteAsync(buffer, 0, read, cancellation);
@@ -358,6 +360,8 @@ namespace Pootis_Bot.Services.Audio
 				serverMusicList.IsPlaying = false;
 
 				await channel.SendMessageAsync($":musical_note: **{songName}** ended or was stopped.");
+
+				await output.FlushAsync(cancellation);
 
 				//Check to make sure that ffmpeg was disposed
 				ffmpeg.Dispose();
@@ -431,7 +435,7 @@ namespace Pootis_Bot.Services.Audio
 			return Process.Start(new ProcessStartInfo
 			{
 				FileName = Config.bot.AudioSettings.FfmpegLocation,
-				Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
+				Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1 -nostdin",
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				RedirectStandardOutput = true,
