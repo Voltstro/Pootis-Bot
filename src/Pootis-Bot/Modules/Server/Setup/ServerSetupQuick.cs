@@ -70,27 +70,36 @@ namespace Pootis_Bot.Modules.Server.Setup
 		[RequireBotPermission(GuildPermission.ManageGuild)]
 		public async Task SetupQuickStart()
 		{
-			//Check rules file, or if rules where provided
+			await SetupServerQuick(Context.Guild, Context.Channel, Context.Message);
+		}
+
+		private async Task SetupServerQuick(SocketGuild guild, ISocketMessageChannel channel, SocketMessage message, bool addRulesMessage = true, bool setupWelcomeChannel = true,
+			bool setupRuleReaction = true)
+		{
+			//Rules message
 			string rules = _quickRulesText;
-			if (Context.Message.Attachments.Count != 0)
+			if (addRulesMessage)
 			{
-				Attachment attachment = Context.Message.Attachments.ElementAt(0);
-				if (!attachment.Filename.EndsWith(".txt"))
+				//Check rules file, or if rules where provided
+				if (message.Attachments.Count != 0)
 				{
-					await Context.Channel.SendMessageAsync("The provided rules file isn't in a `.txt` file format!");
-					return;
+					Attachment attachment = message.Attachments.ElementAt(0);
+					if (!attachment.Filename.EndsWith(".txt"))
+					{
+						await channel.SendMessageAsync("The provided rules file isn't in a `.txt` file format!");
+						return;
+					}
+
+					rules = await Global.HttpClient.GetStringAsync(attachment.Url);
 				}
 
-				rules = await Global.HttpClient.GetStringAsync(attachment.Url);
+				else if (string.IsNullOrWhiteSpace(rules) && message.Attachments.Count == 0)
+				{
+					await channel.SendMessageAsync("You MUST provide a rules file!");
+					return;
+				}
 			}
 
-			else if (string.IsNullOrWhiteSpace(rules) && Context.Message.Attachments.Count == 0)
-			{
-				await Context.Channel.SendMessageAsync("You MUST provide a rules file!");
-				return;
-			}
-
-			SocketGuild guild = Context.Guild;
 			ServerList server = ServerListsManager.GetServer(guild);
 
 			//Setup the roles
@@ -108,55 +117,63 @@ namespace Pootis_Bot.Modules.Server.Setup
 				await guild.EveryoneRole.ModifyAsync(properties => properties.Permissions = _everyoneRoleGuildPermissions);
 			}
 
-			//Setup the channels
-			ulong welcomeChannelId;
-
-			//First, lets check if they already have a #welcome channel of sorts
-			if (guild.SystemChannel == null)
+			//Welcome channel
+			if (setupWelcomeChannel)
 			{
-				//They don't, so set one up
-				RestTextChannel welcomeChannel =
-					await guild.CreateTextChannelAsync("welcome",
-						properties => { properties.Topic = "Were everyone gets a warm welcome!";
-							properties.Position = 0;
-						});
+				//Setup the channels
+				ulong welcomeChannelId;
 
-				await welcomeChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
+				//First, lets check if they already have a #welcome channel of sorts
+				if (guild.SystemChannel == null)
+				{
+					//They don't, so set one up
+					RestTextChannel welcomeChannel =
+						await guild.CreateTextChannelAsync("welcome",
+							properties => { properties.Topic = "Were everyone gets a warm welcome!";
+								properties.Position = 0;
+							});
 
-				welcomeChannelId = welcomeChannel.Id;
+					await welcomeChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
+
+					welcomeChannelId = welcomeChannel.Id;
+				}
+				else
+				{
+					await guild.SystemChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
+					welcomeChannelId = guild.SystemChannel.Id;
+
+					await guild.ModifyAsync(properties => properties.SystemChannel = null);
+				}
+
+				//Setup welcome message
+				server.WelcomeChannelId = welcomeChannelId;
+				server.WelcomeMessageEnabled = true;
+
+				//Do a delay
+				await Task.Delay(1000);
 			}
-			else
+
+			//Rule reaction
+			if (addRulesMessage && setupRuleReaction)
 			{
-				await guild.SystemChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
-				welcomeChannelId = guild.SystemChannel.Id;
+				//Setup rules channel
+				RestTextChannel rulesChannel = await guild.CreateTextChannelAsync("rules",
+					properties => { properties.Position = 1;
+						properties.Topic = "Rules of this Discord server";
+					});
 
-				await guild.ModifyAsync(properties => properties.SystemChannel = null);
+				await rulesChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
+				RestUserMessage rulesMessage = await rulesChannel.SendMessageAsync(rules);
+
+				//Setup rules reaction
+				await rulesMessage.AddReactionAsync(new Emoji(RulesEmoji));
+
+				server.RuleReactionEmoji = RulesEmoji;
+				server.RuleMessageId = rulesMessage.Id;
+				server.RuleMessageChannelId = rulesMessage.Id;
+				server.RuleRoleId = memberRole.Id;
+				server.RuleEnabled = true;
 			}
-
-			//Setup welcome message
-			server.WelcomeChannelId = welcomeChannelId;
-			server.WelcomeMessageEnabled = true;
-
-			//Do a delay
-			await Task.Delay(1000);
-
-			//Setup rules channel
-			RestTextChannel rulesChannel = await guild.CreateTextChannelAsync("rules",
-				properties => { properties.Position = 1;
-					properties.Topic = "Rules of this Discord server";
-				});
-
-			await rulesChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
-			RestUserMessage rulesMessage = await rulesChannel.SendMessageAsync(rules);
-
-			//Setup rules reaction
-			await rulesMessage.AddReactionAsync(new Emoji(RulesEmoji));
-
-			server.RuleReactionEmoji = RulesEmoji;
-			server.RuleMessageId = rulesMessage.Id;
-			server.RuleMessageChannelId = rulesMessage.Id;
-			server.RuleRoleId = memberRole.Id;
-			server.RuleEnabled = true;
 
 			//Setup the rest of the channels
 
