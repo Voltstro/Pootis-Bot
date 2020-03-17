@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Services.Audio;
@@ -25,147 +27,180 @@ namespace Pootis_Bot.Events
 
 		public async Task UserJoined(SocketGuildUser user)
 		{
-			if (!user.IsBot)
+			try
 			{
-				ServerList server = ServerListsManager.GetServer(user.Guild);
-
-				//Pre create the user account
-				UserAccountsManager.GetAccount(user);
-				UserAccountsManager.SaveAccounts();
-
-				//If the server has welcome messages enabled then we give them a warm welcome UwU
-				if (server.WelcomeMessageEnabled)
+				if (!user.IsBot)
 				{
-					//Format the message to include username and the server name
-					string addUserMention = server.WelcomeMessage.Replace("[user]", user.Mention);
-					string addServerName = addUserMention.Replace("[server]", user.Guild.Name);
+					ServerList server = ServerListsManager.GetServer(user.Guild);
 
-					//Welcomes the new user with the server's message
-					SocketTextChannel channel =
-						_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
+					//Pre create the user account
+					UserAccountsManager.GetAccount(user);
+					UserAccountsManager.SaveAccounts();
 
-					if (channel != null)
+					//If the server has welcome messages enabled then we give them a warm welcome UwU
+					if (server.WelcomeMessageEnabled)
 					{
-						await channel.SendMessageAsync(addServerName);
-					}
-					else
-					{
-						server.WelcomeMessageEnabled = false;
-						server.WelcomeChannelId = 0;
+						//Format the message to include username and the server name
+						string addUserMention = server.WelcomeMessage.Replace("[user]", user.Mention);
+						string addServerName = addUserMention.Replace("[server]", user.Guild.Name);
 
-						ServerListsManager.SaveServerList();
+						//Welcomes the new user with the server's message
+						SocketTextChannel channel =
+							_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
+
+						if (channel != null)
+						{
+							await channel.SendMessageAsync(addServerName);
+						}
+						else
+						{
+							server.WelcomeMessageEnabled = false;
+							server.WelcomeChannelId = 0;
+
+							ServerListsManager.SaveServerList();
+						}
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				Logger.Log(ex.ToString(), LogVerbosity.Error);
+#else
+				Logger.Log(ex.Message, LogVerbosity.Error);
+#endif
 			}
 		}
 
 		public async Task UserLeft(SocketGuildUser user)
 		{
-			if (!user.IsBot)
+			try
 			{
-				ServerList server = ServerListsManager.GetServer(user.Guild);
-				if (server.GoodbyeMessageEnabled)
+				if (!user.IsBot)
 				{
-					//Format the message
-					string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
-
-					//Get the welcome channel and send the message
-					SocketTextChannel channel =
-						_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
-
-					if (channel != null)
+					ServerList server = ServerListsManager.GetServer(user.Guild);
+					if (server.GoodbyeMessageEnabled)
 					{
-						await channel.SendMessageAsync(addUserMention);
-					}
-					else
-					{
-						server.WelcomeMessageEnabled = false;
-						server.WelcomeChannelId = 0;
+						//Format the message
+						string addUserMention = server.WelcomeGoodbyeMessage.Replace("[user]", user.Username);
 
-						ServerListsManager.SaveServerList();
+						//Get the welcome channel and send the message
+						SocketTextChannel channel =
+							_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
+
+						if (channel != null)
+						{
+							await channel.SendMessageAsync(addUserMention);
+						}
+						else
+						{
+							server.WelcomeMessageEnabled = false;
+							server.WelcomeChannelId = 0;
+
+							ServerListsManager.SaveServerList();
+						}
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				Logger.Log(ex.ToString(), LogVerbosity.Error);
+#else
+				Logger.Log(ex.Message, LogVerbosity.Error);
+#endif
 			}
 		}
 
 		public async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before,
 			SocketVoiceState after)
 		{
-			ServerList server = ServerListsManager.GetServer(((SocketGuildUser) user).Guild);
-
-			//If we are adding an auto voice channel
-			if (after.VoiceChannel != null)
+			try
 			{
-				ServerVoiceChannel voiceChannel = server.GetAutoVoiceChannel(after.VoiceChannel.Id);
-				if (voiceChannel.Name != null)
+				ServerList server = ServerListsManager.GetServer(((SocketGuildUser) user).Guild);
+
+				//If we are adding an auto voice channel
+				if (after.VoiceChannel != null)
 				{
-					RestVoiceChannel createdChannel =
-						await after.VoiceChannel.Guild.CreateVoiceChannelAsync(
-							$"{voiceChannel.Name} #" + (server.ActiveAutoVoiceChannels.Count + 1), x =>
-							{
-								x.CategoryId = after.VoiceChannel.CategoryId;
-								x.Bitrate = after.VoiceChannel.Bitrate;
-								x.Position = after.VoiceChannel.Position + 1;
-							});
-
-					if (createdChannel.CategoryId != null)
-						await createdChannel.SyncPermissionsAsync();
-
-					//Move the user who created the channel to the new channel
-					await ((SocketGuildUser) user).ModifyAsync(x => { x.ChannelId = createdChannel.Id; });
-
-					server.ActiveAutoVoiceChannels.Add(createdChannel.Id);
-					ServerListsManager.SaveServerList();
-				}
-			}
-
-			//If we are removing an auto voice channel
-			if (before.VoiceChannel != null)
-			{
-				ulong activeChannel = server.GetActiveVoiceChannel(before.VoiceChannel.Id);
-				if (activeChannel != 0)
-					//There are no user on the active auto voice channel
-					if (before.VoiceChannel.Users.Count == 0)
+					ServerVoiceChannel voiceChannel = server.GetAutoVoiceChannel(after.VoiceChannel.Id);
+					if (voiceChannel.Name != null)
 					{
-						await before.VoiceChannel.DeleteAsync();
-						server.ActiveAutoVoiceChannels.Remove(before.VoiceChannel.Id);
+						RestVoiceChannel createdChannel =
+							await after.VoiceChannel.Guild.CreateVoiceChannelAsync(
+								$"{voiceChannel.Name} #" + (server.ActiveAutoVoiceChannels.Count + 1), x =>
+								{
+									x.CategoryId = after.VoiceChannel.CategoryId;
+									x.Bitrate = after.VoiceChannel.Bitrate;
+									x.Position = after.VoiceChannel.Position + 1;
+								});
+
+						if (createdChannel.CategoryId != null)
+							await createdChannel.SyncPermissionsAsync();
+
+						//Move the user who created the channel to the new channel
+						await ((SocketGuildUser) user).ModifyAsync(x => { x.ChannelId = createdChannel.Id; });
+
+						server.ActiveAutoVoiceChannels.Add(createdChannel.Id);
 						ServerListsManager.SaveServerList();
 					}
-			}
-
-			//Only check channel user count if the audio services are enabled.
-			if (Config.bot.AudioSettings.AudioServicesEnabled)
-			{
-				List<ServerMusicItem> toRemove = new List<ServerMusicItem>();
-
-				foreach (ServerMusicItem channel in AudioService.currentChannels.Where(channel =>
-					channel.AudioChannel.Users.Count == 1))
-				{
-					channel.IsExit = true;
-
-					if (channel.FfMpeg != null)
-					{
-						channel.IsExit = true;
-						channel.FfMpeg.Kill();
-						channel.FfMpeg.Dispose();
-					}
-
-					//Just wait a moment
-					await Task.Delay(100);
-
-					await channel.AudioClient.StopAsync();
-
-					channel.IsPlaying = false;
-
-					await channel.StartChannel.SendMessageAsync(
-						":musical_note: Left the audio channel due to there being no one there :(");
-
-					toRemove.Add(channel);
 				}
 
-				//To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
-				foreach (ServerMusicItem channel in toRemove)
-					AudioService.currentChannels.Remove(channel);
+				//If we are removing an auto voice channel
+				if (before.VoiceChannel != null)
+				{
+					ulong activeChannel = server.GetActiveVoiceChannel(before.VoiceChannel.Id);
+					if (activeChannel != 0)
+						//There are no user on the active auto voice channel
+						if (before.VoiceChannel.Users.Count == 0)
+						{
+							await before.VoiceChannel.DeleteAsync();
+							server.ActiveAutoVoiceChannels.Remove(before.VoiceChannel.Id);
+							ServerListsManager.SaveServerList();
+						}
+				}
+
+				//Only check channel user count if the audio services are enabled.
+				if (Config.bot.AudioSettings.AudioServicesEnabled)
+				{
+					List<ServerMusicItem> toRemove = new List<ServerMusicItem>();
+
+					foreach (ServerMusicItem channel in AudioService.currentChannels.Where(channel =>
+						channel.AudioChannel.Users.Count == 1))
+					{
+						channel.IsExit = true;
+
+						if (channel.FfMpeg != null)
+						{
+							channel.IsExit = true;
+							channel.FfMpeg.Kill();
+							channel.FfMpeg.Dispose();
+						}
+
+						//Just wait a moment
+						await Task.Delay(100);
+
+						await channel.AudioClient.StopAsync();
+
+						channel.IsPlaying = false;
+
+						await channel.StartChannel.SendMessageAsync(
+							":musical_note: Left the audio channel due to there being no one there :(");
+
+						toRemove.Add(channel);
+					}
+
+					//To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
+					foreach (ServerMusicItem channel in toRemove)
+						AudioService.currentChannels.Remove(channel);
+				}
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				Logger.Log(ex.ToString(), LogVerbosity.Error);
+#else
+				Logger.Log(ex.Message, LogVerbosity.Error);
+#endif
 			}
 		}
 
@@ -177,7 +212,7 @@ namespace Pootis_Bot.Events
 			UserAccount userAccount = UserAccountsManager.GetAccountById(user.Id);
 
 			//This should NEVER be true, but if it does SOMEHOW happen then well it is here just in case...
-			if(userAccount == null)
+			if (userAccount == null)
 				return Task.CompletedTask;
 
 			userAccount.Servers.Remove(userAccount.GetOrCreateServer(guild.Id));

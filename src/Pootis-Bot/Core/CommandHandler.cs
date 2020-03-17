@@ -18,15 +18,16 @@ namespace Pootis_Bot.Core
 {
 	public class CommandHandler
 	{
+		private readonly AntiSpamService _antiSpam;
+		private readonly DiscordSocketClient _client;
+		private readonly CommandService _commands;
+
 		private readonly Dictionary<string, string> _errors = new Dictionary<string, string>
 		{
 			["User not found."] = "You need to input a valid username for your username argument!",
 			["Failed to parse TimeSpan"] = "Your imputed time isn't in the right format, use a format like this: `1d 3h 40m 10s`"
 		};
 
-		private readonly AntiSpamService _antiSpam;
-		private readonly DiscordSocketClient _client;
-		private readonly CommandService _commands;
 		private readonly IServiceProvider _services;
 
 		public CommandHandler(DiscordSocketClient client)
@@ -58,30 +59,41 @@ namespace Pootis_Bot.Core
 
 		private Task HandleMessage(SocketMessage messageParam)
 		{
-			//Check the message to make sure it isn't a bot or such and get the SocketUserMessage and context
-			if(!CheckMessage(messageParam, out SocketUserMessage msg, out SocketCommandContext context))
-				return Task.CompletedTask;
+			try
+			{
+				//Check the message to make sure it isn't a bot or such and get the SocketUserMessage and context
+				if (!CheckMessage(messageParam, out SocketUserMessage msg, out SocketCommandContext context))
+					return Task.CompletedTask;
 
-			ServerList server = ServerListsManager.GetServer(context.Guild);
-			UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser) context.User);
-			
-			//Checks the message with the anti spam services
-			if(!CheckMessageSpam(msg, context, user))
-				return Task.CompletedTask;
+				ServerList server = ServerListsManager.GetServer(context.Guild);
+				UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser) context.User);
 
-			//If the message is in a banned channel then ignore it
-			if (server.BannedChannels.Contains(msg.Channel.Id)) return Task.CompletedTask;
+				//Checks the message with the anti spam services
+				if (!CheckMessageSpam(msg, context, user))
+					return Task.CompletedTask;
 
-			//Handle the command
-			if (HandleCommand(msg, context, server)) return Task.CompletedTask;
+				//If the message is in a banned channel then ignore it
+				if (server.BannedChannels.Contains(msg.Channel.Id)) return Task.CompletedTask;
 
-			//Since it isn't a command we do level up stuff
-			UserAccountServerData userServerData = UserAccountsManager
-				.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
-			DateTime now = DateTime.Now;
+				//Handle the command
+				if (HandleCommand(msg, context, server)) return Task.CompletedTask;
 
-			HandleUserXpLevel(user, context, now);
-			HandleUserPointsLevel(userServerData, server, context, now);
+				//Since it isn't a command we do level up stuff
+				UserAccountServerData userServerData = UserAccountsManager
+					.GetAccount((SocketGuildUser) context.User).GetOrCreateServer(context.Guild.Id);
+				DateTime now = DateTime.Now;
+
+				HandleUserXpLevel(user, context, now);
+				HandleUserPointsLevel(userServerData, server, context, now);
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				Logger.Log(ex.ToString(), LogVerbosity.Error);
+#else
+				Logger.Log(ex.Message, LogVerbosity.Error);
+#endif
+			}
 
 			return Task.CompletedTask;
 		}
@@ -101,20 +113,22 @@ namespace Pootis_Bot.Core
 
 			//Check user's permission to use command
 			if (!CheckUserPermission(context, server, argPos))
-			{ context.Channel.SendMessageAsync(
+			{
+				context.Channel.SendMessageAsync(
 					"You do not have permission to use that command on this guild!").GetAwaiter().GetResult();
 				return true;
 			}
 
 			//Execute the command and handle the result
-			IResult result = _commands.ExecuteAsync(context, argPos, _services).GetAwaiter().GetResult(); 
+			IResult result = _commands.ExecuteAsync(context, argPos, _services).GetAwaiter().GetResult();
 			HandleCommandResult(context, msg, result).GetAwaiter().GetResult();
 
 			return true;
 		}
 
 		/// <summary>
-		/// Checks the message to make sure it isn't a bot and gets the <see cref="SocketUserMessage"/> and <see cref="SocketCommandContext"/>
+		/// Checks the message to make sure it isn't a bot and gets the <see cref="SocketUserMessage"/> and
+		/// <see cref="SocketCommandContext"/>
 		/// </summary>
 		/// <param name="message">The message to check</param>
 		/// <param name="msg">The <see cref="SocketUserMessage"/> to give back</param>
@@ -184,10 +198,11 @@ namespace Pootis_Bot.Core
 
 			ServerList.CommandPermission perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
 			if (perm == null) return true;
-			
+
 			//If they are an administrator they override permissions
 			return ((SocketGuildUser) context.User).GuildPermissions.Administrator ||
-			       ((SocketGuildUser) context.User).Roles.Any(role => perm.Roles.Any(permRole => role == RoleUtils.GetGuildRole(context.Guild, permRole)));
+			       ((SocketGuildUser) context.User).Roles.Any(role =>
+				       perm.Roles.Any(permRole => role == RoleUtils.GetGuildRole(context.Guild, permRole)));
 		}
 
 		/// <summary>
@@ -206,22 +221,21 @@ namespace Pootis_Bot.Core
 				return;
 			}
 
+			if (!result.IsSuccess)
+				//Handle custom errors
+				foreach (KeyValuePair<string, string> error in _errors.Where(error =>
+					result.ErrorReason.StartsWith(error.Key)))
+				{
+					await context.Channel.SendMessageAsync(error.Value);
+					return;
+				}
+
 			//The command either had too little arguments or too many
 			if (!result.IsSuccess && result.Error == CommandError.BadArgCount)
 			{
 				await context.Channel.SendMessageAsync(
 					$"The command `{msg.Content.Replace(Global.BotPrefix, "")}` either has too many or too little arguments!");
 				return;
-			}
-
-			if (!result.IsSuccess)
-			{
-				//Handle custom errors
-				foreach (KeyValuePair<string, string> error in _errors.Where(error => result.ErrorReason.StartsWith(error.Key)))
-				{
-					await context.Channel.SendMessageAsync(error.Value);
-					return;
-				}
 			}
 
 			//Some other error, just put the error into the console
@@ -246,17 +260,18 @@ namespace Pootis_Bot.Core
 			      Config.bot.LevelUpCooldown)) return;
 
 			//Give the user the XP
-			LevelingSystem.GiveUserXp((SocketGuildUser)context.User, 
-				(SocketTextChannel)context.Channel, Config.bot.LevelUpAmount);
+			LevelingSystem.GiveUserXp((SocketGuildUser) context.User,
+				(SocketTextChannel) context.Channel, Config.bot.LevelUpAmount);
 
 			//Set the user's last level up time to now
 			account.LastLevelUpTime = now;
 		}
 
-		private static void HandleUserPointsLevel(UserAccountServerData account, ServerList server, SocketCommandContext context, DateTime now)
+		private static void HandleUserPointsLevel(UserAccountServerData account, ServerList server,
+			SocketCommandContext context, DateTime now)
 		{
 			//Server points
-			if (!(now.Subtract(account.LastServerPointsTime).TotalSeconds >= 
+			if (!(now.Subtract(account.LastServerPointsTime).TotalSeconds >=
 			      server.PointsGiveCooldownTime)) return;
 
 			LevelingSystem.GiveUserServerPoints((SocketGuildUser) context.User,

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -18,53 +20,64 @@ namespace Pootis_Bot.Events
 	{
 		public async Task RoleDeleted(SocketRole role)
 		{
-			SocketGuild guild = role.Guild;
-			ServerList server = ServerListsManager.GetServer(guild);
-
-			//Setup the dm channel even though we might not even use it just makes it so I don't have to repeat this a whole bunch of times.
-			IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
-
-			//The rule role was deleted
-			if (role.Id == server.RuleRoleId)
+			try
 			{
-				server.RuleEnabled = false;
-				ServerListsManager.SaveServerList();
+				SocketGuild guild = role.Guild;
+				ServerList server = ServerListsManager.GetServer(guild);
 
-				await dm.SendMessageAsync(
-					$"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the role being deleted.\n" +
-					"You can enable it again after setting a new role with the command `setuprulerole` and then enabling the feature again with `togglerulereaction`.");
+				//Setup the dm channel even though we might not even use it just makes it so I don't have to repeat this a whole bunch of times.
+				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
 
-				return;
+				//The rule role was deleted
+				if (role.Id == server.RuleRoleId)
+				{
+					server.RuleEnabled = false;
+					ServerListsManager.SaveServerList();
+
+					await dm.SendMessageAsync(
+						$"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the role being deleted.\n" +
+						"You can enable it again after setting a new role with the command `setuprulerole` and then enabling the feature again with `togglerulereaction`.");
+
+					return;
+				}
+
+				//Check all server role points roles
+				List<ServerRolePoints> rolePointsToRemove =
+					server.ServerRolePoints.Where(rolePoint => role.Id == rolePoint.RoleId).ToList();
+				foreach (ServerRolePoints toRemove in rolePointsToRemove)
+				{
+					await dm.SendMessageAsync(
+						$"The **{role.Name}** was deleted which was apart of the {toRemove.PointsRequired} server points role. This server points role was deleted. ({guild.Name})");
+
+					server.ServerRolePoints.Remove(toRemove);
+					ServerListsManager.SaveServerList();
+					return;
+				}
+
+				//Check to see if all the role to role pings still exist
+				List<ServerRoleToRoleMention> rolesToRemove = server.RoleToRoleMentions
+					.Where(roles => roles.RoleId == role.Id || roles.RoleNotToMentionId == role.Id).ToList();
+				foreach (ServerRoleToRoleMention roleToRemove in rolesToRemove)
+				{
+					await dm.SendMessageAsync(
+						$"The **{role.Name}** role was deleted which was apart of the **{roleToRemove.RoleNotToMentionId}** => **{roleToRemove.RoleId}**. This role to role ping was deleted. ({guild.Name})");
+
+					server.RoleToRoleMentions.Remove(roleToRemove);
+					ServerListsManager.SaveServerList();
+					return;
+				}
+
+				//Check all permission roles
+				BotCheckServerSettings.CheckServerPerms(server);
 			}
-
-			//Check all server role points roles
-			List<ServerRolePoints> rolePointsToRemove =
-				server.ServerRolePoints.Where(rolePoint => role.Id == rolePoint.RoleId).ToList();
-			foreach (ServerRolePoints toRemove in rolePointsToRemove)
+			catch (Exception ex)
 			{
-				await dm.SendMessageAsync(
-					$"The **{role.Name}** was deleted which was apart of the {toRemove.PointsRequired} server points role. This server points role was deleted. ({guild.Name})");
-
-				server.ServerRolePoints.Remove(toRemove);
-				ServerListsManager.SaveServerList();
-				return;
+#if DEBUG
+				Logger.Log(ex.ToString(), LogVerbosity.Error);
+#else
+				Logger.Log(ex.Message, LogVerbosity.Error);
+#endif
 			}
-
-			//Check to see if all the role to role pings still exist
-			List<ServerRoleToRoleMention> rolesToRemove = server.RoleToRoleMentions
-				.Where(roles => roles.RoleId == role.Id || roles.RoleNotToMentionId == role.Id).ToList();
-			foreach (ServerRoleToRoleMention roleToRemove in rolesToRemove)
-			{
-				await dm.SendMessageAsync(
-					$"The **{role.Name}** role was deleted which was apart of the **{roleToRemove.RoleNotToMentionId}** => **{roleToRemove.RoleId}**. This role to role ping was deleted. ({guild.Name})");
-
-				server.RoleToRoleMentions.Remove(roleToRemove);
-				ServerListsManager.SaveServerList();
-				return;
-			}
-
-			//Check all permission roles
-			BotCheckServerSettings.CheckServerPerms(server);
 		}
 
 		public async Task RoleUpdated(SocketRole before, SocketRole after)
