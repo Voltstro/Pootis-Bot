@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Discord.WebSocket;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 
@@ -15,7 +17,18 @@ namespace Pootis_Bot.Core.Managers
 		{
 			if (DataStorage.SaveExists(AccountsFile))
 			{
-				Accounts = DataStorage.LoadUserAccounts(AccountsFile).ToList();
+				try
+				{
+					Accounts = DataStorage.LoadUserAccounts(AccountsFile).ToList();
+				}
+				catch (Exception ex)
+				{
+#if DEBUG
+					Logger.Log(ex.ToString(), LogVerbosity.Error);
+#else
+					Logger.Log(ex.Message, LogVerbosity.Error);
+#endif
+				}
 			}
 			else
 			{
