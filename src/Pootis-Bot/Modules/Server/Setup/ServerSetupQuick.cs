@@ -61,7 +61,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
 
-		[Command("setup quick start")]
+		[Command("setup quick start", RunMode = RunMode.Async)]
 		[Summary("Provides the ability to quickly setup")]
 		[RequireGuildOwner(false)]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
@@ -170,7 +170,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 				server.RuleReactionEmoji = RulesEmoji;
 				server.RuleMessageId = rulesMessage.Id;
-				server.RuleMessageChannelId = rulesMessage.Id;
+				server.RuleMessageChannelId = rulesChannel.Id;
 				server.RuleRoleId = memberRole.Id;
 				server.RuleEnabled = true;
 			}

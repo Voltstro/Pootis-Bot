@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -123,6 +124,31 @@ namespace Pootis_Bot.Modules.Server
 					$"{messageCount} message were deleted, this message will be deleted in a moment.");
 			await Task.Delay(3000);
 			await message.DeleteAsync();
+		}
+
+		[Command("delete category", RunMode = RunMode.Async)]
+		[Summary("Deletes a whole category and all channels in it")]
+		[RequireBotPermission(GuildPermission.ManageChannels)]
+		[RequireUserPermission(GuildPermission.ManageChannels)]
+		public async Task DeleteCategory([Remainder] string category)
+		{
+			SocketCategoryChannel categoryChannel =
+				Context.Guild.CategoryChannels.FirstOrDefault(c => c.Name == category);
+
+			if (categoryChannel == null)
+			{
+				await Context.Channel.SendMessageAsync($"Cannot find a category with the name of '{category}'.");
+				return;
+			}
+
+			foreach (SocketGuildChannel channel in categoryChannel.Channels)
+			{
+				await channel.DeleteAsync();
+				await Task.Delay(200);
+			}
+
+			await Task.Delay(500);
+			await categoryChannel.DeleteAsync();
 		}
 	}
 }
