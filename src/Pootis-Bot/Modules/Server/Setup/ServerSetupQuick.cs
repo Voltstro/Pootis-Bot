@@ -6,6 +6,7 @@ using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -100,6 +101,8 @@ namespace Pootis_Bot.Modules.Server.Setup
 				}
 			}
 
+			Logger.Log($"Running server quick setup on {guild.Name}({guild.Id})");
+
 			ServerList server = ServerListsManager.GetServer(guild);
 
 			//Setup the roles
@@ -117,10 +120,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 				await guild.EveryoneRole.ModifyAsync(properties => properties.Permissions = _everyoneRoleGuildPermissions);
 			}
 
-			//Welcome channel
+			//Setup the welcome channel
 			if (setupWelcomeChannel)
 			{
-				//Setup the channels
 				ulong welcomeChannelId;
 
 				//First, lets check if they already have a #welcome channel of sorts
@@ -139,6 +141,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 				}
 				else
 				{
+					//They already do, so alter the pre-existing one to have right perms, and to not have Discord random messages put there
 					await guild.SystemChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
 					welcomeChannelId = guild.SystemChannel.Id;
 
@@ -178,27 +181,35 @@ namespace Pootis_Bot.Modules.Server.Setup
 			//Setup the rest of the channels
 
 			//General category
-			RestCategoryChannel generalCategory = await guild.CreateCategoryChannelAsync("General", properties => properties.Position = 3);
-			await generalCategory.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.InheritAll);
-			await generalCategory.AddPermissionOverwriteAsync(memberRole, OverwritePermissions.InheritAll);
+			await AddCategoryWithChannels(guild, memberRole, "General", 3);
 
-			await guild.CreateTextChannelAsync("general", properties => properties.CategoryId = generalCategory.Id);
-
-			RestVoiceChannel generalVcChannel = await AutoVCChannelCreator.CreateAutoVCChannel(guild, "General");
-			await generalVcChannel.ModifyAsync(properties => properties.CategoryId = generalCategory.Id);
+			//Do a delay between categories
+			await Task.Delay(500);
 
 			//Gamming category
-			RestCategoryChannel gammingCategory = await guild.CreateCategoryChannelAsync("Gamming", properties => properties.Position = 3);
-			await gammingCategory.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.InheritAll);
-			await gammingCategory.AddPermissionOverwriteAsync(memberRole, OverwritePermissions.InheritAll);
+			await AddCategoryWithChannels(guild, memberRole, "Gamming", 4);
 
-			await guild.CreateTextChannelAsync("general", properties => properties.CategoryId = gammingCategory.Id);
-
-			RestVoiceChannel gammingVcChannel = await AutoVCChannelCreator.CreateAutoVCChannel(guild, "Gamming");
-			await gammingVcChannel.ModifyAsync(properties => properties.CategoryId = gammingCategory.Id);
-
+			//DONE!
 			ServerListsManager.SaveServerList();
 			await Context.Channel.SendMessageAsync("Quick Setup is done!");
+
+			Logger.Log($"server quick setup on {guild.Name}({guild.Id}) is done!");
+		}
+
+		private static async Task AddCategoryWithChannels(SocketGuild guild, IRole memberRole, string categoryName, int position)
+		{
+			RestCategoryChannel category = await guild.CreateCategoryChannelAsync(categoryName, properties => properties.Position = position);
+			await category.AddPermissionOverwriteAsync(guild.EveryoneRole, OverwritePermissions.InheritAll);
+			await category.AddPermissionOverwriteAsync(memberRole, OverwritePermissions.InheritAll);
+
+			//Text chat
+			RestTextChannel chat = await guild.CreateTextChannelAsync(categoryName.ToLower(), properties => properties.CategoryId = category.Id);
+			await chat.SyncPermissionsAsync();
+
+			//Auto VC chat
+			RestVoiceChannel autoVcChat = await AutoVCChannelCreator.CreateAutoVCChannel(guild, categoryName);
+			await autoVcChat.ModifyAsync(properties => properties.CategoryId = category.Id);
+			await autoVcChat.SyncPermissionsAsync();
 		}
 	}
 }
