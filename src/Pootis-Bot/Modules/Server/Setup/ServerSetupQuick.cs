@@ -57,13 +57,38 @@ namespace Pootis_Bot.Modules.Server.Setup
 			embed.WithDescription(
 				"**What is server quick setup?**" +
 				$"\nServer quick setup is a function in {Global.BotName} to quickly setup your server for you with a standard layout and using {Global.BotName}'s features." +
-				"\nIt is designed for new servers.");
+				"\n__This feature is designed for new servers!__" +
+				"\n\n**So what does it do?**" +
+				"\n1. Sets up a role called 'Member'." +
+				$"\n2. It sets up a welcome channel (or uses one if it already exists) with {Global.BotName}'s custom welcome messages." +
+				$"\n3. Sets up a 'rule' channel, and puts a template rule message there, or uses your provided ones. It then also sets up rule reaction with the '{RulesEmoji}' emoji." +
+				"\n4. It then adds two categories called General and Gamming both with a text channel and an auto VC channel." +
+				"\n\n**Getting started**" +
+				"\nTo get started with a quick setup, run the command `setup quick start`. It will then do the steps listed above." +
+				"\nIf you want to use custom rules, upload a `.txt` file with your rules in it, and as the note/message, put the command above." +
+				"\n*To preview the template rules, do `setup quick rules`*" +
+				"\n\n**Note**" +
+				$"\nAll the features can also be manually done, you can read more about the features [here]({Global.websiteServerSetup}).");
+
+			await Context.Channel.SendMessageAsync("", false, embed.Build());
+		}
+
+		[Command("setup quick rules")]
+		[Summary("Displays the template rules")]
+		[RequireGuildOwner(false)]
+		public async Task SetupQuickRules()
+		{
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle("Rules template preview");
+			embed.WithDescription(string.IsNullOrEmpty(_quickRulesText)
+				? "Rules **MUST** be provided! This is due to how the bot is set up!"
+				: $"Here is rules template that will be used if you don't provide rules:\n```{_quickRulesText}```");
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
 
 		[Command("setup quick start", RunMode = RunMode.Async)]
-		[Summary("Provides the ability to quickly setup")]
+		[Summary("Provides the ability to quickly setup your server with this bot")]
 		[RequireGuildOwner(false)]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		[RequireBotPermission(GuildPermission.ManageChannels)]
@@ -151,6 +176,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 				//Setup welcome message
 				server.WelcomeChannelId = welcomeChannelId;
 				server.WelcomeMessageEnabled = true;
+				server.GoodbyeMessageEnabled = true;
 
 				//Do a delay
 				await Task.Delay(1000);
