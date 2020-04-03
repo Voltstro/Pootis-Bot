@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/github/license/voltstro/Pootis-Bot.svg?style=flat-square)](https://github.com/Voltstro/Pootis-Bot/blob/master/LICENSE.md)
 [![Requirements Status](https://img.shields.io/requires/github/Voltstro/Pootis-Bot?style=flat-square)](https://requires.io/github/Voltstro/Pootis-Bot/requirements/?branch=master)
-[![DevOps Azure](https://img.shields.io/azure-devops/build/Creepysin/f4979e7e-719b-4d5b-8d84-25004a75702b/1?style=flat-square)](https://dev.azure.com/Creepysin/Pootis-Bot)
+[![DevOps Azure](https://img.shields.io/azure-devops/build/Creepysin/f4979e7e-719b-4d5b-8d84-25004a75702b/3?style=flat-square)](https://dev.azure.com/Creepysin/Pootis-Bot)
 [![Discord](https://img.shields.io/badge/Discord-Voltstro-7289da.svg?style=flat-square&logo=discord)](https://discord.voltstro.dev) 
 [![YouTube](https://img.shields.io/badge/Youtube-Voltstro-red.svg?style=flat-square&logo=youtube)](https://www.youtube.com/Voltstro)
 
