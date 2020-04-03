@@ -26,17 +26,17 @@ Some current features that the bot can do. More feature are planed to be added
 
 - Google, YouTube, Giphy and Wikipedia search support
 
-- [Rule reaction feature](https://pootis-bot.creepysin.com/server-setup/rulereaction/)
+- [Rule reaction feature](https://pootis-bot.voltstro.dev/server-setup/rulereaction/)
 
-- [Auto Voice Channels](https://pootis-bot.creepysin.com/server-setup/auto-vc/)
+- [Auto Voice Channels](https://pootis-bot.voltstro.dev/server-setup/auto-vc/)
 
-- [Basic Anti-Spam features](https://pootis-bot.creepysin.com/server-setup/anti-spam/)
+- [Basic Anti-Spam features](https://pootis-bot.voltstro.dev/server-setup/anti-spam/)
 
 ## Getting Started
 
 ### Downloading A Full Pre-Compiled Version
 
-You can download a compiled version [here](https://pootis-bot.creepysin.com/download/all)!
+You can download a compiled version [here](https://pootis-bot.voltstro.dev/download/all)!
 
 ### Contributing
 
@@ -46,7 +46,7 @@ You can download a compiled version [here](https://pootis-bot.creepysin.com/down
 
 3. Clone your fork to your local machine
 
-4. Visit [Pootis-Bot documentation](https://pootis-bot.creepysin.com/dev/building/) which will show you how to use the powershell scripts, or how to compile with the `dotnet` command.
+4. Visit [Pootis-Bot documentation](https://pootis-bot.voltstro.dev/dev/building/) which will show you how to use the powershell scripts, or how to compile with the `dotnet` command.
 
 ## Authors
 
@@ -54,7 +54,7 @@ You can download a compiled version [here](https://pootis-bot.creepysin.com/down
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Creepysin/Pootis-Bot/blob/master/LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Voltstro/Pootis-Bot/blob/master/LICENSE.md) file for details
 
 ## Quick Notes
 
