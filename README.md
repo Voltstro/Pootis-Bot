@@ -2,11 +2,11 @@
 
 # Pootis-Bot 
 
-[![License](https://img.shields.io/github/license/creepysin/Pootis-Bot.svg?style=flat-square)](https://github.com/Creepysin/Pootis-Bot/blob/master/LICENSE.md)
-[![Requirements Status](https://img.shields.io/requires/github/Creepysin/Pootis-Bot?style=flat-square)](https://requires.io/github/Creepysin/Pootis-Bot/requirements/?branch=master)
+[![License](https://img.shields.io/github/license/voltstro/Pootis-Bot.svg?style=flat-square)](https://github.com/Voltstro/Pootis-Bot/blob/master/LICENSE.md)
+[![Requirements Status](https://img.shields.io/requires/github/Voltstro/Pootis-Bot?style=flat-square)](https://requires.io/github/Voltstro/Pootis-Bot/requirements/?branch=master)
 [![DevOps Azure](https://img.shields.io/azure-devops/build/Creepysin/f4979e7e-719b-4d5b-8d84-25004a75702b/1?style=flat-square)](https://dev.azure.com/Creepysin/Pootis-Bot)
-[![Discord](https://img.shields.io/badge/Discord-Creepysin-7289da.svg?style=flat-square&logo=discord)](https://discord.creepysin.com) 
-[![YouTube](https://img.shields.io/badge/Youtube-Creepysin-red.svg?style=flat-square&logo=youtube)](https://www.youtube.com/Creepysin)
+[![Discord](https://img.shields.io/badge/Discord-Voltstro-7289da.svg?style=flat-square&logo=discord)](https://discord.voltstro.dev) 
+[![YouTube](https://img.shields.io/badge/Youtube-Voltstro-red.svg?style=flat-square&logo=youtube)](https://www.youtube.com/Voltstro)
 
 Pootis-Bot, a multipurpose, open-source Discord bot written in the C# language using [Discord.NET](https://github.com/RogueException/Discord.Net)
 
@@ -50,7 +50,7 @@ You can download a compiled version [here](https://pootis-bot.creepysin.com/down
 
 ## Authors
 
-* **Creepysin** - *Initial work* - [Creepysin](https://github.com/Creepysin)
+* **Voltstro** - *Initial work* - [Voltstro](https://github.com/Voltstro)
 
 ## License
 
