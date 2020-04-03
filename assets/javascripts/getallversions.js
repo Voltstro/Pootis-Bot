@@ -1,5 +1,5 @@
 function getAllReleases() {
-	$.get('https://api.github.com/repos/creepysin/pootis-bot/releases', function (data) {
+	$.get('https://api.github.com/repos/voltstro/pootis-bot/releases', function (data) {
     	for(i=0;i<data.length;i++) {
        	 	var preReleaseText = "";
 
@@ -38,7 +38,7 @@ function getAllReleases() {
 }
 
 function getLatestRelease() {
-	$.get('https://api.github.com/repos/creepysin/pootis-bot/releases', function (data) {
+	$.get('https://api.github.com/repos/voltstro/pootis-bot/releases', function (data) {
        	var preReleaseText = "";
 
         if(data[0].prerelease == true) {
