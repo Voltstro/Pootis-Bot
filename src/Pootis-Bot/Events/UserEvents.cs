@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -162,30 +160,24 @@ namespace Pootis_Bot.Events
 				//Only check channel user count if the audio services are enabled.
 				if (Config.bot.AudioSettings.AudioServicesEnabled)
 				{
-					List<ServerMusicItem> toRemove = new List<ServerMusicItem>();
-
-					//TODO: Inprove this, we can probs just get the current channel ID and go from there
-					foreach (ServerMusicItem channel in AudioService.currentChannels.Where(channel =>
-						channel.AudioChannel.Users.Count == 1))
+					//There is an active song playing on this guild
+					ServerMusicItem musicItem = AudioService.GetMusicList(((SocketGuildUser) user).Guild.Id);
+					if (musicItem != null && musicItem.AudioChannel.Id == before.VoiceChannel?.Id)
 					{
-						await AudioService.StopPlayingAudioOnServer(channel);
+						//It is literally just us in the voice channel
+						if (before.VoiceChannel.Users.Count == 1)
+						{
+							await AudioService.StopPlayingAudioOnServer(musicItem);
 
-						//Just wait a moment
-						await Task.Delay(100);
+							//Leave this voice channel
+							await musicItem.AudioClient.StopAsync();
 
-						await channel.AudioClient.StopAsync();
+							await musicItem.StartChannel.SendMessageAsync(
+								":musical_note: Left the audio channel due to there being no one there :(");
 
-						channel.IsPlaying = false;
-
-						await channel.StartChannel.SendMessageAsync(
-							":musical_note: Left the audio channel due to there being no one there :(");
-
-						toRemove.Add(channel);
+							AudioService.currentChannels.Remove(musicItem);
+						}
 					}
-
-					//To avoid System.InvalidOperationException exception remove the channels after the foreach loop.
-					foreach (ServerMusicItem channel in toRemove)
-						AudioService.currentChannels.Remove(channel);
 				}
 			}
 			catch (Exception ex)

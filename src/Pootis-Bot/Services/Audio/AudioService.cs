@@ -332,7 +332,7 @@ namespace Pootis_Bot.Services.Audio
 
 					//There wasn't a request to cancel
 					if(!token.IsCancellationRequested)
-						await channel.SendMessageAsync($":musical_note: **{songName}** ended or was stopped.");
+						await channel.SendMessageAsync($":musical_note: **{songName}** ended.");
 
 					//Clean up
 					await serverMusicList.Discord.FlushAsync();
@@ -418,7 +418,12 @@ namespace Pootis_Bot.Services.Audio
 
 		#region List Fuctions
 
-		private static ServerMusicItem GetMusicList(ulong guildId)
+		/// <summary>
+		/// Gets a <see cref="ServerMusicItem"/>
+		/// </summary>
+		/// <param name="guildId"></param>
+		/// <returns></returns>
+		public static ServerMusicItem GetMusicList(ulong guildId)
 		{
 			IEnumerable<ServerMusicItem> result = from a in currentChannels
 				where a.GuildId == guildId
