@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -10,6 +9,7 @@ using System.Web;
 using Discord;
 using Discord.Audio;
 using Discord.WebSocket;
+using NAudio.Wave;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
@@ -60,11 +60,11 @@ namespace Pootis_Bot.Services.Audio
 			{
 				GuildId = guild.Id,
 				IsPlaying = false,
-				IsExit = false,
 				AudioClient = audio,
 				AudioChannel = (SocketVoiceChannel) target,
 				StartChannel = (ISocketMessageChannel) channel,
-				AudioMusicFilesDownloader = null
+				AudioMusicFilesDownloader = null,
+				CancellationSource = null
 			};
 
 			currentChannels.Add(item);
@@ -80,6 +80,7 @@ namespace Pootis_Bot.Services.Audio
 		public async Task LeaveAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
 			if (guild == null) return; //Check if guild is null
+
 			ServerMusicItem serverList = GetMusicList(guild.Id);
 			if (serverList == null)
 			{
@@ -94,17 +95,8 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			serverList.IsExit = true;
-
-			//Close ffmpeg if it is running
-			if (serverList.FfMpeg != null)
-			{
-				serverList.FfMpeg.Kill();
-				serverList.FfMpeg.Dispose();
-
-				//Just wait a moment
-				await Task.Delay(1000);
-			}
+			//If there is already a song playing, cancel it
+			await StopPlayingAudioOnServer(serverList);
 
 			await serverList.AudioClient.StopAsync();
 
@@ -139,7 +131,7 @@ namespace Pootis_Bot.Services.Audio
 
 			if (serverList.IsPlaying == false) await channel.SendMessageAsync(":musical_note: No audio is playing.");
 
-			serverList.IsExit = true;
+			serverList.CancellationSource.Cancel();
 			await channel.SendMessageAsync(":musical_note: Stopping current playing song.");
 		}
 
@@ -250,21 +242,8 @@ namespace Pootis_Bot.Services.Audio
 				songName = songFileName.Replace(".mp3",
 					""); //This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
 
-				//There is already a song playing, cancel it
-				if (serverMusicList.IsPlaying)
-				{
-					serverMusicList.IsExit = true;
-
-					while (serverMusicList.FfMpeg != null)
-					{
-						await Task.Delay(100);
-					}
-
-					await serverMusicList.Discord.FlushAsync();
-
-					//Wait a moment
-					await Task.Delay(100);
-				}
+				//If there is already a song playing, cancel it
+				await StopPlayingAudioOnServer(serverMusicList);
 			}
 			catch (Exception ex)
 			{
@@ -274,98 +253,96 @@ namespace Pootis_Bot.Services.Audio
 
 			await Task.Delay(100);
 
-			IAudioClient client = serverMusicList.AudioClient; //Make a reference to our AudioClient so it is easier
-			Process ffmpeg = serverMusicList.FfMpeg = CreateFfmpeg(songFileLocation); //Start ffmpeg
-
-			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-				Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has started.",
-					LogVerbosity.Music);
-
-			await using Stream output = ffmpeg.StandardOutput.BaseStream; //ffmpeg base stream
-			await using (serverMusicList.Discord = client.CreatePCMStream(AudioApplication.Music)
-			) //Create an outgoing pcm stream
+			//Setup NAudio for playing the song
+			await using (Mp3FileReader audioFile = new Mp3FileReader(songFileLocation))
 			{
-				serverMusicList.IsPlaying = true;
-				serverMusicList.IsExit = false;
-
-				bool fail = false;
-				bool exit = false;
-				const int bufferSize = 1024;
-				byte[] buffer = new byte[bufferSize];
-
-				CancellationToken cancellation = new CancellationToken();
-
-				await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{songName}**.");
-
-				while (!fail && !exit)
-				{
-					try
-					{
-						if (cancellation.IsCancellationRequested)
-						{
-							exit = true;
-							break;
-						}
-
-						if (serverMusicList.IsExit)
-						{
-							exit = true;
-							break;
-						}
-
-						//Read our ffmpeg stream
-						int read = await output.ReadAsync(buffer, 0, bufferSize, cancellation);
-						if (read == 0)
-						{
-							exit = true;
-							break;
-						}
-						
-						await output.FlushAsync(cancellation);
-
-						//Write it to the audio out stream
-						await serverMusicList.Discord.WriteAsync(buffer, 0, read, cancellation);
-
-						if (serverMusicList.IsPlaying) continue;
-
-						//For pausing the song
-						do
-						{
-							//Do nothing, wait till is playing is true
-							await Task.Delay(100, cancellation);
-						} while (serverMusicList.IsPlaying == false);
-					}
-					catch (OperationCanceledException)
-					{
-					}
-					catch (Exception ex)
-					{
-						await channel.SendMessageAsync("Sorry, but an error occured while playing!");
-
-						if (Config.bot.ReportErrorsToOwner)
-							await Global.BotOwner.SendMessageAsync(
-								$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
-
-						fail = true;
-					}
-				}
-
+				//Log (if enabled) to the console that we are playing a new song
 				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-					Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
+					Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has started.",
 						LogVerbosity.Music);
 
-				//Clean up
-				await serverMusicList.Discord.FlushAsync(cancellation);
-				serverMusicList.Discord.Dispose();
-				serverMusicList.IsPlaying = false;
+				serverMusicList.CancellationSource = new CancellationTokenSource();
+				CancellationToken token = serverMusicList.CancellationSource.Token;
 
-				await channel.SendMessageAsync($":musical_note: **{songName}** ended or was stopped.");
+				//Create an outgoing pcm stream
+				await using (serverMusicList.Discord = serverMusicList.AudioClient.CreatePCMStream(AudioApplication.Music))
+				{
+					serverMusicList.IsPlaying = true;
 
-				await output.FlushAsync(cancellation);
+					bool fail = false;
+					bool exit = false;
+					const int bufferSize = 1024;
+					byte[] buffer = new byte[bufferSize];
 
-				//Check to make sure that ffmpeg was disposed
-				ffmpeg.Dispose();
-				serverMusicList.FfMpeg = null;
+					await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{songName}**.");
+
+					while (!fail && !exit)
+					{
+						try
+						{
+							if (token.IsCancellationRequested)
+							{
+								exit = true;
+								break;
+							}
+
+							//Read from NAudio mp3 stream
+							int read = await audioFile.ReadAsync(buffer, 0, bufferSize, token);
+							if (read == 0)
+							{
+								exit = true;
+								break;
+							}
+							
+							//Flush
+							await audioFile.FlushAsync(token);
+
+							//Write it to outgoing pcm stream
+							await serverMusicList.Discord.WriteAsync(buffer, 0, read, token);
+
+							//If we are still playing
+							if (serverMusicList.IsPlaying) continue;
+
+							//For pausing the song
+							do
+							{
+								//Do nothing, wait till is playing is true
+								await Task.Delay(100, token);
+							} while (serverMusicList.IsPlaying == false);
+						}
+						catch (OperationCanceledException)
+						{
+							//User canceled
+						}
+						catch (Exception ex)
+						{
+							await channel.SendMessageAsync("Sorry, but an error occured while playing!");
+
+							if (Config.bot.ReportErrorsToOwner)
+								await Global.BotOwner.SendMessageAsync(
+									$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
+
+							fail = true;
+						}
+					}
+
+					if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
+						Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
+							LogVerbosity.Music);
+
+					//There wasn't a request to cancel
+					if(!token.IsCancellationRequested)
+						await channel.SendMessageAsync($":musical_note: **{songName}** ended or was stopped.");
+
+					//Clean up
+					await serverMusicList.Discord.FlushAsync();
+					serverMusicList.Discord.Dispose();
+					serverMusicList.IsPlaying = false;
+					await audioFile.FlushAsync();
+				}
+
+				serverMusicList.CancellationSource.Dispose();
+				serverMusicList.CancellationSource = null;
 			}
 
 			async Task StopMusicFileDownloader()
@@ -425,22 +402,18 @@ namespace Pootis_Bot.Services.Audio
 			return filesInDir.Select(foundFile => foundFile.FullName).FirstOrDefault();
 		}
 
-		/// <summary>
-		/// Creates and returns a ffmpeg <see cref="Process"/>
-		/// </summary>
-		/// <param name="path">The path of the song to play</param>
-		/// <returns>Returns the newly created ffmpeg <see cref="Process"/></returns>
-		private static Process CreateFfmpeg(string path)
+		public static async Task StopPlayingAudioOnServer(ServerMusicItem serverMusic)
 		{
-			return Process.Start(new ProcessStartInfo
+			if (serverMusic.IsPlaying)
 			{
-				FileName = Config.bot.AudioSettings.FfmpegLocation,
-				Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1 -nostdin",
-				UseShellExecute = false,
-				CreateNoWindow = true,
-				RedirectStandardOutput = true,
-				RedirectStandardInput = false
-			});
+				serverMusic.CancellationSource.Cancel();
+
+				while (serverMusic.CancellationSource != null)
+				{
+					//Wait until CancellationSource is null
+					await Task.Delay(100);
+				}
+			}
 		}
 
 		#region List Fuctions

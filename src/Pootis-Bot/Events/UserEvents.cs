@@ -164,17 +164,11 @@ namespace Pootis_Bot.Events
 				{
 					List<ServerMusicItem> toRemove = new List<ServerMusicItem>();
 
+					//TODO: Inprove this, we can probs just get the current channel ID and go from there
 					foreach (ServerMusicItem channel in AudioService.currentChannels.Where(channel =>
 						channel.AudioChannel.Users.Count == 1))
 					{
-						channel.IsExit = true;
-
-						if (channel.FfMpeg != null)
-						{
-							channel.IsExit = true;
-							channel.FfMpeg.Kill();
-							channel.FfMpeg.Dispose();
-						}
+						await AudioService.StopPlayingAudioOnServer(channel);
 
 						//Just wait a moment
 						await Task.Delay(100);

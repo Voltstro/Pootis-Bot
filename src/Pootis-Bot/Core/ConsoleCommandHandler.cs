@@ -89,13 +89,8 @@ namespace Pootis_Bot.Core
 			Logger.Log("Stopping audio services...", LogVerbosity.Music);
 			foreach (ServerMusicItem channel in AudioService.currentChannels)
 			{
-				channel.IsExit = true;
-
-				if (channel.FfMpeg != null)
-				{
-					channel.FfMpeg.Kill();
-					channel.FfMpeg.Dispose();
-				}
+				//If there is already a song playing, cancel it
+				await AudioService.StopPlayingAudioOnServer(channel);
 
 				//Just wait a moment
 				await Task.Delay(100);
@@ -170,13 +165,7 @@ namespace Pootis_Bot.Core
 		{
 			foreach (ServerMusicItem channel in AudioService.currentChannels)
 			{
-				channel.IsExit = true;
-
-				if (channel.FfMpeg != null)
-				{
-					channel.FfMpeg.Kill();
-					channel.FfMpeg.Dispose();
-				}
+				await AudioService.StopPlayingAudioOnServer(channel);
 
 				//Just wait a moment
 				await Task.Delay(100);

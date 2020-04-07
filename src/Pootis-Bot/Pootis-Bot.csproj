@@ -37,6 +37,7 @@
     <PackageReference Include="Discord.Net" Version="2.1.1" />
     <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.44.1.1369" />
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.44.1.1869" />
+    <PackageReference Include="NAudio" Version="1.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="SteamWebAPI2" Version="4.1.0" />
     <PackageReference Include="Wiki.Net" Version="2.1.0" />

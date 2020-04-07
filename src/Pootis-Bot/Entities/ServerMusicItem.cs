@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using Discord.Audio;
 using Discord.WebSocket;
 using Pootis_Bot.Services.Audio;
@@ -16,11 +17,6 @@ namespace Pootis_Bot.Entities
 		/// Are we playing music right now
 		/// </summary>
 		public bool IsPlaying { get; set; }
-
-		/// <summary>
-		/// Are we ending the current song
-		/// </summary>
-		public bool IsExit { get; set; }
 
 		/// <summary>
 		/// The active <see cref="AudioDownloadMusicFiles"/>
@@ -43,13 +39,10 @@ namespace Pootis_Bot.Entities
 		public ISocketMessageChannel StartChannel { get; set; }
 
 		/// <summary>
-		/// THe <see cref="AudioOutStream"/>
+		/// The <see cref="AudioOutStream"/>
 		/// </summary>
 		public AudioOutStream Discord { get; set; }
 
-		/// <summary>
-		/// The ffmpeg <see cref="Process"/>
-		/// </summary>
-		public Process FfMpeg { get; set; }
+		public CancellationTokenSource CancellationSource { get; set; }
 	}
 }

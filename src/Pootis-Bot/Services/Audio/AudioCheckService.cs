@@ -13,7 +13,7 @@ namespace Pootis_Bot.Services.Audio
 	public static class AudioCheckService
 	{
 		//Downloads a .json file that has were to get some needed libs from
-		private const string AudioLibFileJsonUrl = "https://pootis-bot.creepysin.com/download/externallibfiles.json";
+		private const string AudioLibFileJsonUrl = "https://pootis-bot.voltstro.dev/download/externallibfiles.json";
 
 		/// <summary>
 		/// Checks the audio service
