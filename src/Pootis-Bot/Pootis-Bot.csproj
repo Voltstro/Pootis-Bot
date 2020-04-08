@@ -6,12 +6,12 @@
     <RootNamespace>Pootis_Bot</RootNamespace>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Authors>Creepysin</Authors>
-    <Company>Creepysin</Company>
-    <Copyright>Copyright © Creepysin 2019</Copyright>
+    <Authors>Voltstro</Authors>
+    <Company>Voltstro</Company>
+    <Copyright>Copyright © Voltstro 2018-2020</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageProjectUrl>https://pootis-bot.creepysin.com</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Creepysin/Pootis-Bot</RepositoryUrl>
+    <PackageProjectUrl>https://pootis-bot.voltstro.dev</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Voltstro/Pootis-Bot</RepositoryUrl>
     <Description>Pootis-Bot, a multipurpose, open-source Discord bot written in the C# language using Discord.NET</Description>
     <Version>1.0.3</Version>
   </PropertyGroup>

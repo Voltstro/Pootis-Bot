@@ -14,48 +14,48 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		/// The main GitHub page for the project
 		/// </summary>
-		public static readonly string githubPage = "https://github.com/Creepysin/Pootis-Bot";
+		public static readonly string githubPage = "https://github.com/Voltstro/Pootis-Bot";
 
 		/// <summary>
 		/// The main docs page
 		/// </summary>
-		public static readonly string websiteHome = "https://pootis-bot.creepysin.com";
+		public static readonly string websiteHome = "https://pootis-bot.voltstro.dev";
 
 		/// <summary>
 		/// Discord command list
 		/// </summary>
 		public static readonly string
 			websiteCommands =
-				"https://pootis-bot.creepysin.com/commands/discord-commands/";
+				"https://pootis-bot.voltstro.dev/commands/discord-commands/";
 
 		/// <summary>
 		/// The website for setting up the bot on a Discord server
 		/// </summary>
 		public static readonly string
-			websiteServerSetup = "https://pootis-bot.creepysin.com/server-setup/";
+			websiteServerSetup = "https://pootis-bot.voltstro.dev/server-setup/";
 
 		/// <summary>
 		/// Console command list
 		/// </summary>
 		public static readonly string websiteConsoleCommands =
-			"https://pootis-bot.creepysin.com/commands/console-commands/";
+			"https://pootis-bot.voltstro.dev/commands/console-commands/";
 
 		/// <summary>
 		/// A <see cref="string"/> array of Discord servers, I use to have a 'Developer Creepysin Discord Server', but I shut
 		/// it down awhile ago
 		/// </summary>
 		public static readonly string[] discordServers =
-			{"https://discord.creepysin.com"};
+			{"https://discord.voltstro.dev"};
 
 		/// <summary>
 		/// An about message, for Pootis-Bot
 		/// </summary>
-		public static readonly string aboutMessage = $"Pootis Bot --- | --- {VersionUtils.GetAppVersion()}\n" +
-		                                             $"Created by Creepysin licensed under the MIT license. Visit {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
+		public static readonly string aboutMessage = $"Pootis-Bot --- | --- {VersionUtils.GetAppVersion()}\n" +
+		                                             $"Created by Voltstro licensed under the MIT license. Visit {githubPage}/blob/master/LICENSE.md for more info.\n\n" +
 		                                             "Pootis Robot icon by Valve\n" +
 		                                             "Created with Discord.NET\n" +
-		                                             "https://github.com/Creepysin/Pootis-Bot \n\n" +
-		                                             "Thank you for using Pootis Bot";
+		                                             $"{githubPage} \n\n" +
+		                                             "Thank you for using Pootis-Bot!";
 
 		/// <summary>
 		/// The bot name

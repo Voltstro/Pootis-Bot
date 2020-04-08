@@ -4,12 +4,12 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <RootNamespace>Pootis_Bot.ConsoleCommandHandler</RootNamespace>
     <AssemblyName>Pootis-Bot.ConsoleCommandHandler</AssemblyName>
-    <Copyright>Copyright © Creepysin 2019</Copyright>
+    <Copyright>Copyright © Voltstro 2018-2020</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageProjectUrl>https://pootis-bot.creepysin.com</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Creepysin/Pootis-Bot</RepositoryUrl>
+    <PackageProjectUrl>https://pootis-bot.voltstro.dev</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Voltstro/Pootis-Bot</RepositoryUrl>
     <RepositoryType />
-    <Authors>Creepysin</Authors>
+    <Authors>Voltstro</Authors>
     <Description>Pootis-Bot's Console Command Handling</Description>
     <Version>1.1.0</Version>
   </PropertyGroup>
