@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using Discord.Audio;
 using Discord.WebSocket;
 using Pootis_Bot.Services.Audio;
@@ -43,6 +42,9 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		public AudioOutStream Discord { get; set; }
 
+		/// <summary>
+		/// Active <see cref="CancellationTokenSource"/>
+		/// </summary>
 		public CancellationTokenSource CancellationSource { get; set; }
 	}
 }

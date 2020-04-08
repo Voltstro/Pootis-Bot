@@ -335,10 +335,12 @@ namespace Pootis_Bot.Services.Audio
 						await channel.SendMessageAsync($":musical_note: **{songName}** ended.");
 
 					//Clean up
+					// ReSharper disable MethodSupportsCancellation
 					await serverMusicList.Discord.FlushAsync();
 					serverMusicList.Discord.Dispose();
 					serverMusicList.IsPlaying = false;
 					await audioFile.FlushAsync();
+					// ReSharper restore MethodSupportsCancellation
 				}
 
 				serverMusicList.CancellationSource.Dispose();
