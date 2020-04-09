@@ -2,6 +2,7 @@
 using Discord.Audio;
 using Discord.WebSocket;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Audio.Music;
 
 namespace Pootis_Bot.Entities
 {
@@ -23,6 +24,11 @@ namespace Pootis_Bot.Entities
 		public AudioDownloadMusicFiles AudioMusicFilesDownloader { get; set; }
 
 		/// <summary>
+		/// Active MusicPlayback, where the actual music stream comes from
+		/// </summary>
+		public IMusicPlaybackInterface MusicPlayback { get; set; }
+
+		/// <summary>
 		/// The current <see cref="IAudioClient"/>
 		/// </summary>
 		public IAudioClient AudioClient { get; set; }
@@ -36,11 +42,6 @@ namespace Pootis_Bot.Entities
 		/// The <see cref="ISocketMessageChannel"/> that the first command was executed in
 		/// </summary>
 		public ISocketMessageChannel StartChannel { get; set; }
-
-		/// <summary>
-		/// The <see cref="AudioOutStream"/>
-		/// </summary>
-		public AudioOutStream Discord { get; set; }
 
 		/// <summary>
 		/// Active <see cref="CancellationTokenSource"/>

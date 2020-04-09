@@ -12,6 +12,7 @@ using Microsoft.Win32.SafeHandles;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
+using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Google;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
@@ -24,7 +25,7 @@ namespace Pootis_Bot.Services.Audio
 		private readonly CancellationTokenSource _cancellationSource;
 		private readonly YoutubeClient _client = new YoutubeClient(Global.HttpClient);
 		private readonly CancellationToken _downloadCancellationToken;
-		private readonly string _downloadFileContainer;
+		private readonly MusicFileFormat _downloadFileContainer;
 		private readonly string _downloadLocation;
 		private readonly SocketGuild _guild;
 
@@ -45,7 +46,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <param name="downloadLocation">The place to download to</param>
 		/// <param name="audioFileContainer">The audio files container</param>
 		public AudioDownloadMusicFiles(IUserMessage message, SocketGuild guild, TimeSpan maxVideoTime,
-			string downloadLocation = "Music/", string audioFileContainer = "mp3")
+			string downloadLocation = "Music/", MusicFileFormat audioFileContainer = MusicFileFormat.Mp3)
 		{
 			//Setup our cancellation token
 			_cancellationSource = new CancellationTokenSource();
@@ -124,7 +125,7 @@ namespace Pootis_Bot.Services.Audio
 
 			//Do a search in our music directory using the EXACT title
 			string searchResult =
-				AudioService.SearchMusicDirectory(youTubeVideo.Title.RemoveIllegalChars());
+				AudioService.SearchMusicDirectory(youTubeVideo.Title.RemoveIllegalChars(), _downloadFileContainer);
 			if (!string.IsNullOrWhiteSpace(searchResult))
 			{
 				_hasFinishedDownloading =
@@ -170,13 +171,13 @@ namespace Pootis_Bot.Services.Audio
 
 				Logger.Log($"The downloaded video file extension is '{streamInfo.Container.GetFileExtension()}'.",
 					LogVerbosity.Debug);
-				if (streamInfo.Container.GetFileExtension() != _downloadFileContainer)
+				if (streamInfo.Container.GetFileExtension() != _downloadFileContainer.GetFormatExtension())
 				{
 					if (_cancellationSource.IsCancellationRequested)
 						return null;
 
 					if (!ConvertAudioFileToMp3(downloadLocation,
-						$"{_downloadLocation}{videoTitle}.{_downloadFileContainer}"))
+						$"{_downloadLocation}{videoTitle}.{_downloadFileContainer.GetFormatExtension()}"))
 					{
 						if (!_disposed)
 							MessageUtils.ModifyMessage(_message,
@@ -186,7 +187,7 @@ namespace Pootis_Bot.Services.Audio
 					}
 				}
 
-				downloadLocation = $"{_downloadLocation}{videoTitle}.{_downloadFileContainer}";
+				downloadLocation = $"{_downloadLocation}{videoTitle}.{_downloadFileContainer.GetFormatExtension()}";
 				_hasFinishedDownloading = true;
 
 				//We have finished downloading

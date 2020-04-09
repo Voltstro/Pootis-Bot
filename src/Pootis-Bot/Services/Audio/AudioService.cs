@@ -9,17 +9,20 @@ using System.Web;
 using Discord;
 using Discord.Audio;
 using Discord.WebSocket;
-using NAudio.Wave;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
+using Pootis_Bot.Services.Audio.Music;
+using Pootis_Bot.Services.Audio.Music.PlayBacks;
 
 namespace Pootis_Bot.Services.Audio
 {
 	public class AudioService
 	{
 		private const string MusicDir = "Music/";
+
+		private MusicFileFormat fileFormat = MusicFileFormat.Mp3;
 
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
 
@@ -203,7 +206,7 @@ namespace Pootis_Bot.Services.Audio
 
 						await StopMusicFileDownloader();
 						serverMusicList.AudioMusicFilesDownloader =
-							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
+							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
 						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
 
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
@@ -220,14 +223,14 @@ namespace Pootis_Bot.Services.Audio
 					await MessageUtils.ModifyMessage(message,
 						$":musical_note: Searching my audio banks for '{search}'");
 
-					songFileLocation = SearchMusicDirectory(search);
+					songFileLocation = SearchMusicDirectory(search, fileFormat);
 
 					//Search YouTube
 					if (string.IsNullOrWhiteSpace(songFileLocation))
 					{
 						await StopMusicFileDownloader();
 						serverMusicList.AudioMusicFilesDownloader =
-							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime);
+							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
 						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
 						serverMusicList.AudioMusicFilesDownloader.Dispose();
 					}
@@ -239,8 +242,9 @@ namespace Pootis_Bot.Services.Audio
 				Logger.Log($"Playing song from {songFileLocation}", LogVerbosity.Debug);
 
 				string songFileName = Path.GetFileName(songFileLocation);
-				songName = songFileName.Replace(".mp3",
-					""); //This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
+
+				//This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
+				songName = songFileName.Replace($".{fileFormat.GetFormatExtension()}", ""); 
 
 				//If there is already a song playing, cancel it
 				await StopPlayingAudioOnServer(serverMusicList);
@@ -251,98 +255,97 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			await Task.Delay(100);
+			//Create music playback for our music format
+			IMusicPlaybackInterface playbackInterface = serverMusicList.MusicPlayback = CreateMusicPlayback(songFileLocation);
 
-			//Setup NAudio for playing the song
-			await using (Mp3FileReader audioFile = new Mp3FileReader(songFileLocation))
+			//Log (if enabled) to the console that we are playing a new song
+			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
+				Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has started.",
+					LogVerbosity.Music);
+
+			serverMusicList.CancellationSource = new CancellationTokenSource();
+			CancellationToken token = serverMusicList.CancellationSource.Token;
+
+			serverMusicList.IsPlaying = true;
+
+			//Create an outgoing pcm stream
+			await using (AudioOutStream outStream = serverMusicList.AudioClient.CreatePCMStream(AudioApplication.Music))
 			{
-				//Log (if enabled) to the console that we are playing a new song
-				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-					Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has started.",
-						LogVerbosity.Music);
+				bool fail = false;
+				bool exit = false;
+				const int bufferSize = 1024;
+				byte[] buffer = new byte[bufferSize];
 
-				serverMusicList.CancellationSource = new CancellationTokenSource();
-				CancellationToken token = serverMusicList.CancellationSource.Token;
+				await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{songName}**.");
 
-				//Create an outgoing pcm stream
-				await using (serverMusicList.Discord = serverMusicList.AudioClient.CreatePCMStream(AudioApplication.Music))
+				while (!fail && !exit)
 				{
-					serverMusicList.IsPlaying = true;
-
-					bool fail = false;
-					bool exit = false;
-					const int bufferSize = 1024;
-					byte[] buffer = new byte[bufferSize];
-
-					await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{songName}**.");
-
-					while (!fail && !exit)
+					try
 					{
-						try
+						if (token.IsCancellationRequested)
 						{
-							if (token.IsCancellationRequested)
-							{
-								exit = true;
-								break;
-							}
-
-							//Read from NAudio mp3 stream
-							int read = await audioFile.ReadAsync(buffer, 0, bufferSize, token);
-							if (read == 0)
-							{
-								exit = true;
-								break;
-							}
-							
-							//Flush
-							await audioFile.FlushAsync(token);
-
-							//Write it to outgoing pcm stream
-							await serverMusicList.Discord.WriteAsync(buffer, 0, read, token);
-
-							//If we are still playing
-							if (serverMusicList.IsPlaying) continue;
-
-							//For pausing the song
-							do
-							{
-								//Do nothing, wait till is playing is true
-								await Task.Delay(100, token);
-							} while (serverMusicList.IsPlaying == false);
+							exit = true;
+							break;
 						}
-						catch (OperationCanceledException)
+
+						//Read from NAudio mp3 stream
+						int read = await playbackInterface.ReadAudioStream(buffer, bufferSize, token);
+						if (read == 0)
 						{
-							//User canceled
+							exit = true;
+							break;
 						}
-						catch (Exception ex)
+						
+						//Flush
+						await playbackInterface.Flush();
+
+						//Write it to outgoing pcm stream
+						await outStream.WriteAsync(buffer, 0, read, token);
+
+						//If we are still playing
+						if (serverMusicList.IsPlaying) continue;
+
+						//For pausing the song
+						do
 						{
-							await channel.SendMessageAsync("Sorry, but an error occured while playing!");
-
-							if (Config.bot.ReportErrorsToOwner)
-								await Global.BotOwner.SendMessageAsync(
-									$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
-
-							fail = true;
-						}
+							//Do nothing, wait till is playing is true
+							await Task.Delay(100, token);
+						} while (serverMusicList.IsPlaying == false);
 					}
+					catch (OperationCanceledException)
+					{
+						//User canceled
+					}
+					catch (Exception ex)
+					{
+						await channel.SendMessageAsync("Sorry, but an error occured while playing!");
 
-					if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-						Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
-							LogVerbosity.Music);
+						if (Config.bot.ReportErrorsToOwner)
+							await Global.BotOwner.SendMessageAsync(
+								$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
 
-					//There wasn't a request to cancel
-					if(!token.IsCancellationRequested)
-						await channel.SendMessageAsync($":musical_note: **{songName}** ended.");
-
-					//Clean up
-					// ReSharper disable MethodSupportsCancellation
-					await serverMusicList.Discord.FlushAsync();
-					serverMusicList.Discord.Dispose();
-					serverMusicList.IsPlaying = false;
-					await audioFile.FlushAsync();
-					// ReSharper restore MethodSupportsCancellation
+						fail = true;
+					}
 				}
 
+				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
+					Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
+						LogVerbosity.Music);
+
+				//There wasn't a request to cancel
+				if(!token.IsCancellationRequested)
+					await channel.SendMessageAsync($":musical_note: **{songName}** ended.");
+
+				//Clean up
+				// ReSharper disable MethodSupportsCancellation
+				await outStream.FlushAsync();
+				outStream.Dispose();
+				serverMusicList.IsPlaying = false;
+				
+				playbackInterface.EndAudioStream();
+				serverMusicList.MusicPlayback = null;
+				// ReSharper restore MethodSupportsCancellation
+				
 				serverMusicList.CancellationSource.Dispose();
 				serverMusicList.CancellationSource = null;
 			}
@@ -393,13 +396,14 @@ namespace Pootis_Bot.Services.Audio
 		/// Searches music folder for similar or same results to <see cref="search"/>
 		/// </summary>
 		/// <param name="search">The name of the song to search for</param>
+		/// <param name="fileFormat"></param>
 		/// <returns>Returns the first found similar or matching result</returns>
-		public static string SearchMusicDirectory(string search)
+		public static string SearchMusicDirectory(string search, MusicFileFormat fileFormat)
 		{
 			if (!Directory.Exists(MusicDir)) Directory.CreateDirectory(MusicDir);
 
 			DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(MusicDir);
-			FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles("*" + search + "*.mp3");
+			FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles($"*{search}*.{fileFormat.GetFormatExtension()}");
 
 			return filesInDir.Select(foundFile => foundFile.FullName).FirstOrDefault();
 		}
@@ -415,6 +419,17 @@ namespace Pootis_Bot.Services.Audio
 					//Wait until CancellationSource is null
 					await Task.Delay(100);
 				}
+			}
+		}
+
+		private IMusicPlaybackInterface CreateMusicPlayback(string fileLocation)
+		{
+			switch (fileFormat)
+			{
+				case MusicFileFormat.Mp3:
+					return new MusicMp3Playback(fileLocation);
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 
