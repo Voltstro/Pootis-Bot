@@ -42,10 +42,9 @@ namespace Pootis_Bot.Services.Audio
 				return;
 			}
 
-			ServerMusicItem serverMusic = GetMusicList(guild.Id);
-			if (serverMusic != null)
+			if(CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
 			{
-				if (serverMusic.AudioChannel.GetUser(user.Id) != null)
+				if (serverList.AudioChannel.GetUser(user.Id) != null)
 				{
 					await channel.SendMessageAsync(":musical_note: I am already in the same audio channel as you!");
 					return;
@@ -82,21 +81,15 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		public async Task LeaveAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
-			if (guild == null) return; //Check if guild is null
-
-			ServerMusicItem serverList = GetMusicList(guild.Id);
-			if (serverList == null)
+			if(!CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
 			{
 				await channel.SendMessageAsync(":musical_note: You are not in any voice channel!");
 				return;
 			}
 
-			//Check to see if the user is in the playing voice channel
-			if (serverList.AudioChannel.GetUser(user.Id) == null)
-			{
-				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
+			//Check to see if the user is in the playing audio channel
+			if(!await CheckIfUserInChat(user, channel, serverList))
 				return;
-			}
 
 			//If there is already a song playing, cancel it
 			await StopPlayingAudioOnServer(serverList);
@@ -117,20 +110,15 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		public async Task StopAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
-			ServerMusicItem serverList = GetMusicList(guild.Id);
-
-			if (serverList == null)
+			if(!CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
 			{
 				await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
 				return;
 			}
 
 			//Check to see if the user is in the playing audio channel
-			if (serverList.AudioChannel.GetUser(user.Id) == null)
-			{
-				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
+			if(!await CheckIfUserInChat(user, channel, serverList))
 				return;
-			}
 
 			if (serverList.IsPlaying == false) await channel.SendMessageAsync(":musical_note: No audio is playing.");
 
@@ -150,22 +138,17 @@ namespace Pootis_Bot.Services.Audio
 		public async Task SendAudio(SocketGuild guild, IMessageChannel channel, IVoiceChannel target, IUser user,
 			string search)
 		{
-			ServerMusicItem serverMusicList = GetMusicList(guild.Id);
-
 			//Join the voice channel the user is in if we are already not in a voice channel
-			if (serverMusicList == null)
+			if (!CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverMusicList))
 			{
 				await JoinAudio(guild, target, channel, user);
 
 				serverMusicList = GetMusicList(guild.Id);
 			}
 
-			//Check to see if the user is in the playing voice channel
-			if (serverMusicList.AudioChannel.GetUser(user.Id) == null)
-			{
-				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
+			//Check to see if the user is in the playing audio channel
+			if(!await CheckIfUserInChat(user, channel, serverMusicList))
 				return;
-			}
 
 			//Make sure the search isn't empty or null
 			if (string.IsNullOrWhiteSpace(search))
@@ -184,67 +167,16 @@ namespace Pootis_Bot.Services.Audio
 
 			try
 			{
-				//We are downloading a direct URL
-				if (WebUtils.IsStringValidUrl(search))
-				{
-					if (search.Contains("www.youtube.com/"))
-					{
-						await MessageUtils.ModifyMessage(message, ":musical_note: Processing YouTube URL...");
+				songFileLocation = await GetOrDownloadSong(search, message, guild, serverMusicList);
 
-						Uri uri = new Uri(search);
-
-						//Get video ID
-						NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
-						string videoId = query.AllKeys.Contains("v") ? query["v"] : uri.Segments.Last();
-
-						if (videoId == "/")
-						{
-							await MessageUtils.ModifyMessage(message,
-								":musical_note: The imputed URL is not a valid YouTube URL!");
-							return;
-						}
-
-						await StopMusicFileDownloader();
-						serverMusicList.AudioMusicFilesDownloader =
-							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
-						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
-
-						serverMusicList.AudioMusicFilesDownloader.Dispose();
-					}
-					else
-					{
-						await MessageUtils.ModifyMessage(message,
-							":musical_note: The imputed URL is not a YouTube URL!");
-						return;
-					}
-				}
-				else //Search and download normally
-				{
-					await MessageUtils.ModifyMessage(message,
-						$":musical_note: Searching my audio banks for '{search}'");
-
-					songFileLocation = SearchMusicDirectory(search, fileFormat);
-
-					//Search YouTube
-					if (string.IsNullOrWhiteSpace(songFileLocation))
-					{
-						await StopMusicFileDownloader();
-						serverMusicList.AudioMusicFilesDownloader =
-							new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
-						songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
-						serverMusicList.AudioMusicFilesDownloader.Dispose();
-					}
-				}
-
+				//It failed
 				if (songFileLocation == null)
 					return;
 
 				Logger.Log($"Playing song from {songFileLocation}", LogVerbosity.Debug);
 
-				string songFileName = Path.GetFileName(songFileLocation);
-
 				//This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
-				songName = songFileName.Replace($".{fileFormat.GetFormatExtension()}", ""); 
+				songName = Path.GetFileName(songFileLocation).Replace($".{fileFormat.GetFormatExtension()}", ""); 
 
 				//If there is already a song playing, cancel it
 				await StopPlayingAudioOnServer(serverMusicList);
@@ -288,7 +220,7 @@ namespace Pootis_Bot.Services.Audio
 							break;
 						}
 
-						//Read from NAudio mp3 stream
+						//Read from stream
 						int read = await playbackInterface.ReadAudioStream(buffer, bufferSize, token);
 						if (read == 0)
 						{
@@ -349,15 +281,6 @@ namespace Pootis_Bot.Services.Audio
 				serverMusicList.CancellationSource.Dispose();
 				serverMusicList.CancellationSource = null;
 			}
-
-			async Task StopMusicFileDownloader()
-			{
-				if (serverMusicList.AudioMusicFilesDownloader != null)
-				{
-					serverMusicList.AudioMusicFilesDownloader.Dispose();
-					await Task.Delay(100); //Wait a moment so the previous download can cancel and clean up
-				}
-			}
 		}
 
 		/// <summary>
@@ -392,6 +315,43 @@ namespace Pootis_Bot.Services.Audio
 			else await channel.SendMessageAsync(":musical_note: Current song has been paused.");
 		}
 
+		#region Inital User Checking
+
+		private async Task<bool> CheckIfUserInChat(IUser user, IMessageChannel channel, ServerMusicItem serverMusic)
+		{
+			//Check to see if the user is in the playing voice channel
+			if (serverMusic.AudioChannel.GetUser(user.Id) == null)
+			{
+				await channel.SendMessageAsync(":musical_note: You are not in the current playing channel!");
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Checks if server is currently already playing music
+		/// </summary>
+		/// <param name="guild"></param>
+		/// <param name="serverMusic"></param>
+		/// <returns></returns>
+		private bool CheckIfServerIsPlayingMusic(IGuild guild, out ServerMusicItem serverMusic)
+		{
+			ServerMusicItem serverMusicList = GetMusicList(guild.Id);
+			if (serverMusicList == null)
+			{
+				serverMusic = null;
+				return false;
+			}
+
+			serverMusic = serverMusicList;
+			return true;
+		}
+
+		#endregion
+
+		#region Additional Music Functions
+
 		/// <summary>
 		/// Searches music folder for similar or same results to <see cref="search"/>
 		/// </summary>
@@ -406,6 +366,94 @@ namespace Pootis_Bot.Services.Audio
 			FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles($"*{search}*.{fileFormat.GetFormatExtension()}");
 
 			return filesInDir.Select(foundFile => foundFile.FullName).FirstOrDefault();
+		}
+
+		/// <summary>
+		/// Gets, or downloads (if necessary) a song
+		/// </summary>
+		/// <param name="search"></param>
+		/// <param name="message"></param>
+		/// <param name="guild"></param>
+		/// <param name="serverMusicList"></param>
+		/// <returns>Returns a path to the song, or null if it failed</returns>
+		private async Task<string> GetOrDownloadSong(string search, IUserMessage message, SocketGuild guild, ServerMusicItem serverMusicList)
+		{
+			string songFileLocation;
+
+			//We are downloading a direct URL
+			if (WebUtils.IsStringValidUrl(search))
+			{
+				//Check to make sure the URL has youtube in it
+				if (search.Contains("www.youtube.com/"))
+				{
+					await MessageUtils.ModifyMessage(message, ":musical_note: Processing YouTube URL...");
+
+					Uri uri = new Uri(search);
+
+					//Get video ID
+					NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
+					string videoId = query.AllKeys.Contains("v") ? query["v"] : uri.Segments.Last();
+
+					if (videoId == "/")
+					{
+						await MessageUtils.ModifyMessage(message,
+							":musical_note: The imputed URL is not a valid YouTube URL!");
+						return null;
+					}
+
+					//Stop any pre-existing downloader
+					await StopMusicFileDownloader();
+
+					//Create the new MusicDownloader
+					serverMusicList.AudioMusicFilesDownloader =
+						new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
+
+					//Download the song
+					songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
+
+					serverMusicList.AudioMusicFilesDownloader.Dispose();
+				}
+				else
+				{
+					await MessageUtils.ModifyMessage(message,
+						":musical_note: The imputed URL is not a YouTube URL!");
+					return null;
+				}
+			}
+			else //Search and download normally
+			{
+				await MessageUtils.ModifyMessage(message,
+					$":musical_note: Searching my audio banks for '{search}'");
+
+				//First, search to see if we have the song already downloaded
+				songFileLocation = SearchMusicDirectory(search, fileFormat);
+
+				//Search YouTube
+				if (!string.IsNullOrWhiteSpace(songFileLocation)) return songFileLocation;
+
+				//Stop any pre-existing downloader
+				await StopMusicFileDownloader();
+
+				//Create the new MusicDownloader
+				serverMusicList.AudioMusicFilesDownloader =
+					new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
+
+				//Download the song
+				songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
+
+				serverMusicList.AudioMusicFilesDownloader.Dispose();
+			}
+
+			return songFileLocation;
+
+			async Task StopMusicFileDownloader()
+			{
+				if (serverMusicList.AudioMusicFilesDownloader != null)
+				{
+					serverMusicList.AudioMusicFilesDownloader.Dispose();
+					await Task.Delay(100); //Wait a moment so the previous download can cancel and clean up
+				}
+			}
 		}
 
 		/// <summary>
@@ -426,6 +474,8 @@ namespace Pootis_Bot.Services.Audio
 				}
 			}
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Creates a <see cref="IMusicPlaybackInterface"/>, depending on the audio extension selected
