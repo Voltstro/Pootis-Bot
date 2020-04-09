@@ -406,7 +406,7 @@ namespace Pootis_Bot.Services.Audio
 
 					//Create the new MusicDownloader
 					serverMusicList.AudioMusicFilesDownloader =
-						new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
+						new MusicDownloader(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
 
 					//Download the song
 					songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
@@ -436,7 +436,7 @@ namespace Pootis_Bot.Services.Audio
 
 				//Create the new MusicDownloader
 				serverMusicList.AudioMusicFilesDownloader =
-					new AudioDownloadMusicFiles(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
+					new MusicDownloader(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
 
 				//Download the song
 				songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);

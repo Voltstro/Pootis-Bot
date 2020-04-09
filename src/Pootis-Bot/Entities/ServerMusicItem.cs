@@ -19,9 +19,9 @@ namespace Pootis_Bot.Entities
 		public bool IsPlaying { get; set; }
 
 		/// <summary>
-		/// The active <see cref="AudioDownloadMusicFiles"/>
+		/// The active <see cref="MusicDownloader"/>
 		/// </summary>
-		public AudioDownloadMusicFiles AudioMusicFilesDownloader { get; set; }
+		public MusicDownloader AudioMusicFilesDownloader { get; set; }
 
 		/// <summary>
 		/// Active MusicPlayback, where the actual music stream comes from
