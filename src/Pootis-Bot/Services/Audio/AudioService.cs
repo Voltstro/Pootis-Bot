@@ -408,6 +408,11 @@ namespace Pootis_Bot.Services.Audio
 			return filesInDir.Select(foundFile => foundFile.FullName).FirstOrDefault();
 		}
 
+		/// <summary>
+		/// Stops a song playing on a guild
+		/// </summary>
+		/// <param name="serverMusic"></param>
+		/// <returns></returns>
 		public static async Task StopPlayingAudioOnServer(ServerMusicItem serverMusic)
 		{
 			if (serverMusic.IsPlaying)
@@ -422,6 +427,11 @@ namespace Pootis_Bot.Services.Audio
 			}
 		}
 
+		/// <summary>
+		/// Creates a <see cref="IMusicPlaybackInterface"/>, depending on the audio extension selected
+		/// </summary>
+		/// <param name="fileLocation"></param>
+		/// <returns></returns>
 		private IMusicPlaybackInterface CreateMusicPlayback(string fileLocation)
 		{
 			switch (fileFormat)
