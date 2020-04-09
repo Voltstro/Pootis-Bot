@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MP3Sharp;
 
@@ -7,7 +6,7 @@ namespace Pootis_Bot.Services.Audio.Music.PlayBacks
 {
 	public class MusicMp3Playback : IMusicPlaybackInterface
 	{
-		private MP3Stream reader;
+		private readonly MP3Stream reader;
 
 		public MusicMp3Playback(string songLocation)
 		{
