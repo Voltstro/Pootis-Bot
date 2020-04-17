@@ -2,112 +2,112 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>https://pootis-bot.voltstro.dev/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/download/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/commands/discord-commands/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/commands/console-commands/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/install/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/token/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/googleapikeys/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/giphyapikey/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/steamapikey/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/audio/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/hosting/highlevelprofilemsg/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/adding-owners/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/rulereaction/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/welcomemessage/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/perm-system/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/auto-vc/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/anti-spam/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/server-setup/point-roles/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/dev/config-file/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://pootis-bot.voltstro.dev/dev/building/</loc>
-     <lastmod>2020-04-04</lastmod>
+     <lastmod>2020-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
