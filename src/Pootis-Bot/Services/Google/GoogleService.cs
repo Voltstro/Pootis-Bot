@@ -25,8 +25,7 @@ namespace Pootis_Bot.Services.Google
 				using (CustomsearchService google = new CustomsearchService(new BaseClientService.Initializer
 				{
 					ApiKey = Config.bot.Apis.ApiGoogleSearchKey,
-					ApplicationName = appName,
-					
+					ApplicationName = appName
 				}))
 				{
 					CseResource.ListRequest searchListRequest = google.Cse.List();
