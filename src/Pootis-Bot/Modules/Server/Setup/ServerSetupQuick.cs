@@ -141,7 +141,8 @@ namespace Pootis_Bot.Modules.Server.Setup
 			else
 			{
 				//create a new role called member
-				memberRole = await guild.CreateRoleAsync("Member", _memberRoleGuildPermissions);
+				memberRole = await guild.CreateRoleAsync("Member", _memberRoleGuildPermissions, Color.LightGrey, false, null);
+
 				await guild.EveryoneRole.ModifyAsync(properties => properties.Permissions = _everyoneRoleGuildPermissions);
 			}
 
