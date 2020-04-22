@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using Discord;
 using Discord.Audio;
 using Discord.WebSocket;
@@ -14,6 +12,7 @@ using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio.Music;
+using Pootis_Bot.Services.Audio.Music.Download;
 using Pootis_Bot.Services.Audio.Music.PlayBacks;
 
 namespace Pootis_Bot.Services.Audio
@@ -65,7 +64,7 @@ namespace Pootis_Bot.Services.Audio
 				AudioClient = audio,
 				AudioChannel = (SocketVoiceChannel) target,
 				StartChannel = (ISocketMessageChannel) channel,
-				AudioMusicFilesDownloader = null,
+				AudioStandardMusicFilesDownloader = null,
 				CancellationSource = null
 			};
 
@@ -167,7 +166,7 @@ namespace Pootis_Bot.Services.Audio
 
 			try
 			{
-				songFileLocation = await GetOrDownloadSong(search, message, guild, serverMusicList);
+				songFileLocation = await GetOrDownloadSong(search, message);
 
 				//It failed
 				if (songFileLocation == null)
@@ -373,87 +372,22 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		/// <param name="search"></param>
 		/// <param name="message"></param>
-		/// <param name="guild"></param>
-		/// <param name="serverMusicList"></param>
 		/// <returns>Returns a path to the song, or null if it failed</returns>
-		private async Task<string> GetOrDownloadSong(string search, IUserMessage message, SocketGuild guild, ServerMusicItem serverMusicList)
+		private async Task<string> GetOrDownloadSong(string search, IUserMessage message)
 		{
 			string songFileLocation;
 
-			//We are downloading a direct URL
+			StandardMusicDownloader downloader = new StandardMusicDownloader(MusicDir, fileFormat, Global.HttpClient);
 			if (WebUtils.IsStringValidUrl(search))
 			{
-				//Check to make sure the URL has youtube in it
-				if (search.Contains("www.youtube.com/"))
-				{
-					await MessageUtils.ModifyMessage(message, ":musical_note: Processing YouTube URL...");
-
-					Uri uri = new Uri(search);
-
-					//Get video ID
-					NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
-					string videoId = query.AllKeys.Contains("v") ? query["v"] : uri.Segments.Last();
-
-					if (videoId == "/")
-					{
-						await MessageUtils.ModifyMessage(message,
-							":musical_note: The imputed URL is not a valid YouTube URL!");
-						return null;
-					}
-
-					//Stop any pre-existing downloader
-					await StopMusicFileDownloader();
-
-					//Create the new MusicDownloader
-					serverMusicList.AudioMusicFilesDownloader =
-						new MusicDownloader(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
-
-					//Download the song
-					songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioById(videoId);
-
-					serverMusicList.AudioMusicFilesDownloader.Dispose();
-				}
-				else
-				{
-					await MessageUtils.ModifyMessage(message,
-						":musical_note: The imputed URL is not a YouTube URL!");
-					return null;
-				}
+				songFileLocation = await downloader.GetSongViaYouTubeUrl(search, message);
 			}
-			else //Search and download normally
+			else
 			{
-				await MessageUtils.ModifyMessage(message,
-					$":musical_note: Searching my audio banks for '{search}'");
-
-				//First, search to see if we have the song already downloaded
-				songFileLocation = SearchMusicDirectory(search, fileFormat);
-
-				//Search YouTube
-				if (!string.IsNullOrWhiteSpace(songFileLocation)) return songFileLocation;
-
-				//Stop any pre-existing downloader
-				await StopMusicFileDownloader();
-
-				//Create the new MusicDownloader
-				serverMusicList.AudioMusicFilesDownloader =
-					new MusicDownloader(message, guild, Config.bot.AudioSettings.MaxVideoTime, MusicDir, fileFormat);
-
-				//Download the song
-				songFileLocation = serverMusicList.AudioMusicFilesDownloader.DownloadAudioByTitle(search);
-
-				serverMusicList.AudioMusicFilesDownloader.Dispose();
+				songFileLocation = await downloader.GetOrDownloadSong(search, message);
 			}
 
 			return songFileLocation;
-
-			async Task StopMusicFileDownloader()
-			{
-				if (serverMusicList.AudioMusicFilesDownloader != null)
-				{
-					serverMusicList.AudioMusicFilesDownloader.Dispose();
-					await Task.Delay(100); //Wait a moment so the previous download can cancel and clean up
-				}
-			}
 		}
 
 		/// <summary>
