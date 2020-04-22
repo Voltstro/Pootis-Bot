@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Pootis_Bot.Services.Audio.Music
+namespace Pootis_Bot.Services.Audio.Music.Playback
 {
 	public interface IMusicPlaybackInterface
 	{

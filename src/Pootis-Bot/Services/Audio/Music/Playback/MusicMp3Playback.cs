@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using MP3Sharp;
 
-namespace Pootis_Bot.Services.Audio.Music.PlayBacks
+namespace Pootis_Bot.Services.Audio.Music.Playback
 {
 	public class MusicMp3Playback : IMusicPlaybackInterface
 	{

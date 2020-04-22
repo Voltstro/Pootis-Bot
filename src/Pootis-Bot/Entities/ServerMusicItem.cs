@@ -3,6 +3,7 @@ using Discord.Audio;
 using Discord.WebSocket;
 using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Audio.Music.Download;
+using Pootis_Bot.Services.Audio.Music.Playback;
 
 namespace Pootis_Bot.Entities
 {

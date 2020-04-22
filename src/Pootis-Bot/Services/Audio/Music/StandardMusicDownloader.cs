@@ -8,11 +8,12 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio.Music.Conversion;
+using Pootis_Bot.Services.Audio.Music.Download;
 using Pootis_Bot.Services.Google;
 using YoutubeExplode;
 using Video = YoutubeExplode.Videos.Video;
 
-namespace Pootis_Bot.Services.Audio.Music.Download
+namespace Pootis_Bot.Services.Audio.Music
 {
 	//TODO: Add cancellation download support
 
