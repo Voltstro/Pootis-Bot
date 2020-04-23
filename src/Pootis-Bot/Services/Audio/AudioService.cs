@@ -12,7 +12,6 @@ using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio.Music;
-using Pootis_Bot.Services.Audio.Music.Download;
 using Pootis_Bot.Services.Audio.Music.Playback;
 
 namespace Pootis_Bot.Services.Audio

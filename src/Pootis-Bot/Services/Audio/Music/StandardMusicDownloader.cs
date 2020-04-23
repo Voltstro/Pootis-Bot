@@ -1,17 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
-using Google.Apis.YouTube.v3.Data;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio.Music.Conversion;
 using Pootis_Bot.Services.Audio.Music.Download;
-using Pootis_Bot.Services.Google;
-using YoutubeExplode;
-using Video = YoutubeExplode.Videos.Video;
+using Pootis_Bot.Services.Google.YouTube;
 
 namespace Pootis_Bot.Services.Audio.Music
 {
@@ -25,9 +23,7 @@ namespace Pootis_Bot.Services.Audio.Music
 		//Interfaces
 		private readonly IAudioConverter audioConverter;		//Default: FfmpegAudioConverter
 		private readonly IMusicDownloader musicDownloader;		//Default: YouTubeExplodeDownloader
-
-		//TODO: We won't need YoutubeClient in this class once I write a 'YouTube searcher' interface
-		private readonly YoutubeClient ytClient;
+		private readonly IYouTubeSearcher youTubeSearcher;
 
 		public StandardMusicDownloader(string musicDir, MusicFileFormat musicFileFormat, HttpClient httpClient)
 		{
@@ -39,15 +35,15 @@ namespace Pootis_Bot.Services.Audio.Music
 
 			musicDirectory = musicDir;
 			fileFormat = musicFileFormat;
-			ytClient = new YoutubeClient(httpClient);
+			youTubeSearcher = new YouTubeService(httpClient);
 		}
 
 		public async Task<string> GetSongViaYouTubeUrl(string videoUrl, IUserMessage botMessage)
 		{
-			Video video = await ytClient.Videos.GetAsync(videoUrl);
+			YouTubeVideo video = await youTubeSearcher.GetVideo(videoUrl);
 			if (video != null)
 			{
-				return await GetOrDownloadSong(video.Title, botMessage);
+				return await GetOrDownloadSong(video.VideoTitle, botMessage);
 			}
 
 			await MessageUtils.ModifyMessage(botMessage, "Parsed in URL is incorrect or the YouTube video doesn't exist!");
@@ -70,7 +66,7 @@ namespace Pootis_Bot.Services.Audio.Music
 				await MessageUtils.ModifyMessage(botMessage, $"Searching YouTube for '{songTitle}'");
 
 				//It doesn't exist, search YouTube for it
-				SearchListResponse response = YoutubeService.Search(songTitle, GetType().ToString(), 10, "video");
+				IList<YouTubeVideo> response = await youTubeSearcher.SearchForYouTube(songTitle);
 
 				if (response == null)
 				{
@@ -79,7 +75,7 @@ namespace Pootis_Bot.Services.Audio.Music
 				}
 
 				//There were no results
-				if (response.Items.Count == 0)
+				if (response.Count == 0)
 				{
 					await MessageUtils.ModifyMessage(botMessage,
 						$"There were no results for '{songTitle}' on YouTube.");
@@ -87,7 +83,7 @@ namespace Pootis_Bot.Services.Audio.Music
 				}
 
 				//Get the first video
-				Video video = await ytClient.Videos.GetAsync(response.Items[0].Id.VideoId);
+				YouTubeVideo video = response[0];
 
 				//This shouldn't ever happen
 				if (video == null)
@@ -97,7 +93,7 @@ namespace Pootis_Bot.Services.Audio.Music
 					return null;
 				}
 
-				string videoTitle = video.Title.RemoveIllegalChars();
+				string videoTitle = video.VideoTitle.RemoveIllegalChars();
 
 				//Do a second search with the title from YouTube
 				songLocation = AudioService.SearchMusicDirectory(videoTitle, fileFormat);
@@ -107,17 +103,16 @@ namespace Pootis_Bot.Services.Audio.Music
 				}
 
 				//Make sure the song doesn't succeeds max time
-				if (video.Duration >= Config.bot.AudioSettings.MaxVideoTime)
+				if (video.VideoDuration >= Config.bot.AudioSettings.MaxVideoTime)
 				{
-					Logger.Log(video.Duration.ToString());
 					await MessageUtils.ModifyMessage(botMessage,
-						$"The video **{videoTitle}** by **{video.Author}** succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}");
+						$"The video **{videoTitle}** by **{video.VideoAuthor}** succeeds max time of {Config.bot.AudioSettings.MaxVideoTime}");
 					return null;
 				}
 
 				//Download the song
-				await MessageUtils.ModifyMessage(botMessage, $"Downloading **{videoTitle}** by **{video.Author}**");
-				songLocation = await musicDownloader.DownloadYouTubeVideo(video.Id, musicDirectory);
+				await MessageUtils.ModifyMessage(botMessage, $"Downloading **{videoTitle}** by **{video.VideoAuthor}**");
+				songLocation = await musicDownloader.DownloadYouTubeVideo(video.VideoId, musicDirectory);
 
 				//The download must have failed
 				if (songLocation == null)

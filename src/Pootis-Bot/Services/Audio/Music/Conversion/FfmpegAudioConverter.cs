@@ -24,7 +24,7 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 					StartInfo = new ProcessStartInfo
 					{
 						FileName = Config.bot.AudioSettings.FfmpegLocation,
-						Arguments = $"-i \"{originalLocation}\" \"{fullNewLocation}\""
+						Arguments = $"-i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\""
 					}
 				};
 
