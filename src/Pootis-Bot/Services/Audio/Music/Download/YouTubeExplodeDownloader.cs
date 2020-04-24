@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
@@ -14,11 +15,13 @@ namespace Pootis_Bot.Services.Audio.Music.Download
 	{
 		private readonly YoutubeClient ytClient;
 		private readonly string musicDirectory;
+		private readonly CancellationToken cancellationToken;
 
-		public YouTubeExplodeDownloader(string musicDir = "Music/", HttpClient httpClient = default)
+		public YouTubeExplodeDownloader(string musicDir = "Music/", HttpClient httpClient = default, CancellationToken cancelToken = default)
 		{
 			ytClient = new YoutubeClient(httpClient);
 			musicDirectory = musicDir;
+			cancellationToken = cancelToken;
 		}
 
 		public async Task<string> DownloadYouTubeVideo(string youTubeVideoId, string downloadDirectory = "Music/")
@@ -35,11 +38,16 @@ namespace Pootis_Bot.Services.Audio.Music.Download
 				string downloadLocation =
 					$"{musicDirectory}{videoData.Title.RemoveIllegalChars()}.{audioSteam.Container.Name}";
 
-				await ytClient.Videos.Streams.DownloadAsync(audioSteam, downloadLocation);
+				await ytClient.Videos.Streams.DownloadAsync(audioSteam, downloadLocation, null, cancellationToken);
 
 				Logger.Log($"Downloaded song to {downloadLocation}", LogVerbosity.Debug);
 
 				return !File.Exists(downloadLocation) ? null : downloadLocation;
+			}
+			catch (OperationCanceledException)
+			{
+				//User cancelled
+				return null;
 			}
 			catch (Exception ex)
 			{

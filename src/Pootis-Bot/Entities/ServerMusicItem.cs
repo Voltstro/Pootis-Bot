@@ -2,7 +2,6 @@
 using Discord.Audio;
 using Discord.WebSocket;
 using Pootis_Bot.Services.Audio.Music;
-using Pootis_Bot.Services.Audio.Music.Download;
 using Pootis_Bot.Services.Audio.Music.Playback;
 
 namespace Pootis_Bot.Entities
@@ -22,7 +21,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// The active <see cref="StandardMusicDownloader"/>
 		/// </summary>
-		public StandardMusicDownloader AudioStandardMusicFilesDownloader { get; set; }
+		public StandardMusicDownloader Downloader { get; set; }
 
 		/// <summary>
 		/// Active MusicPlayback, where the actual music stream comes from

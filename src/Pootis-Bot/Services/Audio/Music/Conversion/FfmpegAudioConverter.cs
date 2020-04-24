@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
@@ -9,7 +10,14 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 {
 	public class FfmpegAudioConverter : IAudioConverter
 	{
-		public Task<string> ConvertFileToAudio(string originalLocation, string location, bool deleteOriginal = true,
+		private readonly CancellationToken cancellationToken;
+
+		public FfmpegAudioConverter(CancellationToken cancelToken)
+		{
+			cancellationToken = cancelToken;
+		}
+
+		public async Task<string> ConvertFileToAudio(string originalLocation, string location, bool deleteOriginal = true,
 			MusicFileFormat musicFileFormat = MusicFileFormat.Mp3)
 		{
 			try
@@ -29,7 +37,20 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 				};
 
 				ffmpeg.Start();
-				ffmpeg.WaitForExit();
+
+				while (!ffmpeg.HasExited)
+				{
+					if (cancellationToken.IsCancellationRequested)
+					{
+						ffmpeg.Kill(true);
+						ffmpeg.Dispose();
+						return null;
+					}
+
+					await Task.Delay(50);
+				}
+
+				ffmpeg.Dispose();
 
 				//Delete our old file
 				if (deleteOriginal)
@@ -49,7 +70,7 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 
 				//Ayy, we converted
 				Logger.Log($"Successfully converted to '{fullNewLocation}'.", LogVerbosity.Debug);
-				return Task.FromResult(fullNewLocation);
+				return fullNewLocation;
 			}
 			catch (NullReferenceException ex)
 			{

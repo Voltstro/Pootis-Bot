@@ -63,7 +63,7 @@ namespace Pootis_Bot.Services.Audio
 				AudioClient = audio,
 				AudioChannel = (SocketVoiceChannel) target,
 				StartChannel = (ISocketMessageChannel) channel,
-				AudioStandardMusicFilesDownloader = null,
+				Downloader = null,
 				CancellationSource = null
 			};
 
@@ -165,7 +165,7 @@ namespace Pootis_Bot.Services.Audio
 
 			try
 			{
-				songFileLocation = await GetOrDownloadSong(search, message);
+				songFileLocation = await GetOrDownloadSong(search, message, serverMusicList);
 
 				//It failed
 				if (songFileLocation == null)
@@ -371,19 +371,28 @@ namespace Pootis_Bot.Services.Audio
 		/// </summary>
 		/// <param name="search"></param>
 		/// <param name="message"></param>
+		/// <param name="musicList"></param>
 		/// <returns>Returns a path to the song, or null if it failed</returns>
-		private async Task<string> GetOrDownloadSong(string search, IUserMessage message)
+		private async Task<string> GetOrDownloadSong(string search, IUserMessage message, ServerMusicItem musicList)
 		{
 			string songFileLocation;
 
-			StandardMusicDownloader downloader = new StandardMusicDownloader(MusicDir, fileFormat, Global.HttpClient);
+			if (musicList.Downloader != null)
+			{
+				musicList.Downloader.CancelTask();
+				await Task.Delay(100);
+
+				musicList.Downloader = null;
+			}
+
+			musicList.Downloader = new StandardMusicDownloader(MusicDir, fileFormat, Global.HttpClient, new CancellationTokenSource());
 			if (WebUtils.IsStringValidUrl(search))
 			{
-				songFileLocation = await downloader.GetSongViaYouTubeUrl(search, message);
+				songFileLocation = await musicList.Downloader.GetSongViaYouTubeUrl(search, message);
 			}
 			else
 			{
-				songFileLocation = await downloader.GetOrDownloadSong(search, message);
+				songFileLocation = await musicList.Downloader.GetOrDownloadSong(search, message);
 			}
 
 			return songFileLocation;

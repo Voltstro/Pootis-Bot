@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Pootis_Bot.Core;
@@ -13,31 +14,45 @@ using Pootis_Bot.Services.Google.YouTube;
 
 namespace Pootis_Bot.Services.Audio.Music
 {
-	//TODO: Add cancellation download support
-
+	/// <summary>
+	/// Standard music downloader, incorporates <see cref="IYouTubeSearcher"/>, <see cref="IMusicDownloader"/> and <see cref="IAudioConverter"/> to do all the work for you
+	/// </summary>
 	public class StandardMusicDownloader
 	{
 		private readonly string musicDirectory;
 		private readonly MusicFileFormat fileFormat;
+		private readonly CancellationTokenSource cancellationTokenSource;
 
 		//Interfaces
 		private readonly IAudioConverter audioConverter;		//Default: FfmpegAudioConverter
 		private readonly IMusicDownloader musicDownloader;		//Default: YouTubeExplodeDownloader
-		private readonly IYouTubeSearcher youTubeSearcher;
+		private readonly IYouTubeSearcher youTubeSearcher;		//Default: YouTubeService
 
-		public StandardMusicDownloader(string musicDir, MusicFileFormat musicFileFormat, HttpClient httpClient)
+		public StandardMusicDownloader(string musicDir, MusicFileFormat musicFileFormat, HttpClient httpClient, CancellationTokenSource cancelSource)
 		{
 			if (!Directory.Exists(musicDir))
 				Directory.CreateDirectory(musicDir);
 
-			audioConverter = new FfmpegAudioConverter();
-			musicDownloader = new YouTubeExplodeDownloader(musicDir, httpClient);
-
 			musicDirectory = musicDir;
 			fileFormat = musicFileFormat;
+			cancellationTokenSource = cancelSource;
+
+			audioConverter = new FfmpegAudioConverter(cancelSource.Token);
+			musicDownloader = new YouTubeExplodeDownloader(musicDir, httpClient, cancelSource.Token);
 			youTubeSearcher = new YouTubeService(httpClient);
 		}
 
+		public void CancelTask()
+		{
+			cancellationTokenSource.Cancel();
+		}
+
+		/// <summary>
+		/// Gets a song, directly with a YouTube URL
+		/// </summary>
+		/// <param name="videoUrl"></param>
+		/// <param name="botMessage"></param>
+		/// <returns></returns>
 		public async Task<string> GetSongViaYouTubeUrl(string videoUrl, IUserMessage botMessage)
 		{
 			YouTubeVideo video = await youTubeSearcher.GetVideo(videoUrl);
@@ -50,6 +65,12 @@ namespace Pootis_Bot.Services.Audio.Music
 			return null;
 		}
 
+		/// <summary>
+		/// Gets (or downloads if necessary) a song
+		/// </summary>
+		/// <param name="songTitle"></param>
+		/// <param name="botMessage"></param>
+		/// <returns></returns>
 		public async Task<string> GetOrDownloadSong(string songTitle, IUserMessage botMessage)
 		{
 			try
@@ -111,8 +132,13 @@ namespace Pootis_Bot.Services.Audio.Music
 				}
 
 				//Download the song
-				await MessageUtils.ModifyMessage(botMessage, $"Downloading **{videoTitle}** by **{video.VideoAuthor}**");
+				await MessageUtils.ModifyMessage(botMessage,
+					$"Downloading **{videoTitle}** by **{video.VideoAuthor}**");
 				songLocation = await musicDownloader.DownloadYouTubeVideo(video.VideoId, musicDirectory);
+
+				//Do a check here first, in case the operation was cancelled, so we don't say "Something went wrong...", when well... it was just cancelled
+				if (cancellationTokenSource.IsCancellationRequested)
+					return null;
 
 				//The download must have failed
 				if (songLocation == null)
@@ -132,9 +158,18 @@ namespace Pootis_Bot.Services.Audio.Music
 				//Everything when well
 				if (songLocation != null) return songLocation;
 
+				//Do a check here first, in case the operation was cancelled, so we don't say "An issue occured...", when well... it was just cancelled
+				if (cancellationTokenSource.IsCancellationRequested)
+					return null;
+
 				//Conversion failed
 				await MessageUtils.ModifyMessage(botMessage,
 					"An issue occured while getting the song ready for playing!");
+				return null;
+			}
+			catch (OperationCanceledException)
+			{
+				//User cancelled
 				return null;
 			}
 			catch (Exception ex)
