@@ -28,7 +28,7 @@ namespace Pootis_Bot.Services.Audio.Music
 		private readonly IMusicDownloader musicDownloader;		//Default: YouTubeExplodeDownloader
 		private readonly IYouTubeSearcher youTubeSearcher;		//Default: YouTubeService
 
-		public StandardMusicDownloader(string musicDir, MusicFileFormat musicFileFormat, HttpClient httpClient, CancellationTokenSource cancelSource)
+		public StandardMusicDownloader(string musicDir, MusicFileFormat musicFileFormat, HttpClient httpClient, CancellationTokenSource cancelSource, IYouTubeSearcher searcher)
 		{
 			if (!Directory.Exists(musicDir))
 				Directory.CreateDirectory(musicDir);
@@ -39,7 +39,7 @@ namespace Pootis_Bot.Services.Audio.Music
 
 			audioConverter = new FfmpegAudioConverter(cancelSource.Token);
 			musicDownloader = new YouTubeExplodeDownloader(musicDir, httpClient, cancelSource.Token);
-			youTubeSearcher = new YouTubeService(httpClient);
+			youTubeSearcher = searcher;
 		}
 
 		public void CancelTask()

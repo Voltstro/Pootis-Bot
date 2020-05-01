@@ -13,6 +13,7 @@ using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Audio.Music.Playback;
+using Pootis_Bot.Services.Google.YouTube;
 
 namespace Pootis_Bot.Services.Audio
 {
@@ -22,7 +23,14 @@ namespace Pootis_Bot.Services.Audio
 
 		private MusicFileFormat fileFormat = MusicFileFormat.Mp3;
 
+		private readonly IYouTubeSearcher youTubeSearcher;
+
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
+
+		public AudioService(IYouTubeSearcher searcher)
+		{
+			youTubeSearcher = searcher;
+		}
 
 		/// <summary>
 		/// Joins a voice channel
@@ -385,7 +393,7 @@ namespace Pootis_Bot.Services.Audio
 				musicList.Downloader = null;
 			}
 
-			musicList.Downloader = new StandardMusicDownloader(MusicDir, fileFormat, Global.HttpClient, new CancellationTokenSource());
+			musicList.Downloader = new StandardMusicDownloader(MusicDir, fileFormat, Global.HttpClient, new CancellationTokenSource(), youTubeSearcher);
 			if (WebUtils.IsStringValidUrl(search))
 			{
 				songFileLocation = await musicList.Downloader.GetSongViaYouTubeUrl(search, message);

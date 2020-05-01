@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Google.YouTube;
 
 namespace Pootis_Bot.Modules.Audio
 {
@@ -15,11 +16,11 @@ namespace Pootis_Bot.Modules.Audio
 		// Description      - To run audio commands
 		// Contributors     - Creepysin, 
 
-		private readonly AudioService _service;
+		private readonly AudioService service;
 
-		public Music()
+		public Music(YouTubeService searcher)
 		{
-			_service = new AudioService();
+			service = new AudioService(searcher);
 		}
 
 		[Command("join", RunMode = RunMode.Async)]
@@ -36,7 +37,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.JoinAudio(Context.Guild, ((IVoiceState) Context.User).VoiceChannel, Context.Channel,
+			await service.JoinAudio(Context.Guild, ((IVoiceState) Context.User).VoiceChannel, Context.Channel,
 				Context.User);
 		}
 
@@ -51,7 +52,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.LeaveAudio(Context.Guild, Context.Channel, Context.User);
+			await service.LeaveAudio(Context.Guild, Context.Channel, Context.User);
 		}
 
 		[Command("play", RunMode = RunMode.Async)]
@@ -67,7 +68,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.SendAudio((SocketGuild) Context.Guild, Context.Channel,
+			await service.SendAudio((SocketGuild) Context.Guild, Context.Channel,
 				((IVoiceState) Context.User).VoiceChannel, Context.User,
 				song);
 		}
@@ -84,7 +85,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.StopAudio(Context.Guild, Context.Channel, Context.User);
+			await service.StopAudio(Context.Guild, Context.Channel, Context.User);
 		}
 
 		[Command("pause", RunMode = RunMode.Async)]
@@ -99,7 +100,7 @@ namespace Pootis_Bot.Modules.Audio
 				return;
 			}
 
-			await _service.PauseAudio(Context.Guild, Context.Channel, Context.User);
+			await service.PauseAudio(Context.Guild, Context.Channel, Context.User);
 		}
 	}
 }
