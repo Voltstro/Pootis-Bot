@@ -32,6 +32,7 @@ namespace Pootis_Bot.Services.Google.YouTube
 						VideoId = result.Id.Value,
 						VideoTitle = result.Title,
 						VideoAuthor = result.Author,
+						VideoDescription = result.Description,
 						VideoDuration = result.Duration
 					});
 				}

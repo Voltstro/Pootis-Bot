@@ -1,15 +1,14 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
-using Google.Apis.YouTube.v3.Data;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
-using Pootis_Bot.Services.Google;
-using SearchResult = Google.Apis.YouTube.v3.Data.SearchResult;
+using Pootis_Bot.Services.Google.YouTube;
 
 namespace Pootis_Bot.Modules.Fun
 {
@@ -20,6 +19,13 @@ namespace Pootis_Bot.Modules.Fun
 		// Description      - Searches YouTube
 		// Contributors     - Creepysin, 
 
+		private readonly YouTubeService youtubeService;
+
+		public YoutubeSearch(YouTubeService ytService)
+		{
+			youtubeService = ytService;
+		}
+
 		[Command("youtube", RunMode = RunMode.Async)]
 		[Summary("Searches Youtube")]
 		[Alias("yt")]
@@ -27,12 +33,14 @@ namespace Pootis_Bot.Modules.Fun
 		[RequireBotPermission(GuildPermission.EmbedLinks)]
 		public async Task Youtube([Remainder] string search = "")
 		{
-			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
+			//YouTube service has been disabled
+			if (!Config.bot.Apis.YouTubeService)
 			{
 				await Context.Channel.SendMessageAsync("YouTube search is disabled by the bot owner.");
 				return;
 			}
 
+			//No or blank input
 			if (string.IsNullOrWhiteSpace(search))
 			{
 				await Context.Channel.SendMessageAsync("The search input cannot be blank!");
@@ -42,36 +50,7 @@ namespace Pootis_Bot.Modules.Fun
 			await YtSearch(search, Context.Channel);
 		}
 
-		[Command("youtube", RunMode = RunMode.Async)]
-		[Summary("Searches Youtube")]
-		[Alias("yt")]
-		[Cooldown(5)]
-		[RequireBotPermission(GuildPermission.EmbedLinks)]
-		public async Task Youtube(int maxSearchResults = 6, [Remainder] string search = "")
-		{
-			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
-			{
-				await Context.Channel.SendMessageAsync("YouTube search is disabled by the bot owner.");
-				return;
-			}
-
-			if (string.IsNullOrWhiteSpace(search))
-			{
-				await Context.Channel.SendMessageAsync("The search input cannot be blank!");
-				return;
-			}
-
-			if (maxSearchResults > FunCmdsConfig.youtubeMaxSearches)
-			{
-				await Context.Channel.SendMessageAsync(
-					$"The max search amount you have put in is too high! It has to be below {FunCmdsConfig.youtubeMaxSearches}.");
-				return;
-			}
-
-			await YtSearch(search, Context.Channel, maxSearchResults);
-		}
-
-		private async Task YtSearch(string search, ISocketMessageChannel channel, int maxSearch = 6)
+		private async Task YtSearch(string search, ISocketMessageChannel channel)
 		{
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle($"YouTube Search '{search}'");
@@ -83,26 +62,15 @@ namespace Pootis_Bot.Modules.Fun
 			RestUserMessage message = await channel.SendMessageAsync("", false, embed.Build());
 
 			//Search Youtube
-			SearchListResponse searchListResponse = YoutubeService.Search(search, GetType().ToString(), maxSearch);
+			IList<YouTubeVideo> searchResponse = await youtubeService.SearchForYouTube(search);
 
 			StringBuilder videos = new StringBuilder();
-			StringBuilder channels = new StringBuilder();
+			if (searchResponse != null)
+				foreach (YouTubeVideo video in searchResponse)
+					videos.Append(
+						$"**[{video.VideoTitle.RemoveIllegalChars()}]({FunCmdsConfig.ytChannelStart}{video.VideoId})**\n{video.VideoDescription}\n\n");
 
-			if (searchListResponse != null)
-				foreach (SearchResult result in searchListResponse.Items)
-					switch (result.Id.Kind)
-					{
-						case "youtube#video":
-							videos.Append(
-								$"**[{result.Snippet.Title.RemoveIllegalChars()}]({FunCmdsConfig.ytStartLink}{result.Id.VideoId})**\n{result.Snippet.Description}\n\n");
-							break;
-						case "youtube#channel":
-							channels.Append(
-								$"**[{result.Snippet.Title.RemoveIllegalChars()}]({FunCmdsConfig.ytChannelStart}{result.Id.ChannelId})**\n{result.Snippet.Description}\n\n");
-							break;
-					}
-
-			embed.WithDescription($"**Videos**\n{videos}\n\n**Channels**\n{channels}");
+			embed.WithDescription($"**Videos**\n{videos}");
 			embed.WithCurrentTimestamp();
 
 			await MessageUtils.ModifyMessage(message, embed);

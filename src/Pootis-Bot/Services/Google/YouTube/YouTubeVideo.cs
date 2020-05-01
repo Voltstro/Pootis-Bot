@@ -23,6 +23,11 @@ namespace Pootis_Bot.Services.Google.YouTube
 		public string VideoAuthor { get; set; }
 
 		/// <summary>
+		/// Video's description
+		/// </summary>
+		public string VideoDescription { get; set; }
+
+		/// <summary>
 		/// Duration of the video
 		/// </summary>
 		public TimeSpan VideoDuration { get; set; }

@@ -29,5 +29,10 @@
 		/// Steam API key
 		/// </summary>
 		public string ApiSteamKey;
+
+		/// <summary>
+		/// Is the YouTube service enabled
+		/// </summary>
+		public bool YouTubeService { get; set; }
 	}
 }

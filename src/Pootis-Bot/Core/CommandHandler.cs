@@ -12,6 +12,7 @@ using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.AntiSpam;
+using Pootis_Bot.Services.Google.YouTube;
 using Pootis_Bot.TypeReaders;
 
 namespace Pootis_Bot.Core
@@ -36,7 +37,7 @@ namespace Pootis_Bot.Core
 			_antiSpam = new AntiSpamService();
 			_client = client;
 
-			_services = new ServiceCollection().AddSingleton(this).BuildServiceProvider();
+			_services = new ServiceCollection().AddSingleton(this).AddSingleton(new YouTubeService(Global.HttpClient)).BuildServiceProvider();
 		}
 
 		/// <summary>
