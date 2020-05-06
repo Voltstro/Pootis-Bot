@@ -1,14 +1,14 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
-using Google.Apis.Customsearch.v1.Data;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Preconditions;
-using Pootis_Bot.Services.Google;
+using Pootis_Bot.Services.Google.Search;
 
 namespace Pootis_Bot.Modules.Fun
 {
@@ -18,6 +18,13 @@ namespace Pootis_Bot.Modules.Fun
 		// Original Author  - Creepysin
 		// Description      - Searches Google
 		// Contributors     - Creepysin, 
+
+		private readonly GoogleService googleService;
+
+		public GoogleSearch(GoogleService googleService)
+		{
+			this.googleService = googleService;
+		}
 
 		[Command("google", RunMode = RunMode.Async)]
 		[Summary("Searches Google")]
@@ -42,36 +49,6 @@ namespace Pootis_Bot.Modules.Fun
 			await GSearch(search, Context.Channel);
 		}
 
-		[Command("google", RunMode = RunMode.Async)]
-		[Summary("Searches Google")]
-		[Alias("g")]
-		[Cooldown(5)]
-		[RequireBotPermission(GuildPermission.EmbedLinks)]
-		public async Task Google(int maxSearchResults = 10, [Remainder] string search = "")
-		{
-			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiGoogleSearchKey) ||
-			    string.IsNullOrWhiteSpace(Config.bot.Apis.GoogleSearchEngineId))
-			{
-				await Context.Channel.SendMessageAsync("Google search is disabled by the bot owner.");
-				return;
-			}
-
-			if (string.IsNullOrEmpty(search))
-			{
-				await Context.Channel.SendMessageAsync("The search input cannot be blank!");
-				return;
-			}
-
-			if (maxSearchResults > FunCmdsConfig.googleMaxSearches)
-			{
-				await Context.Channel.SendMessageAsync(
-					$"The max search amount you have put in is too high! It has to be below {FunCmdsConfig.googleMaxSearches}.");
-				return;
-			}
-
-			await GSearch(search, Context.Channel, maxSearchResults);
-		}
-
 		private async Task GSearch(string search, ISocketMessageChannel channel, int maxResults = 10)
 		{
 			EmbedBuilder embed = new EmbedBuilder();
@@ -83,16 +60,16 @@ namespace Pootis_Bot.Modules.Fun
 
 			RestUserMessage message = await channel.SendMessageAsync("", false, embed.Build());
 
-			Search searchListResponse = GoogleService.Search(search, GetType().ToString());
+			List<Services.Google.Search.GoogleSearch> searches = await googleService.SearchGoogle(search);
 
 			StringBuilder description = new StringBuilder();
 
 			int currentResult = 0;
-			foreach (Result result in searchListResponse.Items)
+			foreach (Services.Google.Search.GoogleSearch result in searches)
 			{
 				if (currentResult == maxResults) continue;
 
-				string link = $"**[{result.Title}]({result.Link})**\n{result.Snippet}\n\n";
+				string link = $"**[{result.ResultTitle}]({result.ResultLink})**\n{result.ResultSnippet}\n\n";
 
 				if (description.Length >= 2048)
 					continue;
