@@ -5,7 +5,7 @@ using Pootis_Bot.Core.Logging;
 
 namespace Pootis_Bot.Core.ConfigMenuPlus
 {
-	public static class ConsoleEdit
+	public static class ConfigPropertyEditor
 	{
 		public static string EditField<T>(string configPropertyName, object propertyObject)
 		{

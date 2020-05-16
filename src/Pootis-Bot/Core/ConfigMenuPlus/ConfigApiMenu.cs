@@ -48,7 +48,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 
 		private void EditGiphy()
 		{
-			ConsoleEdit.EditField<ConfigApis>(nameof(Config.bot.Apis.ApiGiphyKey), Config.bot.Apis);
+			ConfigPropertyEditor.EditField<ConfigApis>(nameof(Config.bot.Apis.ApiGiphyKey), Config.bot.Apis);
 
 			Config.SaveConfig();
 
@@ -67,7 +67,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 
 		private void EditGoogleKey()
 		{
-			ConsoleEdit.EditField<ConfigApis>(nameof(Config.bot.Apis.ApiGoogleSearchKey), Config.bot.Apis);
+			ConfigPropertyEditor.EditField<ConfigApis>(nameof(Config.bot.Apis.ApiGoogleSearchKey), Config.bot.Apis);
 
 			Config.SaveConfig();
 
@@ -76,7 +76,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 
 		private void EditGoogleEngineId()
 		{
-			ConsoleEdit.EditField<ConfigApis>(nameof(Config.bot.Apis.GoogleSearchEngineId), Config.bot.Apis);
+			ConfigPropertyEditor.EditField<ConfigApis>(nameof(Config.bot.Apis.GoogleSearchEngineId), Config.bot.Apis);
 
 			Config.SaveConfig();
 
@@ -85,7 +85,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 
 		private void EditSteamKey()
 		{
-			ConsoleEdit.EditField<ConfigApis>(nameof(Config.bot.Apis.ApiSteamKey), Config.bot.Apis);
+			ConfigPropertyEditor.EditField<ConfigApis>(nameof(Config.bot.Apis.ApiSteamKey), Config.bot.Apis);
 
 			Config.SaveConfig();
 

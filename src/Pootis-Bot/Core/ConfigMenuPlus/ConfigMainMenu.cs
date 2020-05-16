@@ -50,7 +50,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 		{
 			while (true)
 			{
-				string token = ConsoleEdit.EditField<ConfigFile>(nameof(Config.bot.BotToken), Config.bot);
+				string token = ConfigPropertyEditor.EditField<ConfigFile>(nameof(Config.bot.BotToken), Config.bot);
 				
 				if (string.IsNullOrWhiteSpace(token))
 				{
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 		{
 			while (true)
 			{
-				string prefix = ConsoleEdit.EditField<ConfigFile>(nameof(Config.bot.BotPrefix), Config.bot);
+				string prefix = ConfigPropertyEditor.EditField<ConfigFile>(nameof(Config.bot.BotPrefix), Config.bot);
 
 				if (string.IsNullOrWhiteSpace(prefix))
 				{
@@ -90,7 +90,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 		{
 			while (true)
 			{
-				string name = ConsoleEdit.EditField<ConfigFile>(nameof(Config.bot.BotName), Config.bot);
+				string name = ConfigPropertyEditor.EditField<ConfigFile>(nameof(Config.bot.BotName), Config.bot);
 
 				if (string.IsNullOrWhiteSpace(name))
 				{
