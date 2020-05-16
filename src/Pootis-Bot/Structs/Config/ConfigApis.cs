@@ -1,4 +1,6 @@
-﻿namespace Pootis_Bot.Structs.Config
+﻿using Pootis_Bot.Attributes;
+
+namespace Pootis_Bot.Structs.Config
 {
 	/// <summary>
 	/// All of our API keys for 3rd party services are here (except Discord token)
@@ -8,27 +10,26 @@
 		/// <summary>
 		/// Giphy API key
 		/// </summary>
+		[ConfigMenuName("Giphy API key")] 
 		public string ApiGiphyKey { get; set; }
-
-		/// <summary>
-		/// YouTube API key
-		/// </summary>
-		public string ApiYoutubeKey;
 
 		/// <summary>
 		/// Google Search API key
 		/// </summary>
-		public string ApiGoogleSearchKey;
+		[ConfigMenuName("Google Search API key")] 
+		public string ApiGoogleSearchKey { get; set; }
 
 		/// <summary>
 		/// Google Search Engine ID
 		/// </summary>
-		public string GoogleSearchEngineId;
+		[ConfigMenuName("Google Search Engine ID")] 
+		public string GoogleSearchEngineId { get; set; }
 
 		/// <summary>
 		/// Steam API key
 		/// </summary>
-		public string ApiSteamKey;
+		[ConfigMenuName("Steam API key")]
+		public string ApiSteamKey { get; set; }
 
 		/// <summary>
 		/// Is the YouTube service enabled

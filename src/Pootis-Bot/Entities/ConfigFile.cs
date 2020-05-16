@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Pootis_Bot.Attributes;
 using Pootis_Bot.Structs.Config;
 
 namespace Pootis_Bot.Entities
@@ -13,17 +14,17 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// The bot's name
 		/// </summary>
-		public string BotName { get; set; }
+		[ConfigMenuName("Bot Name")] public string BotName { get; set; }
 
 		/// <summary>
 		/// The bot's prefix
 		/// </summary>
-		public string BotPrefix { get; set; }
+		[ConfigMenuName("Bot Prefix")] public string BotPrefix { get; set; }
 
 		/// <summary>
 		/// The bot's token
 		/// </summary>
-		public string BotToken { get; set; }
+		[ConfigMenuName("Bot Token")] public string BotToken { get; set; }
 
 		/// <summary>
 		/// Who's stream should the bot show when set in streaming mode

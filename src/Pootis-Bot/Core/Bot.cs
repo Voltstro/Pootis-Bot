@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Pootis_Bot.Core.ConfigMenuPlus;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Events;
@@ -27,7 +28,7 @@ namespace Pootis_Bot.Core
 			Global.BotStatusText = Config.bot.DefaultGameMessage;
 
 			//Make sure the token isn't null or empty, if so open the bot config menu.
-			if (string.IsNullOrEmpty(Global.BotToken)) new ConfigMenu().OpenConfig(true);
+			if (string.IsNullOrEmpty(Global.BotToken)) new ConfigMainMenu().OpenConfigMenu();
 
 			Logger.Log("Creating new client...", LogVerbosity.Debug);
 

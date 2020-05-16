@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.ConsoleCommandHandler;
+using Pootis_Bot.Core.ConfigMenuPlus;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
@@ -112,7 +113,8 @@ namespace Pootis_Bot.Core
 
 		private static void OpenConfigCmd()
 		{
-			new ConfigMenu().OpenConfig();
+			new ConfigMainMenu().OpenConfigMenu();
+			//new ConfigMenu().OpenConfig();
 		}
 
 		private static void VersionCmd()

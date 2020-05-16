@@ -62,23 +62,16 @@ namespace Pootis_Bot.Services.Audio
 			//if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("External/ffplay"))
 			//  	UpdateAudioFiles();
 #endif
-
-			if (string.IsNullOrWhiteSpace(Config.bot.Apis.ApiYoutubeKey))
+			if (!Config.bot.Apis.YouTubeService)
 			{
-				Logger.Log(
-					"You need to set a YouTube Data API key! You can get one from https://console.developers.google.com and creating a new project with the YouTube Data API v3, and setting via the config menu.",
-					LogVerbosity.Music);
-
-				Logger.Log("Audio service was disabled!", LogVerbosity.Music);
-
 				Config.bot.AudioSettings.AudioServicesEnabled = false;
-				Config.SaveConfig();
+
+				Logger.Log("You need to enabled YouTube service before using the music services!", LogVerbosity.Error);
+				return;
 			}
-			else
-			{
-				if (Config.bot.AudioSettings.AudioServicesEnabled)
-					Logger.Log("Audio services are ready!", LogVerbosity.Music);
-			}
+
+			if (Config.bot.AudioSettings.AudioServicesEnabled)
+				Logger.Log("Audio services are ready!", LogVerbosity.Music);
 		}
 
 		/// <summary>
