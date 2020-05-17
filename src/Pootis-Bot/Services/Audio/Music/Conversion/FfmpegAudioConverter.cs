@@ -32,7 +32,9 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 					StartInfo = new ProcessStartInfo
 					{
 						FileName = Config.bot.AudioSettings.FfmpegLocation,
-						Arguments = $"-i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\""
+						Arguments = $"-i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\"",
+						CreateNoWindow = true,
+						UseShellExecute = false
 					}
 				};
 
@@ -55,10 +57,10 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 				//Delete our old file
 				if (deleteOriginal)
 				{
-					//if (File.Exists(originalLocation))
-					//File.Delete(originalLocation);
-					//else //Were the fuck is our fileToConvert then?? This should never happen but it is here anyway
-					//return null;
+					if (File.Exists(originalLocation))
+						File.Delete(originalLocation);
+					else //Were the fuck is our fileToConvert then?? This should never happen but it is here anyway
+						return null;
 				}
 
 				//So obviously there was an issue converting...

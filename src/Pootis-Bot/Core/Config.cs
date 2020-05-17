@@ -3,6 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
+using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Structs.Config;
 
 namespace Pootis_Bot.Core
@@ -68,7 +69,10 @@ namespace Pootis_Bot.Core
 				{
 					AudioServicesEnabled = false,
 					LogPlayStopSongToConsole = true,
-					MaxVideoTime = new TimeSpan(0, 7, 0)
+					MaxVideoTime = new TimeSpan(0, 7, 0),
+					FfmpegLocation = "External/ffmpeg",
+					MusicFileFormat = MusicFileFormat.Mp3,
+					MusicFolderLocation = "Music/"
 				},
 				VoteSettings = new VoteSettings
 				{

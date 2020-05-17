@@ -1,4 +1,5 @@
 ﻿using System;
+using Pootis_Bot.Services.Audio.Music;
 
 namespace Pootis_Bot.Structs.Config
 {
@@ -23,5 +24,15 @@ namespace Pootis_Bot.Structs.Config
 		/// Max video time
 		/// </summary>
 		public TimeSpan MaxVideoTime { get; set; }
+
+		/// <summary>
+		/// The location of the music folder
+		/// </summary>
+		public string MusicFolderLocation { get; set; }
+
+		/// <summary>
+		/// The format of the song (.mp3, etc)
+		/// </summary>
+		public MusicFileFormat MusicFileFormat { get; set; }
 	}
 }

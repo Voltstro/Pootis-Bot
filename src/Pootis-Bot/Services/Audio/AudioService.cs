@@ -14,15 +14,12 @@ using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Audio.Music.Playback;
 using Pootis_Bot.Services.Google.YouTube;
+using Pootis_Bot.Structs.Config;
 
 namespace Pootis_Bot.Services.Audio
 {
 	public class AudioService
 	{
-		private const string MusicDir = "Music/";
-
-		private MusicFileFormat fileFormat = MusicFileFormat.Mp3;
-
 		private readonly IYouTubeSearcher youTubeSearcher;
 
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
@@ -182,7 +179,7 @@ namespace Pootis_Bot.Services.Audio
 				Logger.Log($"Playing song from {songFileLocation}", LogVerbosity.Debug);
 
 				//This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
-				songName = Path.GetFileName(songFileLocation).Replace($".{fileFormat.GetFormatExtension()}", ""); 
+				songName = Path.GetFileName(songFileLocation).Replace($".{Config.bot.AudioSettings.MusicFileFormat.GetFormatExtension()}", ""); 
 
 				//If there is already a song playing, cancel it
 				await StopPlayingAudioOnServer(serverMusicList);
@@ -366,9 +363,10 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns>Returns the first found similar or matching result</returns>
 		public static string SearchMusicDirectory(string search, MusicFileFormat fileFormat)
 		{
-			if (!Directory.Exists(MusicDir)) Directory.CreateDirectory(MusicDir);
+			string musicDir = Config.bot.AudioSettings.MusicFolderLocation;
+			if (!Directory.Exists(musicDir)) Directory.CreateDirectory(musicDir);
 
-			DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(MusicDir);
+			DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(musicDir);
 			FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles($"*{search}*.{fileFormat.GetFormatExtension()}");
 
 			return filesInDir.Select(foundFile => foundFile.FullName).FirstOrDefault();
@@ -393,7 +391,9 @@ namespace Pootis_Bot.Services.Audio
 				musicList.Downloader = null;
 			}
 
-			musicList.Downloader = new StandardMusicDownloader(MusicDir, fileFormat, Global.HttpClient, new CancellationTokenSource(), youTubeSearcher);
+			ConfigAudio audioCfg = Config.bot.AudioSettings;
+
+			musicList.Downloader = new StandardMusicDownloader(audioCfg.MusicFolderLocation, audioCfg.MusicFileFormat, Global.HttpClient, new CancellationTokenSource(), youTubeSearcher);
 			if (WebUtils.IsStringValidUrl(search))
 			{
 				songFileLocation = await musicList.Downloader.GetSongViaYouTubeUrl(search, message);
@@ -434,7 +434,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		private IMusicPlaybackInterface CreateMusicPlayback(string fileLocation)
 		{
-			switch (fileFormat)
+			switch (Config.bot.AudioSettings.MusicFileFormat)
 			{
 				case MusicFileFormat.Mp3:
 					return new MusicMp3Playback(fileLocation);
