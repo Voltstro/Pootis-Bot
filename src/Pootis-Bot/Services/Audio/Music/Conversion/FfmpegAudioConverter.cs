@@ -32,9 +32,10 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 					StartInfo = new ProcessStartInfo
 					{
 						FileName = Config.bot.AudioSettings.FfmpegLocation,
-						Arguments = $"-i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\"",
+						Arguments = $"-loglevel fatal -nostdin -i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\"",
 						CreateNoWindow = true,
-						UseShellExecute = false
+						UseShellExecute = false,
+						RedirectStandardOutput = false
 					}
 				};
 

@@ -41,15 +41,13 @@ namespace Pootis_Bot.Services.Audio
 			    || !File.Exists("opus.dll") || !File.Exists("libsodium.dll")) UpdateAudioFiles();
 
 #elif LINUX
-			Logger.Log($"Audio services for unix systems are currently disabled! Please check out {Global.githubPage}/issues/2");
-			Config.bot.AudioSettings.AudioServicesEnabled = false;
-			Config.SaveConfig();
-
-			return;
+			//Logger.Log($"Audio services for unix systems are currently disabled! Please check out {Global.githubPage}/issues/2");
+			//Config.bot.AudioSettings.AudioServicesEnabled = false;
+			//Config.SaveConfig();
 
 			//Check files to see if they exist
-			//if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
-			//  	UpdateAudioFiles();
+			if(!File.Exists("External/ffmpeg") || !File.Exists("External/ffprobe") || !File.Exists("opus.dll") || !File.Exists("libsodium.dll"))
+			  	UpdateAudioFiles();
 
 #elif OSX
 			Logger.Log($"Audio services for unix systems are currently disabled! Please check out {Global.githubPage}/issues/2");
