@@ -21,6 +21,11 @@ namespace Pootis_Bot.Structs.Config
 		public string FfmpegLocation { get; set; }
 
 		/// <summary>
+		/// The directory where our external applications will live
+		/// </summary>
+		public string ExternalDirectory { get; set; }
+
+		/// <summary>
 		/// Max video time
 		/// </summary>
 		public TimeSpan MaxVideoTime { get; set; }

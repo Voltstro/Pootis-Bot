@@ -48,7 +48,7 @@ namespace Pootis_Bot
 			Global.BotToken = Config.bot.BotToken;
 
 			//Check the audio services, if they are enabled
-			AudioCheckService.CheckAudioService();
+			MusicLibsChecker.CheckAudioService();
 
 			Console.Title = $"{Global.BotName} Console";
 

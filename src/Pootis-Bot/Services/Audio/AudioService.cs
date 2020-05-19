@@ -434,13 +434,11 @@ namespace Pootis_Bot.Services.Audio
 		/// <returns></returns>
 		private IMusicPlaybackInterface CreateMusicPlayback(string fileLocation)
 		{
-			switch (Config.bot.AudioSettings.MusicFileFormat)
+			return Config.bot.AudioSettings.MusicFileFormat switch
 			{
-				case MusicFileFormat.Mp3:
-					return new MusicMp3Playback(fileLocation);
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+				MusicFileFormat.Mp3 => new MusicMp3Playback(fileLocation),
+				_ => throw new ArgumentOutOfRangeException(),
+			};
 		}
 
 		#region List Fuctions

@@ -18,29 +18,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <param name="downloadUrls"></param>
 		public static void DownloadAndPrepareWindowsFiles(AudioExternalLibFiles downloadUrls)
 		{
-			Logger.Log("Downloading files for Windows...");
-
-			//Download all audio service files for Windows
-			Logger.Log($"Downloading ffmpeg from {downloadUrls.FfmpegDownloadUrl}");
-			WebUtils.DownloadFileAsync(downloadUrls.FfmpegDownloadUrl, "Temp/ffmpeg.zip").GetAwaiter().GetResult();
-			Logger.Log($"Downloading needed DLLs from {downloadUrls.LibsDownloadUrl}");
-			WebUtils.DownloadFileAsync(downloadUrls.LibsDownloadUrl, "Temp/dlls.zip").GetAwaiter().GetResult();
-
-			//Extract required files
-			Logger.Log("Extracting files...");
-			ZipFile.ExtractToDirectory("Temp/dlls.zip", "./", true);
-			ZipFile.ExtractToDirectory("Temp/ffmpeg.zip", "Temp/ffmpeg/", true);
-
-			//Copy the needed parts of ffmpeg to the right directory
-			Logger.Log("Setting up ffmpeg");
-			Global.DirectoryCopy("Temp/ffmpeg/ffmpeg-latest-win64-static/bin/", "External/", true);
-			File.Copy("Temp/ffmpeg/ffmpeg-latest-win64-static/LICENSE.txt", "External/ffmpeg-license.txt", true);
-
-			//Delete unnecessary files
-			Logger.Log("Cleaning up...");
-			File.Delete("Temp/dlls.zip");
-			File.Delete("Temp/ffmpeg.zip");
-			Directory.Delete("temp/ffmpeg", true);
+			
 		}
 
 #elif LINUX

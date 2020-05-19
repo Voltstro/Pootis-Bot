@@ -199,7 +199,7 @@ namespace Pootis_Bot.Core
 			Logger.Log($"The audio service was set to {Config.bot.AudioSettings.AudioServicesEnabled}",
 				LogVerbosity.Music);
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
-				AudioCheckService.CheckAudioService();
+				MusicLibsChecker.CheckAudioService();
 		}
 
 		private static async void ForceAudioUpdateCmd()
@@ -215,7 +215,7 @@ namespace Pootis_Bot.Core
 			File.Delete("libsodium.dll");
 			File.Delete("opus.dll");
 
-			AudioCheckService.UpdateAudioFiles();
+			MusicLibsChecker.UpdateAudioFiles();
 			Logger.Log("Audio files were updated.", LogVerbosity.Music);
 		}
 
