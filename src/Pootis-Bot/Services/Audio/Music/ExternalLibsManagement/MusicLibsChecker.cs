@@ -6,10 +6,9 @@ using Newtonsoft.Json;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
-using Pootis_Bot.Services.Audio.Music.ExternalLibsManagement;
 using Pootis_Bot.Structs;
 
-namespace Pootis_Bot.Services.Audio
+namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 {
 	public static class MusicLibsChecker
 	{
@@ -19,7 +18,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <summary>
 		/// Checks the audio service
 		/// </summary>
-		public static void CheckAudioService()
+		public static void CheckMusicService(bool forceRedownload = false)
 		{
 			if (!Config.bot.AudioSettings.AudioServicesEnabled) return;
 			Logger.Log("Checking audio services...", LogVerbosity.Music);
@@ -55,8 +54,17 @@ namespace Pootis_Bot.Services.Audio
 			//TODO: Write MacOS libs preparer
 			return;
 #endif
-			if(!libsPreparer.CheckLibFiles())
-				UpdateAudioFiles(libsPreparer);
+			if (forceRedownload)
+			{
+				Logger.Log($"Force redownload");
+				UpdatedMusicServiceFiles(libsPreparer);
+			}
+				
+			else if (!libsPreparer.CheckLibFiles())
+			{
+				UpdatedMusicServiceFiles(libsPreparer);
+			}
+				
 
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
 				Logger.Log("Audio services are ready!", LogVerbosity.Music);
@@ -65,7 +73,7 @@ namespace Pootis_Bot.Services.Audio
 		/// <summary>
 		/// Updates all files related to audio
 		/// </summary>
-		public static void UpdateAudioFiles(ILibsPreparer preparer)
+		public static void UpdatedMusicServiceFiles(ILibsPreparer preparer)
 		{
 			Logger.Log("Downloading required files for audio services...");
 

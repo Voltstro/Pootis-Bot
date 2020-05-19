@@ -3,7 +3,7 @@ using System.Net.Http;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Helpers;
-using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Audio.Music.ExternalLibsManagement;
 
 //Pootis-Bot, Created by Voltstro (formally 'Creepysin') 2018-2020.
 //Licensed under the MIT license
@@ -48,7 +48,7 @@ namespace Pootis_Bot
 			Global.BotToken = Config.bot.BotToken;
 
 			//Check the audio services, if they are enabled
-			MusicLibsChecker.CheckAudioService();
+			MusicLibsChecker.CheckMusicService(false);
 
 			Console.Title = $"{Global.BotName} Console";
 

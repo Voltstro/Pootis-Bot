@@ -72,7 +72,8 @@ namespace Pootis_Bot.Core
 					MaxVideoTime = new TimeSpan(0, 7, 0),
 					FfmpegLocation = "External/ffmpeg",
 					MusicFileFormat = MusicFileFormat.Mp3,
-					MusicFolderLocation = "Music/"
+					MusicFolderLocation = "Music/",
+					ExternalDirectory = "External/"
 				},
 				VoteSettings = new VoteSettings
 				{
