@@ -48,15 +48,13 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 #if WINDOWS
 			ILibsPreparer libsPreparer = new WindowsLibPreparer();
 #elif LINUX
-			//TODO: Write linux libs preparer
-			return;
+			ILibsPreparer libsPreparer = new LinuxLibPreparer();
 #else
 			//TODO: Write MacOS libs preparer
 			return;
 #endif
 			if (forceRedownload)
 			{
-				Logger.Log($"Force redownload");
 				UpdatedMusicServiceFiles(libsPreparer);
 			}
 				
