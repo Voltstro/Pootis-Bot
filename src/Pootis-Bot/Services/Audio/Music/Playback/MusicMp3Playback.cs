@@ -4,6 +4,9 @@ using MP3Sharp;
 
 namespace Pootis_Bot.Services.Audio.Music.Playback
 {
+	/// <summary>
+	/// Playbacks .mp3 files using the MP3Sharp library
+	/// </summary>
 	public class MusicMp3Playback : IMusicPlaybackInterface
 	{
 		private readonly MP3Stream reader;

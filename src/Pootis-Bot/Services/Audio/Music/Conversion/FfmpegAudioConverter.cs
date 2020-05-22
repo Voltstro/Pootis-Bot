@@ -8,6 +8,9 @@ using Pootis_Bot.Core.Logging;
 
 namespace Pootis_Bot.Services.Audio.Music.Conversion
 {
+	/// <summary>
+	/// Converts audio files using ffmpeg
+	/// </summary>
 	public class FfmpegAudioConverter : IAudioConverter
 	{
 		private readonly CancellationToken cancellationToken;

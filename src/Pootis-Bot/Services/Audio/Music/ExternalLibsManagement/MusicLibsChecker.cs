@@ -10,6 +10,9 @@ using Pootis_Bot.Structs;
 
 namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 {
+	/// <summary>
+	/// Checks to make sure require software and libs are installed, if not it downloads them
+	/// </summary>
 	public static class MusicLibsChecker
 	{
 		//Downloads a .json file that has were to get some needed libs from

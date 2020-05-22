@@ -11,6 +11,9 @@ using YoutubeExplode.Videos.Streams;
 
 namespace Pootis_Bot.Services.Audio.Music.Download
 {
+	/// <summary>
+	/// Downloads YouTube videos using the YouTubeExplode library
+	/// </summary>
 	public class YouTubeExplodeDownloader : IMusicDownloader
 	{
 		private readonly YoutubeClient ytClient;
