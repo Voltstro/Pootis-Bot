@@ -1,7 +1,7 @@
 [
   {
     "OsPlatform": "Windows",
-    "FfmpegDownloadUrl": "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip",
+    "FfmpegDownloadUrl": "https://pootis-bot.voltstro.dev/download/ffmpeg/windows/ffmpeg-windows-64.zip",
     "LibsDownloadUrl": "https://pootis-bot.voltstro.dev/download/AudioLibs-Windows.zip"
   },
   {
