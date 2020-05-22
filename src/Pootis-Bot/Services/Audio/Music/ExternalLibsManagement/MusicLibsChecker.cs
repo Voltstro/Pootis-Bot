@@ -79,7 +79,7 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 			if (!Directory.Exists("Temp/")) Directory.CreateDirectory("Temp/");
 
 			//If the external directory doesn't exist, create it
-			if (!Directory.Exists("External/")) Directory.CreateDirectory("External/");
+			if (!Directory.Exists(Config.bot.AudioSettings.ExternalDirectory)) Directory.CreateDirectory(Config.bot.AudioSettings.ExternalDirectory);
 
 			//We get a json file that tells us where to download other files from
 			string json = WebUtils.DownloadString(AudioLibFileJsonUrl);
