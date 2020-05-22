@@ -11,20 +11,23 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
-using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Audio.Music.Playback;
 using Pootis_Bot.Services.Google.YouTube;
 using Pootis_Bot.Structs.Config;
 
-namespace Pootis_Bot.Services.Audio
+namespace Pootis_Bot.Services.Audio.Music
 {
-	public class AudioService
+	/// <summary>
+	/// This class handles playing music through a voice chat, it handles connecting and leaving a chat.
+	/// <para>It searches and downloads to play music from YouTube, if the song hasn't already been downloaded.</para>
+	/// </summary>
+	public class MusicService
 	{
 		private readonly IYouTubeSearcher youTubeSearcher;
 
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
 
-		public AudioService(IYouTubeSearcher searcher)
+		public MusicService(IYouTubeSearcher searcher)
 		{
 			youTubeSearcher = searcher;
 		}
@@ -204,86 +207,84 @@ namespace Pootis_Bot.Services.Audio
 			serverMusicList.IsPlaying = true;
 
 			//Create an outgoing pcm stream
-			await using (AudioOutStream outStream = serverMusicList.AudioClient.CreatePCMStream(AudioApplication.Music))
+			await using AudioOutStream outStream = serverMusicList.AudioClient.CreatePCMStream(AudioApplication.Music);
+			bool fail = false;
+			bool exit = false;
+			const int bufferSize = 1024;
+			byte[] buffer = new byte[bufferSize];
+
+			await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{songName}**.");
+
+			while (!fail && !exit)
 			{
-				bool fail = false;
-				bool exit = false;
-				const int bufferSize = 1024;
-				byte[] buffer = new byte[bufferSize];
-
-				await MessageUtils.ModifyMessage(message, $":musical_note: Now playing **{songName}**.");
-
-				while (!fail && !exit)
+				try
 				{
-					try
+					if (token.IsCancellationRequested)
 					{
-						if (token.IsCancellationRequested)
-						{
-							exit = true;
-							break;
-						}
+						exit = true;
+						break;
+					}
 
-						//Read from stream
-						int read = await playbackInterface.ReadAudioStream(buffer, bufferSize, token);
-						if (read == 0)
-						{
-							exit = true;
-							break;
-						}
+					//Read from stream
+					int read = await playbackInterface.ReadAudioStream(buffer, bufferSize, token);
+					if (read == 0)
+					{
+						exit = true;
+						break;
+					}
 						
-						//Flush
-						await playbackInterface.Flush();
+					//Flush
+					await playbackInterface.Flush();
 
-						//Write it to outgoing pcm stream
-						await outStream.WriteAsync(buffer, 0, read, token);
+					//Write it to outgoing pcm stream
+					await outStream.WriteAsync(buffer, 0, read, token);
 
-						//If we are still playing
-						if (serverMusicList.IsPlaying) continue;
+					//If we are still playing
+					if (serverMusicList.IsPlaying) continue;
 
-						//For pausing the song
-						do
-						{
-							//Do nothing, wait till is playing is true
-							await Task.Delay(100, token);
-						} while (serverMusicList.IsPlaying == false);
-					}
-					catch (OperationCanceledException)
+					//For pausing the song
+					do
 					{
-						//User canceled
-					}
-					catch (Exception ex)
-					{
-						await channel.SendMessageAsync("Sorry, but an error occured while playing!");
-
-						if (Config.bot.ReportErrorsToOwner)
-							await Global.BotOwner.SendMessageAsync(
-								$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
-
-						fail = true;
-					}
+						//Do nothing, wait till is playing is true
+						await Task.Delay(100, token);
+					} while (serverMusicList.IsPlaying == false);
 				}
+				catch (OperationCanceledException)
+				{
+					//User canceled
+				}
+				catch (Exception ex)
+				{
+					await channel.SendMessageAsync("Sorry, but an error occured while playing!");
 
-				if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-					Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
-						LogVerbosity.Music);
+					if (Config.bot.ReportErrorsToOwner)
+						await Global.BotOwner.SendMessageAsync(
+							$"ERROR: {ex.Message}\nError occured while playing music on guild `{guild.Id}`.");
 
-				//There wasn't a request to cancel
-				if(!token.IsCancellationRequested)
-					await channel.SendMessageAsync($":musical_note: **{songName}** ended.");
-
-				//Clean up
-				// ReSharper disable MethodSupportsCancellation
-				await outStream.FlushAsync();
-				outStream.Dispose();
-				serverMusicList.IsPlaying = false;
-				
-				playbackInterface.EndAudioStream();
-				serverMusicList.MusicPlayback = null;
-				// ReSharper restore MethodSupportsCancellation
-				
-				serverMusicList.CancellationSource.Dispose();
-				serverMusicList.CancellationSource = null;
+					fail = true;
+				}
 			}
+
+			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
+				Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
+					LogVerbosity.Music);
+
+			//There wasn't a request to cancel
+			if(!token.IsCancellationRequested)
+				await channel.SendMessageAsync($":musical_note: **{songName}** ended.");
+
+			//Clean up
+			// ReSharper disable MethodSupportsCancellation
+			await outStream.FlushAsync();
+			outStream.Dispose();
+			serverMusicList.IsPlaying = false;
+				
+			playbackInterface.EndAudioStream();
+			serverMusicList.MusicPlayback = null;
+			// ReSharper restore MethodSupportsCancellation
+				
+			serverMusicList.CancellationSource.Dispose();
+			serverMusicList.CancellationSource = null;
 		}
 
 		/// <summary>

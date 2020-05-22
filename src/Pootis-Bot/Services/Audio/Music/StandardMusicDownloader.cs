@@ -78,7 +78,7 @@ namespace Pootis_Bot.Services.Audio.Music
 				await MessageUtils.ModifyMessage(botMessage, $"Searching my audio banks for '{songTitle}'");
 
 				//First, check if this song exists in our music DIR
-				string songLocation = AudioService.SearchMusicDirectory(songTitle, fileFormat);
+				string songLocation = MusicService.SearchMusicDirectory(songTitle, fileFormat);
 				if (songLocation != null)
 				{
 					return songLocation;
@@ -117,7 +117,7 @@ namespace Pootis_Bot.Services.Audio.Music
 				string videoTitle = video.VideoTitle.RemoveIllegalChars();
 
 				//Do a second search with the title from YouTube
-				songLocation = AudioService.SearchMusicDirectory(videoTitle, fileFormat);
+				songLocation = MusicService.SearchMusicDirectory(videoTitle, fileFormat);
 				if (songLocation != null)
 				{
 					return songLocation;

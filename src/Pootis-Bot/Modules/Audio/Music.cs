@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Preconditions;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Google.YouTube;
 
 namespace Pootis_Bot.Modules.Audio
@@ -16,11 +17,11 @@ namespace Pootis_Bot.Modules.Audio
 		// Description      - To run audio commands
 		// Contributors     - Creepysin, 
 
-		private readonly AudioService service;
+		private readonly MusicService service;
 
 		public Music(YouTubeService searcher)
 		{
-			service = new AudioService(searcher);
+			service = new MusicService(searcher);
 		}
 
 		[Command("join", RunMode = RunMode.Async)]

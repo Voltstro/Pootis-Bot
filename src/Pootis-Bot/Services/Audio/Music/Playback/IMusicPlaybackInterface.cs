@@ -11,6 +11,10 @@ namespace Pootis_Bot.Services.Audio.Music.Playback
 		/// <returns></returns>
 		public Task<int> ReadAudioStream(byte[] buffer, int count, CancellationToken cancellationToken);
 
+		/// <summary>
+		/// Clears all buffers for the stream
+		/// </summary>
+		/// <returns></returns>
 		public Task Flush();
 
 		/// <summary>

@@ -13,6 +13,7 @@ using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Audio.Music.ExternalLibsManagement;
 using Console = Pootis_Bot.ConsoleCommandHandler.Console;
 
@@ -89,10 +90,10 @@ namespace Pootis_Bot.Core
 			await _client.SetGameAsync("Bot shutting down");
 
 			Logger.Log("Stopping audio services...", LogVerbosity.Music);
-			foreach (ServerMusicItem channel in AudioService.currentChannels)
+			foreach (ServerMusicItem channel in MusicService.currentChannels)
 			{
 				//If there is already a song playing, cancel it
-				await AudioService.StopPlayingAudioOnServer(channel);
+				await MusicService.StopPlayingAudioOnServer(channel);
 
 				//Just wait a moment
 				await Task.Delay(100);
@@ -165,9 +166,9 @@ namespace Pootis_Bot.Core
 
 		private static async void DeleteMusicCmd()
 		{
-			foreach (ServerMusicItem channel in AudioService.currentChannels)
+			foreach (ServerMusicItem channel in MusicService.currentChannels)
 			{
-				await AudioService.StopPlayingAudioOnServer(channel);
+				await MusicService.StopPlayingAudioOnServer(channel);
 
 				//Just wait a moment
 				await Task.Delay(100);
@@ -177,7 +178,7 @@ namespace Pootis_Bot.Core
 				channel.IsPlaying = false;
 			}
 
-			AudioService.currentChannels.Clear();
+			MusicService.currentChannels.Clear();
 
 			Logger.Log("Deleting music directory...", LogVerbosity.Music);
 			if (Directory.Exists("Music/"))
@@ -205,7 +206,7 @@ namespace Pootis_Bot.Core
 		private static async void ForceAudioUpdateCmd()
 		{
 			Logger.Log("Updating audio files.", LogVerbosity.Music);
-			foreach (ServerMusicItem channel in AudioService.currentChannels)
+			foreach (ServerMusicItem channel in MusicService.currentChannels)
 				channel.AudioClient.Dispose();
 
 			await Task.Delay(1000);
