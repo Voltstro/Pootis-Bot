@@ -49,7 +49,7 @@ policies may be posted separately.
 Project maintainers who do not follow or enforce the Code of Conduct in good faith may face temporary or permanent repercussions as determined
 by other members of the project's leadership.
 
-To report unacceptable behavior, email me@creepysin.com or via the Discord server.
+To report unacceptable behavior, email me@voltstro.dev or via the Discord server.
 
 ## Attribution
 
