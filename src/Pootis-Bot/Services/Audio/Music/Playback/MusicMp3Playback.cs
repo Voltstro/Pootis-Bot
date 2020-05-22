@@ -28,7 +28,6 @@ namespace Pootis_Bot.Services.Audio.Music.Playback
 
 		public void Skip(int seconds)
 		{
-			
 		}
 
 		public void EndAudioStream()

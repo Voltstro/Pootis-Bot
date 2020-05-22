@@ -70,9 +70,11 @@ namespace Pootis_Bot.Modules.Server.Setup
 		{
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			ServerRolePoints pointRole = server.GetServerRolePoints(pointsAmount);
-			if (pointRole.PointsRequired == 0) //Make sure a point role with that amount of points needed actually exists.
+			if (pointRole.PointsRequired == 0
+			) //Make sure a point role with that amount of points needed actually exists.
 			{
-				await Context.Channel.SendMessageAsync($"There are no point roles with the points amount of `{pointsAmount}`.");
+				await Context.Channel.SendMessageAsync(
+					$"There are no point roles with the points amount of `{pointsAmount}`.");
 				return;
 			}
 
@@ -82,7 +84,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			await Context.Channel.SendMessageAsync($"The point role with `{pointsAmount}` points was removed.");
 		}
 
-		
+
 		[Command("setup pointroles")]
 		[Summary("Gets all the role points")]
 		[RequireGuildOwner]

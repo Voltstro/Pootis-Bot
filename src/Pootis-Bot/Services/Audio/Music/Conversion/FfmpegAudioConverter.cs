@@ -20,12 +20,14 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 			cancellationToken = cancelToken;
 		}
 
-		public async Task<string> ConvertFileToAudio(string originalLocation, string location, bool deleteOriginal = true,
+		public async Task<string> ConvertFileToAudio(string originalLocation, string location,
+			bool deleteOriginal = true,
 			MusicFileFormat musicFileFormat = MusicFileFormat.Mp3)
 		{
 			try
 			{
-				string fullNewLocation = $"{location}{Path.GetFileName(originalLocation).Replace(Path.GetExtension(originalLocation), "")}.{musicFileFormat.GetFormatExtension()}";
+				string fullNewLocation =
+					$"{location}{Path.GetFileName(originalLocation).Replace(Path.GetExtension(originalLocation), "")}.{musicFileFormat.GetFormatExtension()}";
 
 				Logger.Log($"Converting '{originalLocation}' to '{fullNewLocation}'...", LogVerbosity.Debug);
 
@@ -35,7 +37,8 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 					StartInfo = new ProcessStartInfo
 					{
 						FileName = $"{Config.bot.AudioSettings.ExternalDirectory}ffmpeg",
-						Arguments = $"-loglevel fatal -nostdin -i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\"",
+						Arguments =
+							$"-loglevel fatal -nostdin -i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\"",
 						CreateNoWindow = true,
 						UseShellExecute = false,
 						RedirectStandardOutput = false
@@ -81,7 +84,9 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 			catch (NullReferenceException ex)
 			{
 #if DEBUG
-				Logger.Log($"Null reference exception while trying to convert a song! FFMPEG path could be set incorrectly!\n{ex}", LogVerbosity.Error);
+				Logger.Log(
+					$"Null reference exception while trying to convert a song! FFMPEG path could be set incorrectly!\n{ex}",
+					LogVerbosity.Error);
 #else
 				Logger.Log($"Null refrence exception while trying to convert a song! FFMPEG path could be set incorrectly!\n{ex.Message}", LogVerbosity.Error);
 #endif

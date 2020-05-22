@@ -8,7 +8,8 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 	{
 		public void OpenApiMenu()
 		{
-			UnknownCommandError = "Unknown input! It either needs to be '1', '2', etc or 'return' to exit back to the main menu.";
+			UnknownCommandError =
+				"Unknown input! It either needs to be '1', '2', etc or 'return' to exit back to the main menu.";
 			UnknownCommandErrorColor = ConsoleColor.Red;
 
 			//Intro stuff

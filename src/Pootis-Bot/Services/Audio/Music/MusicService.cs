@@ -23,9 +23,8 @@ namespace Pootis_Bot.Services.Audio.Music
 	/// </summary>
 	public class MusicService
 	{
-		private readonly IYouTubeSearcher youTubeSearcher;
-
 		public static readonly List<ServerMusicItem> currentChannels = new List<ServerMusicItem>();
+		private readonly IYouTubeSearcher youTubeSearcher;
 
 		public MusicService(IYouTubeSearcher searcher)
 		{
@@ -48,7 +47,7 @@ namespace Pootis_Bot.Services.Audio.Music
 				return;
 			}
 
-			if(CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
+			if (CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
 			{
 				if (serverList.AudioChannel.GetUser(user.Id) != null)
 				{
@@ -87,14 +86,14 @@ namespace Pootis_Bot.Services.Audio.Music
 		/// <returns></returns>
 		public async Task LeaveAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
-			if(!CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
+			if (!CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
 			{
 				await channel.SendMessageAsync(":musical_note: You are not in any voice channel!");
 				return;
 			}
 
 			//Check to see if the user is in the playing audio channel
-			if(!await CheckIfUserInChat(user, channel, serverList))
+			if (!await CheckIfUserInChat(user, channel, serverList))
 				return;
 
 			//If there is already a song playing, cancel it
@@ -116,14 +115,14 @@ namespace Pootis_Bot.Services.Audio.Music
 		/// <returns></returns>
 		public async Task StopAudio(IGuild guild, IMessageChannel channel, IUser user)
 		{
-			if(!CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
+			if (!CheckIfServerIsPlayingMusic(guild, out ServerMusicItem serverList))
 			{
 				await channel.SendMessageAsync(":musical_note: Your not in any voice channel!");
 				return;
 			}
 
 			//Check to see if the user is in the playing audio channel
-			if(!await CheckIfUserInChat(user, channel, serverList))
+			if (!await CheckIfUserInChat(user, channel, serverList))
 				return;
 
 			if (serverList.IsPlaying == false) await channel.SendMessageAsync(":musical_note: No audio is playing.");
@@ -153,7 +152,7 @@ namespace Pootis_Bot.Services.Audio.Music
 			}
 
 			//Check to see if the user is in the playing audio channel
-			if(!await CheckIfUserInChat(user, channel, serverMusicList))
+			if (!await CheckIfUserInChat(user, channel, serverMusicList))
 				return;
 
 			//Make sure the search isn't empty or null
@@ -182,7 +181,8 @@ namespace Pootis_Bot.Services.Audio.Music
 				Logger.Log($"Playing song from {songFileLocation}", LogVerbosity.Debug);
 
 				//This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
-				songName = Path.GetFileName(songFileLocation).Replace($".{Config.bot.AudioSettings.MusicFileFormat.GetFormatExtension()}", ""); 
+				songName = Path.GetFileName(songFileLocation)
+					.Replace($".{Config.bot.AudioSettings.MusicFileFormat.GetFormatExtension()}", "");
 
 				//If there is already a song playing, cancel it
 				await StopPlayingAudioOnServer(serverMusicList);
@@ -194,7 +194,8 @@ namespace Pootis_Bot.Services.Audio.Music
 			}
 
 			//Create music playback for our music format
-			IMusicPlaybackInterface playbackInterface = serverMusicList.MusicPlayback = CreateMusicPlayback(songFileLocation);
+			IMusicPlaybackInterface playbackInterface =
+				serverMusicList.MusicPlayback = CreateMusicPlayback(songFileLocation);
 
 			//Log (if enabled) to the console that we are playing a new song
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
@@ -232,7 +233,7 @@ namespace Pootis_Bot.Services.Audio.Music
 						exit = true;
 						break;
 					}
-						
+
 					//Flush
 					await playbackInterface.Flush();
 
@@ -270,7 +271,7 @@ namespace Pootis_Bot.Services.Audio.Music
 					LogVerbosity.Music);
 
 			//There wasn't a request to cancel
-			if(!token.IsCancellationRequested)
+			if (!token.IsCancellationRequested)
 				await channel.SendMessageAsync($":musical_note: **{songName}** ended.");
 
 			//Clean up
@@ -278,11 +279,11 @@ namespace Pootis_Bot.Services.Audio.Music
 			await outStream.FlushAsync();
 			outStream.Dispose();
 			serverMusicList.IsPlaying = false;
-				
+
 			playbackInterface.EndAudioStream();
 			serverMusicList.MusicPlayback = null;
 			// ReSharper restore MethodSupportsCancellation
-				
+
 			serverMusicList.CancellationSource.Dispose();
 			serverMusicList.CancellationSource = null;
 		}
@@ -318,6 +319,39 @@ namespace Pootis_Bot.Services.Audio.Music
 			if (musicList.IsPlaying) await channel.SendMessageAsync(":musical_note: Current song has been un-paused.");
 			else await channel.SendMessageAsync(":musical_note: Current song has been paused.");
 		}
+
+		/// <summary>
+		/// Creates a <see cref="IMusicPlaybackInterface"/>, depending on the audio extension selected
+		/// </summary>
+		/// <param name="fileLocation"></param>
+		/// <returns></returns>
+		private IMusicPlaybackInterface CreateMusicPlayback(string fileLocation)
+		{
+			return Config.bot.AudioSettings.MusicFileFormat switch
+			{
+				MusicFileFormat.Mp3 => new MusicMp3Playback(fileLocation),
+				_ => throw new ArgumentOutOfRangeException()
+			};
+		}
+
+		#region List Fuctions
+
+		/// <summary>
+		/// Gets a <see cref="ServerMusicItem"/>
+		/// </summary>
+		/// <param name="guildId"></param>
+		/// <returns></returns>
+		public static ServerMusicItem GetMusicList(ulong guildId)
+		{
+			IEnumerable<ServerMusicItem> result = from a in currentChannels
+				where a.GuildId == guildId
+				select a;
+
+			ServerMusicItem list = result.FirstOrDefault();
+			return list;
+		}
+
+		#endregion
 
 		#region Inital User Checking
 
@@ -368,7 +402,8 @@ namespace Pootis_Bot.Services.Audio.Music
 			if (!Directory.Exists(musicDir)) Directory.CreateDirectory(musicDir);
 
 			DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(musicDir);
-			FileInfo[] filesInDir = hdDirectoryInWhichToSearch.GetFiles($"*{search}*.{fileFormat.GetFormatExtension()}");
+			FileInfo[] filesInDir =
+				hdDirectoryInWhichToSearch.GetFiles($"*{search}*.{fileFormat.GetFormatExtension()}");
 
 			return filesInDir.Select(foundFile => foundFile.FullName).FirstOrDefault();
 		}
@@ -394,15 +429,12 @@ namespace Pootis_Bot.Services.Audio.Music
 
 			ConfigAudio audioCfg = Config.bot.AudioSettings;
 
-			musicList.Downloader = new StandardMusicDownloader(audioCfg.MusicFolderLocation, audioCfg.MusicFileFormat, Global.HttpClient, new CancellationTokenSource(), youTubeSearcher);
+			musicList.Downloader = new StandardMusicDownloader(audioCfg.MusicFolderLocation, audioCfg.MusicFileFormat,
+				Global.HttpClient, new CancellationTokenSource(), youTubeSearcher);
 			if (WebUtils.IsStringValidUrl(search))
-			{
 				songFileLocation = await musicList.Downloader.GetSongViaYouTubeUrl(search, message);
-			}
 			else
-			{
 				songFileLocation = await musicList.Downloader.GetOrDownloadSong(search, message);
-			}
 
 			return songFileLocation;
 		}
@@ -424,39 +456,6 @@ namespace Pootis_Bot.Services.Audio.Music
 					await Task.Delay(100);
 				}
 			}
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Creates a <see cref="IMusicPlaybackInterface"/>, depending on the audio extension selected
-		/// </summary>
-		/// <param name="fileLocation"></param>
-		/// <returns></returns>
-		private IMusicPlaybackInterface CreateMusicPlayback(string fileLocation)
-		{
-			return Config.bot.AudioSettings.MusicFileFormat switch
-			{
-				MusicFileFormat.Mp3 => new MusicMp3Playback(fileLocation),
-				_ => throw new ArgumentOutOfRangeException(),
-			};
-		}
-
-		#region List Fuctions
-
-		/// <summary>
-		/// Gets a <see cref="ServerMusicItem"/>
-		/// </summary>
-		/// <param name="guildId"></param>
-		/// <returns></returns>
-		public static ServerMusicItem GetMusicList(ulong guildId)
-		{
-			IEnumerable<ServerMusicItem> result = from a in currentChannels
-				where a.GuildId == guildId
-				select a;
-
-			ServerMusicItem list = result.FirstOrDefault();
-			return list;
 		}
 
 		#endregion

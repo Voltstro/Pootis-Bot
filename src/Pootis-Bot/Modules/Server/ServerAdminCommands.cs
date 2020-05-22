@@ -115,10 +115,11 @@ namespace Pootis_Bot.Modules.Server
 			}
 			catch (ArgumentOutOfRangeException)
 			{
-				await Context.Channel.SendMessageAsync("There are not enough messages to delete in this channel with your specified message delete count.");
+				await Context.Channel.SendMessageAsync(
+					"There are not enough messages to delete in this channel with your specified message delete count.");
 				return;
 			}
-			
+
 			RestUserMessage message =
 				await Context.Channel.SendMessageAsync(
 					$"{messageCount} message were deleted, this message will be deleted in a moment.");

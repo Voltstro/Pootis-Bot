@@ -27,12 +27,13 @@ namespace Pootis_Bot.Services.Google.Search
 
 				global::Google.Apis.Customsearch.v1.Data.Search googleSearch = await searchRequest.ExecuteAsync();
 
-				List<GoogleSearch> searches = googleSearch.Items.Select(result => new GoogleSearch(result.Title, result.Snippet, result.Link)).ToList();
+				List<GoogleSearch> searches = googleSearch.Items
+					.Select(result => new GoogleSearch(result.Title, result.Snippet, result.Link)).ToList();
 				return searches;
 			}
 			catch (Exception ex)
 			{
-#if  DEBUG
+#if DEBUG
 				Logger.Log(ex.ToString(), LogVerbosity.Error);
 #else
 				Logger.Log(ex.Message, LogVerbosity.Error);

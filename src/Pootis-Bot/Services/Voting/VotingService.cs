@@ -85,7 +85,9 @@ namespace Pootis_Bot.Services.Voting
 			embed.WithTitle(voteTitle);
 			embed.WithDescription(voteDescription +
 			                      $"\nReact to this message with {yesEmoji} to say **YES** or react with {noEmoji} to say **NO**.");
-			embed.WithFooter($"Vote started by {userWhoExecuted} at {DateTime.Now:g} and will end at {DateTime.Now.Add(lastTime):g}.", userWhoExecuted.GetAvatarUrl());
+			embed.WithFooter(
+				$"Vote started by {userWhoExecuted} at {DateTime.Now:g} and will end at {DateTime.Now.Add(lastTime):g}.",
+				userWhoExecuted.GetAvatarUrl());
 
 			await MessageUtils.ModifyMessage(voteMessage, embed);
 
@@ -132,7 +134,8 @@ namespace Pootis_Bot.Services.Voting
 			catch (Exception ex)
 			{
 #if DEBUG
-				Logger.Log($"Some error occured while a vote was ended, here are the details: {ex}", LogVerbosity.Error);
+				Logger.Log($"Some error occured while a vote was ended, here are the details: {ex}",
+					LogVerbosity.Error);
 #else
 				Logger.Log($"Some error occured while a vote was ended, here is the message: {ex.Message}", LogVerbosity.Debug);
 #endif

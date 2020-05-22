@@ -4,7 +4,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core;
 using Pootis_Bot.Preconditions;
-using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Google.YouTube;
 

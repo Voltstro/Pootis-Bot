@@ -56,7 +56,8 @@ namespace Pootis_Bot.Core.Managers
 		}
 
 		/// <summary>
-		/// Gets an user account by a ulong of their ID, and doesn't create server data if needed, also won't create an account if needed.
+		/// Gets an user account by a ulong of their ID, and doesn't create server data if needed, also won't create an account if
+		/// needed.
 		/// So if the user doesn't exist all you will get is null.
 		/// <para>Try and use <see cref="GetAccount"/> if possible!</para>
 		/// </summary>
@@ -126,11 +127,12 @@ namespace Pootis_Bot.Core.Managers
 			ServerList server = ServerListsManager.GetServer(user.Guild);
 
 			//Warnings needed for kick and ban are set to the same amount, and the user has enough warnings so just straight ban
-			if (server.WarningsKickAmount == server.WarningsBanAmount && userAccount.Warnings >= server.WarningsKickAmount)
-				user.BanUser((SocketUser)Global.BotUser, $"Banned for having {server.WarningsKickAmount} warnings.");
+			if (server.WarningsKickAmount == server.WarningsBanAmount &&
+			    userAccount.Warnings >= server.WarningsKickAmount)
+				user.BanUser((SocketUser) Global.BotUser, $"Banned for having {server.WarningsKickAmount} warnings.");
 
 			//Enough warnings for a kick
-			else if(userAccount.Warnings == server.WarningsKickAmount)
+			else if (userAccount.Warnings == server.WarningsKickAmount)
 				user.KickUser((SocketUser) Global.BotUser, $"Kicked for having {server.WarningsKickAmount} warnings.");
 
 			//Enough warnings for a ban

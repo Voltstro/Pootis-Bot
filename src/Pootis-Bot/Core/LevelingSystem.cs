@@ -50,7 +50,8 @@ namespace Pootis_Bot.Core
 			ServerRolePoints serverRole =
 				server.GetServerRolePoints(userAccount.Points);
 
-			Logger.Log($"{user.Username} now has {userAccount.Points} points on guild {user.Guild.Id}", LogVerbosity.Debug);
+			Logger.Log($"{user.Username} now has {userAccount.Points} points on guild {user.Guild.Id}",
+				LogVerbosity.Debug);
 
 			if (serverRole.PointsRequired == 0) return;
 			await user.AddRoleAsync(RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId));

@@ -15,20 +15,21 @@ using Pootis_Bot.Services.Google.YouTube;
 namespace Pootis_Bot.Services.Audio.Music
 {
 	/// <summary>
-	/// Standard music downloader, incorporates <see cref="IYouTubeSearcher"/>, <see cref="IMusicDownloader"/> and <see cref="IAudioConverter"/> to do all the work for you
+	/// Standard music downloader, incorporates <see cref="IYouTubeSearcher"/>, <see cref="IMusicDownloader"/> and
+	/// <see cref="IAudioConverter"/> to do all the work for you
 	/// </summary>
 	public class StandardMusicDownloader
 	{
-		private readonly string musicDirectory;
-		private readonly MusicFileFormat fileFormat;
-		private readonly CancellationTokenSource cancellationTokenSource;
-
 		//Interfaces
-		private readonly IAudioConverter audioConverter;		//Default: FfmpegAudioConverter
-		private readonly IMusicDownloader musicDownloader;		//Default: YouTubeExplodeDownloader
-		private readonly IYouTubeSearcher youTubeSearcher;		//Default: YouTubeService
+		private readonly IAudioConverter audioConverter; //Default: FfmpegAudioConverter
+		private readonly CancellationTokenSource cancellationTokenSource;
+		private readonly MusicFileFormat fileFormat;
+		private readonly string musicDirectory;
+		private readonly IMusicDownloader musicDownloader; //Default: YouTubeExplodeDownloader
+		private readonly IYouTubeSearcher youTubeSearcher; //Default: YouTubeService
 
-		public StandardMusicDownloader(string musicDir, MusicFileFormat musicFileFormat, HttpClient httpClient, CancellationTokenSource cancelSource, IYouTubeSearcher searcher)
+		public StandardMusicDownloader(string musicDir, MusicFileFormat musicFileFormat, HttpClient httpClient,
+			CancellationTokenSource cancelSource, IYouTubeSearcher searcher)
 		{
 			if (!Directory.Exists(musicDir))
 				Directory.CreateDirectory(musicDir);
@@ -56,12 +57,10 @@ namespace Pootis_Bot.Services.Audio.Music
 		public async Task<string> GetSongViaYouTubeUrl(string videoUrl, IUserMessage botMessage)
 		{
 			YouTubeVideo video = await youTubeSearcher.GetVideo(videoUrl);
-			if (video != null)
-			{
-				return await GetOrDownloadSong(video.VideoTitle, botMessage);
-			}
+			if (video != null) return await GetOrDownloadSong(video.VideoTitle, botMessage);
 
-			await MessageUtils.ModifyMessage(botMessage, "Parsed in URL is incorrect or the YouTube video doesn't exist!");
+			await MessageUtils.ModifyMessage(botMessage,
+				"Parsed in URL is incorrect or the YouTube video doesn't exist!");
 			return null;
 		}
 
@@ -79,10 +78,7 @@ namespace Pootis_Bot.Services.Audio.Music
 
 				//First, check if this song exists in our music DIR
 				string songLocation = MusicService.SearchMusicDirectory(songTitle, fileFormat);
-				if (songLocation != null)
-				{
-					return songLocation;
-				}
+				if (songLocation != null) return songLocation;
 
 				await MessageUtils.ModifyMessage(botMessage, $"Searching YouTube for '{songTitle}'");
 
@@ -118,10 +114,7 @@ namespace Pootis_Bot.Services.Audio.Music
 
 				//Do a second search with the title from YouTube
 				songLocation = MusicService.SearchMusicDirectory(videoTitle, fileFormat);
-				if (songLocation != null)
-				{
-					return songLocation;
-				}
+				if (songLocation != null) return songLocation;
 
 				//Make sure the song doesn't succeeds max time
 				if (video.VideoDuration >= Config.bot.AudioSettings.MaxVideoTime)

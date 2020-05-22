@@ -94,11 +94,10 @@ namespace Pootis_Bot.Modules.Server.Setup
 			const string warningsTitle = "Warnings";
 
 			StringBuilder warnings = new StringBuilder();
-			foreach (string command in _warningCommands.Where(warningCommand => server.GetCommandInfo(warningCommand) == null))
-			{
+			foreach (string command in _warningCommands.Where(warningCommand =>
+				server.GetCommandInfo(warningCommand) == null))
 				warnings.Append(
-						$"<:Cross:537572008574189578> The command `{command}` doesn't have a permission added to it!\n");
-			}
+					$"<:Cross:537572008574189578> The command `{command}` doesn't have a permission added to it!\n");
 
 			//There are no warnings
 			if (warnings.Length == 0)

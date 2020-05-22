@@ -6,7 +6,6 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
-using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Structs.Server;
 
@@ -164,7 +163,6 @@ namespace Pootis_Bot.Events
 					//There is an active song playing on this guild
 					ServerMusicItem musicItem = MusicService.GetMusicList(((SocketGuildUser) user).Guild.Id);
 					if (musicItem != null && musicItem.AudioChannel.Id == before.VoiceChannel?.Id)
-					{
 						//It is literally just us in the voice channel
 						if (before.VoiceChannel.Users.Count == 1)
 						{
@@ -178,7 +176,6 @@ namespace Pootis_Bot.Events
 
 							MusicService.currentChannels.Remove(musicItem);
 						}
-					}
 				}
 			}
 			catch (Exception ex)

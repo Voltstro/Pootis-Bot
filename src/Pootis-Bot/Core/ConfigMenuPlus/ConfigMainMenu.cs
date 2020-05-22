@@ -9,7 +9,8 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 	{
 		public void OpenConfigMenu()
 		{
-			UnknownCommandError = "Unknown input! It either needs to be '1', '2', etc or 'exit' to exit out of the config.";
+			UnknownCommandError =
+				"Unknown input! It either needs to be '1', '2', etc or 'exit' to exit out of the config.";
 			UnknownCommandErrorColor = ConsoleColor.Red;
 
 			//Intro stuff
@@ -51,7 +52,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 			while (true)
 			{
 				string token = ConfigPropertyEditor.EditField<ConfigFile>(nameof(Config.bot.BotToken), Config.bot);
-				
+
 				if (string.IsNullOrWhiteSpace(token))
 				{
 					System.Console.WriteLine("A token must be imputed!");

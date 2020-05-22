@@ -1,8 +1,8 @@
 ﻿#if DEBUG
 using System.Text;
 using System.Threading.Tasks;
-using Discord.WebSocket;
 using Discord.Commands;
+using Discord.WebSocket;
 
 namespace Pootis_Bot.Modules.Test
 {

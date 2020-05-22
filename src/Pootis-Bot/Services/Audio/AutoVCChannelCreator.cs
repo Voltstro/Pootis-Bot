@@ -14,7 +14,7 @@ namespace Pootis_Bot.Services.Audio
 		public static async Task<RestVoiceChannel> CreateAutoVCChannel(SocketGuild guild, string baseName)
 		{
 			RestVoiceChannel vcChannel =
-				await (guild).CreateVoiceChannelAsync($"➕ New {baseName} VC");
+				await guild.CreateVoiceChannelAsync($"➕ New {baseName} VC");
 
 			ServerVoiceChannel voiceChannel = new ServerVoiceChannel(vcChannel.Id, baseName);
 

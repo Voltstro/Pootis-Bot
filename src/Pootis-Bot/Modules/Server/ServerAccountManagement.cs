@@ -138,7 +138,9 @@ namespace Pootis_Bot.Modules.Server
 
 			UserAccountsManager.SaveAccounts();
 
-			return usersToChange.Count == 1 ? $"**{sb}** was made warnable." : $"The accounts **{sb}** were all made warnable.";
+			return usersToChange.Count == 1
+				? $"**{sb}** was made warnable."
+				: $"The accounts **{sb}** were all made warnable.";
 		}
 
 		private static string Warn(SocketUser user)

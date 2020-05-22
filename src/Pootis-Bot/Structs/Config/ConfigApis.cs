@@ -10,19 +10,19 @@ namespace Pootis_Bot.Structs.Config
 		/// <summary>
 		/// Giphy API key
 		/// </summary>
-		[ConfigMenuName("Giphy API key")] 
+		[ConfigMenuName("Giphy API key")]
 		public string ApiGiphyKey { get; set; }
 
 		/// <summary>
 		/// Google Search API key
 		/// </summary>
-		[ConfigMenuName("Google Search API key")] 
+		[ConfigMenuName("Google Search API key")]
 		public string ApiGoogleSearchKey { get; set; }
 
 		/// <summary>
 		/// Google Search Engine ID
 		/// </summary>
-		[ConfigMenuName("Google Search Engine ID")] 
+		[ConfigMenuName("Google Search Engine ID")]
 		public string GoogleSearchEngineId { get; set; }
 
 		/// <summary>

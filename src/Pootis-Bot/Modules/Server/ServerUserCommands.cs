@@ -23,7 +23,7 @@ namespace Pootis_Bot.Modules.Server
 		public async Task GiveOptRole([Remainder] string optRoleName = "")
 		{
 			SocketGuildUser user = (SocketGuildUser) Context.User;
-			if(user == null) return;
+			if (user == null) return;
 
 			//Make sure the imputed optRoleName is not empty or null
 			if (string.IsNullOrWhiteSpace(optRoleName))
@@ -42,14 +42,12 @@ namespace Pootis_Bot.Modules.Server
 
 			//If the opt role has a required role, make sure the user has it
 			if (optRole.RoleRequiredId != 0)
-			{
 				//The user doesn't have the required role
 				if (!user.UserHaveRole(optRole.RoleRequiredId))
 				{
 					await Context.Channel.SendMessageAsync("You do not meet the requirements to get this opt role!");
 					return;
 				}
-			}
 
 			//Give the user the role
 			await user.AddRoleAsync(RoleUtils.GetGuildRole(Context.Guild, optRole.RoleToGiveId));
@@ -72,12 +70,9 @@ namespace Pootis_Bot.Modules.Server
 			message.Append("**Opt Roles**\n");
 
 			if (optRoles.Length == 0)
-			{
 				//There are no opt roles
 				message.Append("There are no opt roles!");
-			}
 			else
-			{
 				foreach (OptRole optRole in optRoles)
 				{
 					//There are opt roles, so add them to the String Builder
@@ -87,7 +82,6 @@ namespace Pootis_Bot.Modules.Server
 						? $"`{optRole.Name}` -> **{role.Name}**\n"
 						: $"`{optRole.Name}` -> **{role.Name}** (Requires **{RoleUtils.GetGuildRole(Context.Guild, optRole.RoleRequiredId).Name}**)\n");
 				}
-			}
 
 			await Context.Channel.SendMessageAsync(message.ToString());
 		}

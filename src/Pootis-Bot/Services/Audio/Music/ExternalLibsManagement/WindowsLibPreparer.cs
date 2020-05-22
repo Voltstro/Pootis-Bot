@@ -17,7 +17,8 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 			string externalDirectory = Config.bot.AudioSettings.ExternalDirectory;
 
 			//If either ffmpeg, opus or libsodium doesn't exist, we need to download them
-			return File.Exists($"{externalDirectory}ffmpeg.exe") && File.Exists("opus.dll") && File.Exists("libsodium.dll");
+			return File.Exists($"{externalDirectory}ffmpeg.exe") && File.Exists("opus.dll") &&
+			       File.Exists("libsodium.dll");
 		}
 
 		public void DownloadFiles(AudioExternalLibFiles libsUrls)
@@ -50,7 +51,9 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 			catch (Exception ex)
 			{
 #if DEBUG
-				Logger.Log($"An error occured while preparing music services: {ex}\nMusic services has now been disabled!", LogVerbosity.Error);
+				Logger.Log(
+					$"An error occured while preparing music services: {ex}\nMusic services has now been disabled!",
+					LogVerbosity.Error);
 #else
 				Logger.Log($"An error occured while preparing music services: {ex.Message}\nMusic services has now been disabled!", LogVerbosity.Error);
 #endif

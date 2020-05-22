@@ -20,7 +20,9 @@ namespace Pootis_Bot.Modules.Basic
 
 		[Command("vote", RunMode = RunMode.Async)]
 		[Summary("Starts a vote")]
-		public async Task Vote(string title, string description, string yesEmoji, string noEmoji, [Remainder] [OverrideTypeReader(typeof(TimeSpanCustomReader))] TimeSpan time)
+		public async Task Vote(string title, string description, string yesEmoji, string noEmoji,
+			[Remainder] [OverrideTypeReader(typeof(TimeSpanCustomReader))]
+			TimeSpan time)
 		{
 			if (!yesEmoji.ContainsUnicodeCharacter())
 			{
@@ -43,12 +45,12 @@ namespace Pootis_Bot.Modules.Basic
 		public async Task EndVote([Remainder] string voteId = "0")
 		{
 			//The input is just a number
-			if(ulong.TryParse(voteId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id))
+			if (ulong.TryParse(voteId, NumberStyles.None, CultureInfo.InvariantCulture, out ulong id))
 			{
 				//Cancel last vote the user started
 				if (id == 0)
 				{
-					UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser)Context.User);
+					UserAccount user = UserAccountsManager.GetAccount((SocketGuildUser) Context.User);
 					if (user.UserLastVoteId != 0)
 						await VotingService.EndVote(
 							ServerListsManager.GetServer(Context.Guild).GetVote(user.UserLastVoteId), Context.Guild);
@@ -71,6 +73,7 @@ namespace Pootis_Bot.Modules.Basic
 					await Context.Channel.SendMessageAsync("That vote was ended.");
 					return;
 				}
+
 				if (vote.VoteStarterUserId != Context.User.Id)
 				{
 					await VotingService.EndVote(vote, Context.Guild);
@@ -89,10 +92,7 @@ namespace Pootis_Bot.Modules.Basic
 				}
 
 				Vote[] votes = ServerListsManager.GetServer(Context.Guild).Votes.ToArray();
-				foreach (Vote vote in votes)
-				{
-					await VotingService.EndVote(vote, Context.Guild);
-				}
+				foreach (Vote vote in votes) await VotingService.EndVote(vote, Context.Guild);
 
 				await Context.Channel.SendMessageAsync("All votes were ended.");
 				return;

@@ -27,7 +27,8 @@ namespace Pootis_Bot.Modules.Server.Setup
 				//The welcome/goodbye channel hasn't been set
 				if (server.WelcomeChannelId == 0)
 				{
-					await Context.Channel.SendMessageAsync("There is no welcome/goodbye message channel set! Run the command `setup welcomechannel [channel]` with a text channel name as the argument to set one up.");
+					await Context.Channel.SendMessageAsync(
+						"There is no welcome/goodbye message channel set! Run the command `setup welcomechannel [channel]` with a text channel name as the argument to set one up.");
 					return;
 				}
 

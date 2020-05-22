@@ -43,7 +43,8 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 				Config.bot.AudioSettings.AudioServicesEnabled = false;
 				Config.SaveConfig();
 
-				Logger.Log("Audio services has been disabled since YouTube services are disabled!\nEnable them via the config menu.", 
+				Logger.Log(
+					"Audio services has been disabled since YouTube services are disabled!\nEnable them via the config menu.",
 					LogVerbosity.Error);
 				return;
 			}
@@ -57,15 +58,10 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 			return;
 #endif
 			if (forceRedownload)
-			{
 				UpdatedMusicServiceFiles(libsPreparer);
-			}
-				
-			else if (!libsPreparer.CheckLibFiles())
-			{
-				UpdatedMusicServiceFiles(libsPreparer);
-			}
-				
+
+			else if (!libsPreparer.CheckLibFiles()) UpdatedMusicServiceFiles(libsPreparer);
+
 
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
 				Logger.Log("Audio services are ready!", LogVerbosity.Music);
@@ -82,11 +78,13 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 			if (!Directory.Exists("Temp/")) Directory.CreateDirectory("Temp/");
 
 			//If the external directory doesn't exist, create it
-			if (!Directory.Exists(Config.bot.AudioSettings.ExternalDirectory)) Directory.CreateDirectory(Config.bot.AudioSettings.ExternalDirectory);
+			if (!Directory.Exists(Config.bot.AudioSettings.ExternalDirectory))
+				Directory.CreateDirectory(Config.bot.AudioSettings.ExternalDirectory);
 
 			//We get a json file that tells us where to download other files from
 			string json = WebUtils.DownloadString(AudioLibFileJsonUrl);
-			List<AudioExternalLibFiles> listOfLibsFilesForOs = JsonConvert.DeserializeObject<List<AudioExternalLibFiles>>(json);
+			List<AudioExternalLibFiles> listOfLibsFilesForOs =
+				JsonConvert.DeserializeObject<List<AudioExternalLibFiles>>(json);
 
 			preparer.DownloadFiles(GetUrlsFromOs(listOfLibsFilesForOs));
 			Config.SaveConfig();

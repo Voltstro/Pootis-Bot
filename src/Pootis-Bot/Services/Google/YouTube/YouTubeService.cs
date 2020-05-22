@@ -26,7 +26,6 @@ namespace Pootis_Bot.Services.Google.YouTube
 				//Create a new list
 				IList<YouTubeVideo> videos = new List<YouTubeVideo>(response.Count);
 				foreach (Video result in response)
-				{
 					videos.Add(new YouTubeVideo
 					{
 						VideoId = result.Id.Value,
@@ -35,7 +34,6 @@ namespace Pootis_Bot.Services.Google.YouTube
 						VideoDescription = result.Description,
 						VideoDuration = result.Duration
 					});
-				}
 
 				return videos;
 			}

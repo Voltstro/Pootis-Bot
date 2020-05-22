@@ -28,13 +28,13 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 			await Context.Channel.SendMessageAsync($"The amount of points given out will now be {amount}.");
 		}
-	
+
 		[Command("setup set pointscooldown")]
 		[Summary("Changes the cooldown between when points are given out")]
 		[RequireGuildOwner]
 		public async Task SetServerPointsCooldown(int time)
 		{
-			if(time < 5)
+			if (time < 5)
 			{
 				await Context.Channel.SendMessageAsync("The time cannot be less then 5 seconds!");
 				return;

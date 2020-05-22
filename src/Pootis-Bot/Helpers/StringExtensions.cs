@@ -27,8 +27,11 @@ namespace Pootis_Bot.Helpers
 		/// </summary>
 		/// <param name="str"></param>
 		/// <returns></returns>
-		public static string RemoveWhitespace(this string str) => string.Join("",
-			str.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+		public static string RemoveWhitespace(this string str)
+		{
+			return string.Join("",
+				str.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+		}
 
 		/// <summary>
 		/// Checks if a string contains unicode characters
@@ -68,7 +71,7 @@ namespace Pootis_Bot.Helpers
 			return new string(array);
 		}
 
-		
+
 		/// <summary>
 		/// Removes not allowed characters that can't be in a windows file name
 		/// </summary>
@@ -77,9 +80,7 @@ namespace Pootis_Bot.Helpers
 		public static string RemoveIllegalChars(this string input)
 		{
 			foreach ((string illegalChar, string replaceMent) in IllegalChars)
-			{
 				input = input.Replace(illegalChar, replaceMent);
-			}
 
 			return input;
 		}

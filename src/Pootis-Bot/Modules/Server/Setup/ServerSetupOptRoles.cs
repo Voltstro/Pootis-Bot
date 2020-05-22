@@ -18,7 +18,8 @@ namespace Pootis_Bot.Modules.Server.Setup
 		[Command("setup add optrole")]
 		[Summary("Adds a opt role")]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
-		public async Task AddOptRole(string optRoleBaseName, string roleToAssignName, [Remainder] string requiredRoleName = "")
+		public async Task AddOptRole(string optRoleBaseName, string roleToAssignName,
+			[Remainder] string requiredRoleName = "")
 		{
 			SocketRole roleToAssign = RoleUtils.GetGuildRole(Context.Guild, roleToAssignName);
 
@@ -46,7 +47,8 @@ namespace Pootis_Bot.Modules.Server.Setup
 			//Check to make sure a role give doesn't already exist first
 			if (server.GetOptRole(optRoleBaseName) != null)
 			{
-				await Context.Channel.SendMessageAsync($"An opt role with the name '{optRoleBaseName}' already exists!");
+				await Context.Channel.SendMessageAsync(
+					$"An opt role with the name '{optRoleBaseName}' already exists!");
 				return;
 			}
 

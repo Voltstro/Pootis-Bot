@@ -20,7 +20,8 @@ namespace Pootis_Bot.Modules.Server.Setup
 		{
 			if (warningsNeeded < 1)
 			{
-				await Context.Channel.SendMessageAsync("You need to set warnings for auto kick to be 1 or more warnings!");
+				await Context.Channel.SendMessageAsync(
+					"You need to set warnings for auto kick to be 1 or more warnings!");
 				return;
 			}
 
@@ -33,7 +34,8 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 			ServerListsManager.SaveServerList();
 
-			await Context.Channel.SendMessageAsync($"{warningsNeeded} warnings will now be required for a user to be automatically kicked.");
+			await Context.Channel.SendMessageAsync(
+				$"{warningsNeeded} warnings will now be required for a user to be automatically kicked.");
 		}
 
 		[Command("setup set warnsban")]
@@ -45,14 +47,16 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 			if (warningsNeeded < server.WarningsKickAmount)
 			{
-				await Context.Channel.SendMessageAsync($"You need to set warnings for auto ban to be {server.WarningsKickAmount} or more warnings!");
+				await Context.Channel.SendMessageAsync(
+					$"You need to set warnings for auto ban to be {server.WarningsKickAmount} or more warnings!");
 				return;
 			}
 
 			server.WarningsBanAmount = warningsNeeded;
 			ServerListsManager.SaveServerList();
 
-			await Context.Channel.SendMessageAsync($"{warningsNeeded} or more warnings will now be required for a user to be automatically banned.");
+			await Context.Channel.SendMessageAsync(
+				$"{warningsNeeded} or more warnings will now be required for a user to be automatically banned.");
 		}
 	}
 }

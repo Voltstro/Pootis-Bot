@@ -1,5 +1,4 @@
 #if LINUX
-
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;

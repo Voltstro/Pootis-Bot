@@ -33,7 +33,7 @@ namespace Pootis_Bot.Core
 		public void SetupConsole()
 		{
 			UnknownCommandError =
-				$"Unknown command! Type `help` for help.";
+				"Unknown command! Type `help` for help.";
 			UnknownCommandErrorColor = ConsoleColor.Red;
 
 			//Add all of our commands
@@ -70,9 +70,7 @@ namespace Pootis_Bot.Core
 			commandsWithSummary.Append("==== Command List ====\n");
 
 			foreach ((string _, ConsoleCommand command) in commands)
-			{
 				commandsWithSummary.Append($"`{command.CommandName}` - {command.CommandSummary}\n");
-			}
 
 			commandsWithSummary.Append($"For more info visit {Global.websiteConsoleCommands}");
 

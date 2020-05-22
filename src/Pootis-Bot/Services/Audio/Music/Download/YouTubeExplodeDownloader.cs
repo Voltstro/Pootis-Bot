@@ -16,11 +16,12 @@ namespace Pootis_Bot.Services.Audio.Music.Download
 	/// </summary>
 	public class YouTubeExplodeDownloader : IMusicDownloader
 	{
-		private readonly YoutubeClient ytClient;
-		private readonly string musicDirectory;
 		private readonly CancellationToken cancellationToken;
+		private readonly string musicDirectory;
+		private readonly YoutubeClient ytClient;
 
-		public YouTubeExplodeDownloader(string musicDir = "Music/", HttpClient httpClient = default, CancellationToken cancelToken = default)
+		public YouTubeExplodeDownloader(string musicDir = "Music/", HttpClient httpClient = default,
+			CancellationToken cancelToken = default)
 		{
 			ytClient = new YoutubeClient(httpClient);
 			musicDirectory = musicDir;
@@ -61,7 +62,6 @@ namespace Pootis_Bot.Services.Audio.Music.Download
 #endif
 				return null;
 			}
-			
 		}
 
 		public async Task<string> GetYouTubeVideo(string youTubeVideoId)
