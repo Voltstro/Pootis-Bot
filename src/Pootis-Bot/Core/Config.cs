@@ -70,7 +70,6 @@ namespace Pootis_Bot.Core
 					AudioServicesEnabled = false,
 					LogPlayStopSongToConsole = true,
 					MaxVideoTime = new TimeSpan(0, 7, 0),
-					FfmpegLocation = "External/ffmpeg",
 					MusicFileFormat = MusicFileFormat.Mp3,
 					MusicFolderLocation = "Music/",
 					ExternalDirectory = "External/"

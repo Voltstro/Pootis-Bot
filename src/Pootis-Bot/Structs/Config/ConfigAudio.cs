@@ -16,11 +16,6 @@ namespace Pootis_Bot.Structs.Config
 		public bool LogPlayStopSongToConsole { get; set; }
 
 		/// <summary>
-		/// The location, or command for ffmpeg
-		/// </summary>
-		public string FfmpegLocation { get; set; }
-
-		/// <summary>
 		/// The directory where our external applications will live
 		/// </summary>
 		public string ExternalDirectory { get; set; }

@@ -31,7 +31,7 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 				{
 					StartInfo = new ProcessStartInfo
 					{
-						FileName = Config.bot.AudioSettings.FfmpegLocation,
+						FileName = $"{Config.bot.AudioSettings.ExternalDirectory}ffmpeg",
 						Arguments = $"-loglevel fatal -nostdin -i \"{originalLocation}\" -ar 48000 -y \"{fullNewLocation}\"",
 						CreateNoWindow = true,
 						UseShellExecute = false,

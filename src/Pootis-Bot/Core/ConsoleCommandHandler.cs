@@ -12,7 +12,6 @@ using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
-using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Audio.Music;
 using Pootis_Bot.Services.Audio.Music.ExternalLibsManagement;
 using Console = Pootis_Bot.ConsoleCommandHandler.Console;
@@ -200,7 +199,7 @@ namespace Pootis_Bot.Core
 			Logger.Log($"The audio service was set to {Config.bot.AudioSettings.AudioServicesEnabled}",
 				LogVerbosity.Music);
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
-				MusicLibsChecker.CheckMusicService(false);
+				MusicLibsChecker.CheckMusicService();
 		}
 
 		private static async void ForceAudioUpdateCmd()
@@ -212,7 +211,7 @@ namespace Pootis_Bot.Core
 			await Task.Delay(1000);
 
 			//Delete old files first
-			Directory.Delete("External/", true);
+			Directory.Delete(Config.bot.AudioSettings.ExternalDirectory, true);
 			File.Delete("libsodium.dll");
 			File.Delete("opus.dll");
 
