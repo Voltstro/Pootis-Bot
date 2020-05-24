@@ -142,7 +142,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			}
 
 			//Check the emoji
-			if (!server.RuleReactionEmoji.ContainsUnicodeCharacter())
+			if (!server.RuleReactionEmoji.ContainsOnlyOneEmoji())
 			{
 				await Context.Channel.SendMessageAsync("The emoji that is meant to be used is invalid!");
 				return;

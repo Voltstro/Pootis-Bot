@@ -28,7 +28,8 @@ namespace Pootis_Bot.Core
 		{
 			["User not found."] = "You need to input a valid username for your username argument!",
 			["Failed to parse TimeSpan"] =
-				"Your imputed time isn't in the right format, use a format like this: `1d 3h 40m 10s`"
+				"Your imputed time isn't in the right format, use a format like this: `1d 3h 40m 10s`",
+			["Input was not an emoji!"] = "The required input of an emoji is not an emoji!"
 		};
 
 		private readonly IServiceProvider _services;

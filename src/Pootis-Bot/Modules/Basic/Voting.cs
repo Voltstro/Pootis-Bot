@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Core.Managers;
@@ -20,23 +21,11 @@ namespace Pootis_Bot.Modules.Basic
 
 		[Command("vote", RunMode = RunMode.Async)]
 		[Summary("Starts a vote")]
-		public async Task Vote(string title, string description, string yesEmoji, string noEmoji,
+		public async Task Vote(string title, string description, Emoji yesEmoji, Emoji noEmoji,
 			[Remainder] [OverrideTypeReader(typeof(TimeSpanCustomReader))]
 			TimeSpan time)
 		{
-			if (!yesEmoji.ContainsUnicodeCharacter())
-			{
-				await Context.Channel.SendMessageAsync("Your yes emoji is not a unicode!");
-				return;
-			}
-
-			if (!noEmoji.ContainsUnicodeCharacter())
-			{
-				await Context.Channel.SendMessageAsync("Your no emoji is not a unicode!");
-				return;
-			}
-
-			await VotingService.StartVote(title, description, time, yesEmoji, noEmoji, Context.Guild, Context.Channel,
+			await VotingService.StartVote(title, description, time, yesEmoji.Name, noEmoji.Name, Context.Guild, Context.Channel,
 				Context.User);
 		}
 
