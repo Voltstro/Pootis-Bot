@@ -9,11 +9,11 @@ namespace Pootis_Bot.Preconditions
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
 	public class RequireGuildOwnerAttribute : PreconditionAttribute
 	{
-		private readonly bool _allowOtherOwners;
+		private readonly bool allowOtherOwners;
 
 		public RequireGuildOwnerAttribute(bool allowOtherGuildOwners = true)
 		{
-			_allowOtherOwners = allowOtherGuildOwners;
+			allowOtherOwners = allowOtherGuildOwners;
 		}
 
 		/// <summary>
@@ -31,9 +31,9 @@ namespace Pootis_Bot.Preconditions
 				return Task.FromResult(PreconditionResult.FromSuccess());
 
 			ulong userId = ServerListsManager.GetServer((SocketGuild) context.Guild).GetAGuildOwner(context.User.Id);
-			if (_allowOtherOwners && userId != 0)
+			if (allowOtherOwners && userId != 0)
 				return Task.FromResult(PreconditionResult.FromSuccess());
-			if (!_allowOtherOwners && userId != 0)
+			if (!allowOtherOwners && userId != 0)
 				return Task.FromResult(PreconditionResult.FromError(
 					"Sorry, but only the primary owner of this Discord server can run this command!"));
 

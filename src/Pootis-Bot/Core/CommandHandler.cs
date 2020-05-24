@@ -20,11 +20,11 @@ namespace Pootis_Bot.Core
 {
 	public class CommandHandler
 	{
-		private readonly AntiSpamService _antiSpam;
-		private readonly DiscordSocketClient _client;
-		private readonly CommandService _commands;
+		private readonly AntiSpamService antiSpam;
+		private readonly DiscordSocketClient client;
+		private readonly CommandService commands;
 
-		private readonly Dictionary<string, string> _errors = new Dictionary<string, string>
+		private readonly Dictionary<string, string> errors = new Dictionary<string, string>
 		{
 			["User not found."] = "You need to input a valid username for your username argument!",
 			["Failed to parse TimeSpan"] =
@@ -32,15 +32,15 @@ namespace Pootis_Bot.Core
 			["Input was not an emoji!"] = "The required input of an emoji is not an emoji!"
 		};
 
-		private readonly IServiceProvider _services;
+		private readonly IServiceProvider services;
 
 		public CommandHandler(DiscordSocketClient client)
 		{
-			_commands = new CommandService();
-			_antiSpam = new AntiSpamService();
-			_client = client;
+			commands = new CommandService();
+			antiSpam = new AntiSpamService();
+			this.client = client;
 
-			_services = new ServiceCollection().AddSingleton(this)
+			services = new ServiceCollection().AddSingleton(this)
 				.AddSingleton(new YouTubeService(Global.HttpClient))
 				.AddSingleton(new GoogleService())
 				.BuildServiceProvider();
@@ -53,15 +53,15 @@ namespace Pootis_Bot.Core
 		public async Task SetupCommandHandlingAsync()
 		{
 			//Add our custom type readers
-			_commands.AddTypeReader(typeof(string[]), new StringArrayTypeReader());
-			_commands.AddTypeReader(typeof(SocketGuildUser[]), new GuildUserArrayTypeReader());
-			_commands.AddTypeReader(typeof(Emoji), new EmojiTypeReader());
+			commands.AddTypeReader(typeof(string[]), new StringArrayTypeReader());
+			commands.AddTypeReader(typeof(SocketGuildUser[]), new GuildUserArrayTypeReader());
+			commands.AddTypeReader(typeof(Emoji), new EmojiTypeReader());
 
 			//Add our modules and setup the module manager so other classes can access module info
-			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
-			DiscordModuleManager.SetupModuleManager(_commands);
+			await commands.AddModulesAsync(Assembly.GetEntryAssembly(), services);
+			DiscordModuleManager.SetupModuleManager(commands);
 
-			_client.MessageReceived += HandleMessage;
+			client.MessageReceived += HandleMessage;
 		}
 
 		private Task HandleMessage(SocketMessage messageParam)
@@ -127,7 +127,7 @@ namespace Pootis_Bot.Core
 			}
 
 			//Execute the command and handle the result
-			IResult result = _commands.ExecuteAsync(context, argPos, _services).GetAwaiter().GetResult();
+			IResult result = commands.ExecuteAsync(context, argPos, services).GetAwaiter().GetResult();
 			HandleCommandResult(context, msg, result).GetAwaiter().GetResult();
 
 			return true;
@@ -148,7 +148,7 @@ namespace Pootis_Bot.Core
 			if (!(message is SocketUserMessage userMessage)) return false;
 			msg = userMessage;
 
-			context = new SocketCommandContext(_client, msg);
+			context = new SocketCommandContext(client, msg);
 
 			if (message.Author.IsBot)
 				return false;
@@ -179,12 +179,12 @@ namespace Pootis_Bot.Core
 
 			//Someone has mention more than 2 users, check with the anti-spam
 			if (msg.MentionedUsers.Count >= 2)
-				if (_antiSpam.CheckMentionUsers(msg, context.Guild))
+				if (antiSpam.CheckMentionUsers(msg, context.Guild))
 					return false;
 
 			//There are role mentions
 			if (msg.MentionedRoles.Count >= 1)
-				if (_antiSpam.CheckRoleMentions(msg, (SocketGuildUser) msg.Author))
+				if (antiSpam.CheckRoleMentions(msg, (SocketGuildUser) msg.Author))
 					return false;
 
 			return true;
@@ -200,7 +200,7 @@ namespace Pootis_Bot.Core
 		private bool CheckUserPermission(SocketCommandContext context, ServerList server, int argPos)
 		{
 			//Get the command first
-			SearchResult cmdSearchResult = _commands.Search(context, argPos);
+			SearchResult cmdSearchResult = commands.Search(context, argPos);
 			if (!cmdSearchResult.IsSuccess) return true;
 
 			ServerList.CommandPermission perm = server.GetCommandInfo(cmdSearchResult.Commands[0].Command.Name);
@@ -230,7 +230,7 @@ namespace Pootis_Bot.Core
 
 			if (!result.IsSuccess)
 				//Handle custom errors
-				foreach (KeyValuePair<string, string> error in _errors.Where(error =>
+				foreach (KeyValuePair<string, string> error in errors.Where(error =>
 					result.ErrorReason.StartsWith(error.Key)))
 				{
 					await context.Channel.SendMessageAsync(error.Value);

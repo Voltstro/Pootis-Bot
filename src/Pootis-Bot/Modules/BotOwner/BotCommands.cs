@@ -15,11 +15,11 @@ namespace Pootis_Bot.Modules.BotOwner
 		// Description      - Bot owner commands
 		// Contributors     - Creepysin, 
 
-		private readonly CommandService _cmdService;
+		private readonly CommandService cmdService;
 
 		public BotCommands(CommandService commandService)
 		{
-			_cmdService = commandService;
+			cmdService = commandService;
 		}
 
 		[Command("addxp")]
@@ -88,7 +88,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			StringBuilder cmds = new StringBuilder();
 			cmds.Append("**All commands**\n");
 
-			foreach (CommandInfo command in _cmdService.Commands) cmds.Append($"`{command.Name}` ");
+			foreach (CommandInfo command in cmdService.Commands) cmds.Append($"`{command.Name}` ");
 
 			await Context.Channel.SendMessageAsync(cmds.ToString());
 		}
@@ -101,7 +101,7 @@ namespace Pootis_Bot.Modules.BotOwner
 			StringBuilder modules = new StringBuilder();
 			modules.Append("**All modules**\n");
 
-			foreach (ModuleInfo module in _cmdService.Modules) modules.Append($"`{module.Name}` ");
+			foreach (ModuleInfo module in cmdService.Modules) modules.Append($"`{module.Name}` ");
 
 			await Context.Channel.SendMessageAsync(modules.ToString());
 		}

@@ -13,17 +13,17 @@ namespace Pootis_Bot.Core.Managers
 	public static class HelpModulesManager
 	{
 		private const string HelpModulesFile = "Resources/HelpModules.json";
-		private static List<HelpModule> _helpModules;
+		private static List<HelpModule> helpModules;
 
 		static HelpModulesManager()
 		{
 			if (DataStorage.SaveExists(HelpModulesFile))
 			{
-				_helpModules = DataStorage.LoadHelpModules(HelpModulesFile).ToList();
+				helpModules = DataStorage.LoadHelpModules(HelpModulesFile).ToList();
 			}
 			else
 			{
-				_helpModules = DefaultHelpModules();
+				helpModules = DefaultHelpModules();
 				SaveHelpModules();
 			}
 		}
@@ -33,7 +33,7 @@ namespace Pootis_Bot.Core.Managers
 		/// </summary>
 		public static void SaveHelpModules()
 		{
-			DataStorage.SaveHelpModules(_helpModules, HelpModulesFile);
+			DataStorage.SaveHelpModules(helpModules, HelpModulesFile);
 		}
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace Pootis_Bot.Core.Managers
 		/// <returns></returns>
 		public static List<HelpModule> GetHelpModules()
 		{
-			return _helpModules;
+			return helpModules;
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace Pootis_Bot.Core.Managers
 		/// </summary>
 		public static void CheckHelpModules()
 		{
-			foreach (string module in _helpModules.SelectMany(helpModule =>
+			foreach (string module in helpModules.SelectMany(helpModule =>
 				helpModule.Modules.Where(module => DiscordModuleManager.GetModule(module) == null)))
 				Logger.Log(
 					$"There is no module called {module}! Reset the help modules or fix the help modules in the config file!",
@@ -62,41 +62,41 @@ namespace Pootis_Bot.Core.Managers
 		/// </summary>
 		public static void ResetHelpModulesToDefault()
 		{
-			_helpModules = null;
-			_helpModules = DefaultHelpModules();
+			helpModules = null;
+			helpModules = DefaultHelpModules();
 		}
 
 		private static List<HelpModule> DefaultHelpModules()
 		{
-			List<HelpModule> helpModules = new List<HelpModule>();
+			List<HelpModule> newHelpModules = new List<HelpModule>();
 
 			HelpModule basic = new HelpModule
 			{
 				Group = "Basic",
 				Modules = new List<string> {nameof(Basic), nameof(Misc)}
 			};
-			helpModules.Add(basic);
+			newHelpModules.Add(basic);
 
 			HelpModule utils = new HelpModule
 			{
 				Group = "Utils",
 				Modules = new List<string> {nameof(Utils)}
 			};
-			helpModules.Add(utils);
+			newHelpModules.Add(utils);
 
 			HelpModule voting = new HelpModule
 			{
 				Group = "Voting",
 				Modules = new List<string> {nameof(Voting)}
 			};
-			helpModules.Add(voting);
+			newHelpModules.Add(voting);
 
 			HelpModule account = new HelpModule
 			{
 				Group = "Account",
 				Modules = new List<string> {nameof(AccountDataManagement), nameof(AccountUtils)}
 			};
-			helpModules.Add(account);
+			newHelpModules.Add(account);
 
 			HelpModule fun = new HelpModule
 			{
@@ -107,16 +107,16 @@ namespace Pootis_Bot.Core.Managers
 					nameof(RandomPerson), nameof(TronaldDump), nameof(SteamUserUtils)
 				}
 			};
-			helpModules.Add(fun);
+			newHelpModules.Add(fun);
 
 			HelpModule audio = new HelpModule
 			{
 				Group = "Audio",
 				Modules = new List<string> {nameof(Music)}
 			};
-			helpModules.Add(audio);
+			newHelpModules.Add(audio);
 
-			return helpModules;
+			return newHelpModules;
 		}
 	}
 }

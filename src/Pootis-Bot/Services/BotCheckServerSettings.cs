@@ -14,11 +14,11 @@ namespace Pootis_Bot.Services
 {
 	public class BotCheckServerSettings
 	{
-		private static DiscordSocketClient _client;
+		private static DiscordSocketClient client;
 
 		public BotCheckServerSettings(DiscordSocketClient client)
 		{
-			_client = client;
+			BotCheckServerSettings.client = client;
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Pootis_Bot.Services
 			foreach (ServerList server in servers)
 			{
 				//The bot is not longer in this guild, remove it from the server settings
-				if (_client.GetGuild(server.GuildId) == null)
+				if (client.GetGuild(server.GuildId) == null)
 				{
 					somethingChanged = true;
 					serversToRemove.Add(server);
@@ -56,7 +56,7 @@ namespace Pootis_Bot.Services
 				foreach (Vote serverVote in server.Votes)
 				{
 #pragma warning disable 4014
-					Task.Run(() => VotingService.RunVote(serverVote, _client.GetGuild(server.GuildId)));
+					Task.Run(() => VotingService.RunVote(serverVote, client.GetGuild(server.GuildId)));
 #pragma warning restore 4014
 				}
 			}
@@ -83,10 +83,10 @@ namespace Pootis_Bot.Services
 		public static async Task CheckServerWelcomeSettings(ServerList server)
 		{
 			//If the welcome channel doesn't exist and welcome/goodbye message is enabled, then disable it and tell the owner
-			if (_client.GetChannel(server.WelcomeChannelId) == null && server.WelcomeMessageEnabled)
+			if (client.GetChannel(server.WelcomeChannelId) == null && server.WelcomeMessageEnabled)
 			{
-				SocketGuild guild = _client.GetGuild(server.GuildId);
-				IDMChannel ownerDm = await _client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
+				SocketGuild guild = client.GetGuild(server.GuildId);
+				IDMChannel ownerDm = await client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
 
 				await ownerDm.SendMessageAsync(
 					$"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +
@@ -107,7 +107,7 @@ namespace Pootis_Bot.Services
 		{
 			//Get all the voice channels that have been deleted
 			List<ServerVoiceChannel> autoVcChannelsToDelete = (from autoVoiceChannel in server.AutoVoiceChannels
-				let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel.Id)
+				let vcChannel = client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel.Id)
 				where vcChannel == null
 				select autoVoiceChannel).ToList();
 
@@ -125,20 +125,20 @@ namespace Pootis_Bot.Services
 		{
 			//Get all the active voice channels that have been deleted, or have no one in it
 			List<ulong> autoVcChannelsToDelete = (from serverActiveAutoVoiceChannel in server.ActiveAutoVoiceChannels
-				let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(serverActiveAutoVoiceChannel)
+				let vcChannel = client.GetGuild(server.GuildId).GetVoiceChannel(serverActiveAutoVoiceChannel)
 				where vcChannel == null
 				select serverActiveAutoVoiceChannel).ToList();
 
 			foreach (ulong voiceChannel in autoVcChannelsToDelete) server.ActiveAutoVoiceChannels.Remove(voiceChannel);
 
 			List<ulong> autoVcWithNoUsers = (from activeAutoVoiceChannel in server.ActiveAutoVoiceChannels
-				let vcChannel = _client.GetGuild(server.GuildId).GetVoiceChannel(activeAutoVoiceChannel)
+				let vcChannel = client.GetGuild(server.GuildId).GetVoiceChannel(activeAutoVoiceChannel)
 				where vcChannel.Users.Count == 0
 				select activeAutoVoiceChannel).ToList();
 
 			foreach (ulong autoVoiceChannel in autoVcWithNoUsers)
 			{
-				_client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel).DeleteAsync();
+				client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel).DeleteAsync();
 				server.ActiveAutoVoiceChannels.Remove(autoVoiceChannel);
 			}
 
@@ -154,7 +154,7 @@ namespace Pootis_Bot.Services
 			foreach (ServerList.CommandPermission perm in server.CommandPermissions)
 			{
 				List<ulong> rolesToRemove =
-					perm.Roles.Where(role => _client.GetGuild(server.GuildId).GetRole(role) == null).ToList();
+					perm.Roles.Where(role => client.GetGuild(server.GuildId).GetRole(role) == null).ToList();
 
 				foreach (ulong roleToRemove in rolesToRemove) perm.Roles.Remove(roleToRemove);
 			}
@@ -168,16 +168,16 @@ namespace Pootis_Bot.Services
 		{
 			if (!server.RuleEnabled) return;
 
-			if (_client.GetGuild(server.GuildId).GetChannel(server.RuleMessageChannelId) == null)
+			if (client.GetGuild(server.GuildId).GetChannel(server.RuleMessageChannelId) == null)
 			{
 				//The rule reaction will be disabled and the owner of the guild will be notified.
 				server.RuleEnabled = false;
 
 				ServerListsManager.SaveServerList();
 
-				IDMChannel dm = await _client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
+				IDMChannel dm = await client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
 				await dm.SendMessageAsync(
-					$"Your rule reaction on the Discord server **{_client.GetGuild(server.GuildId).Name}** has been disabled due to the message being deleted.\n" +
+					$"Your rule reaction on the Discord server **{client.GetGuild(server.GuildId).Name}** has been disabled due to the message being deleted.\n" +
 					"You can enable it again after setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");
 			}
 		}

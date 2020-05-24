@@ -7,7 +7,6 @@ namespace Pootis_Bot.Modules.Fun
 	/// </summary>
 	public static class FunCmdsConfig
 	{
-		public static readonly string ytStartLink = "https://www.youtube.com/watch?v=";
 		public static readonly string ytChannelStart = "https://www.youtube.com/channel/";
 
 		public static readonly Color youtubeColor = new Color(229, 57, 38);
@@ -17,8 +16,6 @@ namespace Pootis_Bot.Modules.Fun
 		public static readonly Color randomPersonColor = new Color(59, 245, 121);
 		public static readonly Color wikipediaSearchColor = new Color(237, 237, 237);
 
-		public static readonly int youtubeMaxSearches = 8;
-		public static readonly int googleMaxSearches = 12;
 		public static readonly int wikipediaMaxSearches = 15;
 	}
 }

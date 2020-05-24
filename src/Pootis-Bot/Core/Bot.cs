@@ -15,7 +15,7 @@ namespace Pootis_Bot.Core
 	{
 		public static bool IsRunning;
 		public static bool IsStreaming;
-		private DiscordSocketClient _client;
+		private DiscordSocketClient client;
 
 		/// <summary>
 		/// Starts the bot
@@ -32,7 +32,7 @@ namespace Pootis_Bot.Core
 
 			Logger.Log("Creating new client...", LogVerbosity.Debug);
 
-			_client = new DiscordSocketClient(new DiscordSocketConfig
+			client = new DiscordSocketClient(new DiscordSocketConfig
 			{
 				LogLevel = LogSeverity.Verbose
 			});
@@ -40,21 +40,21 @@ namespace Pootis_Bot.Core
 			Logger.Log("Setting up events", LogVerbosity.Debug);
 
 			//Setup client events
-			_client.Log += Log;
-			_client.Ready += BotReady;
+			client.Log += Log;
+			client.Ready += BotReady;
 
 			//Setup the remaining events
-			EventsSetup unused = new EventsSetup(_client);
+			EventsSetup unused = new EventsSetup(client);
 
 			Logger.Log("Signing in using token...", LogVerbosity.Debug);
 
-			await _client.LoginAsync(TokenType.Bot,
+			await client.LoginAsync(TokenType.Bot,
 				Global.BotToken); //Logging into the bot using the token in the config.
-			await _client.StartAsync(); //Start the client
+			await client.StartAsync(); //Start the client
 
 			Logger.Log("Sign in successful!", LogVerbosity.Debug);
 
-			CommandHandler handler = new CommandHandler(_client);
+			CommandHandler handler = new CommandHandler(client);
 
 			Logger.Log("Installing commands...", LogVerbosity.Debug);
 
@@ -65,7 +65,7 @@ namespace Pootis_Bot.Core
 			HelpModulesManager.CheckHelpModules();
 
 			//Bot owner
-			Global.BotOwner = (await _client.GetApplicationInfoAsync()).Owner;
+			Global.BotOwner = (await client.GetApplicationInfoAsync()).Owner;
 
 			Logger.Log($"The owner of this bot is {Global.BotOwner}", LogVerbosity.Debug);
 
@@ -74,22 +74,22 @@ namespace Pootis_Bot.Core
 				SteamService.SetupSteam();
 
 			//Set the bot status to the default game status
-			await _client.SetGameAsync(Config.bot.DefaultGameMessage);
+			await client.SetGameAsync(Config.bot.DefaultGameMessage);
 			await CheckConnectionStatus();
 		}
 
 		private async Task BotReady()
 		{
 			//Check the current connected server settings
-			await new BotCheckServerSettings(_client).CheckConnectedServerSettings();
+			await new BotCheckServerSettings(client).CheckConnectedServerSettings();
 
 			//Bot user
-			Global.BotUser = _client.CurrentUser;
+			Global.BotUser = client.CurrentUser;
 
 			Logger.Log("Bot is now ready and online!");
 
 #pragma warning disable 4014
-			Task.Run(() => new ConsoleCommandHandler(_client).SetupConsole());
+			Task.Run(() => new ConsoleCommandHandler(client).SetupConsole());
 #pragma warning restore 4014
 		}
 
@@ -110,15 +110,15 @@ namespace Pootis_Bot.Core
 
 					Logger.Log("Checking bot connection status...", LogVerbosity.Debug);
 
-					if (_client.ConnectionState != ConnectionState.Disconnected &&
-					    (_client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
+					if (client.ConnectionState != ConnectionState.Disconnected &&
+					    (client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
 
 					Logger.Log("The bot had disconnect for some reason, restarting...", LogVerbosity.Warn);
 
 					IsRunning = false;
 
-					await _client.LogoutAsync();
-					_client.Dispose();
+					await client.LogoutAsync();
+					client.Dispose();
 
 					Logger.EndLogger();
 

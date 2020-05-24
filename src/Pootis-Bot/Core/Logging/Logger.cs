@@ -10,11 +10,11 @@ namespace Pootis_Bot.Core.Logging
 	{
 		private const string LogDirectory = "Logs/";
 
-		private static string _finalLogName;
+		private static string finalLogName;
 
-		private static bool _endLogger;
+		private static bool endLogger;
 
-		private static StreamWriter _logStream;
+		private static StreamWriter logStream;
 		private static readonly ConcurrentQueue<string> Messages = new ConcurrentQueue<string>();
 
 		/// <summary>
@@ -22,16 +22,16 @@ namespace Pootis_Bot.Core.Logging
 		/// </summary>
 		public static void InitiateLogger()
 		{
-			if (_logStream == null)
+			if (logStream == null)
 			{
 				if (!Directory.Exists(LogDirectory))
 					Directory.CreateDirectory(LogDirectory);
 
-				_finalLogName = FinalLogName();
+				finalLogName = FinalLogName();
 
 				//Create our StreamWriter
-				_logStream = File.CreateText(LogDirectory + "latest.log");
-				_logStream.AutoFlush = true;
+				logStream = File.CreateText(LogDirectory + "latest.log");
+				logStream.AutoFlush = true;
 
 				//Run a new task for logging the messages
 				Task.Run(() => WriteMessages().GetAwaiter().GetResult());
@@ -47,19 +47,19 @@ namespace Pootis_Bot.Core.Logging
 		/// </summary>
 		public static void EndLogger()
 		{
-			_endLogger = true;
+			endLogger = true;
 
 			while (!Messages.IsEmpty)
 			{
 				Messages.TryDequeue(out string msg);
-				_logStream.WriteLine(msg);
+				logStream.WriteLine(msg);
 			}
 
-			_logStream.WriteLine($"Goodbye! Logger shutdown at {Global.TimeNow()} on day {DateTime.Now:MM-dd}");
+			logStream.WriteLine($"Goodbye! Logger shutdown at {Global.TimeNow()} on day {DateTime.Now:MM-dd}");
 
-			_logStream.Dispose();
+			logStream.Dispose();
 
-			File.Copy(LogDirectory + "latest.log", LogDirectory + _finalLogName);
+			File.Copy(LogDirectory + "latest.log", LogDirectory + finalLogName);
 		}
 
 		/// <summary>
@@ -69,7 +69,7 @@ namespace Pootis_Bot.Core.Logging
 		/// <param name="logVerbosity"></param>
 		public static void Log(string message, LogVerbosity logVerbosity = LogVerbosity.Info)
 		{
-			if (_logStream == null) throw new Exception("The log stream hasn't been setup yet!");
+			if (logStream == null) throw new Exception("The log stream hasn't been setup yet!");
 
 			string formattedMessage = $"[{Global.TimeNow()} {logVerbosity}] {message}";
 
@@ -114,7 +114,7 @@ namespace Pootis_Bot.Core.Logging
 
 		private static async Task WriteMessages()
 		{
-			while (!_endLogger)
+			while (!endLogger)
 			{
 				if (Messages.IsEmpty)
 				{
@@ -128,7 +128,7 @@ namespace Pootis_Bot.Core.Logging
 
 			static void WriteDirect(string message)
 			{
-				_logStream.WriteLine(message);
+				logStream.WriteLine(message);
 			}
 		}
 

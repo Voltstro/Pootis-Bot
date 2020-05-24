@@ -20,11 +20,11 @@ namespace Pootis_Bot.Core
 {
 	public class ConsoleCommandHandler : Console
 	{
-		private readonly DiscordSocketClient _client;
+		private readonly DiscordSocketClient client;
 
 		public ConsoleCommandHandler(DiscordSocketClient client)
 		{
-			_client = client;
+			this.client = client;
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace Pootis_Bot.Core
 			Bot.IsRunning = false;
 
 			Logger.Log("Shutting down...");
-			await _client.SetGameAsync("Bot shutting down");
+			await client.SetGameAsync("Bot shutting down");
 
 			Logger.Log("Stopping audio services...", LogVerbosity.Music);
 			foreach (ServerMusicItem channel in MusicService.currentChannels)
@@ -100,8 +100,8 @@ namespace Pootis_Bot.Core
 				Logger.Log($"Ended {channel.GuildId} audio session.", LogVerbosity.Debug);
 			}
 
-			await _client.LogoutAsync();
-			_client.Dispose();
+			await client.LogoutAsync();
+			client.Dispose();
 
 			//Clean up
 			Global.HttpClient.Dispose();
@@ -138,7 +138,7 @@ namespace Pootis_Bot.Core
 				twitch = Config.bot.TwitchStreamingSite;
 			}
 
-			await _client.SetGameAsync(Global.BotStatusText, twitch, activity);
+			await client.SetGameAsync(Global.BotStatusText, twitch, activity);
 
 			Logger.Log($"Bot's game status was set to '{Global.BotStatusText}'");
 		}
@@ -148,13 +148,13 @@ namespace Pootis_Bot.Core
 			if (Bot.IsStreaming)
 			{
 				Bot.IsStreaming = false;
-				await _client.SetGameAsync(Global.BotStatusText, "");
+				await client.SetGameAsync(Global.BotStatusText, "");
 				Logger.Log("Bot no longer shows streaming status.");
 			}
 			else
 			{
 				Bot.IsStreaming = true;
-				await _client.SetGameAsync(Global.BotStatusText, Config.bot.TwitchStreamingSite,
+				await client.SetGameAsync(Global.BotStatusText, Config.bot.TwitchStreamingSite,
 					ActivityType.Streaming);
 
 				Logger.Log("Bot now shows streaming status.");
@@ -220,7 +220,7 @@ namespace Pootis_Bot.Core
 		private void StatusCmd()
 		{
 			Logger.Log(
-				$"Bot status: {_client.ConnectionState.ToString()}\nServer count: {_client.Guilds.Count}\nLatency: {_client.Latency}");
+				$"Bot status: {client.ConnectionState.ToString()}\nServer count: {client.Guilds.Count}\nLatency: {client.Latency}");
 		}
 
 		private static void ClearCmd()

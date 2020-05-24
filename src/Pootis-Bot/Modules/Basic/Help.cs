@@ -19,11 +19,11 @@ namespace Pootis_Bot.Modules.Basic
 		// Description      - The two help commands
 		// Contributors     - Creepysin, 
 
-		private readonly CommandService _cmdService;
+		private readonly CommandService cmdService;
 
 		public Help(CommandService commandService)
 		{
-			_cmdService = commandService;
+			cmdService = commandService;
 		}
 
 		[Command("help")]
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Modules.Basic
 			embed.WithTitle($"Help for {query}");
 			embed.WithColor(new Color(241, 196, 15));
 
-			SearchResult result = _cmdService.Search(Context, query);
+			SearchResult result = cmdService.Search(Context, query);
 			if (result.IsSuccess)
 				foreach (CommandMatch commandMatch in result.Commands)
 					embed.AddField(commandMatch.Command.Name,

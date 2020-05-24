@@ -13,12 +13,12 @@ namespace Pootis_Bot.Services
 {
 	public class PermissionService
 	{
-		private readonly string[] _blockedCmds = {"profile", "profilemsg", "hello", "ping", "perm"};
-		private readonly CommandService _service;
+		private readonly string[] blockedCmds = {"profile", "profilemsg", "hello", "ping", "perm"};
+		private readonly CommandService service;
 
 		public PermissionService(CommandService commandService)
 		{
-			_service = commandService;
+			service = commandService;
 		}
 
 		/// <summary>
@@ -174,7 +174,7 @@ namespace Pootis_Bot.Services
 		private bool CanModifyPerm(string command)
 		{
 			bool canModifyPerm = true;
-			foreach (string cmd in _blockedCmds)
+			foreach (string cmd in blockedCmds)
 				if (command == cmd)
 					canModifyPerm = false;
 
@@ -186,7 +186,7 @@ namespace Pootis_Bot.Services
 			// ReSharper disable once NotAccessedVariable
 			bool doesCmdExist = false;
 
-			foreach (ModuleInfo module in _service.Modules) //Get the command info
+			foreach (ModuleInfo module in service.Modules) //Get the command info
 			{
 				if (doesCmdExist)
 					continue;

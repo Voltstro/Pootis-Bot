@@ -8,7 +8,7 @@ namespace Pootis_Bot.Preconditions
 {
 	public class CooldownAttribute : PreconditionAttribute
 	{
-		private readonly ConcurrentDictionary<CooldownInfo, DateTime> _cooldowns =
+		private readonly ConcurrentDictionary<CooldownInfo, DateTime> cooldowns =
 			new ConcurrentDictionary<CooldownInfo, DateTime>();
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace Pootis_Bot.Preconditions
 		{
 			CooldownInfo key = new CooldownInfo(context.User.Id, command.GetHashCode());
 
-			if (_cooldowns.TryGetValue(key, out DateTime endsAt))
+			if (cooldowns.TryGetValue(key, out DateTime endsAt))
 			{
 				TimeSpan difference = endsAt.Subtract(DateTime.Now);
 				if (difference.Ticks > 0)
@@ -43,11 +43,11 @@ namespace Pootis_Bot.Preconditions
 							$"Please wait {difference:ss} seconds before trying again!"));
 
 				DateTime time = DateTime.Now.Add(CooldownLength);
-				_cooldowns.TryUpdate(key, time, endsAt);
+				cooldowns.TryUpdate(key, time, endsAt);
 			}
 			else
 			{
-				_cooldowns.TryAdd(key, DateTime.Now.Add(CooldownLength));
+				cooldowns.TryAdd(key, DateTime.Now.Add(CooldownLength));
 			}
 
 			return Task.FromResult(PreconditionResult.FromSuccess());

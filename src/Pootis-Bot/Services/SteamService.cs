@@ -11,8 +11,8 @@ namespace Pootis_Bot.Services
 	{
 		public static bool IsEnabled;
 
-		private static SteamUser _steamUserInterface;
-		private static PlayerService _steamPlayerInterface;
+		private static SteamUser steamUserInterface;
+		private static PlayerService steamPlayerInterface;
 
 		/// <summary>
 		/// Sets up the <see cref="SteamService"/>
@@ -24,8 +24,8 @@ namespace Pootis_Bot.Services
 			if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiSteamKey))
 			{
 				SteamWebInterfaceFactory webInterface = new SteamWebInterfaceFactory(Config.bot.Apis.ApiSteamKey);
-				_steamUserInterface = webInterface.CreateSteamWebInterface<SteamUser>(Global.HttpClient);
-				_steamPlayerInterface = webInterface.CreateSteamWebInterface<PlayerService>(Global.HttpClient);
+				steamUserInterface = webInterface.CreateSteamWebInterface<SteamUser>(Global.HttpClient);
+				steamPlayerInterface = webInterface.CreateSteamWebInterface<PlayerService>(Global.HttpClient);
 
 				IsEnabled = true;
 			}
@@ -46,7 +46,7 @@ namespace Pootis_Bot.Services
 		{
 			try
 			{
-				ulong id = _steamUserInterface.ResolveVanityUrlAsync(user).GetAwaiter().GetResult().Data;
+				ulong id = steamUserInterface.ResolveVanityUrlAsync(user).GetAwaiter().GetResult().Data;
 				return id;
 			}
 			catch (VanityUrlNotResolvedException)
@@ -62,7 +62,7 @@ namespace Pootis_Bot.Services
 		/// <returns></returns>
 		public static PlayerSummaryModel GetSteamUserSummary(ulong steamId)
 		{
-			return _steamUserInterface.GetPlayerSummaryAsync(steamId).GetAwaiter().GetResult().Data;
+			return steamUserInterface.GetPlayerSummaryAsync(steamId).GetAwaiter().GetResult().Data;
 		}
 
 		#endregion
@@ -76,7 +76,7 @@ namespace Pootis_Bot.Services
 		/// <returns></returns>
 		public static uint GetSteamUserLevel(ulong steamId)
 		{
-			uint? level = _steamPlayerInterface.GetSteamLevelAsync(steamId).GetAwaiter().GetResult().Data;
+			uint? level = steamPlayerInterface.GetSteamLevelAsync(steamId).GetAwaiter().GetResult().Data;
 
 			return level ?? 0;
 		}
@@ -88,7 +88,7 @@ namespace Pootis_Bot.Services
 		/// <returns></returns>
 		public static OwnedGamesResultModel GetSteamUserGames(ulong steamId)
 		{
-			return _steamPlayerInterface.GetOwnedGamesAsync(steamId, true, true).GetAwaiter().GetResult().Data;
+			return steamPlayerInterface.GetOwnedGamesAsync(steamId, true, true).GetAwaiter().GetResult().Data;
 		}
 
 		#endregion

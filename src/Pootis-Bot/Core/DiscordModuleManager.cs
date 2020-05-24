@@ -6,11 +6,11 @@ namespace Pootis_Bot.Core
 {
 	public class DiscordModuleManager
 	{
-		private static CommandService _commands;
+		private static CommandService commands;
 
 		public static void SetupModuleManager(CommandService commandService)
 		{
-			_commands = commandService;
+			commands = commandService;
 		}
 
 		/// <summary>
@@ -20,7 +20,7 @@ namespace Pootis_Bot.Core
 		/// <returns></returns>
 		public static ModuleInfo GetModule(string moduleName)
 		{
-			IEnumerable<ModuleInfo> result = from a in _commands.Modules
+			IEnumerable<ModuleInfo> result = from a in commands.Modules
 				where a.Name == moduleName
 				select a;
 

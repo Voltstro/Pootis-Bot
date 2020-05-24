@@ -16,11 +16,11 @@ namespace Pootis_Bot.Events
 	/// </summary>
 	public class UserEvents
 	{
-		private readonly DiscordSocketClient _client;
+		private readonly DiscordSocketClient client;
 
 		public UserEvents(DiscordSocketClient client)
 		{
-			_client = client;
+			this.client = client;
 		}
 
 		public async Task UserJoined(SocketGuildUser user)
@@ -44,7 +44,7 @@ namespace Pootis_Bot.Events
 
 						//Welcomes the new user with the server's message
 						SocketTextChannel channel =
-							_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
+							client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
 
 						if (channel != null)
 						{
@@ -84,7 +84,7 @@ namespace Pootis_Bot.Events
 
 						//Get the welcome channel and send the message
 						SocketTextChannel channel =
-							_client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
+							client.GetGuild(server.GuildId).GetTextChannel(server.WelcomeChannelId);
 
 						if (channel != null)
 						{
