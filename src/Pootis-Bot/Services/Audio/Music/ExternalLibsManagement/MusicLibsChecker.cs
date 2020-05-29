@@ -54,15 +54,14 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 #elif LINUX
 			ILibsPreparer libsPreparer = new LinuxLibPreparer();
 #else
-			//TODO: Write MacOS libs preparer
-			return;
+			ILibsPreparer libsPreparer = new MacOSLibPreparer();
 #endif
 			if (forceRedownload)
 				UpdatedMusicServiceFiles(libsPreparer);
 
-			else if (!libsPreparer.CheckLibFiles()) UpdatedMusicServiceFiles(libsPreparer);
-
-
+			else if (!libsPreparer.CheckLibFiles()) 
+				UpdatedMusicServiceFiles(libsPreparer);
+			
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
 				Logger.Log("Audio services are ready!", LogVerbosity.Music);
 		}
