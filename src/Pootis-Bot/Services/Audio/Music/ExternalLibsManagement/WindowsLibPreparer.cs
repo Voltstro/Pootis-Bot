@@ -62,6 +62,22 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 				Config.SaveConfig();
 			}
 		}
+
+		public void DeleteFiles()
+		{
+			string externalDir = Config.bot.AudioSettings.ExternalDirectory;
+
+			//Delete ffmpeg
+			if(File.Exists($"{externalDir}ffmpeg.exe"))
+				File.Delete($"{externalDir}ffmpeg.exe");
+
+			//Delete dlls
+			if(File.Exists("opus.dll"))
+				File.Delete("opus.dll");
+
+			if(File.Exists("libsodium.dll"))
+				File.Delete("libsodium.dll");
+		}
 	}
 }
 

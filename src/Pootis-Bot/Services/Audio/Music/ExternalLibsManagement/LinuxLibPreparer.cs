@@ -65,6 +65,22 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
                 Config.SaveConfig();
             }
         }
+
+		public void DeleteFiles()
+		{
+			string externalDir = Config.bot.AudioSettings.ExternalDirectory;
+
+			//Delete ffmpeg
+			if(File.Exists($"{externalDir}ffmpeg"))
+				File.Delete($"{externalDir}ffmpeg");
+
+			//Delete so
+			if(File.Exists("opus.so"))
+				File.Delete("opus.so");
+
+			if(File.Exists("libsodium.so"))
+				File.Delete("libsodium.so");
+		}
         
         private static void ChmodFile(string file, string flag)
         {

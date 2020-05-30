@@ -210,13 +210,8 @@ namespace Pootis_Bot.Core
 
 			//Delete old files first
 			Directory.Delete(Config.bot.AudioSettings.ExternalDirectory, true);
-#if WINDOWS
-			File.Delete("libsodium.dll");
-			File.Delete("opus.dll");
-#else
-			File.Delete("libsodium.so");
-			File.Delete("opus.so");
-#endif
+
+			MusicLibsChecker.GetLibsPreparer().DeleteFiles();
 
 			MusicLibsChecker.CheckMusicService(true);
 			Logger.Log("Audio files were updated.", LogVerbosity.Music);

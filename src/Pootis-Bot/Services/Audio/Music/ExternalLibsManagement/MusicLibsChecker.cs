@@ -49,13 +49,8 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 				return;
 			}
 
-#if WINDOWS
-			ILibsPreparer libsPreparer = new WindowsLibPreparer();
-#elif LINUX
-			ILibsPreparer libsPreparer = new LinuxLibPreparer();
-#else
-			ILibsPreparer libsPreparer = new MacOSLibPreparer();
-#endif
+			ILibsPreparer libsPreparer = GetLibsPreparer();
+
 			if (forceRedownload)
 				UpdatedMusicServiceFiles(libsPreparer);
 
@@ -66,10 +61,21 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 				Logger.Log("Audio services are ready!", LogVerbosity.Music);
 		}
 
+		public static ILibsPreparer GetLibsPreparer()
+		{
+#if WINDOWS
+			return new WindowsLibPreparer();
+#elif LINUX
+			return new LinuxLibPreparer();
+#else
+			return new MacOSLibPreparer();
+#endif
+		}
+
 		/// <summary>
 		/// Updates all files related to audio
 		/// </summary>
-		public static void UpdatedMusicServiceFiles(ILibsPreparer preparer)
+		private static void UpdatedMusicServiceFiles(ILibsPreparer preparer)
 		{
 			Logger.Log("Downloading required files for audio services...");
 

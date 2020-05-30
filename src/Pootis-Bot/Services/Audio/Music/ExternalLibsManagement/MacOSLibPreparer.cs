@@ -42,7 +42,7 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
                 Logger.Log("Setting up ffmpeg");
                 Global.DirectoryCopy("Temp/ffmpeg/", "External/", true);
 			
-                //Because linux, we need the right permissions
+                //Because macos, we need the right permissions
                 ChmodFile("External/ffmpeg", "700");
 
                 //Delete unnecessary files
@@ -65,6 +65,22 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
                 Config.SaveConfig();
             }
         }
+
+		public void DeleteFiles()
+		{
+			string externalDir = Config.bot.AudioSettings.ExternalDirectory;
+
+			//Delete ffmpeg
+			if(File.Exists($"{externalDir}ffmpeg"))
+				File.Delete($"{externalDir}ffmpeg");
+
+			//Delete so
+			if(File.Exists("opus.so"))
+				File.Delete("opus.so");
+
+			if(File.Exists("libsodium.so"))
+				File.Delete("libsodium.so");
+		}
         
         private static void ChmodFile(string file, string flag)
         {
