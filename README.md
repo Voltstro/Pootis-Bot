@@ -12,7 +12,7 @@ Pootis-Bot, a multipurpose, open-source Discord bot written in the C# language u
 
 # Bot Features
 
-Some current features that the bot can do. More feature are planed to be added
+Some current features that the bot can do. More feature are planed to be added.
 
 - Multi Server Capabilities
 
@@ -24,13 +24,15 @@ Some current features that the bot can do. More feature are planed to be added
 
 - Music Service (Downloads from YouTube)
 
-- Google, YouTube, Giphy and Wikipedia search support
+- Google, YouTube, Giphy, Wikipedia and Steam user search support
 
 - [Rule reaction feature](https://pootis-bot.voltstro.dev/server-setup/rulereaction/)
 
 - [Auto Voice Channels](https://pootis-bot.voltstro.dev/server-setup/auto-vc/)
 
 - [Basic Anti-Spam features](https://pootis-bot.voltstro.dev/server-setup/anti-spam/)
+
+- Cross-Plaform (Windows, Linux, MacOS)
 
 ## Getting Started
 
