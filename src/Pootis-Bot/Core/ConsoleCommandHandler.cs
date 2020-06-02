@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Discord.WebSocket;
 using Pootis_Bot.ConsoleCommandHandler;
 using Pootis_Bot.Core.ConfigMenuPlus;
 using Pootis_Bot.Core.Logging;
@@ -20,11 +19,11 @@ namespace Pootis_Bot.Core
 {
 	public class ConsoleCommandHandler : Console
 	{
-		private readonly DiscordSocketClient client;
+		private readonly Bot bot;
 
-		public ConsoleCommandHandler(DiscordSocketClient client)
+		public ConsoleCommandHandler(Bot bot)
 		{
-			this.client = client;
+			this.bot = bot;
 		}
 
 		/// <summary>
@@ -81,31 +80,9 @@ namespace Pootis_Bot.Core
 		{
 			IsExiting = true;
 
-			Bot.IsRunning = false;
-
 			Logger.Log("Shutting down...");
-			await client.SetGameAsync("Bot shutting down");
 
-			Logger.Log("Stopping audio services...", LogVerbosity.Music);
-			foreach (ServerMusicItem channel in MusicService.currentChannels)
-			{
-				//If there is already a song playing, cancel it
-				await MusicService.StopPlayingAudioOnServer(channel);
-
-				//Just wait a moment
-				await Task.Delay(100);
-
-				await channel.AudioClient.StopAsync();
-
-				Logger.Log($"Ended {channel.GuildId} audio session.", LogVerbosity.Debug);
-			}
-
-			await client.LogoutAsync();
-			client.Dispose();
-
-			//Clean up
-			Global.HttpClient.Dispose();
-			Logger.EndLogger();
+			await bot.EndBot();
 
 			Environment.Exit(0);
 		}
@@ -138,7 +115,7 @@ namespace Pootis_Bot.Core
 				twitch = Config.bot.TwitchStreamingSite;
 			}
 
-			await client.SetGameAsync(Global.BotStatusText, twitch, activity);
+			await bot.Client.SetGameAsync(Global.BotStatusText, twitch, activity);
 
 			Logger.Log($"Bot's game status was set to '{Global.BotStatusText}'");
 		}
@@ -148,13 +125,13 @@ namespace Pootis_Bot.Core
 			if (Bot.IsStreaming)
 			{
 				Bot.IsStreaming = false;
-				await client.SetGameAsync(Global.BotStatusText, "");
+				await bot.Client.SetGameAsync(Global.BotStatusText, "");
 				Logger.Log("Bot no longer shows streaming status.");
 			}
 			else
 			{
 				Bot.IsStreaming = true;
-				await client.SetGameAsync(Global.BotStatusText, Config.bot.TwitchStreamingSite,
+				await bot.Client.SetGameAsync(Global.BotStatusText, Config.bot.TwitchStreamingSite,
 					ActivityType.Streaming);
 
 				Logger.Log("Bot now shows streaming status.");
@@ -220,7 +197,7 @@ namespace Pootis_Bot.Core
 		private void StatusCmd()
 		{
 			Logger.Log(
-				$"Bot status: {client.ConnectionState.ToString()}\nServer count: {client.Guilds.Count}\nLatency: {client.Latency}");
+				$"Bot status: {bot.Client.ConnectionState.ToString()}\nServer count: {bot.Client.Guilds.Count}\nLatency: {bot.Client.Latency}");
 		}
 
 		private static void ClearCmd()

@@ -6,8 +6,10 @@ using Discord.WebSocket;
 using Pootis_Bot.Core.ConfigMenuPlus;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
+using Pootis_Bot.Entities;
 using Pootis_Bot.Events;
 using Pootis_Bot.Services;
+using Pootis_Bot.Services.Audio.Music;
 
 namespace Pootis_Bot.Core
 {
@@ -15,7 +17,7 @@ namespace Pootis_Bot.Core
 	{
 		public static bool IsRunning;
 		public static bool IsStreaming;
-		private DiscordSocketClient client;
+		public DiscordSocketClient Client;
 
 		/// <summary>
 		/// Starts the bot
@@ -32,7 +34,7 @@ namespace Pootis_Bot.Core
 
 			Logger.Log("Creating new client...", LogVerbosity.Debug);
 
-			client = new DiscordSocketClient(new DiscordSocketConfig
+			Client = new DiscordSocketClient(new DiscordSocketConfig
 			{
 				LogLevel = LogSeverity.Verbose
 			});
@@ -40,21 +42,21 @@ namespace Pootis_Bot.Core
 			Logger.Log("Setting up events", LogVerbosity.Debug);
 
 			//Setup client events
-			client.Log += Log;
-			client.Ready += BotReady;
+			Client.Log += Log;
+			Client.Ready += BotReady;
 
 			//Setup the remaining events
-			EventsSetup unused = new EventsSetup(client);
+			EventsSetup unused = new EventsSetup(Client);
 
 			Logger.Log("Signing in using token...", LogVerbosity.Debug);
 
-			await client.LoginAsync(TokenType.Bot,
+			await Client.LoginAsync(TokenType.Bot,
 				Global.BotToken); //Logging into the bot using the token in the config.
-			await client.StartAsync(); //Start the client
+			await Client.StartAsync(); //Start the client
 
 			Logger.Log("Sign in successful!", LogVerbosity.Debug);
 
-			CommandHandler handler = new CommandHandler(client);
+			CommandHandler handler = new CommandHandler(Client);
 
 			Logger.Log("Installing commands...", LogVerbosity.Debug);
 
@@ -65,7 +67,7 @@ namespace Pootis_Bot.Core
 			HelpModulesManager.CheckHelpModules();
 
 			//Bot owner
-			Global.BotOwner = (await client.GetApplicationInfoAsync()).Owner;
+			Global.BotOwner = (await Client.GetApplicationInfoAsync()).Owner;
 
 			Logger.Log($"The owner of this bot is {Global.BotOwner}", LogVerbosity.Debug);
 
@@ -74,22 +76,58 @@ namespace Pootis_Bot.Core
 				SteamService.SetupSteam();
 
 			//Set the bot status to the default game status
-			await client.SetGameAsync(Config.bot.DefaultGameMessage);
-			await CheckConnectionStatus();
+			await Client.SetGameAsync(Config.bot.DefaultGameMessage);
+			await CheckConnectionStatusTask();
+		}
+
+		/// <summary>
+		/// Ends the bot
+		/// </summary>
+		public async Task EndBot()
+		{
+			await Client.SetGameAsync("Bot shutting down...");
+
+			Logger.Log("Stopping audio services...", LogVerbosity.Music);
+			foreach (ServerMusicItem channel in MusicService.currentChannels)
+			{
+				//If there is already a song playing, cancel it
+				await MusicService.StopPlayingAudioOnServer(channel);
+
+				//Just wait a moment
+				await Task.Delay(100);
+
+				await channel.AudioClient.StopAsync();
+
+				Logger.Log($"Ended {channel.GuildId} audio session.", LogVerbosity.Debug);
+			}
+
+			//Stops the connecting checking task
+			IsRunning = false;
+
+			//Stop the bot client
+			await Client.LogoutAsync();
+			Client.Dispose();
+
+			//Stop the global HttpClient
+			Global.HttpClient.CancelPendingRequests();
+			Global.HttpClient.Dispose();
+
+			//End the logger
+			Logger.EndLogger();
 		}
 
 		private async Task BotReady()
 		{
 			//Check the current connected server settings
-			await new BotCheckServerSettings(client).CheckConnectedServerSettings();
+			await new BotCheckServerSettings(Client).CheckConnectedServerSettings();
 
 			//Bot user
-			Global.BotUser = client.CurrentUser;
+			Global.BotUser = Client.CurrentUser;
 
 			Logger.Log("Bot is now ready and online!");
 
 #pragma warning disable 4014
-			Task.Run(() => new ConsoleCommandHandler(client).SetupConsole());
+			Task.Run(() => new ConsoleCommandHandler(this).SetupConsole());
 #pragma warning restore 4014
 		}
 
@@ -99,30 +137,22 @@ namespace Pootis_Bot.Core
 			return Task.CompletedTask;
 		}
 
-		private async Task CheckConnectionStatus()
+		private async Task CheckConnectionStatusTask()
 		{
 			while (IsRunning)
 			{
-				if (Config.bot.CheckConnectionStatus
-				) // It is enabled then check the connection status ever so milliseconds
+				if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
 
 					Logger.Log("Checking bot connection status...", LogVerbosity.Debug);
 
-					if (client.ConnectionState != ConnectionState.Disconnected &&
-					    (client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
+					if (Client.ConnectionState != ConnectionState.Disconnected &&
+					    (Client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
 
 					Logger.Log("The bot had disconnect for some reason, restarting...", LogVerbosity.Warn);
 
-					IsRunning = false;
-
-					await client.LogoutAsync();
-					client.Dispose();
-
-					Logger.EndLogger();
-
-					Global.HttpClient.Dispose();
+					await EndBot();
 
 					ProcessStartInfo newPootisStart = new ProcessStartInfo("dotnet", "Pootis-Bot.dll");
 #pragma warning disable IDE0067 // Dispose objects before losing scope
