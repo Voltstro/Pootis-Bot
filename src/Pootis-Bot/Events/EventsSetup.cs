@@ -2,6 +2,9 @@
 
 namespace Pootis_Bot.Events
 {
+	/// <summary>
+	/// Responsible for setting up events
+	/// </summary>
 	public class EventsSetup
 	{
 		/// <summary>

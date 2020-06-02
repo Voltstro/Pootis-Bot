@@ -13,6 +13,9 @@ using Pootis_Bot.Services.Audio.Music;
 
 namespace Pootis_Bot.Core
 {
+	/// <summary>
+	/// The main bot class
+	/// </summary>
 	public class Bot
 	{
 		public static bool IsRunning;
@@ -77,6 +80,8 @@ namespace Pootis_Bot.Core
 
 			//Set the bot status to the default game status
 			await Client.SetGameAsync(Config.bot.DefaultGameMessage);
+
+			//Starts the check connection status task, which will run indefinitely until the bot is stopped. 
 			await CheckConnectionStatusTask();
 		}
 
@@ -147,6 +152,7 @@ namespace Pootis_Bot.Core
 
 					Logger.Log("Checking bot connection status...", LogVerbosity.Debug);
 
+					//Check the connection state
 					if (Client.ConnectionState != ConnectionState.Disconnected &&
 					    (Client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
 
