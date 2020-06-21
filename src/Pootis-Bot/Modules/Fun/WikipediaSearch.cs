@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
-using CreepysinStudios.WikiDotNet;
+using WikiDotNet;
 using Discord;
 using Discord.Commands;
 using Discord.Rest;
@@ -79,7 +79,7 @@ namespace Pootis_Bot.Modules.Fun
 			foreach (WikiSearchResult result in response.Query.SearchResults)
 			{
 				string link =
-					$"**[{result.Title}]({result.ConstantUrl})** (Words: {result.WordCount})\n{result.Preview}\n\n";
+					$"**[{result.Title}]({result.ConstantUrl("en")})** (Words: {result.WordCount})\n{result.Preview}\n\n";
 
 				//There is a character limit of 2048, so lets make sure we don't hit that
 				if (sb.Length >= 2048) continue;
