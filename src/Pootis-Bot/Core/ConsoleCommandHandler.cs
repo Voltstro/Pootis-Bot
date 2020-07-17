@@ -197,7 +197,7 @@ namespace Pootis_Bot.Core
 		private void StatusCmd()
 		{
 			Logger.Log(
-				$"Bot status: {bot.Client.ConnectionState.ToString()}\nServer count: {bot.Client.Guilds.Count}\nLatency: {bot.Client.Latency}");
+				$"Bot status: {bot.Client.ConnectionState}\nServer count: {bot.Client.Guilds.Count}\nLatency: {bot.Client.Latency}");
 		}
 
 		private static void ClearCmd()
