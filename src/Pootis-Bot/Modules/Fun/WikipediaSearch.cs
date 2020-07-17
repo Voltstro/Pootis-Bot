@@ -18,8 +18,8 @@ namespace Pootis_Bot.Modules.Fun
 		// Contributors     - Creepysin, 
 
 		//This uses a library called Wiki.Net
-		//It was developed by my good friend EternalClickbait and partially by me(Creepysin).
-		//You can get it here: https://github.com/Creepysin-Studios/Wiki.Net
+		//It was developed by my good friend EternalClickbait and partially by me(Voltstro).
+		//You can get it here: https://github.com/Voltstro-Studios/Wiki.Net
 
 		[Command("wiki", RunMode = RunMode.Async)]
 		[Alias("wikipedia")]
