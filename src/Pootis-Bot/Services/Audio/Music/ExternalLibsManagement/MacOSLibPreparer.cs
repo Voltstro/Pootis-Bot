@@ -18,16 +18,16 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
             string externalDirectory = Config.bot.AudioSettings.ExternalDirectory;
 
             //If either ffmpeg, opus or libsodium doesn't exist, we need to download them
-            return File.Exists($"{externalDirectory}ffmpeg") && File.Exists("opus.so") && File.Exists("libsodium.so");
+            return File.Exists($"{externalDirectory}ffmpeg") && File.Exists("opus.dylib") && File.Exists("libsodium.dylib");
         }
 
         public void DownloadFiles(AudioExternalLibFiles libsUrls)
         {
             try
             {
-                Logger.Log("Downloading files for Linux...");
+                Logger.Log("Downloading files for MacOS...");
 
-                //Download all audio service files for Linux
+                //Download all audio service files for MacOS
                 Logger.Log($"Downloading ffmpeg from {libsUrls.FfmpegDownloadUrl}");
                 WebUtils.DownloadFileAsync(libsUrls.FfmpegDownloadUrl, "Temp/ffmpeg.zip").GetAwaiter().GetResult();
                 Logger.Log($"Downloading needed DLLs from {libsUrls.LibsDownloadUrl}");
@@ -75,11 +75,11 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 				File.Delete($"{externalDir}ffmpeg");
 
 			//Delete so
-			if(File.Exists("opus.so"))
-				File.Delete("opus.so");
+			if(File.Exists("opus.dylib"))
+				File.Delete("opus.dylib");
 
-			if(File.Exists("libsodium.so"))
-				File.Delete("libsodium.so");
+			if(File.Exists("libsodium.dylib"))
+				File.Delete("libsodium.dylib");
 		}
         
         private static void ChmodFile(string file, string flag)
