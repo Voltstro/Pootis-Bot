@@ -12,6 +12,6 @@
   {
     "OsPlatform": "MacOS",
     "FfmpegDownloadUrl": "https://pootis-bot.voltstro.dev/download/ffmpeg/macos/ffmpeg-macos-64.zip",
-    "LibsDownloadUrl": "https://pootis-bot.voltstro.dev/download/AudioLibs-Linux.zip"
+    "LibsDownloadUrl": "https://pootis-bot.voltstro.dev/download/AudioLibs-MacOS.zip"
   }
 ]
