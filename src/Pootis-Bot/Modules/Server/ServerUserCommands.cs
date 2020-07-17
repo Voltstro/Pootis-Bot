@@ -12,9 +12,9 @@ namespace Pootis_Bot.Modules.Server
 	public class ServerUserCommands : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Commands for users, but are more server-to-server related
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("role")]
 		[Alias("get optrole", "optrole", "getrole")]

@@ -16,9 +16,9 @@ namespace Pootis_Bot.Modules.Basic
 	public class Basic : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Basic, simple commands
-		// Contributors     - Creepysin, HelloHowIsItGoing
+		// Contributors     - Voltstro, HelloHowIsItGoing
 
 		[Command("hello")]
 		[Summary("Displays the 'hello' message")]
@@ -31,7 +31,7 @@ namespace Pootis_Bot.Modules.Basic
 			                      $"\n:computer: [Commands]({Global.websiteCommands})" +
 			                      $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
 			                      $"\n:bookmark: [Documentation]({Global.websiteHome})" +
-			                      $"\n<:Discord:529572497130127360> [Creepysin Server]({Global.discordServers[0]})" +
+			                      $"\n<:Discord:529572497130127360> [Voltstro Server]({Global.discordServers[0]})" +
 			                      $"\n\nRunning Pootis-Bot version: {VersionUtils.GetAppVersion()}" +
 			                      $"\nThis project is licensed under the [MIT license]({Global.githubPage}/blob/master/LICENSE.md)");
 			embed.WithColor(new Color(241, 196, 15));

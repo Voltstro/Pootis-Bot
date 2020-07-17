@@ -11,9 +11,9 @@ namespace Pootis_Bot.Modules.Fun
 	public class RandomPerson : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Gets a random person
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("randomperson", RunMode = RunMode.Async)]
 		[Alias("person", "randperson")]

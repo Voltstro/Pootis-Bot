@@ -13,9 +13,9 @@ namespace Pootis_Bot.Modules.Account
 	public class AccountUtils : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Allows profile options
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("profile")]
 		[Summary("Gets your profile")]

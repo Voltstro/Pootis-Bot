@@ -15,9 +15,9 @@ namespace Pootis_Bot.Modules.Server
 	public class ServerAdminCommands : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Commands for admins
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		private const int MaxPurgeCount = 100;
 

@@ -14,9 +14,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 	public class ServerSetupRolePings : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Commands for setting up role ping anti spam
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("setup add roleping")]
 		[Alias("setup add role ping")]

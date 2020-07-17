@@ -9,9 +9,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 	public class ServerSetupWarnings : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Commands related to setting up automatically getting kicked/banned on certain amount of warnings
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("setup set warnskick")]
 		[Summary("How many warnings until a user gets kicked")]

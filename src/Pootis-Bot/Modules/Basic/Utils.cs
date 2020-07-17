@@ -12,9 +12,9 @@ namespace Pootis_Bot.Modules.Basic
 	public class Utils : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - General utils
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("hasrole")]
 		[Summary("Check if user has a role")]

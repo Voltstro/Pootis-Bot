@@ -59,7 +59,7 @@ namespace Pootis_Bot.Core
 				ResourceFilesFormatting = Formatting.Indented,
 				ReportErrorsToOwner = false,
 				ReportGuildEventsToOwner = false,
-				TwitchStreamingSite = "https://www.twitch.tv/creepysin",
+				TwitchStreamingSite = "https://www.twitch.tv/Voltstro",
 				LevelUpCooldown = 15,
 				CheckConnectionStatus = true,
 				CheckConnectionStatusInterval = 60000,

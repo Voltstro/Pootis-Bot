@@ -13,9 +13,9 @@ namespace Pootis_Bot.Modules.Fun
 	public class WikipediaSearch : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Wikipedia search
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		//This uses a library called Wiki.Net
 		//It was developed by my good friend EternalClickbait and partially by me(Voltstro).

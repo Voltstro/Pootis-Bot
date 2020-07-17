@@ -10,9 +10,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 	public class ServerSetupWelcomeGoodbyeMessage : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Provides commands for setting up welcome channel
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("setup welcomechannel")]
 		[Alias("setup welcome channel")]

@@ -14,9 +14,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 	public class ServerSetupStatus : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Server setup status messages
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		private readonly string[] _warningCommands =
 			{"warn", "makewarnable", "makenotwarnable", "ban", "kick", "mute", "addvcchannel"};

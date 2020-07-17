@@ -11,9 +11,9 @@ namespace Pootis_Bot.Modules.BotOwner
 	public class BotCommands : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Bot owner commands
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		private readonly CommandService cmdService;
 

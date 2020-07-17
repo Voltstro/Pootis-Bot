@@ -8,9 +8,9 @@ namespace Pootis_Bot.Modules.Basic
 	public class Misc : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Misc commands
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("pick")]
 		[Summary("Picks between two or more things. Separate each choice with a |.")]

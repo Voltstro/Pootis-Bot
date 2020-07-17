@@ -28,8 +28,8 @@ namespace Pootis_Bot.Events
 				                      $"\n:computer: [Commands]({Global.websiteCommands})" +
 				                      $"\n<:GitHub:529571722991763456> [Github Page]({Global.githubPage})" +
 				                      $"\n:bookmark: [Documentation]({Global.websiteHome})" +
-				                      $"\n<:Discord:529572497130127360> [Creepysin Server]({Global.discordServers[0]})" +
-				                      "\n\nIf you have any issues the best place to ask for assistance is on the Creepysin Server!");
+				                      $"\n<:Discord:529572497130127360> [Voltstro Server]({Global.discordServers[0]})" +
+				                      "\n\nIf you have any issues the best place to ask for assistance is on the Voltstro Server!");
 				embed.WithColor(new Color(241, 196, 15));
 
 				//Log that the bot joined a new guild, if enabled

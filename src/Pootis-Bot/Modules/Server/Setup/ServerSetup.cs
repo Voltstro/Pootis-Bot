@@ -10,9 +10,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 	public class ServerSetup : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Provides setup commands
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		private readonly string[] _setupModules =
 		{

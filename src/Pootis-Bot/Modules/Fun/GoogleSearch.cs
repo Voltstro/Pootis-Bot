@@ -15,9 +15,9 @@ namespace Pootis_Bot.Modules.Fun
 	public class GoogleSearch : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Searches Google
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		private readonly GoogleService googleService;
 

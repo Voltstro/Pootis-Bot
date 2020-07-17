@@ -13,9 +13,9 @@ namespace Pootis_Bot.Modules.Fun
 	public class GiphySearch : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Searches Giphy
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("giphy", RunMode = RunMode.Async)]
 		[Summary("Searches Giphy")]

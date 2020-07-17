@@ -12,9 +12,9 @@ namespace Pootis_Bot.Modules.Server
 	public class ServerAccountManagement : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Commands for server owners to manage user server data settings
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		[Command("makenotwarnable")]
 		[Alias("make not warnable")]

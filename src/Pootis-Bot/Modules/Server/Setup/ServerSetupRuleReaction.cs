@@ -13,9 +13,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 	public class ServerSetupRuleReaction : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Provides commands for setting up the rule reaction feature
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		#region Inital Rule Reaction Setup Commands
 

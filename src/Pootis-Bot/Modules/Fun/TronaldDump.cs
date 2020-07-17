@@ -9,9 +9,9 @@ namespace Pootis_Bot.Modules.Fun
 	public class TronaldDump : ModuleBase<SocketCommandContext>
 	{
 		// Module Information
-		// Original Author  - Creepysin
+		// Original Author  - Voltstro
 		// Description      - Uses the tronaldump api to get Tronald Dump quotes
-		// Contributors     - Creepysin, 
+		// Contributors     - Voltstro, 
 
 		private readonly string trumpImageUrl = "https://assets.tronalddump.io/img/tronalddump_850x850.png";
 
