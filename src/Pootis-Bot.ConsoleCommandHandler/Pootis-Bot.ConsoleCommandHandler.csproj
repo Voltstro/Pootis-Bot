@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Pootis_Bot.ConsoleCommandHandler</RootNamespace>
     <AssemblyName>Pootis-Bot.ConsoleCommandHandler</AssemblyName>
     <Copyright>Copyright © Voltstro 2018-2020</Copyright>
