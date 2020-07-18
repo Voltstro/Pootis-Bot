@@ -8,12 +8,18 @@ variables:
 jobs:
 - job: Windows
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'windows-2019'
   steps:
   - template: azure/build.yml
 
 - job: Linux
   pool:
     vmImage: 'ubuntu-18.04'
+  steps:
+  - template: azure/build.yml
+
+- job: MacOS
+  pool:
+    vmImage: 'macOS-10.15'
   steps:
   - template: azure/build.yml
