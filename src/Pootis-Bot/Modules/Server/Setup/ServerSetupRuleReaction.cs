@@ -2,7 +2,6 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Core.Managers;
 using Pootis_Bot.Entities;
 using Pootis_Bot.Helpers;
@@ -96,7 +95,6 @@ namespace Pootis_Bot.Modules.Server.Setup
 			ServerListsManager.GetServer(Context.Guild).RuleReactionEmoji = emoji.Name;
 			ServerListsManager.SaveServerList();
 
-			Logger.Log(emoji.Name);
 			await Context.Channel.SendMessageAsync($"The emoji was set to '{emoji.Name}'.");
 		}
 

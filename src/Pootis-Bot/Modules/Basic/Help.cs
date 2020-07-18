@@ -57,9 +57,9 @@ namespace Pootis_Bot.Modules.Basic
 			catch (NullReferenceException)
 			{
 				await Context.Channel.SendMessageAsync(
-					$"Sorry, but it looks like the bot owner doesn't have the help options configured correctly.\nVisit {Global.websiteCommands} for command list.");
+					$"Sorry, but it looks like the bot owner doesn't have the help options configured correctly.\nVisit {Global.websiteCommands} for the command list.");
 
-				Logger.Log("The help options are configured incorrectly!", LogVerbosity.Error);
+				Logger.Error("The help options are configured incorrectly!");
 			}
 		}
 

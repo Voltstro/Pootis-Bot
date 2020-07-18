@@ -35,14 +35,14 @@ namespace Pootis_Bot.Core
 			//Make sure the token isn't null or empty, if so open the bot config menu.
 			if (string.IsNullOrEmpty(Global.BotToken)) new ConfigMainMenu().OpenConfigMenu();
 
-			Logger.Log("Creating new client...", LogVerbosity.Debug);
+			Logger.Debug("Creating new Discord client...");
 
 			Client = new DiscordSocketClient(new DiscordSocketConfig
 			{
 				LogLevel = LogSeverity.Verbose
 			});
 
-			Logger.Log("Setting up events", LogVerbosity.Debug);
+			Logger.Debug("Setting up events");
 
 			//Setup client events
 			Client.Log += Log;
@@ -51,17 +51,17 @@ namespace Pootis_Bot.Core
 			//Setup the remaining events
 			EventsSetup unused = new EventsSetup(Client);
 
-			Logger.Log("Signing in using token...", LogVerbosity.Debug);
+			Logger.Debug("Signing in using token...");
 
 			await Client.LoginAsync(TokenType.Bot,
 				Global.BotToken); //Logging into the bot using the token in the config.
 			await Client.StartAsync(); //Start the client
 
-			Logger.Log("Sign in successful!", LogVerbosity.Debug);
+			Logger.Debug("Sign in successful!");
 
 			CommandHandler handler = new CommandHandler(Client);
 
-			Logger.Log("Installing commands...", LogVerbosity.Debug);
+			Logger.Debug("Installing commands...");
 
 			//Install all the Modules
 			await handler.SetupCommandHandlingAsync();
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Core
 			//Bot owner
 			Global.BotOwner = (await Client.GetApplicationInfoAsync()).Owner;
 
-			Logger.Log($"The owner of this bot is {Global.BotOwner}", LogVerbosity.Debug);
+			Logger.Debug($"The owner of this bot is {Global.BotOwner}");
 
 			//Enable the Steam services if an api key is provided
 			if (!string.IsNullOrWhiteSpace(Config.bot.Apis.ApiSteamKey))
@@ -92,7 +92,7 @@ namespace Pootis_Bot.Core
 		{
 			await Client.SetGameAsync("Bot shutting down...");
 
-			Logger.Log("Stopping audio services...", LogVerbosity.Music);
+			Logger.Info("Stopping audio services...");
 			foreach (ServerMusicItem channel in MusicService.currentChannels)
 			{
 				//If there is already a song playing, cancel it
@@ -103,7 +103,7 @@ namespace Pootis_Bot.Core
 
 				await channel.AudioClient.StopAsync();
 
-				Logger.Log($"Ended {channel.GuildId} audio session.", LogVerbosity.Debug);
+				Logger.Debug($"Ended {channel.GuildId} music session.");
 			}
 
 			//Stops the connecting checking task
@@ -118,7 +118,7 @@ namespace Pootis_Bot.Core
 			Global.HttpClient.Dispose();
 
 			//End the logger
-			Logger.EndLogger();
+			Logger.Shutdown();
 		}
 
 		private async Task BotReady()
@@ -129,7 +129,7 @@ namespace Pootis_Bot.Core
 			//Bot user
 			Global.BotUser = Client.CurrentUser;
 
-			Logger.Log("Bot is now ready and online!");
+			Logger.Info("Bot is now ready and online!");
 
 #pragma warning disable 4014
 			Task.Run(() => new ConsoleCommandHandler(this).SetupConsole());
@@ -138,7 +138,7 @@ namespace Pootis_Bot.Core
 
 		private static Task Log(LogMessage msg)
 		{
-			Logger.Log(msg.Message);
+			Logger.Info(msg.Message);
 			return Task.CompletedTask;
 		}
 
@@ -150,13 +150,13 @@ namespace Pootis_Bot.Core
 				{
 					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
 
-					Logger.Log("Checking bot connection status...", LogVerbosity.Debug);
+					Logger.Debug("Checking bot connection status...");
 
 					//Check the connection state
 					if (Client.ConnectionState != ConnectionState.Disconnected &&
 					    (Client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
 
-					Logger.Log("The bot had disconnect for some reason, restarting...", LogVerbosity.Warn);
+					Logger.Warn("The bot had disconnect for some reason, restarting...");
 
 					await EndBot();
 

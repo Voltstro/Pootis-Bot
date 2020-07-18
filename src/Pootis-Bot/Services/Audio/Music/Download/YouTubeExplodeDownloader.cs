@@ -42,9 +42,9 @@ namespace Pootis_Bot.Services.Audio.Music.Download
 				string downloadLocation =
 					$"{musicDirectory}{videoData.Title.RemoveIllegalChars()}.{audioSteam.Container.Name}";
 
-				await ytClient.Videos.Streams.DownloadAsync(audioSteam, downloadLocation, null, cancellationToken);
+				Logger.Debug("Downloading YouTube video {@VideoTitle}({@VideoID}) to {@DownloadLocation}", videoData.Title, videoData.Id.Value, downloadLocation);
 
-				Logger.Log($"Downloaded song to {downloadLocation}", LogVerbosity.Debug);
+				await ytClient.Videos.Streams.DownloadAsync(audioSteam, downloadLocation, null, cancellationToken);
 
 				return !File.Exists(downloadLocation) ? null : downloadLocation;
 			}
@@ -55,11 +55,8 @@ namespace Pootis_Bot.Services.Audio.Music.Download
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while download a YouTube video! {@Exception}", ex);
+
 				return null;
 			}
 		}

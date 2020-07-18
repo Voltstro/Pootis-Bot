@@ -72,33 +72,36 @@ namespace Pootis_Bot.Events
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while managing role deleted event! {@Exception}", ex);
 			}
 		}
 
 		public async Task RoleUpdated(SocketRole before, SocketRole after)
 		{
-			SocketGuild guild = before.Guild;
-			ServerList server = ServerListsManager.GetServer(guild);
-
-			IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
-
-			//Check all server role pings to make sure they are still mentionable
-			List<ServerRoleToRoleMention> rolesToRemove = server.RoleToRoleMentions
-				.Where(roleToRole => roleToRole.RoleId == after.Id && !after.IsMentionable).ToList();
-			foreach (ServerRoleToRoleMention roleToRemove in rolesToRemove)
+			try
 			{
-				await dm.SendMessageAsync(
-					$"The **{after.Name}** role was changed to not mentionable so it was deleted from the **{RoleUtils.GetGuildRole(guild, roleToRemove.RoleNotToMentionId).Name}** => **{RoleUtils.GetGuildRole(guild, roleToRemove.RoleId).Name}** role to role ping list. ({guild.Name})");
+				SocketGuild guild = before.Guild;
+				ServerList server = ServerListsManager.GetServer(guild);
 
-				server.RoleToRoleMentions.Remove(roleToRemove);
-				ServerListsManager.SaveServerList();
+				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
 
-				return;
+				//Check all server role pings to make sure they are still mentionable
+				List<ServerRoleToRoleMention> rolesToRemove = server.RoleToRoleMentions
+					.Where(roleToRole => roleToRole.RoleId == after.Id && !after.IsMentionable).ToList();
+				foreach (ServerRoleToRoleMention roleToRemove in rolesToRemove)
+				{
+					await dm.SendMessageAsync(
+						$"The **{after.Name}** role was changed to not mentionable so it was deleted from the **{RoleUtils.GetGuildRole(guild, roleToRemove.RoleNotToMentionId).Name}** => **{RoleUtils.GetGuildRole(guild, roleToRemove.RoleId).Name}** role to role ping list. ({guild.Name})");
+
+					server.RoleToRoleMentions.Remove(roleToRemove);
+					ServerListsManager.SaveServerList();
+
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.Error("An error occured while managing role updated event! {@Exception}", ex);
 			}
 		}
 	}

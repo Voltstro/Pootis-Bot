@@ -95,11 +95,7 @@ namespace Pootis_Bot.Core
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while handling a command! {@Exception}", ex);
 			}
 
 			return Task.CompletedTask;
@@ -249,7 +245,7 @@ namespace Pootis_Bot.Core
 			//and tell the user an internal error occured so they are not just left blank
 			if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
 			{
-				Logger.Log(result.ErrorReason, LogVerbosity.Error);
+				Logger.Error(result.ErrorReason);
 				await context.Channel.SendMessageAsync("Sorry, but an internal error occured.");
 
 				//If the bot owner has ReportErrorsToOwner enabled we will give them a heads up about the error

@@ -13,7 +13,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 			PropertyInfo prop = type.GetProperty(configPropertyName);
 			if (prop == null)
 			{
-				Logger.Log($"The config property '{configPropertyName}' doesn't exist!", LogVerbosity.Error);
+				Logger.Error($"The config property '{configPropertyName}' doesn't exist!");
 				return null;
 			}
 

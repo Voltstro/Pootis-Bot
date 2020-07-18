@@ -106,8 +106,7 @@ namespace Pootis_Bot.Services.Voting
 			TimeSpan timeDifference = DateTime.Now.Subtract(vote.VoteStartTime);
 			TimeSpan timeTillRun = vote.VoteLastTime.Subtract(timeDifference);
 
-			Logger.Log($"Started running a vote, will end in {timeTillRun.TotalMilliseconds} milliseconds.",
-				LogVerbosity.Debug);
+			Logger.Debug("Started running a vote with the ID of {@VoteID}, will end in {@TotalMilliseconds} ms.", vote.VoteMessageId, timeTillRun.TotalMilliseconds);
 
 			//If the vote is is already less then 700 milliseconds till it ends, then just end it now
 			if (timeTillRun.TotalMilliseconds < 700)
@@ -133,12 +132,8 @@ namespace Pootis_Bot.Services.Voting
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log($"Some error occured while a vote was ended, here are the details: {ex}",
-					LogVerbosity.Error);
-#else
-				Logger.Log($"Some error occured while a vote was ended, here is the message: {ex.Message}", LogVerbosity.Debug);
-#endif
+				Logger.Error("Some error occured while a vote was ended, here are the details: {@Exception}", ex);
+
 			}
 		}
 
@@ -151,7 +146,7 @@ namespace Pootis_Bot.Services.Voting
 		/// <returns></returns>
 		public static async Task EndVote(Vote vote, SocketGuild guild)
 		{
-			Logger.Log("The vote ended.", LogVerbosity.Debug);
+			Logger.Debug("The vote {@VoteID} ended.", vote.VoteMessageId);
 
 			vote.CancellationToken.Cancel();
 

@@ -167,11 +167,7 @@ namespace Pootis_Bot.Services.Audio.Music
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while downloading a YouTube video! {@Exception}", ex);
 				await MessageUtils.ModifyMessage(botMessage, "An issue occured while trying to get the song!");
 
 				return null;

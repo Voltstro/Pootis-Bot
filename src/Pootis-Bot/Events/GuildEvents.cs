@@ -43,11 +43,7 @@ namespace Pootis_Bot.Events
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while managing joined new server event! {@Exception}", ex);
 			}
 		}
 
@@ -67,11 +63,7 @@ namespace Pootis_Bot.Events
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while managing left server event! {@Exception}", ex);
 			}
 		}
 	}

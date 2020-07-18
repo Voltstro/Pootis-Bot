@@ -25,7 +25,7 @@ namespace Pootis_Bot.Services.Fun
 			}
 			catch (Exception ex)
 			{
-				Logger.Log($"Error occured while trying to get random Trump Quote: {ex.Message}", LogVerbosity.Error);
+				Logger.Error("Error occured while trying to get random Trump Quote: {@Exception}", ex);
 				return "**ERROR**: " + ex.Message;
 			}
 		}
@@ -48,7 +48,7 @@ namespace Pootis_Bot.Services.Fun
 			}
 			catch (Exception ex)
 			{
-				Logger.Log($"Error occured while trying to get Trump Quote: {ex.Message}", LogVerbosity.Error);
+				Logger.Error("Error occured while trying to get Trump Quote: {@Exception}", ex);
 				return "**ERROR**: " + ex.Message;
 			}
 		}

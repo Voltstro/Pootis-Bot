@@ -29,7 +29,7 @@ namespace Pootis_Bot.Core
 				await channel.SendMessageAsync(
 					$"{user.Mention} leveled up! Now on level **{userAccount.LevelNumber}**!");
 
-			Logger.Log($"{user.Username} now has {userAccount.Xp} XP", LogVerbosity.Debug);
+			Logger.Debug("{@Username} now has {@Xp} XP", user.Username, userAccount.Xp);
 		}
 
 		/// <summary>
@@ -50,8 +50,7 @@ namespace Pootis_Bot.Core
 			ServerRolePoints serverRole =
 				server.GetServerRolePoints(userAccount.Points);
 
-			Logger.Log($"{user.Username} now has {userAccount.Points} points on guild {user.Guild.Id}",
-				LogVerbosity.Debug);
+			Logger.Debug("{@Username} now has {@Points} points on guild {@GuildId}", user.Username, userAccount.Points, user.Guild.Id);
 
 			if (serverRole.PointsRequired == 0) return;
 			await user.AddRoleAsync(RoleUtils.GetGuildRole(user.Guild, serverRole.RoleId));

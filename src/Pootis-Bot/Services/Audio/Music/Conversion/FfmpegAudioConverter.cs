@@ -29,7 +29,7 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 				string fullNewLocation =
 					$"{location}{Path.GetFileName(originalLocation).Replace(Path.GetExtension(originalLocation), "")}.{musicFileFormat.GetFormatExtension()}";
 
-				Logger.Log($"Converting '{originalLocation}' to '{fullNewLocation}'...", LogVerbosity.Debug);
+				Logger.Debug("Converting {@OriginalLocation} to {@FullNewLocation}...", originalLocation, fullNewLocation);
 
 				//Start our ffmpeg process
 				Process ffmpeg = new Process
@@ -73,32 +73,25 @@ namespace Pootis_Bot.Services.Audio.Music.Conversion
 				//So obviously there was an issue converting...
 				if (!File.Exists(fullNewLocation))
 				{
-					Logger.Log("There was an issue converting the file!", LogVerbosity.Debug);
+					Logger.Debug("There was an issue converting the file!");
 					return null;
 				}
 
 				//Ayy, we converted
-				Logger.Log($"Successfully converted to '{fullNewLocation}'.", LogVerbosity.Debug);
+				Logger.Debug($"Successfully converted to '{fullNewLocation}'.");
 				return fullNewLocation;
 			}
 			catch (NullReferenceException ex)
 			{
-#if DEBUG
-				Logger.Log(
-					$"Null reference exception while trying to convert a song! FFMPEG path could be set incorrectly!\n{ex}",
-					LogVerbosity.Error);
-#else
-				Logger.Log($"Null refrence exception while trying to convert a song! FFMPEG path could be set incorrectly!\n{ex.Message}", LogVerbosity.Error);
-#endif
+				Logger.Error(
+					"Null reference exception while trying to convert a song! FFMPEG path could be set incorrectly! {@Exception}", ex);
+
 				return null;
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while trying to convert a video! {@Exception}", ex);
+
 				return null;
 			}
 		}

@@ -35,11 +35,7 @@ namespace Pootis_Bot.Events
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while managing message deleted event! {@Exception}", ex);
 			}
 		}
 
@@ -71,11 +67,7 @@ namespace Pootis_Bot.Events
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while managing a message bulk deleted event! {@Exception}", ex);
 			}
 		}
 	}

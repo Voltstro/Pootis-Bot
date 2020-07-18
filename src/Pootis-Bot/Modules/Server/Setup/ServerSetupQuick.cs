@@ -23,21 +23,21 @@ namespace Pootis_Bot.Modules.Server.Setup
 		//Rules
 		private const string RulesEmoji = "👌";
 
-		private readonly OverwritePermissions _everyoneChannelPermissions;
+		private readonly OverwritePermissions everyoneChannelPermissions;
 
-		private readonly GuildPermissions _everyoneRoleGuildPermissions;
+		private readonly GuildPermissions everyoneRoleGuildPermissions;
 
 		//Permissions
-		private readonly GuildPermissions _memberRoleGuildPermissions;
-		private readonly string _quickRulesText;
+		private readonly GuildPermissions memberRoleGuildPermissions;
+		private readonly string quickRulesText;
 
 		public ServerSetupQuick()
 		{
 			//Perms include: Create Instant Invite, View Channels, Send Messages, Embed Links, Attach Files, Read Message History, Add Reactions, Connect Speak
-			_memberRoleGuildPermissions = new GuildPermissions(3263553);
-			_everyoneRoleGuildPermissions = new GuildPermissions(64);
+			memberRoleGuildPermissions = new GuildPermissions(3263553);
+			everyoneRoleGuildPermissions = new GuildPermissions(64);
 
-			_everyoneChannelPermissions = new OverwritePermissions(readMessageHistory: PermValue.Allow,
+			everyoneChannelPermissions = new OverwritePermissions(readMessageHistory: PermValue.Allow,
 				viewChannel: PermValue.Allow, sendMessages: PermValue.Deny);
 
 			if (!File.Exists(QuickRulesLocation))
@@ -46,7 +46,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			string rules = File.ReadAllText(QuickRulesLocation);
 
 			if (!string.IsNullOrWhiteSpace(rules))
-				_quickRulesText = rules;
+				quickRulesText = rules;
 		}
 
 		[Command("setup quick")]
@@ -82,9 +82,9 @@ namespace Pootis_Bot.Modules.Server.Setup
 		{
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Rules template preview");
-			embed.WithDescription(string.IsNullOrEmpty(_quickRulesText)
+			embed.WithDescription(string.IsNullOrEmpty(quickRulesText)
 				? "Rules **MUST** be provided! This is due to how the bot is set up!"
-				: $"Here is rules template that will be used if you don't provide rules:\n```{_quickRulesText}```");
+				: $"Here is rules template that will be used if you don't provide rules:\n```{quickRulesText}```");
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
@@ -106,7 +106,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			bool setupRuleReaction = true)
 		{
 			//Rules message
-			string rules = _quickRulesText;
+			string rules = quickRulesText;
 			if (addRulesMessage)
 			{
 				//Check rules file, or if rules where provided
@@ -129,7 +129,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 				}
 			}
 
-			Logger.Log($"Running server quick setup on {guild.Name}({guild.Id})");
+			Logger.Debug("Running server quick setup on {@GuildName}({@GuildId})", guild.Name, guild.Id);
 
 			ServerList server = ServerListsManager.GetServer(guild);
 
@@ -139,16 +139,16 @@ namespace Pootis_Bot.Modules.Server.Setup
 			//There is already a role called "member"
 			if (memberRole != null)
 			{
-				await memberRole.ModifyAsync(properties => properties.Permissions = _memberRoleGuildPermissions);
+				await memberRole.ModifyAsync(properties => properties.Permissions = memberRoleGuildPermissions);
 			}
 			else
 			{
 				//create a new role called member
-				memberRole = await guild.CreateRoleAsync("Member", _memberRoleGuildPermissions, Color.LightGrey, false,
+				memberRole = await guild.CreateRoleAsync("Member", memberRoleGuildPermissions, Color.LightGrey, false,
 					null);
 
 				await guild.EveryoneRole.ModifyAsync(properties =>
-					properties.Permissions = _everyoneRoleGuildPermissions);
+					properties.Permissions = everyoneRoleGuildPermissions);
 			}
 
 			//Setup the welcome channel
@@ -168,7 +168,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 								properties.Position = 0;
 							});
 
-					await welcomeChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
+					await welcomeChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, everyoneChannelPermissions);
 
 					welcomeChannelId = welcomeChannel.Id;
 				}
@@ -176,7 +176,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 				{
 					//They already do, so alter the pre-existing one to have right perms, and to not have Discord random messages put there
 					await guild.SystemChannel.AddPermissionOverwriteAsync(guild.EveryoneRole,
-						_everyoneChannelPermissions);
+						everyoneChannelPermissions);
 					welcomeChannelId = guild.SystemChannel.Id;
 
 					await guild.ModifyAsync(properties => properties.SystemChannel = null);
@@ -202,7 +202,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 						properties.Topic = "Rules of this Discord server";
 					});
 
-				await rulesChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, _everyoneChannelPermissions);
+				await rulesChannel.AddPermissionOverwriteAsync(guild.EveryoneRole, everyoneChannelPermissions);
 				RestUserMessage rulesMessage = await rulesChannel.SendMessageAsync(rules);
 
 				//Setup rules reaction
@@ -230,7 +230,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			ServerListsManager.SaveServerList();
 			await Context.Channel.SendMessageAsync("Quick Setup is done!");
 
-			Logger.Log($"server quick setup on {guild.Name}({guild.Id}) is done!");
+			Logger.Debug("server quick setup on {@GuildName}({@GuildId}) is done!", guild.Name, guild.Id);
 		}
 
 		private static async Task AddCategoryWithChannels(SocketGuild guild, IRole memberRole, string categoryName,

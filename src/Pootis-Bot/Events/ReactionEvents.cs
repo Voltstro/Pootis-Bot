@@ -70,11 +70,7 @@ namespace Pootis_Bot.Events
 			}
 			catch (Exception ex)
 			{
-#if DEBUG
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
-#else
-				Logger.Log(ex.Message, LogVerbosity.Error);
-#endif
+				Logger.Error("An error occured while managing reaction added event! {@Exception}", ex);
 			}
 
 			return Task.CompletedTask;

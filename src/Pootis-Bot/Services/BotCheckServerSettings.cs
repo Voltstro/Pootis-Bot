@@ -27,7 +27,7 @@ namespace Pootis_Bot.Services
 		/// <returns></returns>
 		public async Task CheckConnectedServerSettings()
 		{
-			Logger.Log("Checking pre-connected server settings...");
+			Logger.Info("Checking pre-connected server settings...");
 
 			//To avoid saving possibly 100 times we will only save once if something has changed
 			bool somethingChanged = false;
@@ -64,7 +64,7 @@ namespace Pootis_Bot.Services
 			//Like all the other ones, we remove all the unnecessary servers after to avoid System.InvalidOperationException
 			foreach (ServerList toRemove in serversToRemove)
 			{
-				Logger.Log($"The bot is not longer in the {toRemove.GuildId}, Removing server settings...");
+				Logger.Info($"The bot is not longer in the {toRemove.GuildId}, Removing server settings...");
 				ServerListsManager.RemoveServer(toRemove);
 			}
 
@@ -72,7 +72,7 @@ namespace Pootis_Bot.Services
 			if (somethingChanged)
 				ServerListsManager.SaveServerList();
 
-			Logger.Log("Checked all server settings.");
+			Logger.Info("Checked all server settings.");
 		}
 
 		/// <summary>

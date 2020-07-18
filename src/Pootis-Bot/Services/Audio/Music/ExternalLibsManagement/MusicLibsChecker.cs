@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -24,18 +23,7 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 		public static void CheckMusicService(bool forceRedownload = false)
 		{
 			if (!Config.bot.AudioSettings.AudioServicesEnabled) return;
-			Logger.Log("Checking audio services...", LogVerbosity.Music);
-
-			if (!Environment.Is64BitProcess)
-			{
-				Logger.Log("Audio services cannot run on a 32-bit machine/process! Audio services weren't enabled.",
-					LogVerbosity.Music);
-
-				Config.bot.AudioSettings.AudioServicesEnabled = false;
-				Config.SaveConfig();
-
-				return;
-			}
+			Logger.Info("Checking music services...");
 
 			//If YouTube services has disabled, we cannot use audio services
 			if (!Config.bot.Apis.YouTubeService)
@@ -43,9 +31,8 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 				Config.bot.AudioSettings.AudioServicesEnabled = false;
 				Config.SaveConfig();
 
-				Logger.Log(
-					"Audio services has been disabled since YouTube services are disabled!\nEnable them via the config menu.",
-					LogVerbosity.Error);
+				Logger.Error(
+					"Audio services has been disabled since YouTube services are disabled!\nEnable them via the config menu.");
 				return;
 			}
 
@@ -58,7 +45,7 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 				UpdatedMusicServiceFiles(libsPreparer);
 			
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
-				Logger.Log("Audio services are ready!", LogVerbosity.Music);
+				Logger.Info("Music services are ready!");
 		}
 
 		public static ILibsPreparer GetLibsPreparer()
@@ -77,7 +64,7 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 		/// </summary>
 		private static void UpdatedMusicServiceFiles(ILibsPreparer preparer)
 		{
-			Logger.Log("Downloading required files for audio services...");
+			Logger.Info("Downloading required files for the music services...");
 
 			//If the temp directory doesn't exist, create a new one.
 			if (!Directory.Exists("Temp/")) Directory.CreateDirectory("Temp/");
@@ -94,7 +81,7 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 			preparer.DownloadFiles(GetUrlsFromOs(listOfLibsFilesForOs));
 			Config.SaveConfig();
 
-			Logger.Log("Done! All files needed for audio service are ready!", LogVerbosity.Music);
+			Logger.Info("Done! All files needed to play music are ready!");
 		}
 
 		private static AudioExternalLibFiles GetUrlsFromOs(IEnumerable<AudioExternalLibFiles> audioExternalLibFiles)

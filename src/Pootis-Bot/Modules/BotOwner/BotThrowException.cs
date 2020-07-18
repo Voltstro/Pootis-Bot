@@ -21,7 +21,7 @@ namespace Pootis_Bot.Modules.BotOwner
 		public async Task ThrowExcept([Remainder] string message = "Manually thrown exception")
 #pragma warning restore 1998
 		{
-			Logger.Log($"Manually thrown exception at: {Global.TimeNow()}.", LogVerbosity.Warn);
+			Logger.Warn("Manually thrown exception at: {TimeNow}.", Global.TimeNow());
 			throw new Exception(message);
 		}
 	}

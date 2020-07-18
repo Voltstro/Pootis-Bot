@@ -1,141 +1,367 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
+using Pootis_Bot.Exceptions;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 
 namespace Pootis_Bot.Core.Logging
 {
+	/// <summary>
+	/// Provides the ability to log stuff to a file and the console
+	/// </summary>
 	public static class Logger
 	{
-		private const string LogDirectory = "Logs/";
+		private static Serilog.Core.Logger log;
 
-		private static string finalLogName;
+		private static LoggerConfig loggerConfig;
 
-		private static bool endLogger;
+		/// <summary>
+		/// The logger's config, can only be set while the logger isn't running
+		/// </summary>
+		public static LoggerConfig LoggerConfig 
+		{
+			set
+			{
+				if(IsLoggerInitialized)
+					throw new InitializationException("The logger is already initialized!");
 
-		private static StreamWriter logStream;
-		private static readonly ConcurrentQueue<string> Messages = new ConcurrentQueue<string>();
+				loggerConfig = value;
+			}
+			get => loggerConfig;
+		}
+
+		/// <summary>
+		/// Is the logger initialized?
+		/// <para>Returns true if it is</para>
+		/// </summary>
+		public static bool IsLoggerInitialized => log != null;
 
 		/// <summary>
 		/// Initializes the logger
 		/// </summary>
-		public static void InitiateLogger()
+		/// <exception cref="InitializationException"></exception>
+		internal static void Init()
 		{
-			if (logStream == null)
+			if(IsLoggerInitialized)
+				throw new InitializationException("The logger is already initialized!");
+
+			if(LoggerConfig == null)
+				LoggerConfig = new LoggerConfig();
+
+			LoggingLevelSwitch level = new LoggingLevelSwitch()
 			{
-				if (!Directory.Exists(LogDirectory))
-					Directory.CreateDirectory(LogDirectory);
+#if DEBUG
+				MinimumLevel = LogEventLevel.Debug
+#endif
+			};
 
-				finalLogName = FinalLogName();
+			const string outPutTemplate = "{Timestamp:dd-MM hh:mm:ss tt} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
+			string logFileName = $"{loggerConfig.LogDirectory}{DateTime.Now.ToString(loggerConfig.LogFileDateTimeFormat)}.log";
 
-				//Create our StreamWriter
-				logStream = File.CreateText(LogDirectory + "latest.log");
-				logStream.AutoFlush = true;
+			log = new LoggerConfiguration()
+				.MinimumLevel.ControlledBy(level)
+				.WriteTo.Console(outputTemplate: outPutTemplate)
+				.WriteTo.Async(a => a.File(logFileName, outputTemplate: outPutTemplate, buffered: loggerConfig.BufferedFileWrite))
+				.CreateLogger();
 
-				//Run a new task for logging the messages
-				Task.Run(() => WriteMessages().GetAwaiter().GetResult());
-			}
-			else
-			{
-				Log("The logger is already running! No need to initiate it multiple times!", LogVerbosity.Debug);
-			}
+			log.Debug("Logger initialized at {@Date}", DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"));
 		}
 
 		/// <summary>
 		/// Shuts down the logger
 		/// </summary>
-		public static void EndLogger()
+		/// <exception cref="InitializationException"></exception>
+		internal static void Shutdown()
 		{
-			endLogger = true;
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
 
-			while (!Messages.IsEmpty)
-			{
-				Messages.TryDequeue(out string msg);
-				logStream.WriteLine(msg);
-			}
+			log.Debug("Logger shutting down at {@Date}", DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"));
+			log.Dispose();
+		}
 
-			logStream.WriteLine($"Goodbye! Logger shutdown at {Global.TimeNow()} on day {DateTime.Now:MM-dd}");
+		#region Debug Logging
 
-			logStream.Dispose();
+		/// <summary>
+		/// Writes a debug log 
+		/// </summary>
+		/// <param name="message"></param>
+		public static void Debug(string message)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
 
-			File.Copy(LogDirectory + "latest.log", LogDirectory + finalLogName);
+			log.Debug(message);
 		}
 
 		/// <summary>
-		/// Logs a message
+		/// Writes a debug log 
 		/// </summary>
 		/// <param name="message"></param>
-		/// <param name="logVerbosity"></param>
-		public static void Log(string message, LogVerbosity logVerbosity = LogVerbosity.Info)
+		/// <param name="value"></param>
+		public static void Debug<T>(string message, T value)
 		{
-			if (logStream == null) throw new Exception("The log stream hasn't been setup yet!");
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
 
-			string formattedMessage = $"[{Global.TimeNow()} {logVerbosity}] {message}";
-
-			if (logVerbosity != LogVerbosity.Debug)
-				Messages.Enqueue(formattedMessage);
-			else if (logVerbosity == LogVerbosity.Debug && Config.bot.LogDebugMessages)
-				Messages.Enqueue(formattedMessage);
-
-			//Write to the console depending on log verbosity and settings
-			switch (logVerbosity)
-			{
-				case LogVerbosity.Info:
-					WriteMessageToConsole(formattedMessage, ConsoleColor.White);
-					break;
-				case LogVerbosity.Debug:
-#if DEBUG
-					Debug.WriteLine(formattedMessage);
-#endif
-					if (Config.bot.LogDebugMessages)
-						WriteMessageToConsole(formattedMessage, ConsoleColor.White);
-					break;
-				case LogVerbosity.Error:
-					WriteMessageToConsole(formattedMessage, ConsoleColor.Red);
-					break;
-				case LogVerbosity.Warn:
-					WriteMessageToConsole(formattedMessage, ConsoleColor.Yellow);
-					break;
-				case LogVerbosity.Music:
-					WriteMessageToConsole(formattedMessage, ConsoleColor.Blue);
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(logVerbosity), logVerbosity, null);
-			}
+			log.Debug(message, value);
 		}
 
-		private static void WriteMessageToConsole(string message, ConsoleColor color)
+		/// <summary>
+		/// Writes a debug log 
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		public static void Debug<T>(string message, T value0, T value1)
 		{
-			Console.ForegroundColor = color;
-			Console.WriteLine(message);
-			Console.ForegroundColor = ConsoleColor.White;
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Debug(message, value0, value1);
 		}
 
-		private static async Task WriteMessages()
+		/// <summary>
+		/// Writes a debug log 
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		/// <param name="value2"></param>
+		public static void Debug<T>(string message, T value0, T value1, T value2)
 		{
-			while (!endLogger)
-			{
-				if (Messages.IsEmpty)
-				{
-					await Task.Delay(100);
-					continue;
-				}
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
 
-				if (Messages.TryDequeue(out string message))
-					WriteDirect(message);
-			}
-
-			static void WriteDirect(string message)
-			{
-				logStream.WriteLine(message);
-			}
+			log.Debug(message, value0, value1, value2);
 		}
 
-		private static string FinalLogName()
+		/// <summary>
+		/// Writes a debug log 
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="values"></param>
+		public static void Debug(string message, params object[] values)
 		{
-			DateTime now = DateTime.Now;
-			return $"{now:yyyy-MM-dd-HH-mm-ss}.log";
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Debug(message, values);
 		}
+
+		#endregion
+
+		#region Information Logging
+
+		/// <summary>
+		/// Writes a information log
+		/// </summary>
+		/// <param name="message"></param>
+		public static void Info(string message)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Information(message);
+		}
+
+		/// <summary>
+		/// Writes a information log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value"></param>
+		public static void Info<T>(string message, T value)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Information(message, value);
+		}
+
+		/// <summary>
+		/// Writes a information log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		public static void Info<T>(string message, T value0, T value1)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Information(message, value0, value1);
+		}
+
+		/// <summary>
+		/// Writes a information log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		/// <param name="value2"></param>
+		public static void Info<T>(string message, T value0, T value1, T value2)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Information(message, value0, value1, value2);
+		}
+
+		/// <summary>
+		/// Writes a information log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="values"></param>
+		public static void Info(string message, params object[] values)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Information(message, values);
+		}
+
+		#endregion
+
+		#region Warning Logging
+
+		/// <summary>
+		/// Writes a warning log
+		/// </summary>
+		/// <param name="message"></param>
+		public static void Warn(string message)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Warning(message);
+		}
+
+		/// <summary>
+		/// Writes a warning log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value"></param>
+		public static void Warn<T>(string message, T value)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Warning(message, value);
+		}
+
+		/// <summary>
+		/// Writes a warning log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		public static void Warn<T>(string message, T value0, T value1)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Warning(message, value0, value1);
+		}
+
+		/// <summary>
+		/// Writes a warning log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		/// <param name="value2"></param>
+		public static void Warn<T>(string message, T value0, T value1, T value2)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Warning(message, value0, value1, value2);
+		}
+
+		/// <summary>
+		/// Writes a warning log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="values"></param>
+		public static void Warn(string message, params object[] values)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Warning(message, values);
+		}
+
+		#endregion
+
+		#region Warning Logging
+
+		/// <summary>
+		/// Writes a error log
+		/// </summary>
+		/// <param name="message"></param>
+		public static void Error(string message)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Error(message);
+		}
+
+		/// <summary>
+		/// Writes a error log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value"></param>
+		public static void Error<T>(string message, T value)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Error(message, value);
+		}
+
+		/// <summary>
+		/// Writes a error log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		public static void Error<T>(string message, T value0, T value1)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Error(message, value0, value1);
+		}
+
+		/// <summary>
+		/// Writes a error log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="value0"></param>
+		/// <param name="value1"></param>
+		/// <param name="value2"></param>
+		public static void Error<T>(string message, T value0, T value1, T value2)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Error(message, value0, value1, value2);
+		}
+
+		/// <summary>
+		/// Writes a error log
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="values"></param>
+		public static void Error(string message, params object[] values)
+		{
+			if(!IsLoggerInitialized)
+				throw new InitializationException("The logger isn't initialized!");
+
+			log.Error(message, values);
+		}
+
+		#endregion
 	}
 }

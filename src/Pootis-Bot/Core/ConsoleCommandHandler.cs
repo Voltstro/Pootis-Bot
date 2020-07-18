@@ -59,7 +59,7 @@ namespace Pootis_Bot.Core
 
 		public override void LogMessage(string message, ConsoleColor color)
 		{
-			Logger.Log(message, LogVerbosity.Error);
+			Logger.Error(message);
 		}
 
 		private void HelpCmd()
@@ -80,7 +80,7 @@ namespace Pootis_Bot.Core
 		{
 			IsExiting = true;
 
-			Logger.Log("Shutting down...");
+			Logger.Info("Shutting down...");
 
 			await bot.EndBot();
 
@@ -94,7 +94,7 @@ namespace Pootis_Bot.Core
 
 		private static void VersionCmd()
 		{
-			Logger.Log($"You are running version {VersionUtils.GetAppVersion()} of Pootis-Bot!");
+			Logger.Info($"You are running version {VersionUtils.GetAppVersion()} of Pootis-Bot!");
 		}
 
 		private static void AboutCmd()
@@ -117,7 +117,7 @@ namespace Pootis_Bot.Core
 
 			await bot.Client.SetGameAsync(Global.BotStatusText, twitch, activity);
 
-			Logger.Log($"Bot's game status was set to '{Global.BotStatusText}'");
+			Logger.Info($"Bot's game status was set to '{Global.BotStatusText}'");
 		}
 
 		private async void SetStreamingStatusCmd()
@@ -126,7 +126,7 @@ namespace Pootis_Bot.Core
 			{
 				Bot.IsStreaming = false;
 				await bot.Client.SetGameAsync(Global.BotStatusText, "");
-				Logger.Log("Bot no longer shows streaming status.");
+				Logger.Info("Bot no longer shows streaming status.");
 			}
 			else
 			{
@@ -134,7 +134,7 @@ namespace Pootis_Bot.Core
 				await bot.Client.SetGameAsync(Global.BotStatusText, Config.bot.TwitchStreamingSite,
 					ActivityType.Streaming);
 
-				Logger.Log("Bot now shows streaming status.");
+				Logger.Info("Bot now shows streaming status.");
 			}
 		}
 
@@ -154,15 +154,15 @@ namespace Pootis_Bot.Core
 
 			MusicService.currentChannels.Clear();
 
-			Logger.Log("Deleting music directory...", LogVerbosity.Music);
+			Logger.Info("Deleting music directory...");
 			if (Directory.Exists("Music/"))
 			{
 				Directory.Delete("Music/", true);
-				Logger.Log("Done!", LogVerbosity.Music);
+				Logger.Info("Done!");
 			}
 			else
 			{
-				Logger.Log("The music directory doesn't exist!", LogVerbosity.Music);
+				Logger.Error("The music directory doesn't exist!");
 			}
 		}
 
@@ -171,15 +171,14 @@ namespace Pootis_Bot.Core
 			Config.bot.AudioSettings.AudioServicesEnabled = !Config.bot.AudioSettings.AudioServicesEnabled;
 			Config.SaveConfig();
 
-			Logger.Log($"The audio service was set to {Config.bot.AudioSettings.AudioServicesEnabled}",
-				LogVerbosity.Music);
+			Logger.Info("The audio service was set to {@AudioServicesEnabled}", Config.bot.AudioSettings.AudioServicesEnabled);
 			if (Config.bot.AudioSettings.AudioServicesEnabled)
 				MusicLibsChecker.CheckMusicService();
 		}
 
 		private static async void ForceAudioUpdateCmd()
 		{
-			Logger.Log("Updating audio files.", LogVerbosity.Music);
+			Logger.Info("Updating audio files.");
 			foreach (ServerMusicItem channel in MusicService.currentChannels)
 				channel.AudioClient.Dispose();
 
@@ -191,13 +190,12 @@ namespace Pootis_Bot.Core
 			MusicLibsChecker.GetLibsPreparer().DeleteFiles();
 
 			MusicLibsChecker.CheckMusicService(true);
-			Logger.Log("Audio files were updated.", LogVerbosity.Music);
+			Logger.Info("Audio files were updated.");
 		}
 
 		private void StatusCmd()
 		{
-			Logger.Log(
-				$"Bot status: {bot.Client.ConnectionState}\nServer count: {bot.Client.Guilds.Count}\nLatency: {bot.Client.Latency}");
+			Logger.Info("Bot status: {@ConnectionState}\nServer count: {@GuildsCount}\nLatency: {@ClientLatency}", bot.Client.ConnectionState, bot.Client.Guilds.Count, bot.Client.Latency);
 		}
 
 		private static void ClearCmd()
@@ -210,38 +208,38 @@ namespace Pootis_Bot.Core
 			HelpModulesManager.ResetHelpModulesToDefault();
 			HelpModulesManager.SaveHelpModules();
 
-			Logger.Log("The help modules were reset to their defaults.");
+			Logger.Info("The help modules were reset to their defaults.");
 		}
 
 		private static void SaveConfigCmd()
 		{
 			Config.SaveConfig();
-			Logger.Log("Config saved!");
+			Logger.Info("Config saved!");
 		}
 
 		private static void SaveAccountsCmd()
 		{
 			UserAccountsManager.SaveAccounts();
-			Logger.Log("User accounts saved!");
+			Logger.Info("User accounts saved!");
 		}
 
 		private static void SaveServersCmd()
 		{
 			ServerListsManager.SaveServerList();
-			Logger.Log("Server list saved!");
+			Logger.Info("Server list saved!");
 		}
 
 		private static void Info()
 		{
-			Logger.Log("==== System Info ====");
-			Logger.Log($" - OS Version:          {Environment.OSVersion}");
-			Logger.Log($" - OS Name:             {RuntimeInformation.OSDescription}");
-			Logger.Log($" - System Architecture: {RuntimeInformation.OSArchitecture}");
-			Logger.Log($" - NET Core:            {RuntimeInformation.FrameworkDescription}");
-			Logger.Log("");
-			Logger.Log("=== Pootis-Bot Info ====");
-			Logger.Log($" - Version:             {VersionUtils.GetAppVersion()}");
-			Logger.Log($" - Discord.Net Version: {VersionUtils.GetDiscordNetVersion()}");
+			Logger.Info("==== System Info ====");
+			Logger.Info(" - OS Version:          {@OSVersion}", Environment.OSVersion.Version.ToString());
+			Logger.Info(" - OS Name:             {@OSDescription}", RuntimeInformation.OSDescription);
+			Logger.Info(" - System Architecture: {@OSArchitecture}", RuntimeInformation.OSArchitecture);
+			Logger.Info(" - NET Core:            {@FrameworkDescription}", RuntimeInformation.FrameworkDescription);
+			Logger.Info("");
+			Logger.Info("=== Pootis-Bot Info ====");
+			Logger.Info(" - Version:             {@AppVersion}", VersionUtils.GetAppVersion());
+			Logger.Info(" - Discord.Net Version: {@DiscordNetVersion}", VersionUtils.GetDiscordNetVersion());
 		}
 	}
 }

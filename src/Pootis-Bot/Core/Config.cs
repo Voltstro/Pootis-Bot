@@ -32,7 +32,7 @@ namespace Pootis_Bot.Core
 
 				SaveConfig();
 
-				Logger.Log("Config.json was created. Is this your first time running?", LogVerbosity.Warn);
+				Logger.Warn("Config.json was created. Is this your first time running?");
 			}
 			else
 			{
@@ -44,7 +44,7 @@ namespace Pootis_Bot.Core
 
 				bot.ConfigVersion = ConfigVersion;
 				SaveConfig();
-				Logger.Log("Updated config to version " + ConfigVersion, LogVerbosity.Warn);
+				Logger.Warn("Updated config to version " + ConfigVersion);
 			}
 		}
 

@@ -41,7 +41,7 @@ namespace Pootis_Bot.Core.ConfigMenuPlus
 			AddCommand("exit", "", () =>
 			{
 				IsExiting = true;
-				Logger.Log("Exited out of config menu.");
+				Logger.Info("Exited out of config menu.");
 			});
 
 			ConsoleHandleLoop();

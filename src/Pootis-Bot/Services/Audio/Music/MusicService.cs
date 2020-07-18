@@ -178,7 +178,7 @@ namespace Pootis_Bot.Services.Audio.Music
 				if (songFileLocation == null)
 					return;
 
-				Logger.Log($"Playing song from {songFileLocation}", LogVerbosity.Debug);
+				Logger.Debug("Playing song from {@SongFileLocation}", songFileLocation);
 
 				//This is so we say "Now playing 'Epic Song'" instead of "Now playing 'Epic Song.mp3'"
 				songName = Path.GetFileName(songFileLocation)
@@ -189,7 +189,7 @@ namespace Pootis_Bot.Services.Audio.Music
 			}
 			catch (Exception ex)
 			{
-				Logger.Log(ex.ToString(), LogVerbosity.Error);
+				Logger.Error("An error occured while trying to get a song! {@Exception}", ex);
 				return;
 			}
 
@@ -199,8 +199,7 @@ namespace Pootis_Bot.Services.Audio.Music
 
 			//Log (if enabled) to the console that we are playing a new song
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-				Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has started.",
-					LogVerbosity.Music);
+				Logger.Info("The song {@SongName} on server {@GuildName}({@GuildId}) has started.", songName, guild.Name, guild.Id);
 
 			serverMusicList.CancellationSource = new CancellationTokenSource();
 			CancellationToken token = serverMusicList.CancellationSource.Token;
@@ -267,8 +266,7 @@ namespace Pootis_Bot.Services.Audio.Music
 			}
 
 			if (Config.bot.AudioSettings.LogPlayStopSongToConsole)
-				Logger.Log($"The song '{songName}' on server {guild.Name}({guild.Id}) has stopped.",
-					LogVerbosity.Music);
+				Logger.Info("The song {@SongName} on server {@GuildName}({@GuildId}) has stopped.", songName, guild.Name, guild.Id);
 
 			//There wasn't a request to cancel
 			if (!token.IsCancellationRequested)

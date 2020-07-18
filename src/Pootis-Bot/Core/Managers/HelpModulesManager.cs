@@ -52,9 +52,7 @@ namespace Pootis_Bot.Core.Managers
 		{
 			foreach (string module in helpModules.SelectMany(helpModule =>
 				helpModule.Modules.Where(module => DiscordModuleManager.GetModule(module) == null)))
-				Logger.Log(
-					$"There is no module called {module}! Reset the help modules or fix the help modules in the config file!",
-					LogVerbosity.Error);
+				Logger.Error("There is no module called {@Module}! Reset the help modules or fix the help modules in the config file!", module);
 		}
 
 		/// <summary>
