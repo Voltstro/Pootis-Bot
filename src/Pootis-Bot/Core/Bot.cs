@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -53,8 +54,28 @@ namespace Pootis_Bot.Core
 
 			Logger.Debug("Signing in using token...");
 
-			await Client.LoginAsync(TokenType.Bot,
-				Global.BotToken); //Logging into the bot using the token in the config.
+			try
+			{
+				await Client.LoginAsync(TokenType.Bot,
+					Global.BotToken); //Logging into the bot using the token in the config.
+			}
+			catch (Discord.Net.HttpException)
+			{
+				Logger.Error("The supplied token was invalid!");
+				await EndBot();
+				Environment.Exit(0);
+
+				return;
+			}
+			catch (HttpRequestException)
+			{
+				Logger.Error("There was an error connecting to Discord! This may be because Discord API is down, or there is no internet connection.");
+				await EndBot();
+				Environment.Exit(0);
+
+				return;
+			}
+
 			await Client.StartAsync(); //Start the client
 
 			Logger.Debug("Sign in successful!");
