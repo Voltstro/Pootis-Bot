@@ -10,7 +10,7 @@ namespace Pootis_Bot.Core.Managers
 {
 	public static class UserAccountsManager
 	{
-		private const string AccountsFile = "Resources/UserAccounts.json";
+		private static string AccountsFile => $"{Global.ResourcesDirectory}/UserAccounts.json";
 		private static readonly List<UserAccount> Accounts;
 
 		static UserAccountsManager()

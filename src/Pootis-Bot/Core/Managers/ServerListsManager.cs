@@ -10,7 +10,7 @@ namespace Pootis_Bot.Core.Managers
 {
 	public class ServerListsManager
 	{
-		private const string ServerListFile = "Resources/ServerList.json";
+		private static string ServerListFile => $"{Global.ResourcesDirectory}/ServerList.json";
 		private static readonly List<ServerList> Servers;
 
 		static ServerListsManager()

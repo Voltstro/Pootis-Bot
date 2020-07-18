@@ -93,6 +93,11 @@ namespace Pootis_Bot.Core
 		public static HttpClient HttpClient;
 
 		/// <summary>
+		/// The directory to where resources such as config files will be saved
+		/// </summary>
+		public static string ResourcesDirectory;
+
+		/// <summary>
 		/// Gets... you guessed it, THE TIME NOW!!!! (12hr time)
 		/// </summary>
 		/// <returns></returns>

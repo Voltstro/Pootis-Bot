@@ -13,7 +13,6 @@ namespace Pootis_Bot.Core
 	/// </summary>
 	public static class Config
 	{
-		private const string ConfigFolder = "Resources";
 		private const string ConfigFile = "Config.json";
 
 		private const string ConfigVersion = "13";
@@ -22,11 +21,11 @@ namespace Pootis_Bot.Core
 
 		static Config()
 		{
-			if (!Directory.Exists(ConfigFolder)) //Creates the Resources folder if it doesn't exist.
-				Directory.CreateDirectory(ConfigFolder);
+			if (!Directory.Exists(Global.ResourcesDirectory)) //Creates the Resources folder if it doesn't exist.
+				Directory.CreateDirectory(Global.ResourcesDirectory);
 
 			//If the config.json file doesn't exist it create a new one.
-			if (!File.Exists(ConfigFolder + "/" + ConfigFile))
+			if (!File.Exists(Global.ResourcesDirectory + "/" + ConfigFile))
 			{
 				bot = NewConfig();
 
@@ -37,7 +36,7 @@ namespace Pootis_Bot.Core
 			else
 			{
 				string json =
-					File.ReadAllText(ConfigFolder + "/" + ConfigFile); //If it does exist then it continues like normal.
+					File.ReadAllText(Global.ResourcesDirectory + "/" + ConfigFile); //If it does exist then it continues like normal.
 				bot = JsonConvert.DeserializeObject<ConfigFile>(json);
 
 				if (!string.IsNullOrWhiteSpace(bot.ConfigVersion) && bot.ConfigVersion == ConfigVersion) return;
@@ -90,7 +89,7 @@ namespace Pootis_Bot.Core
 		public static void SaveConfig()
 		{
 			string json = JsonConvert.SerializeObject(bot, Formatting.Indented);
-			File.WriteAllText(ConfigFolder + "/" + ConfigFile, json);
+			File.WriteAllText(Global.ResourcesDirectory + "/" + ConfigFile, json);
 		}
 	}
 }

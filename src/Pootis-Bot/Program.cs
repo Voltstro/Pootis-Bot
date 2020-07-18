@@ -19,9 +19,11 @@ namespace Pootis_Bot
 {
 	public class Program
 	{
-		public static void Main()
+		public static void Main(string[] args)
 		{
 			Logger.Init();
+
+			ArgumentsProcessor.ParseArguments(args);
 
 			//Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
 			Console.WriteLine(@"__________              __  .__                 __________        __   ");

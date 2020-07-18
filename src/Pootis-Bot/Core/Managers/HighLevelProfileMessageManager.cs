@@ -6,7 +6,7 @@ namespace Pootis_Bot.Core.Managers
 {
 	public class HighLevelProfileMessageManager
 	{
-		private const string HighLevelProfileMessagesFilePath = "Resources/HighLevelProfileMessages.json";
+		private static string HighLevelProfileMessagesFilePath => $"{Global.ResourcesDirectory}/HighLevelProfileMessages.json";
 		public static List<HighLevelProfileMessage> HighLevelProfileMessages;
 
 		static HighLevelProfileMessageManager()

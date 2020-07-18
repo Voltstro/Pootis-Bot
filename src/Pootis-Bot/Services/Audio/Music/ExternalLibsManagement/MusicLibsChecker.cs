@@ -15,7 +15,7 @@ namespace Pootis_Bot.Services.Audio.Music.ExternalLibsManagement
 	public static class MusicLibsChecker
 	{
 		//Downloads a .json file that has were to get some needed libs from
-		private const string AudioLibFileJsonUrl = "https://pootis-bot.voltstro.dev/download/externallibfiles.json";
+		private static string AudioLibFileJsonUrl => ArgumentsProcessor.AudioLibsApiUrl;
 
 		/// <summary>
 		/// Checks the audio service
