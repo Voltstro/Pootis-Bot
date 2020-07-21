@@ -19,30 +19,31 @@ namespace Pootis_Bot.Modules.Server
 		// Description      - Anything permission related
 		// Contributors     - Voltstro, 
 
-		private readonly PermissionService _perm;
+		private readonly PermissionService perm;
 
 		public ServerPermissions(CommandService commandService)
 		{
-			_perm = new PermissionService(commandService);
+			perm = new PermissionService(commandService);
 		}
 
 		[Command("perm")]
-		[Summary("Adds or removes command permission")]
+		[Summary("Adds or removes a command's permissions")]
 		[RequireGuildOwner]
 		public async Task Permission(string command, string subCmd, [Remainder] string[] roles)
 		{
 			switch (subCmd)
 			{
 				case "add":
-					await _perm.AddPerm(command, roles, Context.Channel, Context.Guild);
+					await perm.AddPerm(command, roles, Context.Channel, Context.Guild);
 					break;
 				default:
-					await _perm.RemovePerm(command, roles, Context.Channel, Context.Guild);
+					await perm.RemovePerm(command, roles, Context.Channel, Context.Guild);
 					break;
 			}
 		}
 
 		[Command("perms")]
+		[Summary("Gets a list of all commands that have permissions")]
 		[Alias("permissions", "allperm", "allperms")]
 		[RequireGuildOwner]
 		public async Task Permissions()

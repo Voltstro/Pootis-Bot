@@ -18,7 +18,7 @@ namespace Pootis_Bot.Modules.Server
 
 		[Command("role")]
 		[Alias("get optrole", "optrole", "getrole")]
-		[Summary("Gives you an opt role, if it exists and if you meet conditions (if any).")]
+		[Summary("Gives you an opt role, if it exists and if you meet the conditions (if any)")]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task GiveOptRole([Remainder] string optRoleName = "")
 		{
@@ -58,7 +58,7 @@ namespace Pootis_Bot.Modules.Server
 		}
 
 		[Command("optroles")]
-		[Summary("Gets all opt roles")]
+		[Summary("Gets all opt roles that are on this server")]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task GetOptRoles()
 		{

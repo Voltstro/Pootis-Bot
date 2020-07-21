@@ -93,7 +93,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 		[Command("rolepings")]
 		[Alias("role pings")]
-		[Summary("Gets all role to role pings")]
+		[Summary("Lists all role to role pings")]
 		[RequireGuildOwner]
 		public async Task GetRolePings()
 		{

@@ -14,7 +14,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Contributors     - Voltstro, 
 
 		[Command("setup set warnskick")]
-		[Summary("How many warnings until a user gets kicked")]
+		[Summary("Sets how many warnings until a user gets kicked")]
 		[RequireGuildOwner]
 		public async Task SetWarnsKick(int warningsNeeded)
 		{
@@ -39,7 +39,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		}
 
 		[Command("setup set warnsban")]
-		[Summary("How many warnings until a user gets banned")]
+		[Summary("Sets how many warnings until a user gets banned")]
 		[RequireGuildOwner]
 		public async Task SetWarnsBan(int warningsNeeded)
 		{

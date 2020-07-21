@@ -86,7 +86,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 
 		[Command("setup pointroles")]
-		[Summary("Gets all the role points")]
+		[Summary("Displays a list of all the role points")]
 		[RequireGuildOwner]
 		public async Task RolePoints()
 		{

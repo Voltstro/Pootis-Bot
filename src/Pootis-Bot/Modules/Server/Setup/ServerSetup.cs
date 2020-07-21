@@ -14,7 +14,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Description      - Provides setup commands
 		// Contributors     - Voltstro, 
 
-		private readonly string[] _setupModules =
+		private readonly string[] setupModules =
 		{
 			nameof(ServerSetupStatus), nameof(ServerSetupBannedChannels), nameof(ServerSetupOptRoles),
 			nameof(ServerSetupPointRoles), nameof(ServerSetupPoints), nameof(ServerSetupRuleReaction),
@@ -33,7 +33,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			info.Append(
 				$"Here are all the commands related to setting up your Discord server with {Global.BotName}! For more information or help, read the setup docs [here]({Global.websiteServerSetup}).\n\n");
 
-			foreach (string module in _setupModules)
+			foreach (string module in setupModules)
 			{
 				ModuleInfo moduleInfo = DiscordModuleManager.GetModule(module);
 				if (moduleInfo == null) continue;

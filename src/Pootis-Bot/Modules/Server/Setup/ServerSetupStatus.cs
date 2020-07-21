@@ -18,7 +18,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Description      - Server setup status messages
 		// Contributors     - Voltstro, 
 
-		private readonly string[] _warningCommands =
+		private readonly string[] warningCommands =
 			{"warn", "makewarnable", "makenotwarnable", "ban", "kick", "mute", "addvcchannel"};
 
 		[Command("setup status")]
@@ -94,7 +94,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 			const string warningsTitle = "Warnings";
 
 			StringBuilder warnings = new StringBuilder();
-			foreach (string command in _warningCommands.Where(warningCommand =>
+			foreach (string command in warningCommands.Where(warningCommand =>
 				server.GetCommandInfo(warningCommand) == null))
 				warnings.Append(
 					$"<:Cross:537572008574189578> The command `{command}` doesn't have a permission added to it!\n");

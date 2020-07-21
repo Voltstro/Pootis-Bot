@@ -20,7 +20,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 		[Command("setup set rulemessage")]
 		[Summary(
-			"Sets what message that users need to react to. Run this command in the same channel as were the message is.")]
+			"Sets what message that users need to react to. Run this command in the same channel as were the message is")]
 		[RequireBotPermission(GuildPermission.ReadMessageHistory)]
 		[RequireBotPermission(GuildPermission.ViewChannel)]
 		[RequireGuildOwner]
@@ -101,7 +101,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		#endregion
 
 		[Command("setup toggle rulereaction")]
-		[Summary("Enables/Disables the rule reaction feature. All the other commands MUST be ran before this one.")]
+		[Summary("Enables/Disables the rule reaction feature. All the other commands MUST be ran before this one")]
 		[RequireBotPermission(GuildPermission.AddReactions)]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		[RequireBotPermission(GuildPermission.ReadMessageHistory)]

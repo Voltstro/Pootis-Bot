@@ -16,7 +16,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 
 		[Command("setup welcomechannel")]
 		[Alias("setup welcome channel")]
-		[Summary("Sets where the custom welcome and goodbye messages will go.")]
+		[Summary("Sets where the custom welcome and goodbye messages will go")]
 		[RequireGuildOwner]
 		public async Task SetupWelcomeChannel([Remainder] SocketTextChannel channel = null)
 		{

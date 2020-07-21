@@ -16,7 +16,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		// Contributors     - Voltstro, 
 
 		[Command("setup add optrole")]
-		[Summary("Adds a opt role")]
+		[Summary("Adds an opt role")]
 		[RequireBotPermission(GuildPermission.ManageRoles)]
 		public async Task AddOptRole(string optRoleBaseName, string roleToAssignName,
 			[Remainder] string requiredRoleName = "")
@@ -70,7 +70,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		}
 
 		[Command("setup remove optrole")]
-		[Summary("Removes a role give")]
+		[Summary("Removes an opt give")]
 		public async Task RoleGiveRemove(string optRoleName)
 		{
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
