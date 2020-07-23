@@ -9,9 +9,12 @@ namespace Pootis_Bot.ConsoleCommandHandler
 
 	//Unity FPS sample project: https://github.com/Unity-Technologies/FPSSample
 
+	/// <summary>
+	/// Provides a system to have a console with commands
+	/// </summary>
 	public abstract class Console
 	{
-		private readonly Dictionary<string, ConsoleCommand> _consoleCommands = new Dictionary<string, ConsoleCommand>();
+		private readonly Dictionary<string, ConsoleCommand> consoleCommands = new Dictionary<string, ConsoleCommand>();
 
 		public bool IsExiting;
 
@@ -27,7 +30,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		}
 
 		/// <summary>
-		/// Adds a new <see cref="ConsoleCommand"/> to the <see cref="_consoleCommands"/> list
+		/// Adds a new <see cref="ConsoleCommand"/> to the <see cref="consoleCommands"/> list
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="summary"></param>
@@ -35,13 +38,13 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		public void AddCommand(string name, string summary, Method method)
 		{
 			name = name.ToLower();
-			if (_consoleCommands.ContainsKey(name))
+			if (consoleCommands.ContainsKey(name))
 			{
 				LogMessage($"The command {name} already exists!", ConsoleColor.Red);
 				return;
 			}
 
-			_consoleCommands.Add(name, new ConsoleCommand(name, summary, method));
+			consoleCommands.Add(name, new ConsoleCommand(name, summary, method));
 		}
 
 		/// <summary>
@@ -50,7 +53,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		/// <returns></returns>
 		public Dictionary<string, ConsoleCommand> GetAllInstalledConsoleCommands()
 		{
-			return _consoleCommands;
+			return consoleCommands;
 		}
 
 		/// <summary>
@@ -59,7 +62,7 @@ namespace Pootis_Bot.ConsoleCommandHandler
 		/// <param name="name"></param>
 		public void ExecuteCommand(string name)
 		{
-			if (_consoleCommands.TryGetValue(name, out ConsoleCommand consoleCommand))
+			if (consoleCommands.TryGetValue(name, out ConsoleCommand consoleCommand))
 				consoleCommand.Method();
 			else
 				LogMessage(UnknownCommandError, UnknownCommandErrorColor);

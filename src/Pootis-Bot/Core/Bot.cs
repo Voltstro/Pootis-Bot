@@ -159,7 +159,26 @@ namespace Pootis_Bot.Core
 
 		private static Task Log(LogMessage msg)
 		{
-			Logger.Info(msg.Message);
+			switch (msg.Severity)
+			{
+				case LogSeverity.Critical:
+				case LogSeverity.Error:
+					Logger.Error(msg.Message);
+					break;
+				case LogSeverity.Warning:
+					Logger.Warn(msg.Message);
+					break;
+				case LogSeverity.Verbose:
+				case LogSeverity.Info:
+					Logger.Info(msg.Message);
+					break;
+				case LogSeverity.Debug:
+					Logger.Debug(msg.Message);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
 			return Task.CompletedTask;
 		}
 
@@ -169,13 +188,17 @@ namespace Pootis_Bot.Core
 			{
 				if (Config.bot.CheckConnectionStatus) // It is enabled then check the connection status ever so milliseconds
 				{
-					await Task.Delay(Config.bot.CheckConnectionStatusInterval);
+					await Task.Delay((int)Config.bot.CheckConnectionStatusInterval);
 
 					Logger.Debug("Checking bot connection status...");
 
 					//Check the connection state
 					if (Client.ConnectionState != ConnectionState.Disconnected &&
-					    (Client.ConnectionState != ConnectionState.Disconnecting || !IsRunning)) continue;
+					    (Client.ConnectionState != ConnectionState.Disconnecting || !IsRunning))
+					{
+						Logger.Debug("Everything appears to still be connected.");
+						continue;
+					}
 
 					Logger.Warn("The bot had disconnect for some reason, restarting...");
 

@@ -12,6 +12,10 @@ namespace Pootis_Bot.Core
 	{
 		public static string AudioLibsApiUrl;
 
+		/// <summary>
+		/// Parses all arguments
+		/// </summary>
+		/// <param name="args"></param>
 		public static void ParseArguments(string[] args)
 		{
 			RootCommand rootCommand = new RootCommand

@@ -39,7 +39,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// How ofter should we check if we are still connected (milliseconds)
 		/// </summary>
-		public int CheckConnectionStatusInterval { get; set; }
+		public uint CheckConnectionStatusInterval { get; set; }
 
 		/// <summary>
 		/// The default game status the bot should use
@@ -54,12 +54,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// The time between leveling up
 		/// </summary>
-		public int LevelUpCooldown { get; set; }
-
-		/// <summary>
-		/// Should we put debug messages into the console and log file
-		/// </summary>
-		public bool LogDebugMessages { get; set; }
+		public uint LevelUpCooldown { get; set; }
 
 		/// <summary>
 		/// Reports errors to the bot owner

@@ -18,7 +18,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 	public class ServerSetupQuick : ModuleBase<SocketCommandContext>
 	{
 		//Quick Rules Template
-		private const string QuickRulesLocation = "Resources/quick-rules.txt";
+		private static string QuickRulesLocation => $"{Global.ResourcesDirectory}/quick-rules.txt";
 
 		//Rules
 		private const string RulesEmoji = "👌";
