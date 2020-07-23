@@ -17,6 +17,9 @@ namespace Pootis_Bot.Core
 
 		private const string ConfigVersion = "13";
 
+		/// <summary>
+		/// The bot's config
+		/// </summary>
 		public static readonly ConfigFile bot;
 
 		static Config()
