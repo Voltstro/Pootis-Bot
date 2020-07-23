@@ -17,6 +17,9 @@ using Console = Pootis_Bot.ConsoleCommandHandler.Console;
 
 namespace Pootis_Bot.Core
 {
+	/// <summary>
+	/// Handles Pootis-Bot's console
+	/// </summary>
 	public class ConsoleCommandHandler : Console
 	{
 		private readonly Bot bot;
