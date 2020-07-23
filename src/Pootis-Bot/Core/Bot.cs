@@ -159,7 +159,26 @@ namespace Pootis_Bot.Core
 
 		private static Task Log(LogMessage msg)
 		{
-			Logger.Info(msg.Message);
+			switch (msg.Severity)
+			{
+				case LogSeverity.Critical:
+				case LogSeverity.Error:
+					Logger.Error(msg.Message);
+					break;
+				case LogSeverity.Warning:
+					Logger.Warn(msg.Message);
+					break;
+				case LogSeverity.Verbose:
+				case LogSeverity.Info:
+					Logger.Info(msg.Message);
+					break;
+				case LogSeverity.Debug:
+					Logger.Debug(msg.Message);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
 			return Task.CompletedTask;
 		}
 
