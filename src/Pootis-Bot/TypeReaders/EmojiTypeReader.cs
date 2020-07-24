@@ -6,6 +6,9 @@ using Pootis_Bot.Helpers;
 
 namespace Pootis_Bot.TypeReaders
 {
+	/// <summary>
+	/// A <see cref="TypeReader"/> for an <see cref="Emoji"/>
+	/// </summary>
 	public class EmojiTypeReader : TypeReader
 	{
 		public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input,
