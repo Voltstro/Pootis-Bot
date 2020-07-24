@@ -3,6 +3,9 @@ using Pootis_Bot.Services.Audio.Music;
 
 namespace Pootis_Bot.Structs.Config
 {
+	/// <summary>
+	/// Settings related to audio
+	/// </summary>
 	public struct ConfigAudio
 	{
 		/// <summary>

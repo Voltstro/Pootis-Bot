@@ -112,12 +112,12 @@ namespace Pootis_Bot.Events
 				//If we are adding an auto voice channel
 				if (after.VoiceChannel != null)
 				{
-					ServerVoiceChannel voiceChannel = server.GetAutoVoiceChannel(after.VoiceChannel.Id);
-					if (voiceChannel.Name != null)
+					ServerAudioVoiceChannel audioVoiceChannel = server.GetAutoVoiceChannel(after.VoiceChannel.Id);
+					if (audioVoiceChannel.Name != null)
 					{
 						RestVoiceChannel createdChannel =
 							await after.VoiceChannel.Guild.CreateVoiceChannelAsync(
-								$"{voiceChannel.Name} #" + (server.ActiveAutoVoiceChannels.Count + 1), x =>
+								$"{audioVoiceChannel.Name} #" + (server.ActiveAutoVoiceChannels.Count + 1), x =>
 								{
 									x.CategoryId = after.VoiceChannel.CategoryId;
 									x.Bitrate = after.VoiceChannel.Bitrate;

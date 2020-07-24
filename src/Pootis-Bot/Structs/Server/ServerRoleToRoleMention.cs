@@ -1,5 +1,8 @@
 ﻿namespace Pootis_Bot.Structs.Server
 {
+	/// <summary>
+	/// A server role to role mention
+	/// </summary>
 	public struct ServerRoleToRoleMention
 	{
 		/// <summary>

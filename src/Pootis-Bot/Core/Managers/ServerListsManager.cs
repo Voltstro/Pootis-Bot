@@ -93,7 +93,7 @@ namespace Pootis_Bot.Core.Managers
 				ServerRolePoints = new List<ServerRolePoints>(),
 				CommandPermissions = new List<ServerList.CommandPermission>(),
 				RoleToRoleMentions = new List<ServerRoleToRoleMention>(),
-				AutoVoiceChannels = new List<ServerVoiceChannel>(),
+				AutoVoiceChannels = new List<ServerAudioVoiceChannel>(),
 				RoleGives = new List<OptRole>(),
 				ActiveAutoVoiceChannels = new List<ulong>(),
 				WelcomeMessageEnabled = false,

@@ -61,7 +61,7 @@ namespace Pootis_Bot.Entities
 		/// <summary>
 		/// Auto voice channels
 		/// </summary>
-		public List<ServerVoiceChannel> AutoVoiceChannels { get; set; }
+		public List<ServerAudioVoiceChannel> AutoVoiceChannels { get; set; }
 
 		/// <summary>
 		/// Any active channels that were created from an auto-vc channel
@@ -306,13 +306,13 @@ namespace Pootis_Bot.Entities
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public ServerVoiceChannel GetAutoVoiceChannel(ulong id)
+		public ServerAudioVoiceChannel GetAutoVoiceChannel(ulong id)
 		{
-			IEnumerable<ServerVoiceChannel> result = from a in AutoVoiceChannels
+			IEnumerable<ServerAudioVoiceChannel> result = from a in AutoVoiceChannels
 				where a.Id == id
 				select a;
 
-			ServerVoiceChannel channel = result.FirstOrDefault();
+			ServerAudioVoiceChannel channel = result.FirstOrDefault();
 			return channel;
 		}
 

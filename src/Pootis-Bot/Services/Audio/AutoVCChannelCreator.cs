@@ -16,9 +16,9 @@ namespace Pootis_Bot.Services.Audio
 			RestVoiceChannel vcChannel =
 				await guild.CreateVoiceChannelAsync($"➕ New {baseName} VC");
 
-			ServerVoiceChannel voiceChannel = new ServerVoiceChannel(vcChannel.Id, baseName);
+			ServerAudioVoiceChannel audioVoiceChannel = new ServerAudioVoiceChannel(vcChannel.Id, baseName);
 
-			ServerListsManager.GetServer(guild).AutoVoiceChannels.Add(voiceChannel);
+			ServerListsManager.GetServer(guild).AutoVoiceChannels.Add(audioVoiceChannel);
 			ServerListsManager.SaveServerList();
 
 			return vcChannel;

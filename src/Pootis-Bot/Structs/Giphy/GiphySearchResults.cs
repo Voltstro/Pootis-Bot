@@ -1,5 +1,8 @@
 ﻿namespace Pootis_Bot.Structs.Giphy
 {
+	/// <summary>
+	/// A Giphy error reason
+	/// </summary>
 	public enum ErrorReason
 	{
 		/// <summary>
@@ -13,6 +16,9 @@
 		Error
 	}
 
+	/// <summary>
+	/// Search results for Giphy
+	/// </summary>
 	public struct GiphySearchResult
 	{
 		/// <summary>

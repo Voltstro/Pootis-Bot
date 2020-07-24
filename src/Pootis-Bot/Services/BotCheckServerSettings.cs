@@ -106,12 +106,12 @@ namespace Pootis_Bot.Services
 		public static void CheckServerVoiceChannels(ServerList server)
 		{
 			//Get all the voice channels that have been deleted
-			List<ServerVoiceChannel> autoVcChannelsToDelete = (from autoVoiceChannel in server.AutoVoiceChannels
+			List<ServerAudioVoiceChannel> autoVcChannelsToDelete = (from autoVoiceChannel in server.AutoVoiceChannels
 				let vcChannel = client.GetGuild(server.GuildId).GetVoiceChannel(autoVoiceChannel.Id)
 				where vcChannel == null
 				select autoVoiceChannel).ToList();
 
-			foreach (ServerVoiceChannel voiceChannel in autoVcChannelsToDelete)
+			foreach (ServerAudioVoiceChannel voiceChannel in autoVcChannelsToDelete)
 				server.AutoVoiceChannels.Remove(voiceChannel);
 
 			ServerListsManager.SaveServerList();

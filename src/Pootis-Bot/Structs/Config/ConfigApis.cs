@@ -3,7 +3,7 @@
 namespace Pootis_Bot.Structs.Config
 {
 	/// <summary>
-	/// All of our API keys for 3rd party services are here (except Discord token)
+	/// All of our API settings for 3rd party services are here (except for the Discord token)
 	/// </summary>
 	public struct ConfigApis
 	{
