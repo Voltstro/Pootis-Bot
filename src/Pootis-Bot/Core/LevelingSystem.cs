@@ -7,6 +7,9 @@ using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Core
 {
+	/// <summary>
+	/// Provides methods for leveling up
+	/// </summary>
 	public static class LevelingSystem
 	{
 		/// <summary>

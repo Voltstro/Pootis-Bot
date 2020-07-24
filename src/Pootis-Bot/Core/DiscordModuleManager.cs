@@ -4,6 +4,9 @@ using Discord.Commands;
 
 namespace Pootis_Bot.Core
 {
+	/// <summary>
+	/// Provides methods for Discord modules
+	/// </summary>
 	public class DiscordModuleManager
 	{
 		private static CommandService commands;

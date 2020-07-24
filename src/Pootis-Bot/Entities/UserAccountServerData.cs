@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace Pootis_Bot.Entities
 {
+	/// <summary>
+	/// User data that is per server
+	/// </summary>
 	public class UserAccountServerData
 	{
 		/// <summary>

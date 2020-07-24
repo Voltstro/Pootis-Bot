@@ -5,6 +5,9 @@ using Pootis_Bot.Entities;
 
 namespace Pootis_Bot.Core
 {
+	/// <summary>
+	/// Provides functions for saving and loading json files
+	/// </summary>
 	public static class DataStorage
 	{
 		private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings

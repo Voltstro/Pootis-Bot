@@ -4,6 +4,9 @@ using Pootis_Bot.Structs.Config;
 
 namespace Pootis_Bot.Entities
 {
+	/// <summary>
+	/// Represents the config file
+	/// </summary>
 	public class ConfigFile
 	{
 		/// <summary>

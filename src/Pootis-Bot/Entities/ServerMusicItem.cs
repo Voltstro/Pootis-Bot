@@ -6,6 +6,9 @@ using Pootis_Bot.Services.Audio.Music.Playback;
 
 namespace Pootis_Bot.Entities
 {
+	/// <summary>
+	/// A Discord server's music
+	/// </summary>
 	public class ServerMusicItem
 	{
 		/// <summary>

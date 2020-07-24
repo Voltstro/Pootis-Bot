@@ -6,6 +6,9 @@ using Pootis_Bot.Structs.Server;
 
 namespace Pootis_Bot.Entities
 {
+	/// <summary>
+	/// A Discord server
+	/// </summary>
 	public class ServerList
 	{
 		/// <summary>

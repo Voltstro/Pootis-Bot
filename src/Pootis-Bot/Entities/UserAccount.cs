@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 
 namespace Pootis_Bot.Entities
 {
+	/// <summary>
+	/// A user account
+	/// </summary>
 	public class UserAccount
 	{
 		/// <summary>
