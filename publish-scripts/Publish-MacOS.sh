@@ -1,2 +1,2 @@
 #!/bin/sh
-#TODO
+command pwsh ./Publish.ps1 -rid osx-x64
