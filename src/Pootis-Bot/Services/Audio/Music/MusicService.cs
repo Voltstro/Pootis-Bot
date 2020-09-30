@@ -125,7 +125,11 @@ namespace Pootis_Bot.Services.Audio.Music
 			if (!await CheckIfUserInChat(user, channel, serverList))
 				return;
 
-			if (serverList.IsPlaying == false) await channel.SendMessageAsync(":musical_note: No audio is playing.");
+			if (serverList.IsPlaying == false)
+			{
+				await channel.SendMessageAsync(":musical_note: No music is playing.");
+				return;
+			}
 
 			serverList.CancellationSource.Cancel();
 			await channel.SendMessageAsync(":musical_note: Stopping current playing song.");
