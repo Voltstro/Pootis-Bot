@@ -35,6 +35,9 @@ namespace Pootis_Bot.Services.Audio.Music.Download
 
 			try
 			{
+				if (cancellationToken.IsCancellationRequested)
+					return null;
+
 				//Get the audio stream info
 				StreamManifest steamManifest = await ytClient.Videos.Streams.GetManifestAsync(youTubeVideoId);
 				IStreamInfo audioSteam = steamManifest.GetAudioOnly().WithHighestBitrate();

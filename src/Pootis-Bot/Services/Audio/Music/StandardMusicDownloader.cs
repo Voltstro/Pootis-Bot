@@ -45,6 +45,7 @@ namespace Pootis_Bot.Services.Audio.Music
 
 		public void CancelTask()
 		{
+			Logger.Debug("Running download was canceled.");
 			cancellationTokenSource.Cancel();
 		}
 

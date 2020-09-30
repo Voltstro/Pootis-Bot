@@ -125,14 +125,27 @@ namespace Pootis_Bot.Services.Audio.Music
 			if (!await CheckIfUserInChat(user, channel, serverList))
 				return;
 
-			if (serverList.IsPlaying == false)
+			//Cancel any downloads first if there is one happening
+			if (serverList.Downloader != null)
 			{
-				await channel.SendMessageAsync(":musical_note: No music is playing.");
+				serverList.Downloader.CancelTask();
+				await Task.Delay(100);
+
+				serverList.Downloader = null;
+				await channel.SendMessageAsync(":musical_note: Download canceled.");
 				return;
 			}
 
+			//There is no music playing
+			if (!serverList.IsPlaying)
+			{
+				await channel.SendMessageAsync(":musical_note: No music is playing!");
+				return;
+			}
+
+			//Stop the current playing song
 			serverList.CancellationSource.Cancel();
-			await channel.SendMessageAsync(":musical_note: Stopping current playing song.");
+			await channel.SendMessageAsync(":musical_note: Stopping current playing song...");
 		}
 
 		/// <summary>
@@ -167,7 +180,7 @@ namespace Pootis_Bot.Services.Audio.Music
 			}
 
 			IUserMessage message =
-				await channel.SendMessageAsync($":musical_note: Preparing to search for '{search}'");
+				await channel.SendMessageAsync($":musical_note: Preparing to play '{search}'");
 
 			string songFileLocation;
 			string songName;
