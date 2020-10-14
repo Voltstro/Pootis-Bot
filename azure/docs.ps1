@@ -19,10 +19,11 @@ Remove-Item -force
 Write-Output "Building docs..."
 mkdocs build -f docs/mkdocs.yml -d ../Pootis-Bot/
 
+# Push the docs onto to gh-pages branch
 Write-Output "Push Docs"
 Set-Location -path "Pootis-Bot/"
-git config --global user.name "Voltstro"
-git config --global user.email "me@voltstro.dev"
+git config --global user.name "Azure Pipelines"
+git config --global user.email "azuredevops@microsoft.com"
 git remote set-url origin git@github.com:voltstro/Pootis-Bot.git
 git add *
 git commit -m "Deploy Docs  ***NO_CI***"
