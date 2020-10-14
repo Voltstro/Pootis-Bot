@@ -1,5 +1,6 @@
 # Install mkdocs
 pip install mkdocs
+pip install mkdocs-minify-plugin
 pip install mkdocs-material
 
 # Clone repo
