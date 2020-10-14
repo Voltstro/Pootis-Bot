@@ -23,3 +23,12 @@ jobs:
     vmImage: 'macOS-10.15'
   steps:
   - template: azure/build.yml
+
+- job: DeployDocs
+  dependsOn:
+  - Windows
+  condition: succeeded()
+  pool:
+    vmImage: 'windows-2019'
+  steps:
+  - template: azure/docs.yml

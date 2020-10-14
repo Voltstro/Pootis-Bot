@@ -1,0 +1,82 @@
+site_name: Pootis-Bot
+site_description: Pootis-Bot's main site. Everything you need to know about Pootis-Bot should be here!
+site_author: Voltstro
+site_url: https://pootis-bot.voltstro.dev
+
+repo_name: Voltstro/Pootis-Bot
+repo_url: https://github.com/Voltstro/Pootis-Bot
+edit_uri: ""
+
+copyright: Copyright &copy; 2018-2020 Voltstro
+
+theme:
+  name: 'material'
+  favicon: 'assets/images/favicon.ico'
+  logo: 'assets/images/logo.png'
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+    - Home: index.md
+    - Downloads: download.md
+    - Commands: 
+        - Discord Commands: commands/discord-commands.md
+        - Console Commands: commands/console-commands.md
+    - Bot Hosting:
+        - Bot Hosting: hosting.md
+        - Installation: hosting/install.md
+        - Config Menu: hosting/config-menu.md
+        - Getting a Bot Token: hosting/token.md
+        - Setting up Google/YouTube API Keys: hosting/googleapikeys.md
+        - Giphy API Key: hosting/giphyapikey.md
+        - Steam API Key: hosting/steamapikey.md
+        - Music Services: hosting/audio.md
+        - High Level Profile Message: hosting/highlevelprofilemsg.md
+    - Server Setup:
+        - Server Setup: server-setup.md
+        - Quick Setup: server-setup/quick-setup.md
+        - Adding Owners: server-setup/adding-owners.md
+        - Rule Reaction System: server-setup/rulereaction.md
+        - Welcome & Goodbye Message: server-setup/welcomemessage.md
+        - Permission System: server-setup/perm-system.md
+        - Auto Voice Channels: server-setup/auto-vc.md
+        - Anti Spam: server-setup/anti-spam.md
+        - Points: server-setup/points.md
+        - Points Roles: server-setup/point-roles.md
+        - Opt Roles: server-setup/opt-roles.md
+    - Development:
+        - Config File: dev/config-file.md
+        - Building Pootis-Bot: dev/building.md  
+    - Additional Notes:
+        - Additional Notes: additional-notes.md
+        - License: additional-notes/license.md
+        - Third Party Credits: additional-notes/thirdpartycredits.md
+        - Special Thanks: additional-notes/special-thanks.md
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+      minify_js: true
+
+extra:
+  social:
+    - icon: material/web
+      link: https://voltstro.dev
+
+    - icon: fontawesome/brands/github
+      link: https://github.com/Voltstro
+
+    - icon: fontawesome/brands/youtube
+      link: https://youtube.com/Voltstro
+
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/Voltstro
+
+    - icon: fontawesome/brands/discord
+      link: https://discord.voltstro.dev
+
+markdown_extensions:
+  - codehilite
+  - admonition
+  - pymdownx.details
