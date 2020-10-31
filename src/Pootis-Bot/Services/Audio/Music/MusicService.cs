@@ -451,6 +451,8 @@ namespace Pootis_Bot.Services.Audio.Music
 			else
 				songFileLocation = await musicList.Downloader.GetOrDownloadSong(search, message);
 
+			musicList.Downloader = null;
+
 			return songFileLocation;
 		}
 
