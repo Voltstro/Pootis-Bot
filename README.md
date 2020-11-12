@@ -38,6 +38,10 @@ Some current features that the bot can do. More feature are planed to be added.
 
 **I will not host the bot for you! You will need to host it your self to have it on your own Discord server!** Read about hosting [here](https://pootis-bot.voltstro.dev/hosting/).
 
+Currently, this bot is under going a complete re-write in the [v2 branch](https://github.com/Voltstro/Pootis-Bot/tree/v2). This will mean that once v2 is out, support for v1.x will not be given anymore, however any major fixes (such as Discord.Net updates) that are required will be given to v1.x while v2 is in the works. Any PRs that include major new features will not be accepted!
+
+V2 will include major breaking changes (as its a re-write), but will make the bot, and its code 1000 times better.
+
 ### Downloading A Full Pre-Compiled Version
 
 You can download a compiled version [here](https://pootis-bot.voltstro.dev/download/all)!
