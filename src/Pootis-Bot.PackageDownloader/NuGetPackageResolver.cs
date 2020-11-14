@@ -16,7 +16,7 @@ using NuGet.Versioning;
 
 namespace Pootis_Bot.PackageDownloader
 {
-	public class NuGetPackageResolver
+	public class NuGetPackageResolver : IDisposable
 	{
 		private IEnumerable<SourceRepository> repositories;
 		private ISettings settings;
@@ -125,6 +125,15 @@ namespace Pootis_Bot.PackageDownloader
 						new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion), availablePackages);
 				}
 			}
+		}
+
+		public void Dispose()
+		{
+			repositories = null;
+			settings = null;
+			framework = null;
+			cache?.Dispose();
+			GC.SuppressFinalize(this);
 		}
 	}
 }

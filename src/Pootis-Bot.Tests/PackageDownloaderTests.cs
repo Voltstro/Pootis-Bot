@@ -10,7 +10,7 @@ namespace Pootis_Bot.Tests
 	{
 		private NuGetPackageResolver packageResolver;
 
-		[SetUp]
+		[OneTimeSetUp]
 		public void Setup()
 		{
 			packageResolver = new NuGetPackageResolver("net5.0");
@@ -39,6 +39,12 @@ namespace Pootis_Bot.Tests
 			List<string> dlls = packageResolver.DownloadPackage("Wiki.Net", new Version(3, 0, 0)).GetAwaiter()
 				.GetResult();
 			Assert.AreEqual(excepted, dlls);
+		}
+
+		[OneTimeTearDown]
+		public void TearDown()
+		{
+			packageResolver.Dispose();
 		}
 	}
 }

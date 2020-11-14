@@ -25,6 +25,8 @@ namespace Pootis_Bot
 				Console.WriteLine(dll);
 			}
 
+			resolver.Dispose();
+
 			Console.ReadKey();
 		}
 	}
