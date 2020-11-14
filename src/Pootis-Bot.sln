@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot", "Pootis-Bot\Pootis-Bot.csproj", "{EAFFED46-018D-4DF3-9E7A-B4FF720D4C07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot", "Pootis-Bot\Pootis-Bot.csproj", "{EAFFED46-018D-4DF3-9E7A-B4FF720D4C07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.PackageDownloader", "Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj", "{15B80991-EC89-4C73-99BD-FB7DCF76A8D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{EAFFED46-018D-4DF3-9E7A-B4FF720D4C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAFFED46-018D-4DF3-9E7A-B4FF720D4C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAFFED46-018D-4DF3-9E7A-B4FF720D4C07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15B80991-EC89-4C73-99BD-FB7DCF76A8D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15B80991-EC89-4C73-99BD-FB7DCF76A8D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15B80991-EC89-4C73-99BD-FB7DCF76A8D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15B80991-EC89-4C73-99BD-FB7DCF76A8D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

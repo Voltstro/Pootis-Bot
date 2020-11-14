@@ -6,4 +6,8 @@
     <RootNamespace>Pootis_Bot</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj" />
+  </ItemGroup>
+
 </Project>
