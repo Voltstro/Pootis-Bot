@@ -22,9 +22,9 @@ namespace Pootis_Bot.PackageDownloader
 	public sealed class NuGetPackageResolver : IDisposable
 	{
 		private readonly SourceCacheContext cache;
-		private NuGetFramework framework;
 		private readonly ILogger nugetLogger;
 		private readonly string packagesDir;
+		private NuGetFramework framework;
 		private IEnumerable<SourceRepository> repositories;
 		private ISettings settings;
 
@@ -51,11 +51,21 @@ namespace Pootis_Bot.PackageDownloader
 		/// </summary>
 		public void Dispose()
 		{
+			ReleaseResources();
+			GC.SuppressFinalize(this);
+		}
+
+		~NuGetPackageResolver()
+		{
+			ReleaseResources();
+		}
+
+		private void ReleaseResources()
+		{
 			repositories = null;
 			settings = null;
 			framework = null;
 			cache?.Dispose();
-			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>
@@ -146,7 +156,7 @@ namespace Pootis_Bot.PackageDownloader
 		/// <summary>
 		///     Gets all of a package's dependencies
 		/// </summary>
-		/// <param name="package">The <see cref="PackageIdentity"/> to use</param>
+		/// <param name="package">The <see cref="PackageIdentity" /> to use</param>
 		/// <param name="availablePackages"></param>
 		/// <returns></returns>
 		public async Task GetPackageDependencies(PackageIdentity package,
