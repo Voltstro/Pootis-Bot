@@ -16,19 +16,28 @@ using NuGet.Versioning;
 
 namespace Pootis_Bot.PackageDownloader
 {
+	/// <summary>
+	///     A class for downloading NuGet packages
+	/// </summary>
 	public class NuGetPackageResolver : IDisposable
 	{
+		private readonly SourceCacheContext cache;
+		private NuGetFramework framework;
+		private readonly ILogger nugetLogger;
+		private readonly string packagesDir;
 		private IEnumerable<SourceRepository> repositories;
 		private ISettings settings;
-		private ILogger nugetLogger;
-		private SourceCacheContext cache;
-		private NuGetFramework framework;
-		private string packagesDir;
 
+		/// <summary>
+		///     Creates a new <see cref="NuGetPackageResolver" /> instance
+		/// </summary>
+		/// <param name="framework">Whats the target framework</param>
+		/// <param name="packagesDirectory">Where is the location of our packages</param>
 		public NuGetPackageResolver(string framework, string packagesDirectory = "Packages/")
 		{
 			settings = Settings.LoadDefaultSettings(null);
-			SourceRepositoryProvider sourceRepositoryProvider = new SourceRepositoryProvider(new PackageSourceProvider(settings), Repository.Provider.GetCoreV3());
+			SourceRepositoryProvider sourceRepositoryProvider =
+				new SourceRepositoryProvider(new PackageSourceProvider(settings), Repository.Provider.GetCoreV3());
 			repositories = sourceRepositoryProvider.GetRepositories();
 
 			nugetLogger = new NullLogger();
@@ -37,10 +46,31 @@ namespace Pootis_Bot.PackageDownloader
 			packagesDir = Path.GetFullPath(packagesDirectory);
 		}
 
-		public async Task<List<string>> DownloadPackage(string packageId, Version version, CancellationToken cancellationToken = default)
+		/// <summary>
+		///     Destroy this instance
+		/// </summary>
+		public void Dispose()
+		{
+			repositories = null;
+			settings = null;
+			framework = null;
+			cache?.Dispose();
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		///     Downloads a package
+		/// </summary>
+		/// <param name="packageId">What package to download</param>
+		/// <param name="version">What version of the package to download</param>
+		/// <param name="cancellationToken">Cancellation token to use</param>
+		/// <returns>Returns a list of locations of all the .Dlls</returns>
+		public async Task<List<string>> DownloadPackage(string packageId, Version version,
+			CancellationToken cancellationToken = default)
 		{
 			PackageIdentity package = new PackageIdentity(packageId, new NuGetVersion(version));
-			HashSet<SourcePackageDependencyInfo> availablePackages = new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
+			HashSet<SourcePackageDependencyInfo> availablePackages =
+				new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
 
 			//Get our package's dependencies
 			await GetPackageDependencies(package, availablePackages);
@@ -48,7 +78,7 @@ namespace Pootis_Bot.PackageDownloader
 			//Setup our resolver
 			PackageResolverContext resolverContext = new PackageResolverContext(
 				DependencyBehavior.Lowest,
-				new[] { packageId },
+				new[] {packageId},
 				Enumerable.Empty<string>(),
 				Enumerable.Empty<PackageReference>(),
 				Enumerable.Empty<PackageIdentity>(),
@@ -59,11 +89,13 @@ namespace Pootis_Bot.PackageDownloader
 			PackagePathResolver packagePathResolver = new PackagePathResolver(packagesDir);
 
 			//Setup package extraction
-			PackageExtractionContext packageExtractionContext = new PackageExtractionContext(PackageSaveMode.Defaultv3, XmlDocFileSaveMode.None, ClientPolicyContext.GetClientPolicy(settings, nugetLogger), nugetLogger);
+			PackageExtractionContext packageExtractionContext = new PackageExtractionContext(PackageSaveMode.Defaultv3,
+				XmlDocFileSaveMode.None, ClientPolicyContext.GetClientPolicy(settings, nugetLogger), nugetLogger);
 			FrameworkReducer frameworkReducer = new FrameworkReducer();
 
 			//Get all the packages we need to install
-			IEnumerable<SourcePackageDependencyInfo> packagesToInstall = resolver.Resolve(resolverContext, cancellationToken)
+			IEnumerable<SourcePackageDependencyInfo> packagesToInstall = resolver
+				.Resolve(resolverContext, cancellationToken)
 				.Select(p => availablePackages.Single(x => PackageIdentityComparer.Default.Equals(x, p)));
 
 			List<string> dlls = new List<string>();
@@ -77,7 +109,8 @@ namespace Pootis_Bot.PackageDownloader
 				//If the package is already installed or not
 				if (installedPath == null)
 				{
-					DownloadResource downloadResource = await packageToInstall.Source.GetResourceAsync<DownloadResource>(cancellationToken);
+					DownloadResource downloadResource =
+						await packageToInstall.Source.GetResourceAsync<DownloadResource>(cancellationToken);
 					DownloadResourceResult downloadResult = await downloadResource.GetDownloadResourceResultAsync(
 						packageToInstall,
 						new PackageDownloadContext(cache),
@@ -99,20 +132,32 @@ namespace Pootis_Bot.PackageDownloader
 				}
 
 				IEnumerable<FrameworkSpecificGroup> libItems = await packageReader.GetLibItemsAsync(cancellationToken);
-				NuGetFramework nearest = frameworkReducer.GetNearest(framework, libItems.Select(x => x.TargetFramework));
-				dlls.AddRange(from @group in libItems.Where(x => x.TargetFramework.Equals(nearest)) from item in @group.Items where item.Contains(".dll") select Path.GetFullPath($"{installedPath}/{item}"));
+				NuGetFramework nearest =
+					frameworkReducer.GetNearest(framework, libItems.Select(x => x.TargetFramework));
+				dlls.AddRange(from @group in libItems.Where(x => x.TargetFramework.Equals(nearest))
+					from item in @group.Items
+					where item.Contains(".dll")
+					select Path.GetFullPath($"{installedPath}/{item}"));
 			}
 
 			return dlls;
 		}
 
-		public async Task GetPackageDependencies(PackageIdentity package, ISet<SourcePackageDependencyInfo> availablePackages)
+		/// <summary>
+		///     Gets all of a package's dependencies
+		/// </summary>
+		/// <param name="package">The <see cref="PackageIdentity"/> to use</param>
+		/// <param name="availablePackages"></param>
+		/// <returns></returns>
+		public async Task GetPackageDependencies(PackageIdentity package,
+			ISet<SourcePackageDependencyInfo> availablePackages)
 		{
 			if (availablePackages.Contains(package)) return;
 
 			foreach (SourceRepository sourceRepository in repositories)
 			{
-				DependencyInfoResource dependencyInfoResource = await sourceRepository.GetResourceAsync<DependencyInfoResource>();
+				DependencyInfoResource dependencyInfoResource =
+					await sourceRepository.GetResourceAsync<DependencyInfoResource>();
 				SourcePackageDependencyInfo dependencyInfo = await dependencyInfoResource.ResolvePackage(
 					package, framework, cache, nugetLogger, CancellationToken.None);
 
@@ -120,20 +165,9 @@ namespace Pootis_Bot.PackageDownloader
 
 				availablePackages.Add(dependencyInfo);
 				foreach (PackageDependency dependency in dependencyInfo.Dependencies)
-				{
 					await GetPackageDependencies(
 						new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion), availablePackages);
-				}
 			}
-		}
-
-		public void Dispose()
-		{
-			repositories = null;
-			settings = null;
-			framework = null;
-			cache?.Dispose();
-			GC.SuppressFinalize(this);
 		}
 	}
 }
