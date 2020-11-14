@@ -19,7 +19,7 @@ namespace Pootis_Bot.PackageDownloader
 	/// <summary>
 	///     A class for downloading NuGet packages
 	/// </summary>
-	public class NuGetPackageResolver : IDisposable
+	public sealed class NuGetPackageResolver : IDisposable
 	{
 		private readonly SourceCacheContext cache;
 		private NuGetFramework framework;
