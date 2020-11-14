@@ -8,8 +8,19 @@ namespace Pootis_Bot
 	{
 		public static void Main(string[] args)
 		{
-			List<string> result = new NuGetPackageResolver("net5.0").DownloadPackage("Discord.Net", new Version(2, 2, 0)).GetAwaiter().GetResult();
-			foreach (string dll in result)
+			NuGetPackageResolver resolver = new NuGetPackageResolver("net5.0");
+			Console.WriteLine("Discord.Net");
+			List<string> discordResult = resolver.DownloadPackage("Discord.Net", new Version(2, 2, 0)).GetAwaiter().GetResult();
+
+			foreach (string dll in discordResult)
+			{
+				Console.WriteLine(dll);
+			}
+
+			Console.WriteLine("Wiki.Net");
+			List<string> wikiNetResult = resolver.DownloadPackage("Wiki.Net", new Version(3, 0, 0)).GetAwaiter().GetResult();
+
+			foreach (string dll in wikiNetResult)
 			{
 				Console.WriteLine(dll);
 			}

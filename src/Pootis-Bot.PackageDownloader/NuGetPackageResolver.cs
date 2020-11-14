@@ -19,13 +19,13 @@ namespace Pootis_Bot.PackageDownloader
 	public class NuGetPackageResolver
 	{
 		private IEnumerable<SourceRepository> repositories;
-
 		private ISettings settings;
 		private ILogger nugetLogger;
 		private SourceCacheContext cache;
 		private NuGetFramework framework;
+		private string packagesDir;
 
-		public NuGetPackageResolver(string framework)
+		public NuGetPackageResolver(string framework, string packagesDirectory = "Packages/")
 		{
 			settings = Settings.LoadDefaultSettings(null);
 			SourceRepositoryProvider sourceRepositoryProvider = new SourceRepositoryProvider(new PackageSourceProvider(settings), Repository.Provider.GetCoreV3());
@@ -34,6 +34,7 @@ namespace Pootis_Bot.PackageDownloader
 			nugetLogger = new NullLogger();
 			cache = new SourceCacheContext();
 			this.framework = NuGetFramework.Parse(framework);
+			packagesDir = Path.GetFullPath(packagesDirectory);
 		}
 
 		public async Task<List<string>> DownloadPackage(string packageId, Version version, CancellationToken cancellationToken = default)
@@ -55,7 +56,7 @@ namespace Pootis_Bot.PackageDownloader
 				repositories.Select(s => s.PackageSource),
 				NullLogger.Instance);
 			PackageResolver resolver = new PackageResolver();
-			PackagePathResolver packagePathResolver = new PackagePathResolver(Path.GetFullPath("packages"));
+			PackagePathResolver packagePathResolver = new PackagePathResolver(packagesDir);
 
 			//Setup package extraction
 			PackageExtractionContext packageExtractionContext = new PackageExtractionContext(PackageSaveMode.Defaultv3, XmlDocFileSaveMode.None, ClientPolicyContext.GetClientPolicy(settings, nugetLogger), nugetLogger);
@@ -99,7 +100,7 @@ namespace Pootis_Bot.PackageDownloader
 
 				IEnumerable<FrameworkSpecificGroup> libItems = await packageReader.GetLibItemsAsync(cancellationToken);
 				NuGetFramework nearest = frameworkReducer.GetNearest(framework, libItems.Select(x => x.TargetFramework));
-				dlls.AddRange(from @group in libItems.Where(x => x.TargetFramework.Equals(nearest)) from item in @group.Items where item.Contains(".dll") select Path.GetFullPath(item));
+				dlls.AddRange(from @group in libItems.Where(x => x.TargetFramework.Equals(nearest)) from item in @group.Items where item.Contains(".dll") select Path.GetFullPath($"{installedPath}/{item}"));
 			}
 
 			return dlls;
