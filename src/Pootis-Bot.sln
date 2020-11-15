@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Tests", "Pootis-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Core", "Pootis-Bot.Core\Pootis-Bot.Core.csproj", "{3D10096F-5576-4E51-AD70-BD20D928F2C1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{32EE362B-EDE9-49FE-93D3-B72D4B3228A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.Test", "Modules\Pootis-Bot.Module.Test\Pootis-Bot.Module.Test.csproj", "{B99B4005-B018-4524-960D-058CE7948837}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,16 @@ Global
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B99B4005-B018-4524-960D-058CE7948837}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B99B4005-B018-4524-960D-058CE7948837}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B99B4005-B018-4524-960D-058CE7948837}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B99B4005-B018-4524-960D-058CE7948837}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B99B4005-B018-4524-960D-058CE7948837} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F633C8E5-4849-4385-8482-1EE7166D39CF}

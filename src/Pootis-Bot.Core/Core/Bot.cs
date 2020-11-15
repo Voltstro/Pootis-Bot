@@ -28,6 +28,8 @@ namespace Pootis_Bot.Core
 	{
 		public bool IsRunning { get; private set; }
 
+		private ModuleManager moduleManager;
+
 		/// <summary>
 		///     Disposes of this bot instance
 		/// </summary>
@@ -56,7 +58,8 @@ namespace Pootis_Bot.Core
 			Logger.Init();
 			Logger.Info("Starting bot...");
 
-			new ModuleManager().LoadModules(Assembly.GetExecutingAssembly());
+			moduleManager = new ModuleManager();
+			moduleManager.LoadModulesInAssembly(Assembly.GetExecutingAssembly());
 		}
 
 		~Bot()
@@ -66,6 +69,7 @@ namespace Pootis_Bot.Core
 
 		private void ReleaseResources()
 		{
+			moduleManager.Dispose();
 			Logger.Shutdown();
 
 			IsRunning = false;
