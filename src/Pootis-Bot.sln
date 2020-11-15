@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.PackageDownloade
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Tests", "Pootis-Bot.Tests\Pootis-Bot.Tests.csproj", "{D688BBF1-48D3-44D0-A729-4E941A9743B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Core", "Pootis-Bot.Core\Pootis-Bot.Core.csproj", "{3D10096F-5576-4E51-AD70-BD20D928F2C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Core", "Pootis-Bot.Core\Pootis-Bot.Core.csproj", "{3D10096F-5576-4E51-AD70-BD20D928F2C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

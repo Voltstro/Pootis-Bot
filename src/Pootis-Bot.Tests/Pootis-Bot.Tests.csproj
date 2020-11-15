@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj" />
+    <ProjectReference Include="..\Pootis-Bot.Core\Pootis-Bot.Core.csproj" />
   </ItemGroup>
 
 </Project>
