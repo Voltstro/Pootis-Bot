@@ -1,27 +1,10 @@
 ﻿using System;
-using System.Reflection;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Exceptions;
 using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Core
 {
-	public class TestModule : IModule
-	{
-		public void Dispose()
-		{
-		}
-
-		public ModuleInfo GetModuleInfo()
-		{
-			return new ModuleInfo("TestModule", new Version(1, 0, 0));
-		}
-
-		public void Init()
-		{
-		}
-	}
-
 	/// <summary>
 	///     Main class for handling the bot
 	/// </summary>
@@ -58,8 +41,8 @@ namespace Pootis_Bot.Core
 			Logger.Init();
 			Logger.Info("Starting bot...");
 
-			moduleManager = new ModuleManager();
-			moduleManager.LoadModulesInAssembly(Assembly.GetExecutingAssembly());
+			moduleManager = new ModuleManager("Modules/");
+			moduleManager.LoadModules();
 		}
 
 		~Bot()

@@ -15,10 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj" />
   </ItemGroup>
 
   <Import Project="..\GeneralProperties.props" />
