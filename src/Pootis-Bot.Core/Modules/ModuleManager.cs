@@ -5,17 +5,21 @@ using System.Linq;
 using System.Reflection;
 using Pootis_Bot.Core;
 using Pootis_Bot.Core.Logging;
+using Pootis_Bot.PackageDownloader;
 
 namespace Pootis_Bot.Modules
 {
 	public sealed class ModuleManager : IDisposable
 	{
 		private readonly List<IModule> modules;
-		private readonly string modulesDirectory;
 
-		public ModuleManager(string modulesDir)
+		private readonly string modulesDirectory;
+		private readonly string assembliesDirectory;
+
+		public ModuleManager(string modulesDir, string assembliesDir)
 		{
 			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";
+			assembliesDirectory = $"{Bot.ApplicationLocation}/{assembliesDir}";
 			modules = new List<IModule>();
 			
 		}
@@ -59,6 +63,7 @@ namespace Pootis_Bot.Modules
 				if (!(Activator.CreateInstance(type) is IModule module)) continue;
 
 				ModuleInfo moduleInfo = module.GetModuleInfo();
+				VerifyModuleNuGetPackages(moduleInfo);
 
 				Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName,
 					moduleInfo.ModuleVersion.ToString());
@@ -66,6 +71,28 @@ namespace Pootis_Bot.Modules
 				module.Init();
 				modules.Add(module);
 			}
+		}
+
+		private void VerifyModuleNuGetPackages(ModuleInfo moduleInfo)
+		{
+			if (!Directory.Exists(assembliesDirectory))
+				Directory.CreateDirectory(assembliesDirectory);
+
+			NuGetPackageResolver packageResolver = new NuGetPackageResolver("netstandard2.1", $"{Bot.ApplicationLocation}/Packages/");
+
+			foreach (ModuleNuGetPackage nuGetPackage in moduleInfo.NuGetPackages)
+			{
+				if(File.Exists($"{assembliesDirectory}/{nuGetPackage.AssemblyName}.dll")) continue;
+
+				//Download the assemblies
+				List<string> dlls = packageResolver.DownloadPackage(nuGetPackage.PackageId, nuGetPackage.PackageVersion).GetAwaiter()
+					.GetResult();
+
+				foreach (string dll in dlls)
+					File.Copy(dll, $"{assembliesDirectory}/{Path.GetFileName(dll)}", true);
+			}
+
+			packageResolver.Dispose();
 		}
 	}
 }

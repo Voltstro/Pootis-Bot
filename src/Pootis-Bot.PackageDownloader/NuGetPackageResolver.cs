@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +42,7 @@ namespace Pootis_Bot.PackageDownloader
 			nugetLogger = new NullLogger();
 			cache = new SourceCacheContext();
 			this.framework = NuGetFramework.Parse(framework);
-			packagesDir = Path.GetFullPath(packagesDirectory);
+			packagesDir = packagesDirectory;
 		}
 
 		/// <summary>
@@ -142,12 +141,20 @@ namespace Pootis_Bot.PackageDownloader
 				}
 
 				IEnumerable<FrameworkSpecificGroup> libItems = await packageReader.GetLibItemsAsync(cancellationToken);
-				NuGetFramework nearest =
-					frameworkReducer.GetNearest(framework, libItems.Select(x => x.TargetFramework));
-				dlls.AddRange(from @group in libItems.Where(x => x.TargetFramework.Equals(nearest))
-					from item in @group.Items
-					where item.Contains(".dll")
-					select Path.GetFullPath($"{installedPath}/{item}"));
+				IEnumerable<NuGetFramework> possibleFrameworks = libItems.Select(x => x.TargetFramework);
+				NuGetFramework nearest = frameworkReducer.GetNearest(framework, possibleFrameworks);
+				foreach (FrameworkSpecificGroup frameworkGroup in libItems)
+				{
+					Console.WriteLine(frameworkGroup.TargetFramework.ToString());
+
+					if (frameworkGroup.TargetFramework.Equals(nearest))
+					{
+						foreach (string item in frameworkGroup.Items)
+						{
+							dlls.Add($"{installedPath}/{item}");
+						}
+					}
+				}
 			}
 
 			return dlls;

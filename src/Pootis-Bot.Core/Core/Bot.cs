@@ -52,7 +52,7 @@ namespace Pootis_Bot.Core
 			Logger.Init();
 			Logger.Info("Starting bot...");
 
-			moduleManager = new ModuleManager("Modules/");
+			moduleManager = new ModuleManager("Modules/", "Assemblies/");
 			moduleManager.LoadModules();
 		}
 
