@@ -15,6 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{32EE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.Test", "Modules\Pootis-Bot.Module.Test\Pootis-Bot.Module.Test.csproj", "{B99B4005-B018-4524-960D-058CE7948837}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{579D132A-1E20-4255-AC8B-B69BA8DF97CF}"
+	ProjectSection(SolutionItems) = preProject
+		GeneralProperties.props = GeneralProperties.props
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
