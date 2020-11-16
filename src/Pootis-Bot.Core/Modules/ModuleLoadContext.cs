@@ -21,7 +21,6 @@ namespace Pootis_Bot.Modules
 			if (File.Exists($"{assembliesPath}/{assemblyName.Name}.dll"))
 				return loadContext.LoadFromAssemblyPath($"{assembliesPath}/{assemblyName.Name}.dll");
 
-			//TODO: Have assembly location as a static variable in the bot class
 			//Try and load it from the root dir
 			if (File.Exists($"{Bot.ApplicationLocation}/{assemblyName.Name}.dll"))
 				return loadContext.LoadFromAssemblyPath($"{Bot.ApplicationLocation}/{assemblyName.Name}.dll");
