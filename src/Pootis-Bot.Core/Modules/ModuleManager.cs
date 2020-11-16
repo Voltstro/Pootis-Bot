@@ -15,7 +15,7 @@ namespace Pootis_Bot.Modules
 
 		public ModuleManager(string modulesDir)
 		{
-			modulesDirectory = $"{Path.GetDirectoryName(typeof(Bot).Assembly.Location)}/{modulesDir}";
+			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";
 			modules = new List<IModule>();
 			
 		}

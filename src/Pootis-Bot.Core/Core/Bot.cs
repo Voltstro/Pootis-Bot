@@ -11,7 +11,16 @@ namespace Pootis_Bot.Core
 	public class Bot : IDisposable
 	{
 		private ModuleManager moduleManager;
+
+		/// <summary>
+		///		Whether or not this bot is running
+		/// </summary>
 		public bool IsRunning { get; private set; }
+
+		/// <summary>
+		///		The location of the application
+		/// </summary>
+		public static string ApplicationLocation { get; private set; }
 
 		/// <summary>
 		///     Disposes of this bot instance
@@ -34,6 +43,8 @@ namespace Pootis_Bot.Core
 			//Don't want to be-able to run the bot multiple times
 			if (IsRunning)
 				throw new InitializationException("A bot is already running!");
+
+			ApplicationLocation = System.IO.Path.GetDirectoryName(typeof(Bot).Assembly.Location);
 
 			IsRunning = true;
 
