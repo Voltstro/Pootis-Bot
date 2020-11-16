@@ -15,8 +15,17 @@ namespace Pootis_Bot.Modules
 			modules = new List<IModule>();
 		}
 
+		public void Dispose()
+		{
+			foreach (IModule module in modules)
+			{
+				Logger.Info("Shutting down module {@ModuleName}...", module.GetModuleInfo().ModuleName);
+				module.Dispose();
+			}
+		}
+
 		/// <summary>
-		/// Loads all modules
+		///     Loads all modules
 		/// </summary>
 		public void LoadModulesInAssembly(Assembly assembly)
 		{
@@ -30,23 +39,15 @@ namespace Pootis_Bot.Modules
 
 				ModuleInfo moduleInfo = module.GetModuleInfo();
 
-				Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName, moduleInfo.ModuleVersion.ToString());
+				Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName,
+					moduleInfo.ModuleVersion.ToString());
 
 				modules.Add(module);
 				assemblyCountainsModule = true;
 			}
 
-			if(!assemblyCountainsModule)
+			if (!assemblyCountainsModule)
 				Logger.Error("The assembly {@Assembly} doesn't contain a valid module!", assembly.FullName);
-		}
-
-		public void Dispose()
-		{
-			foreach (IModule module in modules)
-			{
-				Logger.Info("Shutting down module {@ModuleName}...", module.GetModuleInfo().ModuleName);
-				module.Dispose();
-			}
 		}
 	}
 }

@@ -3,12 +3,12 @@
 namespace Pootis_Bot.Modules
 {
 	/// <summary>
-	/// Info for a module
+	///     Info for a module
 	/// </summary>
 	public struct ModuleInfo
 	{
 		/// <summary>
-		/// Creates a new module info instance
+		///     Creates a new module info instance
 		/// </summary>
 		/// <param name="name">The name of the module</param>
 		/// <param name="version">The version of the version</param>
@@ -19,12 +19,12 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		/// The name of the module
+		///     The name of the module
 		/// </summary>
 		public readonly string ModuleName;
 
 		/// <summary>
-		/// The name of the module
+		///     The name of the module
 		/// </summary>
 		public readonly Version ModuleVersion;
 	}

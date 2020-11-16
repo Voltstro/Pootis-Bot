@@ -10,14 +10,15 @@ namespace Pootis_Bot.Core
 	{
 		public void Dispose()
 		{
-				
 		}
 
-		public ModuleInfo GetModuleInfo() => new ModuleInfo("TestModule", new Version(1, 0, 0));
+		public ModuleInfo GetModuleInfo()
+		{
+			return new ModuleInfo("TestModule", new Version(1, 0, 0));
+		}
 
 		public void Init()
 		{
-				
 		}
 	}
 
@@ -26,9 +27,8 @@ namespace Pootis_Bot.Core
 	/// </summary>
 	public class Bot : IDisposable
 	{
-		public bool IsRunning { get; private set; }
-
 		private ModuleManager moduleManager;
+		public bool IsRunning { get; private set; }
 
 		/// <summary>
 		///     Disposes of this bot instance
