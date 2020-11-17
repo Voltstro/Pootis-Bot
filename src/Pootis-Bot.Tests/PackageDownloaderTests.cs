@@ -8,12 +8,14 @@ namespace Pootis_Bot.Tests
 {
 	public class PackageDownloaderTests
 	{
+		private string packagesPath;
 		private NuGetPackageResolver packageResolver;
-
+		
 		[OneTimeSetUp]
 		public void Setup()
 		{
-			packageResolver = new NuGetPackageResolver("net5.0");
+			packagesPath = $"{Path.GetDirectoryName(typeof(PackageDownloaderTests).Assembly.Location)}/Packages/";
+			packageResolver = new NuGetPackageResolver("netstandard2.1", packagesPath);
 		}
 
 		[Test]
@@ -21,7 +23,7 @@ namespace Pootis_Bot.Tests
 		{
 			List<string> excepted = new List<string>
 			{
-				Path.GetFullPath("Packages/Newtonsoft.Json.12.0.3/lib/netstandard2.0/Newtonsoft.Json.dll")
+				Path.GetFullPath($"{packagesPath}/Newtonsoft.Json.12.0.3/lib/netstandard2.0/Newtonsoft.Json.dll")
 			};
 			List<string> dlls = packageResolver.DownloadPackage("Newtonsoft.Json", new Version(12, 0, 3)).GetAwaiter()
 				.GetResult();
@@ -33,8 +35,8 @@ namespace Pootis_Bot.Tests
 		{
 			List<string> excepted = new List<string>
 			{
-				Path.GetFullPath("Packages/Newtonsoft.Json.12.0.3/lib/netstandard2.0/Newtonsoft.Json.dll"),
-				Path.GetFullPath("Packages/Wiki.Net.3.0.0/lib/netstandard2.0/Wiki.Net.dll")
+				Path.GetFullPath($"{packagesPath}/Newtonsoft.Json.12.0.3/lib/netstandard2.0/Newtonsoft.Json.dll"),
+				Path.GetFullPath($"{packagesPath}/Wiki.Net.3.0.0/lib/netstandard2.0/Wiki.Net.dll")
 			};
 			List<string> dlls = packageResolver.DownloadPackage("Wiki.Net", new Version(3, 0, 0)).GetAwaiter()
 				.GetResult();

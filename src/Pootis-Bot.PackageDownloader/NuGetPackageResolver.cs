@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -161,7 +162,7 @@ namespace Pootis_Bot.PackageDownloader
 					if (frameworkGroup.TargetFramework.Equals(nearest))
 						foreach (string item in frameworkGroup.Items)
 							if (item.Contains(".dll"))
-								dlls.Add($"{packagesDir}/{packageToInstall.Id}.{packageToInstall.Version}/{item}");
+								dlls.Add(Path.GetFullPath($"{packagesDir}/{packageToInstall.Id}.{packageToInstall.Version}/{item}"));
 			}
 
 			return dlls;
