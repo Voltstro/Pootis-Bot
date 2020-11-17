@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj" />
+    <ProjectReference Include="..\Pootis-Bot.Shared\Pootis-Bot.Shared.csproj" />
   </ItemGroup>
 
   <Import Project="..\GeneralProperties.props" />

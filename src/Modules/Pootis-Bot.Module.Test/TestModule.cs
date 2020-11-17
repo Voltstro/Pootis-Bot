@@ -1,6 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Pootis_Bot.Core.Logging;
+using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using YoutubeExplode;
 
@@ -10,7 +10,7 @@ namespace Pootis_Bot.Module.Test
 	{
 		public ModuleInfo GetModuleInfo()
 		{
-			return new ModuleInfo("Test Module", new Version(1, 0), 
+			return new ModuleInfo("Test Module", new Version(1, 0),
 				new ModuleNuGetPackage("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"));
 		}
 

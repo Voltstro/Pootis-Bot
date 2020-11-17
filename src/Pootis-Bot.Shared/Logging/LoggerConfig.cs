@@ -1,4 +1,4 @@
-﻿namespace Pootis_Bot.Core.Logging
+﻿namespace Pootis_Bot.Logging
 {
 	/// <summary>
 	///     The config for <see cref="Logger" />

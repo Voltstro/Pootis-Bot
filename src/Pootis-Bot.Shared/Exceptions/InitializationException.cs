@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pootis_Bot.Exceptions
+namespace Pootis_Bot.Shared.Exceptions
 {
 	/// <summary>
 	///     An error when something failed while initializing or de-initializing

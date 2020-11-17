@@ -1,10 +1,11 @@
 ﻿using System;
-using Pootis_Bot.Exceptions;
+using Pootis_Bot.Shared;
+using Pootis_Bot.Shared.Exceptions;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace Pootis_Bot.Core.Logging
+namespace Pootis_Bot.Logging
 {
 	/// <summary>
 	///     Provides the ability to log stuff to a file and the console

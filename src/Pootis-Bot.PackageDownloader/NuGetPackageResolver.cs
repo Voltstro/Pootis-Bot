@@ -144,16 +144,10 @@ namespace Pootis_Bot.PackageDownloader
 				IEnumerable<NuGetFramework> possibleFrameworks = libItems.Select(x => x.TargetFramework);
 				NuGetFramework nearest = frameworkReducer.GetNearest(framework, possibleFrameworks);
 				foreach (FrameworkSpecificGroup frameworkGroup in libItems)
-				{
 					if (frameworkGroup.TargetFramework.Equals(nearest))
-					{
 						foreach (string item in frameworkGroup.Items)
-						{
-							if(item.Contains(".dll"))
+							if (item.Contains(".dll"))
 								dlls.Add($"{packagesDir}/{packageToInstall.Id}.{packageToInstall.Version}/{item}");
-						}
-					}
-				}
 			}
 
 			return dlls;

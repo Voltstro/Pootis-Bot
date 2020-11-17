@@ -1,20 +1,21 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using Pootis_Bot;
 using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
 	/// <summary>
-	///		Handles loading the <see cref="Assembly"/> for modules
+	///     Handles loading the <see cref="Assembly" /> for modules
 	/// </summary>
 	internal sealed class ModuleLoadContext : AssemblyLoadContext
 	{
-		private readonly string modulesPath;
 		private readonly string assembliesPath;
+		private readonly string modulesPath;
 
 		/// <summary>
-		///		Creates a new <see cref="ModuleLoadContext"/> instance
+		///     Creates a new <see cref="ModuleLoadContext" /> instance
 		/// </summary>
 		/// <param name="modulesPath">The path of the modules</param>
 		/// <param name="assembliesPath">The path of the assemblies required by the modules</param>

@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Pootis_Bot;
 using Pootis_Bot.Core;
-using Pootis_Bot.Core.Logging;
+using Pootis_Bot.Logging;
 using Pootis_Bot.PackageDownloader;
 
 namespace Pootis_Bot.Modules
 {
 	/// <summary>
-	///		Handles the loading of modules
+	///     Handles the loading of modules
 	/// </summary>
 	internal sealed class ModuleManager : IDisposable
 	{
+		private readonly string assembliesDirectory;
 		private readonly ModuleLoadContext loadContext;
 
 		private readonly List<IModule> modules;
 
 		private readonly string modulesDirectory;
-		private readonly string assembliesDirectory;
 
 		/// <summary>
-		///		Creates a new module manager instance
+		///     Creates a new module manager instance
 		/// </summary>
 		/// <param name="modulesDir">The directory where the modules are kept</param>
 		/// <param name="assembliesDir">The directory of where external assemblies exist</param>
@@ -35,7 +36,7 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		///		Disposes of this <see cref="ModuleManager"/> instance
+		///     Disposes of this <see cref="ModuleManager" /> instance
 		/// </summary>
 		public void Dispose()
 		{
@@ -47,7 +48,7 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		///		Loads all modules in the <see cref="modulesDirectory"/>
+		///     Loads all modules in the <see cref="modulesDirectory" />
 		/// </summary>
 		public void LoadModules()
 		{
@@ -82,11 +83,13 @@ namespace Pootis_Bot.Modules
 				}
 				catch (MissingMethodException ex)
 				{
-					Logger.Error("Something when wrong while creating a module from the assembly {@AssemblyName}! It looks like the constructor could be weird! The module will not be loaded: Ex: {@Exception}", assembly.FullName, ex.Message);
+					Logger.Error(
+						"Something when wrong while creating a module from the assembly {@AssemblyName}! It looks like the constructor could be weird! The module will not be loaded: Ex: {@Exception}",
+						assembly.FullName, ex.Message);
 					continue;
 				}
 
-				if(module == null)
+				if (module == null)
 					continue;
 
 				//Our first contact with the module code it self, get info about it
@@ -97,7 +100,9 @@ namespace Pootis_Bot.Modules
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("Something when wrong while trying to obtain module info from the assembly {@AssemblyName}! The module will not be loaded: Ex: {@Exception}", assembly.FullName, ex.Message);
+					Logger.Error(
+						"Something when wrong while trying to obtain module info from the assembly {@AssemblyName}! The module will not be loaded: Ex: {@Exception}",
+						assembly.FullName, ex.Message);
 					continue;
 				}
 
@@ -108,7 +113,9 @@ namespace Pootis_Bot.Modules
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("Something when wrong while trying to resolve NuGet packages for {@ModuleName}! The module will not be loaded: Ex: {@Exception}", moduleInfo.ModuleName, ex.Message);
+					Logger.Error(
+						"Something when wrong while trying to resolve NuGet packages for {@ModuleName}! The module will not be loaded: Ex: {@Exception}",
+						moduleInfo.ModuleName, ex.Message);
 					continue;
 				}
 
@@ -121,10 +128,12 @@ namespace Pootis_Bot.Modules
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("Something when wrong while initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}", moduleInfo.ModuleName, ex.Message);
+					Logger.Error(
+						"Something when wrong while initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}",
+						moduleInfo.ModuleName, ex.Message);
 					continue;
 				}
-				
+
 				//Add the module to the list so we can call to it later
 				modules.Add(module);
 			}
@@ -135,17 +144,19 @@ namespace Pootis_Bot.Modules
 			if (!Directory.Exists(assembliesDirectory))
 				Directory.CreateDirectory(assembliesDirectory);
 
-			NuGetPackageResolver packageResolver = new NuGetPackageResolver("netstandard2.1", $"{Bot.ApplicationLocation}/Packages/");
+			NuGetPackageResolver packageResolver =
+				new NuGetPackageResolver("netstandard2.1", $"{Bot.ApplicationLocation}/Packages/");
 
 			foreach (ModuleNuGetPackage nuGetPackage in moduleInfo.NuGetPackages)
 			{
 				//The assembly already exists, it should be safe to assume that other dlls that it requires exist as well
-				if(File.Exists($"{assembliesDirectory}/{nuGetPackage.AssemblyName}.dll")) continue;
+				if (File.Exists($"{assembliesDirectory}/{nuGetPackage.AssemblyName}.dll")) continue;
 
 				Logger.Info("Downloading NuGet packages for {@ModuleName}...", moduleInfo.ModuleName);
 
 				//Download the packages and extract them
-				List<string> dlls = packageResolver.DownloadPackage(nuGetPackage.PackageId, nuGetPackage.PackageVersion).GetAwaiter()
+				List<string> dlls = packageResolver.DownloadPackage(nuGetPackage.PackageId, nuGetPackage.PackageVersion)
+					.GetAwaiter()
 					.GetResult();
 
 				foreach (string dll in dlls)
@@ -154,11 +165,11 @@ namespace Pootis_Bot.Modules
 					string destination = $"{assembliesDirectory}/{dllName}";
 
 					//The dll already exists, we don't need to copy it again
-					if(File.Exists(destination))
+					if (File.Exists(destination))
 						continue;
 
 					//The required dll exists in the root
-					if(File.Exists($"{Bot.ApplicationLocation}/{dllName}"))
+					if (File.Exists($"{Bot.ApplicationLocation}/{dllName}"))
 						continue;
 
 					File.Copy(dll, destination, true);

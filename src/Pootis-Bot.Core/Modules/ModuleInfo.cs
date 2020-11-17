@@ -43,7 +43,7 @@ namespace Pootis_Bot.Modules
 		public readonly Version ModuleVersion;
 
 		/// <summary>
-		///		NuGet packages used by the module
+		///     NuGet packages used by the module
 		/// </summary>
 		public readonly ModuleNuGetPackage[] NuGetPackages;
 	}

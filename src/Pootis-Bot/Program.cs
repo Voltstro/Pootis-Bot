@@ -1,4 +1,5 @@
 ﻿using System;
+using Pootis_Bot;
 using Pootis_Bot.Core;
 
 namespace Pootis_Bot

@@ -1,7 +1,7 @@
 ﻿using System;
-using Pootis_Bot.Core.Logging;
-using Pootis_Bot.Exceptions;
+using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
+using Pootis_Bot.Shared.Exceptions;
 
 namespace Pootis_Bot.Core
 {
