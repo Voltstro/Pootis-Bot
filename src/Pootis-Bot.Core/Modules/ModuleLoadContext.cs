@@ -5,11 +5,19 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules
 {
+	/// <summary>
+	///		Handles loading the <see cref="Assembly"/> for modules
+	/// </summary>
 	internal sealed class ModuleLoadContext : AssemblyLoadContext
 	{
 		private readonly string modulesPath;
 		private readonly string assembliesPath;
 
+		/// <summary>
+		///		Creates a new <see cref="ModuleLoadContext"/> instance
+		/// </summary>
+		/// <param name="modulesPath">The path of the modules</param>
+		/// <param name="assembliesPath">The path of the assemblies required by the modules</param>
 		public ModuleLoadContext(string modulesPath, string assembliesPath)
 		{
 			this.modulesPath = modulesPath;
@@ -30,8 +38,6 @@ namespace Pootis_Bot.Modules
 			//Try and load it from the root dir
 			if (File.Exists($"{Bot.ApplicationLocation}/{assemblyName.Name}.dll"))
 				return loadContext.LoadFromAssemblyPath($"{Bot.ApplicationLocation}/{assemblyName.Name}.dll");
-
-			//TODO: NuGet package handling
 
 			return null;
 		}

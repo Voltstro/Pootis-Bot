@@ -12,7 +12,7 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="name">The name of the module</param>
 		/// <param name="version">The version of the version</param>
-		/// <param name="packages"></param>
+		/// <param name="packages">Packages required by the module</param>
 		public ModuleInfo(string name, Version version, params ModuleNuGetPackage[] packages)
 		{
 			ModuleName = name;
@@ -42,6 +42,9 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		public readonly Version ModuleVersion;
 
+		/// <summary>
+		///		NuGet packages used by the module
+		/// </summary>
 		public readonly ModuleNuGetPackage[] NuGetPackages;
 	}
 }

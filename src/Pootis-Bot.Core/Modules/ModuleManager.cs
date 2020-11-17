@@ -9,7 +9,10 @@ using Pootis_Bot.PackageDownloader;
 
 namespace Pootis_Bot.Modules
 {
-	public sealed class ModuleManager : IDisposable
+	/// <summary>
+	///		Handles the loading of modules
+	/// </summary>
+	internal sealed class ModuleManager : IDisposable
 	{
 		private readonly ModuleLoadContext loadContext;
 
@@ -18,6 +21,11 @@ namespace Pootis_Bot.Modules
 		private readonly string modulesDirectory;
 		private readonly string assembliesDirectory;
 
+		/// <summary>
+		///		Creates a new module manager instance
+		/// </summary>
+		/// <param name="modulesDir">The directory where the modules are kept</param>
+		/// <param name="assembliesDir">The directory of where external assemblies exist</param>
 		public ModuleManager(string modulesDir, string assembliesDir)
 		{
 			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";
@@ -26,6 +34,9 @@ namespace Pootis_Bot.Modules
 			loadContext = new ModuleLoadContext(modulesDirectory, assembliesDirectory);
 		}
 
+		/// <summary>
+		///		Disposes of this <see cref="ModuleManager"/> instance
+		/// </summary>
 		public void Dispose()
 		{
 			foreach (IModule module in modules)
@@ -35,6 +46,9 @@ namespace Pootis_Bot.Modules
 			}
 		}
 
+		/// <summary>
+		///		Loads all modules in the <see cref="modulesDirectory"/>
+		/// </summary>
 		public void LoadModules()
 		{
 			//Make sure the modules directory exists
