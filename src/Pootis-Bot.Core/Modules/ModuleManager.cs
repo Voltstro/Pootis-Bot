@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Pootis_Bot;
+using JetBrains.Annotations;
 using Pootis_Bot.Core;
 using Pootis_Bot.Logging;
 using Pootis_Bot.PackageDownloader;
@@ -27,8 +27,14 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="modulesDir">The directory where the modules are kept</param>
 		/// <param name="assembliesDir">The directory of where external assemblies exist</param>
-		public ModuleManager(string modulesDir, string assembliesDir)
+		public ModuleManager([NotNull] string modulesDir, [NotNull] string assembliesDir)
 		{
+			if(string.IsNullOrWhiteSpace(modulesDir))
+				throw new ArgumentNullException(nameof(modulesDir));
+
+			if(string.IsNullOrWhiteSpace(assembliesDir))
+				throw new ArgumentNullException(nameof(assembliesDir));
+
 			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";
 			assembliesDirectory = $"{Bot.ApplicationLocation}/{assembliesDir}";
 			modules = new List<IModule>();

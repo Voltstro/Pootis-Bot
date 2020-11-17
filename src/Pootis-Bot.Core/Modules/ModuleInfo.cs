@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Pootis_Bot.Modules
 {
@@ -13,10 +14,13 @@ namespace Pootis_Bot.Modules
 		/// <param name="name">The name of the module</param>
 		/// <param name="version">The version of the version</param>
 		/// <param name="packages">Packages required by the module</param>
-		public ModuleInfo(string name, Version version, params ModuleNuGetPackage[] packages)
+		public ModuleInfo([NotNull] string name, [NotNull] Version version, params ModuleNuGetPackage[] packages)
 		{
+			if(string.IsNullOrWhiteSpace(name))
+				throw new ArgumentNullException(nameof(name));
+
 			ModuleName = name;
-			ModuleVersion = version;
+			ModuleVersion = version ?? throw new ArgumentNullException(nameof(version));
 			NuGetPackages = packages;
 		}
 
@@ -25,26 +29,29 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="name">The name of the module</param>
 		/// <param name="version">The version of the version</param>
-		public ModuleInfo(string name, Version version)
+		public ModuleInfo([NotNull] string name, [NotNull] Version version)
 		{
+			if(string.IsNullOrWhiteSpace(name))
+				throw new ArgumentNullException(nameof(name));
+
 			ModuleName = name;
-			ModuleVersion = version;
+			ModuleVersion = version ?? throw new ArgumentNullException(nameof(version));
 			NuGetPackages = Array.Empty<ModuleNuGetPackage>();
 		}
 
 		/// <summary>
 		///     The name of the module
 		/// </summary>
-		public readonly string ModuleName;
+		[NotNull] public readonly string ModuleName;
 
 		/// <summary>
 		///     The name of the module
 		/// </summary>
-		public readonly Version ModuleVersion;
+		[NotNull] public readonly Version ModuleVersion;
 
 		/// <summary>
 		///     NuGet packages used by the module
 		/// </summary>
-		public readonly ModuleNuGetPackage[] NuGetPackages;
+		[NotNull] public readonly ModuleNuGetPackage[] NuGetPackages;
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using Pootis_Bot.Shared.Exceptions;
@@ -15,12 +16,12 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		///		Whether or not this bot is running
 		/// </summary>
-		public bool IsRunning { get; private set; }
+		[PublicAPI] public bool IsRunning { get; private set; }
 
 		/// <summary>
 		///		The location of the application
 		/// </summary>
-		public static string ApplicationLocation { get; private set; }
+		[PublicAPI] public static string ApplicationLocation { get; private set; }
 
 		/// <summary>
 		///     Disposes of this bot instance

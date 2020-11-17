@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
-using Pootis_Bot;
 using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Modules

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Frameworks;
@@ -32,8 +33,15 @@ namespace Pootis_Bot.PackageDownloader
 		/// </summary>
 		/// <param name="framework">Whats the target framework</param>
 		/// <param name="packagesDirectory">Where is the location of our packages</param>
-		public NuGetPackageResolver(string framework, string packagesDirectory = "Packages/")
+		public NuGetPackageResolver([NotNull] string framework, [NotNull] string packagesDirectory = "Packages/")
 		{
+			//Null checks
+			if(string.IsNullOrWhiteSpace(framework))
+				throw new ArgumentNullException(nameof(framework));
+
+			if(string.IsNullOrWhiteSpace(packagesDirectory))
+				throw new ArgumentNullException(nameof(packagesDirectory));
+
 			settings = Settings.LoadDefaultSettings(null);
 			SourceRepositoryProvider sourceRepositoryProvider =
 				new SourceRepositoryProvider(new PackageSourceProvider(settings), Repository.Provider.GetCoreV3());
@@ -74,9 +82,15 @@ namespace Pootis_Bot.PackageDownloader
 		/// <param name="version">What version of the package to download</param>
 		/// <param name="cancellationToken">Cancellation token to use</param>
 		/// <returns>Returns a list of locations of all the .Dlls</returns>
-		public async Task<List<string>> DownloadPackage(string packageId, Version version,
+		public async Task<List<string>> DownloadPackage([NotNull] string packageId, [NotNull] Version version,
 			CancellationToken cancellationToken = default)
 		{
+			if(string.IsNullOrWhiteSpace(packageId))
+				throw new ArgumentNullException(nameof(packageId));
+
+			if(version == null)
+				throw new ArgumentNullException(nameof(version));
+
 			PackageIdentity package = new PackageIdentity(packageId, new NuGetVersion(version));
 			HashSet<SourcePackageDependencyInfo> availablePackages =
 				new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
@@ -159,9 +173,15 @@ namespace Pootis_Bot.PackageDownloader
 		/// <param name="package">The <see cref="PackageIdentity" /> to use</param>
 		/// <param name="availablePackages"></param>
 		/// <returns></returns>
-		public async Task GetPackageDependencies(PackageIdentity package,
-			ISet<SourcePackageDependencyInfo> availablePackages)
+		public async Task GetPackageDependencies([NotNull] PackageIdentity package,
+			[ItemNotNull] ISet<SourcePackageDependencyInfo> availablePackages)
 		{
+			if(package == null)
+				throw new ArgumentNullException(nameof(package));
+
+			if(availablePackages == null)
+				throw new ArgumentNullException(nameof(availablePackages));
+
 			if (availablePackages.Contains(package)) return;
 
 			foreach (SourceRepository sourceRepository in repositories)
