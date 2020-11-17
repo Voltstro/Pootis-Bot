@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using JetBrains.Annotations;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
@@ -14,14 +15,16 @@ namespace Pootis_Bot.Core
 		private ModuleManager moduleManager;
 
 		/// <summary>
-		///		Whether or not this bot is running
+		///     Whether or not this bot is running
 		/// </summary>
-		[PublicAPI] public bool IsRunning { get; private set; }
+		[PublicAPI]
+		public bool IsRunning { get; private set; }
 
 		/// <summary>
-		///		The location of the application
+		///     The location of the application
 		/// </summary>
-		[PublicAPI] public static string ApplicationLocation { get; private set; }
+		[PublicAPI]
+		public static string ApplicationLocation { get; private set; }
 
 		/// <summary>
 		///     Disposes of this bot instance
@@ -45,7 +48,7 @@ namespace Pootis_Bot.Core
 			if (IsRunning)
 				throw new InitializationException("A bot is already running!");
 
-			ApplicationLocation = System.IO.Path.GetDirectoryName(typeof(Bot).Assembly.Location);
+			ApplicationLocation = Path.GetDirectoryName(typeof(Bot).Assembly.Location);
 
 			IsRunning = true;
 

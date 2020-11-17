@@ -16,7 +16,7 @@ namespace Pootis_Bot.Modules
 		/// <param name="packages">Packages required by the module</param>
 		public ModuleInfo([NotNull] string name, [NotNull] Version version, params ModuleNuGetPackage[] packages)
 		{
-			if(string.IsNullOrWhiteSpace(name))
+			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException(nameof(name));
 
 			ModuleName = name;
@@ -31,7 +31,7 @@ namespace Pootis_Bot.Modules
 		/// <param name="version">The version of the version</param>
 		public ModuleInfo([NotNull] string name, [NotNull] Version version)
 		{
-			if(string.IsNullOrWhiteSpace(name))
+			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException(nameof(name));
 
 			ModuleName = name;

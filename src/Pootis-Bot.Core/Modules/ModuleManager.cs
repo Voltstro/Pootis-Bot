@@ -29,10 +29,10 @@ namespace Pootis_Bot.Modules
 		/// <param name="assembliesDir">The directory of where external assemblies exist</param>
 		public ModuleManager([NotNull] string modulesDir, [NotNull] string assembliesDir)
 		{
-			if(string.IsNullOrWhiteSpace(modulesDir))
+			if (string.IsNullOrWhiteSpace(modulesDir))
 				throw new ArgumentNullException(nameof(modulesDir));
 
-			if(string.IsNullOrWhiteSpace(assembliesDir))
+			if (string.IsNullOrWhiteSpace(assembliesDir))
 				throw new ArgumentNullException(nameof(assembliesDir));
 
 			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";

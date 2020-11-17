@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 using Pootis_Bot.Config;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
