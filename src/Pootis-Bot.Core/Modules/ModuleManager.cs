@@ -61,15 +61,57 @@ namespace Pootis_Bot.Modules
 			{
 				if (!typeof(IModule).IsAssignableFrom(type)) continue;
 
-				if (!(Activator.CreateInstance(type) is IModule module)) continue;
+				IModule module;
+				try
+				{
+					module = Activator.CreateInstance(type) as IModule;
+				}
+				catch (MissingMethodException ex)
+				{
+					Logger.Error("Something when wrong while creating a module from the assembly {@AssemblyName}! It looks like the constructor could be weird! The module will not be loaded: Ex: {@Exception}", assembly.FullName, ex.Message);
+					continue;
+				}
 
-				ModuleInfo moduleInfo = module.GetModuleInfo();
-				VerifyModuleNuGetPackages(moduleInfo);
+				if(module == null)
+					continue;
 
-				Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName,
-					moduleInfo.ModuleVersion.ToString());
+				//Our first contact with the module code it self, get info about it
+				ModuleInfo moduleInfo;
+				try
+				{
+					moduleInfo = module.GetModuleInfo();
+				}
+				catch (Exception ex)
+				{
+					Logger.Error("Something when wrong while trying to obtain module info from the assembly {@AssemblyName}! The module will not be loaded: Ex: {@Exception}", assembly.FullName, ex.Message);
+					continue;
+				}
 
-				module.Init();
+				//Verify NuGet packages for the module
+				try
+				{
+					VerifyModuleNuGetPackages(moduleInfo);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error("Something when wrong while trying to resolve NuGet packages for {@ModuleName}! The module will not be loaded: Ex: {@Exception}", moduleInfo.ModuleName, ex.Message);
+					continue;
+				}
+
+				//Call the init function
+				try
+				{
+					module.Init();
+					Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName,
+						moduleInfo.ModuleVersion.ToString());
+				}
+				catch (Exception ex)
+				{
+					Logger.Error("Something when wrong while initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}", moduleInfo.ModuleName, ex.Message);
+					continue;
+				}
+				
+				//Add the module to the list so we can call to it later
 				modules.Add(module);
 			}
 		}
