@@ -83,14 +83,30 @@ namespace Pootis_Bot.Modules
 
 			foreach (ModuleNuGetPackage nuGetPackage in moduleInfo.NuGetPackages)
 			{
+				//The assembly already exists, it should be safe to assume that other dlls that it requires exist as well
 				if(File.Exists($"{assembliesDirectory}/{nuGetPackage.AssemblyName}.dll")) continue;
 
-				//Download the assemblies
+				Logger.Info("Downloading NuGet packages for {@ModuleName}...", moduleInfo.ModuleName);
+
+				//Download the packages and extract them
 				List<string> dlls = packageResolver.DownloadPackage(nuGetPackage.PackageId, nuGetPackage.PackageVersion).GetAwaiter()
 					.GetResult();
 
 				foreach (string dll in dlls)
-					File.Copy(dll, $"{assembliesDirectory}/{Path.GetFileName(dll)}", true);
+				{
+					string dllName = Path.GetFileName(dll);
+					string destination = $"{assembliesDirectory}/{dllName}";
+
+					//The dll already exists, we don't need to copy it again
+					if(File.Exists(destination))
+						continue;
+
+					//The required dll exists in the root
+					if(File.Exists($"{Bot.ApplicationLocation}/{dllName}"))
+						continue;
+
+					File.Copy(dll, destination, true);
+				}
 			}
 
 			packageResolver.Dispose();
