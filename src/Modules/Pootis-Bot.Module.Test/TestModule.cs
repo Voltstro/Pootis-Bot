@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Pootis_Bot.Core.Logging;
 using Pootis_Bot.Modules;
+using YoutubeExplode;
 
 namespace Pootis_Bot.Module.Test
 {
@@ -9,7 +10,8 @@ namespace Pootis_Bot.Module.Test
 	{
 		public ModuleInfo GetModuleInfo()
 		{
-			return new ModuleInfo("Test Module", new Version(1, 0));
+			return new ModuleInfo("Test Module", new Version(1, 0), 
+				new ModuleNuGetPackage("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"));
 		}
 
 		public void Init()
@@ -18,6 +20,8 @@ namespace Pootis_Bot.Module.Test
 
 			TestThing testThing = new TestThing();
 			Logger.Info(JsonConvert.SerializeObject(testThing, Formatting.Indented));
+
+			YoutubeClient client = new YoutubeClient();
 		}
 
 		public void Dispose()

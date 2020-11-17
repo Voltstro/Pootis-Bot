@@ -11,6 +11,8 @@ namespace Pootis_Bot.Modules
 {
 	public sealed class ModuleManager : IDisposable
 	{
+		private readonly ModuleLoadContext loadContext;
+
 		private readonly List<IModule> modules;
 
 		private readonly string modulesDirectory;
@@ -21,7 +23,7 @@ namespace Pootis_Bot.Modules
 			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";
 			assembliesDirectory = $"{Bot.ApplicationLocation}/{assembliesDir}";
 			modules = new List<IModule>();
-			
+			loadContext = new ModuleLoadContext(modulesDirectory, assembliesDirectory);
 		}
 
 		public void Dispose()
@@ -50,7 +52,6 @@ namespace Pootis_Bot.Modules
 
 		private Assembly LoadModule(string dllPath)
 		{
-			ModuleLoadContext loadContext = new ModuleLoadContext(modulesDirectory);
 			return loadContext.LoadFromAssemblyPath(dllPath);
 		}
 
