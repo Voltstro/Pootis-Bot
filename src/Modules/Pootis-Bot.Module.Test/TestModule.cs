@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Pootis_Bot.Config;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using YoutubeExplode;
@@ -18,10 +19,16 @@ namespace Pootis_Bot.Module.Test
 		{
 			Logger.Info("Hello World!");
 
-			TestThing testThing = new TestThing();
-			Logger.Info(JsonConvert.SerializeObject(testThing, Formatting.Indented));
+			TestThing testThing = Config<TestThing>.Instance;
+			AnotherTestThing anotherTestTestThing = Config<AnotherTestThing>.Instance;
 
 			YoutubeClient client = new YoutubeClient();
+
+			Logger.Info(Config<TestThing>.Instance.Bruh);
+			Logger.Info(Config<AnotherTestThing>.Instance.Voltstro);
+
+			anotherTestTestThing.EternalClickbait = "Is gay";
+			anotherTestTestThing.Save();
 		}
 
 		public void Dispose()
@@ -29,9 +36,15 @@ namespace Pootis_Bot.Module.Test
 			Logger.Info("Shutdown stuff!");
 		}
 
-		public class TestThing
+		public class TestThing : Config<TestThing>
 		{
 			public string Bruh { get; set; } = "Bruh Moment";
+		}
+
+		public class AnotherTestThing : Config<AnotherTestThing>
+		{
+			public string Voltstro { get; set; } = "Is the best.";
+			public string EternalClickbait { get; set; } = "Is cool.";
 		}
 	}
 }
