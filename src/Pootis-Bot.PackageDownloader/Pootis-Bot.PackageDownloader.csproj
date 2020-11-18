@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Pootis_Bot.PackageDownloader</RootNamespace>
+    <Description>Handles downloading NuGet packages.</Description>
   </PropertyGroup>
 
   <ItemGroup>

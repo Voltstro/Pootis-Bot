@@ -5,6 +5,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Pootis_Bot</RootNamespace>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Description>Entry point of Pootis-Bot. Is what glues everything together.</Description>
   </PropertyGroup>
 
   <ItemGroup>

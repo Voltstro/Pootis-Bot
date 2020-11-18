@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Pootis_Bot.Shared</RootNamespace>
+    <Description>Shared code amongst all of Pootis-Bot.</Description>
   </PropertyGroup>
 
   <ItemGroup>
