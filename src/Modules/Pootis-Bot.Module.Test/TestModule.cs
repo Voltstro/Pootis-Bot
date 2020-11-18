@@ -11,7 +11,8 @@ namespace Pootis_Bot.Module.Test
 		public ModuleInfo GetModuleInfo()
 		{
 			return new ModuleInfo("Test Module", new Version(1, 0),
-				new ModuleNuGetPackage("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"));
+				new ModuleDependency("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"),
+				new ModuleDependency("TestModule2"));
 		}
 
 		public void Init()

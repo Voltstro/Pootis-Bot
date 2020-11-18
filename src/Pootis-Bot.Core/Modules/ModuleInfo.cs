@@ -13,15 +13,15 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="name">The name of the module</param>
 		/// <param name="version">The version of the version</param>
-		/// <param name="packages">Packages required by the module</param>
-		public ModuleInfo([NotNull] string name, [NotNull] Version version, params ModuleNuGetPackage[] packages)
+		/// <param name="dependencies">Packages required by the module</param>
+		public ModuleInfo([NotNull] string name, [NotNull] Version version, params ModuleDependency[] dependencies)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException(nameof(name));
 
 			ModuleName = name;
 			ModuleVersion = version ?? throw new ArgumentNullException(nameof(version));
-			NuGetPackages = packages;
+			Dependencies = dependencies;
 		}
 
 		/// <summary>
@@ -36,22 +36,22 @@ namespace Pootis_Bot.Modules
 
 			ModuleName = name;
 			ModuleVersion = version ?? throw new ArgumentNullException(nameof(version));
-			NuGetPackages = Array.Empty<ModuleNuGetPackage>();
+			Dependencies = Array.Empty<ModuleDependency>();
 		}
 
 		/// <summary>
 		///     The name of the module
 		/// </summary>
-		[NotNull] public readonly string ModuleName;
+		internal readonly string ModuleName;
 
 		/// <summary>
 		///     The name of the module
 		/// </summary>
-		[NotNull] public readonly Version ModuleVersion;
+		internal readonly Version ModuleVersion;
 
 		/// <summary>
 		///     NuGet packages used by the module
 		/// </summary>
-		[NotNull] public readonly ModuleNuGetPackage[] NuGetPackages;
+		internal readonly ModuleDependency[] Dependencies;
 	}
 }

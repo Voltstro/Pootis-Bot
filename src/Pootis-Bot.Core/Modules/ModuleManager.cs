@@ -56,7 +56,7 @@ namespace Pootis_Bot.Modules
 		/// <summary>
 		///     Loads all modules in the <see cref="modulesDirectory" />
 		/// </summary>
-		public void LoadModules()
+		internal void LoadModules()
 		{
 			//Make sure the modules directory exists
 			if (!Directory.Exists(modulesDirectory))
@@ -68,13 +68,49 @@ namespace Pootis_Bot.Modules
 
 			//Get all dlls in the directory
 			string[] dlls = Directory.GetFiles(modulesDirectory, "*.dll");
+			List<IModule> modulesToInit = new List<IModule>();
 			foreach (string dll in dlls)
 			{
 				Assembly loadedAssembly = LoadModule(dll);
-				LoadModulesInAssembly(loadedAssembly, packageResolver);
+				modulesToInit.AddRange(LoadModulesInAssembly(loadedAssembly));
 			}
 
+			//Verify its dependencies
+			VerifyModuleDependencies(ref modulesToInit, packageResolver);
 			packageResolver.Dispose();
+
+			//Init all the modules
+			for (int i = 0; i < modulesToInit.Count; i++)
+			{
+				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfo();
+
+				//Call the init function
+				try
+				{
+					modulesToInit[i].Init();
+					Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName,
+						moduleInfo.ModuleVersion.ToString());
+					modules.Add(modulesToInit[i]);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(
+						"Something when wrong while initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}",
+						moduleInfo.ModuleName, ex.Message);
+					modulesToInit.RemoveAt(i);
+				}
+			}
+		}
+
+		/// <summary>
+		///		Checks if a module is loaded
+		/// </summary>
+		/// <param name="moduleName"></param>
+		/// <returns></returns>
+		[PublicAPI]
+		public bool CheckIfModuleIsLoaded(string moduleName)
+		{
+			return modules.Exists(x => x.GetModuleInfo().ModuleName == moduleName);
 		}
 
 		private Assembly LoadModule(string dllPath)
@@ -82,8 +118,10 @@ namespace Pootis_Bot.Modules
 			return loadContext.LoadFromAssemblyPath(dllPath);
 		}
 
-		private void LoadModulesInAssembly(Assembly assembly, NuGetPackageResolver resolver)
+		private IEnumerable<IModule> LoadModulesInAssembly(Assembly assembly)
 		{
+			List<IModule> foundModules = new List<IModule>();
+
 			foreach (Type type in assembly.GetTypes().Where(x => x.IsClass && x.IsPublic))
 			{
 				if (!typeof(IModule).IsAssignableFrom(type)) continue;
@@ -105,10 +143,9 @@ namespace Pootis_Bot.Modules
 					continue;
 
 				//Our first contact with the module code it self, get info about it
-				ModuleInfo moduleInfo;
 				try
 				{
-					moduleInfo = module.GetModuleInfo();
+					module.GetModuleInfo();
 				}
 				catch (Exception ex)
 				{
@@ -118,45 +155,42 @@ namespace Pootis_Bot.Modules
 					continue;
 				}
 
-				//Verify NuGet packages for the module
-				try
-				{
-					VerifyModuleNuGetPackages(moduleInfo, resolver);
-				}
-				catch (Exception ex)
-				{
-					Logger.Error(
-						"Something when wrong while trying to resolve NuGet packages for {@ModuleName}! The module will not be loaded: Ex: {@Exception}",
-						moduleInfo.ModuleName, ex.Message);
-					continue;
-				}
+				//Add the module to the list
+				foundModules.Add(module);
+			}
 
-				//Call the init function
-				try
-				{
-					module.Init();
-					Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName,
-						moduleInfo.ModuleVersion.ToString());
-				}
-				catch (Exception ex)
-				{
-					Logger.Error(
-						"Something when wrong while initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}",
-						moduleInfo.ModuleName, ex.Message);
-					continue;
-				}
+			return foundModules;
+		}
 
-				//Add the module to the list so we can call to it later
-				modules.Add(module);
+		private void VerifyModuleDependencies(ref List<IModule> modulesToVerify, NuGetPackageResolver resolver)
+		{
+			for (int i = 0; i < modulesToVerify.Count; i++)
+			{
+				ModuleInfo info = modulesToVerify[i].GetModuleInfo();
+
+				//Resolve NuGet packages
+				VerifyModuleNuGetPackages(info.Dependencies.Where(x => x.PackageId != null), info, resolver);
+
+				foreach (ModuleDependency moduleDependency in info.Dependencies)
+				{
+					//Determine if it is a NuGet package or module dependency
+					if (moduleDependency.PackageId != null) continue;
+
+					//The module doesn't exist
+					if (modulesToVerify.Exists(x => x.GetModuleInfo().ModuleName == moduleDependency.ModuleName)) continue;
+
+					Logger.Error("The module {@Module} depends on the module {@Dependent} which has not been loaded!", info.ModuleName, moduleDependency.ModuleName);
+					modulesToVerify.RemoveAt(i);
+				}
 			}
 		}
 
-		private void VerifyModuleNuGetPackages(ModuleInfo moduleInfo, NuGetPackageResolver packageResolver)
+		private void VerifyModuleNuGetPackages(IEnumerable<ModuleDependency> nugetDependencies, ModuleInfo moduleInfo, NuGetPackageResolver packageResolver)
 		{
 			if (!Directory.Exists(assembliesDirectory))
 				Directory.CreateDirectory(assembliesDirectory);
 
-			foreach (ModuleNuGetPackage nuGetPackage in moduleInfo.NuGetPackages)
+			foreach (ModuleDependency nuGetPackage in nugetDependencies)
 			{
 				//The assembly already exists, it should be safe to assume that other dlls that it requires exist as well
 				if (File.Exists($"{assembliesDirectory}/{nuGetPackage.AssemblyName}.dll")) continue;
