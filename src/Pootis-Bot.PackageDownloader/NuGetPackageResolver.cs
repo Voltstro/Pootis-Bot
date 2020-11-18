@@ -43,7 +43,7 @@ namespace Pootis_Bot.PackageDownloader
 			if(string.IsNullOrWhiteSpace(packagesDirectory))
 				throw new ArgumentNullException(nameof(packagesDirectory));
 
-			settings = Settings.LoadDefaultSettings(null);
+			settings = Settings.LoadDefaultSettings(packagesDirectory, null, new XPlatMachineWideSetting());
 			SourceRepositoryProvider sourceRepositoryProvider =
 				new SourceRepositoryProvider(new PackageSourceProvider(settings), Repository.Provider.GetCoreV3());
 			repositories = sourceRepositoryProvider.GetRepositories();
