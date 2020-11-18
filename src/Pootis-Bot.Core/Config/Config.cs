@@ -24,25 +24,10 @@ namespace Pootis_Bot.Config
 			{
 				if (instance == null)
 				{
-					if (File.Exists(ConfigPath))
-					{
-						Logger.Debug("Loaded config {@Config} from {@ConfigLocation}", typeof(T).Name, ConfigPath);
-						instance = JsonConvert.DeserializeObject<T>(File.ReadAllText(ConfigPath));
-					}
-					else
-					{
-						Logger.Debug("Created new {@Config} instance.", typeof(T).Name);
-						instance = new T();
-						instance.Save();
-					}
+					StaticReload();
 				}
 
 				return instance;
-			}
-			set
-			{
-				instance = value;
-				instance.Save();
 			}
 		}
 
@@ -54,8 +39,40 @@ namespace Pootis_Bot.Config
 			if (!Directory.Exists(Path.GetDirectoryName(ConfigPath)))
 				Directory.CreateDirectory(Path.GetDirectoryName(ConfigPath) ?? string.Empty);
 
-			string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+			string json = ToJson();
 			File.WriteAllText(ConfigPath, json);
+		}
+
+		/// <summary>
+		///		Converts the config to json
+		/// </summary>
+		/// <returns></returns>
+		public string ToJson()
+		{
+			return JsonConvert.SerializeObject(this, Formatting.Indented);
+		}
+
+		/// <summary>
+		///		Reloads the config
+		/// </summary>
+		public void Reload()
+		{
+			StaticReload();
+		}
+
+		private static void StaticReload()
+		{
+			if (File.Exists(ConfigPath))
+			{
+				Logger.Debug("Loaded config {@Config} from {@ConfigLocation}", typeof(T).Name, ConfigPath);
+				instance = JsonConvert.DeserializeObject<T>(File.ReadAllText(ConfigPath));
+			}
+			else
+			{
+				Logger.Debug("Created new config {@Config} instance.", typeof(T).Name);
+				instance = new T();
+				instance.Save();
+			}
 		}
 	}
 }
