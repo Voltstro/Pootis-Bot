@@ -23,8 +23,8 @@ namespace Pootis_Bot.PackageDownloader
 	public sealed class NuGetPackageResolver : IDisposable
 	{
 		private readonly SourceCacheContext cache;
-		private readonly ILogger nugetLogger;
 		private readonly string packagesDir;
+		private ILogger nugetLogger;
 		private NuGetFramework framework;
 		private IEnumerable<SourceRepository> repositories;
 		private ISettings settings;
@@ -73,6 +73,7 @@ namespace Pootis_Bot.PackageDownloader
 			repositories = null;
 			settings = null;
 			framework = null;
+			nugetLogger = null;
 			cache?.Dispose();
 		}
 

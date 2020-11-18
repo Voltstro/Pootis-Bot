@@ -62,13 +62,19 @@ namespace Pootis_Bot.Modules
 			if (!Directory.Exists(modulesDirectory))
 				Directory.CreateDirectory(modulesDirectory);
 
+			//Pre-create package resolver
+			NuGetPackageResolver packageResolver =
+				new NuGetPackageResolver("netstandard2.1", $"{Bot.ApplicationLocation}/Packages/");
+
 			//Get all dlls in the directory
 			string[] dlls = Directory.GetFiles(modulesDirectory, "*.dll");
 			foreach (string dll in dlls)
 			{
 				Assembly loadedAssembly = LoadModule(dll);
-				LoadModulesInAssembly(loadedAssembly);
+				LoadModulesInAssembly(loadedAssembly, packageResolver);
 			}
+
+			packageResolver.Dispose();
 		}
 
 		private Assembly LoadModule(string dllPath)
@@ -76,7 +82,7 @@ namespace Pootis_Bot.Modules
 			return loadContext.LoadFromAssemblyPath(dllPath);
 		}
 
-		private void LoadModulesInAssembly(Assembly assembly)
+		private void LoadModulesInAssembly(Assembly assembly, NuGetPackageResolver resolver)
 		{
 			foreach (Type type in assembly.GetTypes().Where(x => x.IsClass && x.IsPublic))
 			{
@@ -115,7 +121,7 @@ namespace Pootis_Bot.Modules
 				//Verify NuGet packages for the module
 				try
 				{
-					VerifyModuleNuGetPackages(moduleInfo);
+					VerifyModuleNuGetPackages(moduleInfo, resolver);
 				}
 				catch (Exception ex)
 				{
@@ -145,25 +151,24 @@ namespace Pootis_Bot.Modules
 			}
 		}
 
-		private void VerifyModuleNuGetPackages(ModuleInfo moduleInfo)
+		private void VerifyModuleNuGetPackages(ModuleInfo moduleInfo, NuGetPackageResolver packageResolver)
 		{
 			if (!Directory.Exists(assembliesDirectory))
 				Directory.CreateDirectory(assembliesDirectory);
-
-			NuGetPackageResolver packageResolver =
-				new NuGetPackageResolver("netstandard2.1", $"{Bot.ApplicationLocation}/Packages/");
 
 			foreach (ModuleNuGetPackage nuGetPackage in moduleInfo.NuGetPackages)
 			{
 				//The assembly already exists, it should be safe to assume that other dlls that it requires exist as well
 				if (File.Exists($"{assembliesDirectory}/{nuGetPackage.AssemblyName}.dll")) continue;
 
-				Logger.Info("Downloading NuGet packages for {@ModuleName}...", moduleInfo.ModuleName);
+				Logger.Info("Restoring NuGet packages for {@ModuleName}...", moduleInfo.ModuleName);
 
 				//Download the packages and extract them
 				List<string> dlls = packageResolver.DownloadPackage(nuGetPackage.PackageId, nuGetPackage.PackageVersion)
 					.GetAwaiter()
 					.GetResult();
+
+				Logger.Info("Extracting NuGet packages...");
 
 				foreach (string dll in dlls)
 				{
@@ -180,9 +185,9 @@ namespace Pootis_Bot.Modules
 
 					File.Copy(dll, destination, true);
 				}
-			}
 
-			packageResolver.Dispose();
+				Logger.Info("Packages for {@ModuleName} restored.", moduleInfo.ModuleName);
+			}
 		}
 	}
 }
