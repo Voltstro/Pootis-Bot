@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Pootis_Bot.Logging;
 
@@ -10,8 +11,16 @@ namespace Pootis_Bot.Config
 	/// <typeparam name="T">The class of settings to save</typeparam>
 	public class Config<T> where T : Config<T>, new()
 	{
-		public static int expectedConfigVersion = 1;
-		public int ConfigVersion { get; set; } = expectedConfigVersion;
+		/// <summary>
+		///		What is the expected config version
+		/// </summary>
+		// ReSharper disable once StaticMemberInGenericType
+		[PublicAPI] public static int ExpectedConfigVersion = 1;
+
+		/// <summary>
+		///		(DON'T EDIT) Whats the version that this config is
+		/// </summary>
+		[PublicAPI] public int ConfigVersion { get; set; } = ExpectedConfigVersion;
 
 		private static readonly string ConfigPath = $"Config/{typeof(T).Name}.json";
 		private static T instance;
@@ -70,10 +79,10 @@ namespace Pootis_Bot.Config
 				Logger.Debug("Loaded config {@Config} from {@ConfigLocation}", typeof(T).Name, ConfigPath);
 				instance = JsonConvert.DeserializeObject<T>(File.ReadAllText(ConfigPath));
 
-				if (instance.ConfigVersion != expectedConfigVersion)
+				if (instance.ConfigVersion != ExpectedConfigVersion)
 				{
 					Logger.Warn("Config {@CConfig} was an outdated version! Updating.", typeof(T).Name);
-					instance.ConfigVersion = expectedConfigVersion;
+					instance.ConfigVersion = ExpectedConfigVersion;
 					instance.Save();
 				}
 			}

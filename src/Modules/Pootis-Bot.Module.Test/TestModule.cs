@@ -39,7 +39,7 @@ namespace Pootis_Bot.Module.Test
 		{
 			public TestThing()
 			{
-				expectedConfigVersion = 2;
+				ExpectedConfigVersion = 2;
 			}
 
 			public string Bruh { get; set; } = "Bruh Moment";
