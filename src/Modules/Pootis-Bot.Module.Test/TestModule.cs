@@ -37,6 +37,11 @@ namespace Pootis_Bot.Module.Test
 
 		public class TestThing : Config<TestThing>
 		{
+			public TestThing()
+			{
+				expectedConfigVersion = 2;
+			}
+
 			public string Bruh { get; set; } = "Bruh Moment";
 		}
 

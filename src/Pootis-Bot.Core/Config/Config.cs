@@ -10,6 +10,9 @@ namespace Pootis_Bot.Config
 	/// <typeparam name="T">The class of settings to save</typeparam>
 	public class Config<T> where T : Config<T>, new()
 	{
+		public static int expectedConfigVersion = 1;
+		public int ConfigVersion { get; set; } = expectedConfigVersion;
+
 		private static readonly string ConfigPath = $"Config/{typeof(T).Name}.json";
 		private static T instance;
 
@@ -66,6 +69,13 @@ namespace Pootis_Bot.Config
 			{
 				Logger.Debug("Loaded config {@Config} from {@ConfigLocation}", typeof(T).Name, ConfigPath);
 				instance = JsonConvert.DeserializeObject<T>(File.ReadAllText(ConfigPath));
+
+				if (instance.ConfigVersion != expectedConfigVersion)
+				{
+					Logger.Warn("Config {@CConfig} was an outdated version! Updating.", typeof(T).Name);
+					instance.ConfigVersion = expectedConfigVersion;
+					instance.Save();
+				}
 			}
 			else
 			{
