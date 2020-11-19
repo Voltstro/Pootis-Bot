@@ -19,7 +19,7 @@ namespace Pootis_Bot.Modules
 		private readonly string modulesDirectory;
 		private readonly ModuleLoadContext loadContext;
 
-		private static List<IModule> modules;
+		private static List<Module> modules;
 
 		/// <summary>
 		///     Creates a new module manager instance
@@ -36,7 +36,7 @@ namespace Pootis_Bot.Modules
 
 			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";
 			assembliesDirectory = $"{Bot.ApplicationLocation}/{assembliesDir}";
-			modules = new List<IModule>();
+			modules = new List<Module>();
 			loadContext = new ModuleLoadContext(modulesDirectory, assembliesDirectory);
 		}
 
@@ -59,10 +59,10 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		internal void Dispose()
 		{
-			foreach (IModule module in modules)
+			foreach (Module module in modules)
 			{
 				Logger.Info("Shutting down module {@ModuleName}...", module.GetModuleInfo().ModuleName);
-				module.Dispose();
+				module.Shutdown();
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace Pootis_Bot.Modules
 
 			//Get all dlls in the directory
 			string[] dlls = Directory.GetFiles(modulesDirectory, "*.dll");
-			List<IModule> modulesToInit = new List<IModule>();
+			List<Module> modulesToInit = new List<Module>();
 			foreach (string dll in dlls)
 			{
 				Assembly loadedAssembly = LoadModule(dll);
@@ -120,18 +120,18 @@ namespace Pootis_Bot.Modules
 			return loadContext.LoadFromAssemblyPath(dllPath);
 		}
 
-		private IEnumerable<IModule> LoadModulesInAssembly(Assembly assembly)
+		private IEnumerable<Module> LoadModulesInAssembly(Assembly assembly)
 		{
-			List<IModule> foundModules = new List<IModule>();
+			List<Module> foundModules = new List<Module>();
 
 			foreach (Type type in assembly.GetTypes().Where(x => x.IsClass && x.IsPublic))
 			{
-				if (!typeof(IModule).IsAssignableFrom(type)) continue;
+				if (!typeof(Module).IsAssignableFrom(type)) continue;
 
-				IModule module;
+				Module module;
 				try
 				{
-					module = Activator.CreateInstance(type) as IModule;
+					module = Activator.CreateInstance(type) as Module;
 				}
 				catch (MissingMethodException ex)
 				{
@@ -164,7 +164,7 @@ namespace Pootis_Bot.Modules
 			return foundModules;
 		}
 
-		private void VerifyModuleDependencies(ref List<IModule> modulesToVerify, NuGetPackageResolver resolver)
+		private void VerifyModuleDependencies(ref List<Module> modulesToVerify, NuGetPackageResolver resolver)
 		{
 			for (int i = 0; i < modulesToVerify.Count; i++)
 			{

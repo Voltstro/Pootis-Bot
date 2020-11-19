@@ -6,16 +6,16 @@ using YoutubeExplode;
 
 namespace Pootis_Bot.Module.Test
 {
-	public class TestModule : IModule
+	public class TestModule : Modules.Module
 	{
-		public ModuleInfo GetModuleInfo()
+		public override ModuleInfo GetModuleInfo()
 		{
 			return new ModuleInfo("Test Module", new Version(1, 0),
 				new ModuleDependency("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"),
 				new ModuleDependency("TestModule2"));
 		}
 
-		public void Init()
+		public override void Init()
 		{
 			Logger.Info("Hello World!");
 
@@ -29,11 +29,6 @@ namespace Pootis_Bot.Module.Test
 
 			anotherTestTestThing.EternalClickbait = "Is gay";
 			anotherTestTestThing.Save();
-		}
-
-		public void Dispose()
-		{
-			Logger.Info("Shutdown stuff!");
 		}
 
 		public class TestThing : Config<TestThing>
