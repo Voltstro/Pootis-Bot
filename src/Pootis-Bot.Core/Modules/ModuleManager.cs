@@ -13,21 +13,20 @@ namespace Pootis_Bot.Modules
 	/// <summary>
 	///     Handles the loading of modules
 	/// </summary>
-	internal sealed class ModuleManager : IDisposable
+	public sealed class ModuleManager
 	{
 		private readonly string assembliesDirectory;
+		private readonly string modulesDirectory;
 		private readonly ModuleLoadContext loadContext;
 
-		private readonly List<IModule> modules;
-
-		private readonly string modulesDirectory;
+		private static List<IModule> modules;
 
 		/// <summary>
 		///     Creates a new module manager instance
 		/// </summary>
 		/// <param name="modulesDir">The directory where the modules are kept</param>
 		/// <param name="assembliesDir">The directory of where external assemblies exist</param>
-		public ModuleManager([NotNull] string modulesDir, [NotNull] string assembliesDir)
+		internal ModuleManager([NotNull] string modulesDir, [NotNull] string assembliesDir)
 		{
 			if (string.IsNullOrWhiteSpace(modulesDir))
 				throw new ArgumentNullException(nameof(modulesDir));
@@ -42,9 +41,23 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
+		///		Checks if a module is loaded
+		/// </summary>
+		/// <param name="moduleName"></param>
+		/// <returns></returns>
+		[PublicAPI]
+		public static bool CheckIfModuleIsLoaded([NotNull] string moduleName)
+		{
+			if(string.IsNullOrWhiteSpace(moduleName))
+				throw new ArgumentNullException(nameof(moduleName));
+
+			return modules.Exists(x => x.GetModuleInfo().ModuleName == moduleName);
+		}
+
+		/// <summary>
 		///     Disposes of this <see cref="ModuleManager" /> instance
 		/// </summary>
-		public void Dispose()
+		internal void Dispose()
 		{
 			foreach (IModule module in modules)
 			{
@@ -100,17 +113,6 @@ namespace Pootis_Bot.Modules
 					modulesToInit.RemoveAt(i);
 				}
 			}
-		}
-
-		/// <summary>
-		///		Checks if a module is loaded
-		/// </summary>
-		/// <param name="moduleName"></param>
-		/// <returns></returns>
-		[PublicAPI]
-		public bool CheckIfModuleIsLoaded(string moduleName)
-		{
-			return modules.Exists(x => x.GetModuleInfo().ModuleName == moduleName);
 		}
 
 		private Assembly LoadModule(string dllPath)
