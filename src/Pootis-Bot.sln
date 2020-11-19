@@ -18,6 +18,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{579D132A-1E20-4255-AC8B-B69BA8DF97CF}"
 	ProjectSection(SolutionItems) = preProject
 		GeneralProperties.props = GeneralProperties.props
+		ModulesProperties.props = ModulesProperties.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Shared", "Pootis-Bot.Shared\Pootis-Bot.Shared.csproj", "{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}"
