@@ -113,6 +113,25 @@ namespace Pootis_Bot.Modules
 					modulesToInit.RemoveAt(i);
 				}
 			}
+
+			//Post init
+			for (int i = 0; i < modulesToInit.Count; i++)
+			{
+				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfo();
+
+				//Call the init function
+				try
+				{
+					modulesToInit[i].PostInit();
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(
+						"Something when wrong while post initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}",
+						moduleInfo.ModuleName, ex.Message);
+					modulesToInit.RemoveAt(i);
+				}
+			}
 		}
 
 		private Assembly LoadModule(string dllPath)

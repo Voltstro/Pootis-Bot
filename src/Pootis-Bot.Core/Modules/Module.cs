@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace Pootis_Bot.Modules
 {
@@ -19,6 +18,17 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		[PublicAPI]
 		public virtual void Init()
+		{
+		}
+
+		/// <summary>
+		///		Called after all modules are initialized.
+		///		<para>Here is a good spot to check if other modules are loaded
+		///		with <see cref="ModuleManager.CheckIfModuleIsLoaded"/>, in-case you want.
+		///		to soft depend on another module</para>
+		/// </summary>
+		[PublicAPI]
+		public virtual void PostInit()
 		{
 		}
 

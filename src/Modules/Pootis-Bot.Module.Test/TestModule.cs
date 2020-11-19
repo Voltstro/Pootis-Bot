@@ -11,8 +11,7 @@ namespace Pootis_Bot.Module.Test
 		public override ModuleInfo GetModuleInfo()
 		{
 			return new ModuleInfo("Test Module", new Version(1, 0),
-				new ModuleDependency("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"),
-				new ModuleDependency("TestModule2"));
+				new ModuleDependency("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"));
 		}
 
 		public override void Init()
@@ -29,6 +28,11 @@ namespace Pootis_Bot.Module.Test
 
 			anotherTestTestThing.EternalClickbait = "Is gay";
 			anotherTestTestThing.Save();
+		}
+
+		public override void PostInit()
+		{
+			Logger.Info($"TestModule2 is loaded: {ModuleManager.CheckIfModuleIsLoaded("TestModule2")}");
 		}
 
 		public class TestThing : Config<TestThing>
