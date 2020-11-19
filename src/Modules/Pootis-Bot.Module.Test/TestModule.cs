@@ -1,5 +1,6 @@
 ﻿using System;
 using Pootis_Bot.Config;
+using Pootis_Bot.Console;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using YoutubeExplode;
@@ -8,6 +9,12 @@ namespace Pootis_Bot.Module.Test
 {
 	public class TestModule : Modules.Module
 	{
+		[ConsoleCommand("test", "Test command")]
+		public static void TestCommand(string[] args)
+		{
+			Logger.Info($"Test Command {string.Join(" ", args)}");
+		}
+
 		public override ModuleInfo GetModuleInfo()
 		{
 			return new ModuleInfo("Test Module", new Version(1, 0),

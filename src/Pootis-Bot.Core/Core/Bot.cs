@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using JetBrains.Annotations;
+using Pootis_Bot.Console;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using Pootis_Bot.Shared.Exceptions;
@@ -58,6 +59,22 @@ namespace Pootis_Bot.Core
 
 			moduleManager = new ModuleManager("Modules/", "Assemblies/");
 			moduleManager.LoadModules();
+		}
+
+		/// <summary>
+		///		Starts a console loop
+		/// </summary>
+		public void ConsoleLoop()
+		{
+			ConsoleCommandManager.AddConsoleCommandsFromAssembly(typeof(Bot).Assembly);
+			while (IsRunning)
+			{
+				string input = System.Console.ReadLine();
+				if(input?.ToLower() == "exit" || input?.ToLower() == "quit")
+					break;
+
+				ConsoleCommandManager.ExecuteCommand(input);
+			}
 		}
 
 		~Bot()

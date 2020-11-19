@@ -1,6 +1,4 @@
-﻿using System;
-using Pootis_Bot;
-using Pootis_Bot.Core;
+﻿using Pootis_Bot.Core;
 
 namespace Pootis_Bot
 {
@@ -10,8 +8,7 @@ namespace Pootis_Bot
 		{
 			Bot bot = new Bot();
 			bot.Run();
-
-			Console.ReadKey();
+			bot.ConsoleLoop();
 
 			bot.Dispose();
 		}

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+using Pootis_Bot.Console;
 using Pootis_Bot.Core;
 using Pootis_Bot.Logging;
 using Pootis_Bot.PackageDownloader;
@@ -13,7 +14,7 @@ namespace Pootis_Bot.Modules
 	/// <summary>
 	///     Handles the loading of modules
 	/// </summary>
-	public sealed class ModuleManager
+	public sealed class ModuleManager : IDisposable
 	{
 		private readonly string assembliesDirectory;
 		private readonly string modulesDirectory;
@@ -57,7 +58,7 @@ namespace Pootis_Bot.Modules
 		/// <summary>
 		///     Disposes of this <see cref="ModuleManager" /> instance
 		/// </summary>
-		internal void Dispose()
+		public void Dispose()
 		{
 			foreach (Module module in modules)
 			{
@@ -142,6 +143,7 @@ namespace Pootis_Bot.Modules
 		private IEnumerable<Module> LoadModulesInAssembly(Assembly assembly)
 		{
 			List<Module> foundModules = new List<Module>();
+			ConsoleCommandManager.AddConsoleCommandsFromAssembly(assembly);
 
 			foreach (Type type in assembly.GetTypes().Where(x => x.IsClass && x.IsPublic))
 			{
