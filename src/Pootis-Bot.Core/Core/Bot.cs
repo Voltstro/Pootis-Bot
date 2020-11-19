@@ -73,6 +73,9 @@ namespace Pootis_Bot.Core
 				if(input?.ToLower() == "exit" || input?.ToLower() == "quit")
 					break;
 
+				if(input == null)
+					continue;
+
 				ConsoleCommandManager.ExecuteCommand(input);
 			}
 		}
