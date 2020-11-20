@@ -9,7 +9,7 @@ steps:
 - script: dotnet restore -v minimal src/Pootis-Bot.sln
   displayName: Restore Packages
 
-- script: dotnet build src/Pootis-Bot/Pootis-Bot.csproj --no-restore -v minimal -c $(buildConfiguration) --framework $(framework)
+- script: dotnet build src/Pootis-Bot.sln --no-restore -v minimal -c $(buildConfiguration)
   displayName: Build Project
 
 - task: PublishPipelineArtifact@1
