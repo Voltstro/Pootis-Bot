@@ -15,5 +15,5 @@ steps:
 - task: PublishPipelineArtifact@1
   displayName: 'Upload Artifact'
   inputs:
-    targetPath: $(System.DefaultWorkingDirectory)/src/bin/Release
+    targetPath: src/bin/Release
     artifactName: Build
