@@ -11,3 +11,9 @@ steps:
 
 - script: dotnet build src/Pootis-Bot/Pootis-Bot.csproj --no-restore -v minimal -c $(buildConfiguration) --framework $(framework)
   displayName: Build Project
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Upload Artifact'
+  inputs:
+    targetPath: $(System.DefaultWorkingDirectory)/src/bin/Release
+    artifactName: Build
