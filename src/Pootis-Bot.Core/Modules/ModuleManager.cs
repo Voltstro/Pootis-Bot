@@ -34,8 +34,8 @@ namespace Pootis_Bot.Modules
 			if (string.IsNullOrWhiteSpace(assembliesDir))
 				throw new ArgumentNullException(nameof(assembliesDir));
 
-			modulesDirectory = $"{Bot.ApplicationLocation}/{modulesDir}";
-			assembliesDirectory = $"{Bot.ApplicationLocation}/{assembliesDir}";
+			modulesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{modulesDir}");
+			assembliesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{assembliesDir}");
 			modules = new List<Module>();
 			loadContext = new ModuleLoadContext(modulesDirectory, assembliesDirectory);
 		}
