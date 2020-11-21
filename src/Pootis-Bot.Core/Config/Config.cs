@@ -6,6 +6,8 @@ using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Config
 {
+	//TODO: Add property 'Validators', to make a property isn't what it should be allowed to be. E.G: The token cannot be null or empty
+
 	/// <summary>
 	///     Configs allow to save and load settings
 	/// </summary>

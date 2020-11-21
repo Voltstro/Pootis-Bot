@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using JetBrains.Annotations;
+using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Console.ConfigMenus
 {
@@ -20,33 +22,44 @@ namespace Pootis_Bot.Console.ConfigMenus
 		///		Creates a new <see cref="ConsoleConfigMenu{T}"/> instance
 		/// </summary>
 		/// <param name="editingObject"></param>
-		public ConsoleConfigMenu(T editingObject)
+		public ConsoleConfigMenu([NotNull] T editingObject)
 		{
+			if(editingObject == null)
+				throw new ArgumentNullException(nameof(editingObject));
+
 			configMenu = new List<ConfigItem>();
 			this.editingObject = editingObject;
 
 			//Generate options
 			foreach (PropertyInfo property in typeof(T).GetProperties())
 			{
-				if(Attribute.GetCustomAttribute(property, typeof(DontShowItem)) != null)
-					continue;
-
-				string formatName = property.Name;
-
-				if (Attribute.GetCustomAttribute(property, typeof(MenuItemFormat)) is MenuItemFormat attribute)
-					formatName = attribute.FormattedName;
-
-				configMenu.Add(new ConfigItem
+				try
 				{
-					ConfigFormatName = formatName,
-					Property = property
-				});
+					if(Attribute.GetCustomAttribute(property, typeof(DontShowItem)) != null)
+						continue;
+
+					string formatName = property.Name;
+
+					if (Attribute.GetCustomAttribute(property, typeof(MenuItemFormat)) is MenuItemFormat attribute)
+						formatName = attribute.FormattedName;
+
+					configMenu.Add(new ConfigItem
+					{
+						ConfigFormatName = formatName,
+						Property = property
+					});
+				}
+				catch (Exception ex)
+				{
+					Logger.Error("An error occurred while setting up selection option for {@Property}! {@ExMessage}", property.Name, ex.Message);
+				}
 			}
 		}
 
 		/// <summary>
 		///		Shows the generated config menu
 		/// </summary>
+		[PublicAPI]
 		public void Show()
 		{
 			showingMenu = true;
@@ -90,6 +103,7 @@ namespace Pootis_Bot.Console.ConfigMenus
 		/// <summary>
 		///		Closes the config menu
 		/// </summary>
+		[PublicAPI]
 		public void Close()
 		{
 			showingMenu = false;
@@ -97,29 +111,38 @@ namespace Pootis_Bot.Console.ConfigMenus
 
 		private void EditField(ConfigItem item)
 		{
-			string input;
+			string input = null;
 			while (true)
 			{
-				System.Console.WriteLine($"Enter what you want to set {item.ConfigFormatName} to:");
-				input = System.Console.ReadLine();
-
-				if(input == null)
-					continue;
-
-				if (item.Property.PropertyType == typeof(string))
+				try
 				{
-					item.Property.SetValue(editingObject, input);
-					break;
-				}
-				else if(item.Property.PropertyType == typeof(bool))
-				{
-					if (bool.TryParse(input.ToLower(), out bool value))
+					System.Console.WriteLine($"Enter what you want to set {item.ConfigFormatName} to:");
+					input = System.Console.ReadLine();
+
+					if (input == null)
+						continue;
+
+					//TODO: Add support for other types, we can do this using the same method of Discord.Net's 'TypeReaders'.
+					if (item.Property.PropertyType == typeof(string))
 					{
-						item.Property.SetValue(editingObject, value);
+						item.Property.SetValue(editingObject, input);
 						break;
 					}
+					else if (item.Property.PropertyType == typeof(bool))
+					{
+						if (bool.TryParse(input.ToLower(), out bool value))
+						{
+							item.Property.SetValue(editingObject, value);
+							break;
+						}
 
-					System.Console.WriteLine("Input either needs to be 'true' or 'false'!");
+						System.Console.WriteLine("Input either needs to be 'true' or 'false'!");
+					}
+				}
+				catch (Exception ex)
+				{
+					Logger.Error("An error occurred while trying to set the value of {@Property}! {@ExMessage}", item.Property.Name, ex.Message);
+					break;
 				}
 			}
 
