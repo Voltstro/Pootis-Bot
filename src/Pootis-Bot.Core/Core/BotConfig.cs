@@ -1,10 +1,11 @@
 ﻿using Pootis_Bot.Config;
-using Pootis_Bot.Console;
+using Pootis_Bot.Console.ConfigMenus;
 
 namespace Pootis_Bot.Core
 {
 	public class BotConfig : Config<BotConfig>
 	{
-		[ConsoleConfigFormat("Token")] public string BotToken;
+		[MenuItemFormat("Token")] public string BotToken { get; internal set; }
+		[MenuItemFormat("Prefix")] public string BotPrefix { get; internal set; }
 	}
 }

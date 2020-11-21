@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Pootis_Bot.Console.ConfigMenus;
 using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Config
@@ -21,7 +22,7 @@ namespace Pootis_Bot.Config
 		///		Whats the version that this config is.
 		///		<para>If you want to update the config version, change <see cref="Config{T}.ExpectedConfigVersion"/></para>
 		/// </summary>
-		[PublicAPI] public int ConfigVersion { get; private set; } = ExpectedConfigVersion;
+		[PublicAPI, DontShowItem] public int ConfigVersion { get; private set; } = ExpectedConfigVersion;
 
 		private static readonly string ConfigPath = $"Config/{typeof(T).Name}.json";
 		private static T instance;

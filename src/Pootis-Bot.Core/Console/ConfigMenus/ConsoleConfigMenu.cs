@@ -3,32 +3,35 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Pootis_Bot.Console
+namespace Pootis_Bot.Console.ConfigMenus
 {
-	public class ConsoleConfigMenu<T> : IDisposable
+	public class ConsoleConfigMenu<T>
 	{
-		private List<ConfigItem> configMenu;
+		private readonly List<ConfigItem> configMenu;
+		private readonly T editingObject;
+
 		private bool showingMenu;
 
-		private T options;
-
-		public ConsoleConfigMenu(T options)
+		public ConsoleConfigMenu(T editingObject)
 		{
 			configMenu = new List<ConfigItem>();
-			this.options = options;
+			this.editingObject = editingObject;
 
 			//Generate options
-			foreach (FieldInfo field in typeof(T).GetFields())
+			foreach (PropertyInfo property in typeof(T).GetProperties())
 			{
-				string formatName = field.Name;
+				if(Attribute.GetCustomAttribute(property, typeof(DontShowItem)) != null)
+					continue;
 
-				if (Attribute.GetCustomAttribute(field, typeof(ConsoleConfigFormat)) is ConsoleConfigFormat attribute)
+				string formatName = property.Name;
+
+				if (Attribute.GetCustomAttribute(property, typeof(MenuItemFormat)) is MenuItemFormat attribute)
 					formatName = attribute.FormattedName;
 
 				configMenu.Add(new ConfigItem
 				{
-					configFormatName = formatName,
-					field = field
+					ConfigFormatName = formatName,
+					Property = property
 				});
 			}
 		}
@@ -39,13 +42,16 @@ namespace Pootis_Bot.Console
 			StringBuilder options = new StringBuilder();
 			for (int i = 0; i < configMenu.Count; i++)
 			{
-				options.Append($"{i} - {configMenu[i].configFormatName}");
+				options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
 			}
 
 			System.Console.WriteLine(options.ToString());
 			while (showingMenu)
 			{
 				string input = System.Console.ReadLine();
+				if(input == null)
+					continue;
+
 				if (input.ToLower() == "exit")
 				{
 					System.Console.WriteLine("Exiting config menu...");
@@ -75,27 +81,27 @@ namespace Pootis_Bot.Console
 			showingMenu = false;
 		}
 
-		public void Dispose()
-		{
-		}
-
 		private void EditField(ConfigItem item)
 		{
+			string input;
 			while (true)
 			{
-				System.Console.WriteLine($"Enter what you want to set {item.configFormatName} to:");
-				string input = System.Console.ReadLine();
+				System.Console.WriteLine($"Enter what you want to set {item.ConfigFormatName} to:");
+				input = System.Console.ReadLine();
 
-				if (item.field.FieldType == typeof(string))
+				if(input == null)
+					continue;
+
+				if (item.Property.PropertyType == typeof(string))
 				{
-					item.field.SetValue(options, input);
+					item.Property.SetValue(editingObject, input);
 					break;
 				}
-				else if(item.field.FieldType == typeof(bool))
+				else if(item.Property.PropertyType == typeof(bool))
 				{
 					if (bool.TryParse(input.ToLower(), out bool value))
 					{
-						item.field.SetValue(options, value);
+						item.Property.SetValue(editingObject, value);
 						break;
 					}
 
@@ -103,12 +109,13 @@ namespace Pootis_Bot.Console
 				}
 			}
 
+			System.Console.WriteLine($"{item.ConfigFormatName} was set to '{input}'.");
 		}
 
 		private struct ConfigItem
 		{
-			public string configFormatName;
-			public FieldInfo field;
+			public string ConfigFormatName;
+			public PropertyInfo Property;
 		}
 	}
 }

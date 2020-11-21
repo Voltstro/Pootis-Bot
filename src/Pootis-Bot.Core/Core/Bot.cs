@@ -3,6 +3,7 @@ using System.IO;
 using JetBrains.Annotations;
 using Pootis_Bot.Config;
 using Pootis_Bot.Console;
+using Pootis_Bot.Console.ConfigMenus;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using Pootis_Bot.Shared.Exceptions;
