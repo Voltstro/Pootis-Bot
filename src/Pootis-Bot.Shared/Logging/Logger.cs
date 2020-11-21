@@ -36,7 +36,8 @@ namespace Pootis_Bot.Logging
 		///     Is the logger initialized?
 		///     <para>Returns true if it is</para>
 		/// </summary>
-		[PublicAPI] public static bool IsLoggerInitialized => log != null;
+		[PublicAPI]
+		public static bool IsLoggerInitialized => log != null;
 
 		/// <summary>
 		///     Initializes the logger

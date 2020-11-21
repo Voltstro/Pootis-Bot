@@ -22,10 +22,12 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		///		Called after all modules are initialized.
-		///		<para>Here is a good spot to check if other modules are loaded
-		///		with <see cref="ModuleManager.CheckIfModuleIsLoaded"/>, in-case you want.
-		///		to soft depend on another module</para>
+		///     Called after all modules are initialized.
+		///     <para>
+		///         Here is a good spot to check if other modules are loaded
+		///         with <see cref="ModuleManager.CheckIfModuleIsLoaded" />, in-case you want.
+		///         to soft depend on another module
+		///     </para>
 		/// </summary>
 		[PublicAPI]
 		public virtual void PostInit()
@@ -33,7 +35,7 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		///		Called on shutdown
+		///     Called on shutdown
 		/// </summary>
 		[PublicAPI]
 		public virtual void Shutdown()

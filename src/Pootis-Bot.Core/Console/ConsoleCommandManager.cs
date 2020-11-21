@@ -7,20 +7,20 @@ using Pootis_Bot.Logging;
 namespace Pootis_Bot.Console
 {
 	/// <summary>
-	///		Handles commands for the console
+	///     Handles commands for the console
 	/// </summary>
 	public static class ConsoleCommandManager
 	{
 		public delegate void MethodDelegate(string[] args);
 
-		private const BindingFlags BindingFlags = System.Reflection.BindingFlags.Static 
-		                                          | System.Reflection.BindingFlags.Public 
+		private const BindingFlags BindingFlags = System.Reflection.BindingFlags.Static
+		                                          | System.Reflection.BindingFlags.Public
 		                                          | System.Reflection.BindingFlags.NonPublic;
 
 		private static readonly Dictionary<string, CommandInfo> commands = new Dictionary<string, CommandInfo>();
 
 		/// <summary>
-		///		Adds all <see cref="ConsoleCommand"/> found from an <see cref="Assembly"/>
+		///     Adds all <see cref="ConsoleCommand" /> found from an <see cref="Assembly" />
 		/// </summary>
 		/// <param name="assembly"></param>
 		internal static void AddConsoleCommandsFromAssembly(Assembly assembly)
@@ -40,7 +40,8 @@ namespace Pootis_Bot.Console
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("An error occurred while adding the command `{@Command}`'s method! {@Exception}", attribute.Command, ex);
+					Logger.Error("An error occurred while adding the command `{@Command}`'s method! {@Exception}",
+						attribute.Command, ex);
 					continue;
 				}
 
@@ -61,7 +62,7 @@ namespace Pootis_Bot.Console
 		}
 
 		/// <summary>
-		///		Executes a command
+		///     Executes a command
 		/// </summary>
 		/// <param name="command">The command and arguments to execute</param>
 		[PublicAPI]
@@ -93,14 +94,14 @@ namespace Pootis_Bot.Console
 		}
 
 		/// <summary>
-		///		Does the command exist in the command list?
+		///     Does the command exist in the command list?
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns>Returns <c>true</c> if the command exists</returns>
 		[PublicAPI]
 		public static bool DoesCommandExist([NotNull] string command)
 		{
-			if(string.IsNullOrWhiteSpace(command))
+			if (string.IsNullOrWhiteSpace(command))
 				throw new ArgumentNullException(nameof(command));
 
 			return commands.ContainsKey(command);
@@ -113,9 +114,7 @@ namespace Pootis_Bot.Console
 #pragma warning restore IDE0060 // Remove unused parameter
 		{
 			foreach ((string command, CommandInfo commandInfo) in commands)
-			{
 				Logger.Info("`{@Command}` - {@Summary}", command, commandInfo.CommandSummary);
-			}
 		}
 
 		#region Argument Parsing
@@ -142,10 +141,7 @@ namespace Pootis_Bot.Console
 
 		private static void SkipWhite(string input, ref int pos)
 		{
-			while (pos < input.Length && " \t".IndexOf(input[pos]) > -1)
-			{
-				pos++;
-			}
+			while (pos < input.Length && " \t".IndexOf(input[pos]) > -1) pos++;
 		}
 
 		private static string ParseQuoted(string input, ref int pos)

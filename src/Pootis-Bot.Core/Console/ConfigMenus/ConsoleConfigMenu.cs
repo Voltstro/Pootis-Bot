@@ -8,7 +8,7 @@ using Pootis_Bot.Logging;
 namespace Pootis_Bot.Console.ConfigMenus
 {
 	/// <summary>
-	///		Allows to dynamically generate config menus
+	///     Allows to dynamically generate config menus
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public class ConsoleConfigMenu<T>
@@ -19,12 +19,12 @@ namespace Pootis_Bot.Console.ConfigMenus
 		private bool showingMenu;
 
 		/// <summary>
-		///		Creates a new <see cref="ConsoleConfigMenu{T}"/> instance
+		///     Creates a new <see cref="ConsoleConfigMenu{T}" /> instance
 		/// </summary>
 		/// <param name="editingObject"></param>
 		public ConsoleConfigMenu([NotNull] T editingObject)
 		{
-			if(editingObject == null)
+			if (editingObject == null)
 				throw new ArgumentNullException(nameof(editingObject));
 
 			configMenu = new List<ConfigItem>();
@@ -32,10 +32,9 @@ namespace Pootis_Bot.Console.ConfigMenus
 
 			//Generate options
 			foreach (PropertyInfo property in typeof(T).GetProperties())
-			{
 				try
 				{
-					if(Attribute.GetCustomAttribute(property, typeof(DontShowItem)) != null)
+					if (Attribute.GetCustomAttribute(property, typeof(DontShowItem)) != null)
 						continue;
 
 					string formatName = property.Name;
@@ -51,29 +50,26 @@ namespace Pootis_Bot.Console.ConfigMenus
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("An error occurred while setting up selection option for {@Property}! {@ExMessage}", property.Name, ex.Message);
+					Logger.Error("An error occurred while setting up selection option for {@Property}! {@ExMessage}",
+						property.Name, ex.Message);
 				}
-			}
 		}
 
 		/// <summary>
-		///		Shows the generated config menu
+		///     Shows the generated config menu
 		/// </summary>
 		[PublicAPI]
 		public void Show()
 		{
 			showingMenu = true;
 			StringBuilder options = new StringBuilder();
-			for (int i = 0; i < configMenu.Count; i++)
-			{
-				options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
-			}
+			for (int i = 0; i < configMenu.Count; i++) options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
 
 			System.Console.WriteLine(options.ToString());
 			while (showingMenu)
 			{
 				string input = System.Console.ReadLine();
-				if(input == null)
+				if (input == null)
 					continue;
 
 				if (input.ToLower() == "exit")
@@ -101,7 +97,7 @@ namespace Pootis_Bot.Console.ConfigMenus
 		}
 
 		/// <summary>
-		///		Closes the config menu
+		///     Closes the config menu
 		/// </summary>
 		[PublicAPI]
 		public void Close()
@@ -113,7 +109,6 @@ namespace Pootis_Bot.Console.ConfigMenus
 		{
 			string input = null;
 			while (true)
-			{
 				try
 				{
 					System.Console.WriteLine($"Enter what you want to set {item.ConfigFormatName} to:");
@@ -128,7 +123,8 @@ namespace Pootis_Bot.Console.ConfigMenus
 						item.Property.SetValue(editingObject, input);
 						break;
 					}
-					else if (item.Property.PropertyType == typeof(bool))
+
+					if (item.Property.PropertyType == typeof(bool))
 					{
 						if (bool.TryParse(input.ToLower(), out bool value))
 						{
@@ -141,10 +137,10 @@ namespace Pootis_Bot.Console.ConfigMenus
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("An error occurred while trying to set the value of {@Property}! {@ExMessage}", item.Property.Name, ex.Message);
+					Logger.Error("An error occurred while trying to set the value of {@Property}! {@ExMessage}",
+						item.Property.Name, ex.Message);
 					break;
 				}
-			}
 
 			System.Console.WriteLine($"{item.ConfigFormatName} was set to '{input}'.");
 		}

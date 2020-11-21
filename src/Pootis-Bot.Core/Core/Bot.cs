@@ -64,7 +64,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///		Starts a console loop
+		///     Starts a console loop
 		/// </summary>
 		public void ConsoleLoop()
 		{
@@ -72,10 +72,10 @@ namespace Pootis_Bot.Core
 			while (IsRunning)
 			{
 				string input = System.Console.ReadLine();
-				if(input?.ToLower() == "exit" || input?.ToLower() == "quit")
+				if (input?.ToLower() == "exit" || input?.ToLower() == "quit")
 					break;
 
-				if(input == null)
+				if (input == null)
 					continue;
 
 				ConsoleCommandManager.ExecuteCommand(input);

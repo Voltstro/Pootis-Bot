@@ -32,13 +32,13 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		///		Sets-up a dependency for another module
+		///     Sets-up a dependency for another module
 		/// </summary>
 		/// <param name="moduleName">The name of the module to depend on</param>
 		[PublicAPI]
 		public ModuleDependency([NotNull] string moduleName)
 		{
-			if(string.IsNullOrWhiteSpace(moduleName))
+			if (string.IsNullOrWhiteSpace(moduleName))
 				throw new ArgumentNullException(nameof(moduleName));
 
 			PackageId = null;
@@ -63,7 +63,7 @@ namespace Pootis_Bot.Modules
 		internal readonly string AssemblyName;
 
 		/// <summary>
-		///		The module that a module depends on
+		///     The module that a module depends on
 		/// </summary>
 		internal readonly string ModuleName;
 	}

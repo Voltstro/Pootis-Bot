@@ -16,11 +16,10 @@ namespace Pootis_Bot.Modules
 	/// </summary>
 	public sealed class ModuleManager : IDisposable
 	{
-		private readonly string assembliesDirectory;
-		private readonly string modulesDirectory;
-		private readonly ModuleLoadContext loadContext;
-
 		private static List<Module> modules;
+		private readonly string assembliesDirectory;
+		private readonly ModuleLoadContext loadContext;
+		private readonly string modulesDirectory;
 
 		/// <summary>
 		///     Creates a new module manager instance
@@ -42,20 +41,6 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		///		Checks if a module is loaded
-		/// </summary>
-		/// <param name="moduleName"></param>
-		/// <returns></returns>
-		[PublicAPI]
-		public static bool CheckIfModuleIsLoaded([NotNull] string moduleName)
-		{
-			if(string.IsNullOrWhiteSpace(moduleName))
-				throw new ArgumentNullException(nameof(moduleName));
-
-			return modules.Exists(x => x.GetModuleInfo().ModuleName == moduleName);
-		}
-
-		/// <summary>
 		///     Disposes of this <see cref="ModuleManager" /> instance
 		/// </summary>
 		public void Dispose()
@@ -65,6 +50,20 @@ namespace Pootis_Bot.Modules
 				Logger.Info("Shutting down module {@ModuleName}...", module.GetModuleInfo().ModuleName);
 				module.Shutdown();
 			}
+		}
+
+		/// <summary>
+		///     Checks if a module is loaded
+		/// </summary>
+		/// <param name="moduleName"></param>
+		/// <returns></returns>
+		[PublicAPI]
+		public static bool CheckIfModuleIsLoaded([NotNull] string moduleName)
+		{
+			if (string.IsNullOrWhiteSpace(moduleName))
+				throw new ArgumentNullException(nameof(moduleName));
+
+			return modules.Exists(x => x.GetModuleInfo().ModuleName == moduleName);
 		}
 
 		/// <summary>
@@ -200,15 +199,18 @@ namespace Pootis_Bot.Modules
 					if (moduleDependency.PackageId != null) continue;
 
 					//The module doesn't exist
-					if (modulesToVerify.Exists(x => x.GetModuleInfo().ModuleName == moduleDependency.ModuleName)) continue;
+					if (modulesToVerify.Exists(x => x.GetModuleInfo().ModuleName == moduleDependency.ModuleName))
+						continue;
 
-					Logger.Error("The module {@Module} depends on the module {@Dependent} which has not been loaded!", info.ModuleName, moduleDependency.ModuleName);
+					Logger.Error("The module {@Module} depends on the module {@Dependent} which has not been loaded!",
+						info.ModuleName, moduleDependency.ModuleName);
 					modulesToVerify.RemoveAt(i);
 				}
 			}
 		}
 
-		private void VerifyModuleNuGetPackages(IEnumerable<ModuleDependency> nugetDependencies, ModuleInfo moduleInfo, NuGetPackageResolver packageResolver)
+		private void VerifyModuleNuGetPackages(IEnumerable<ModuleDependency> nugetDependencies, ModuleInfo moduleInfo,
+			NuGetPackageResolver packageResolver)
 		{
 			if (!Directory.Exists(assembliesDirectory))
 				Directory.CreateDirectory(assembliesDirectory);

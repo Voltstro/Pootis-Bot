@@ -19,10 +19,10 @@ namespace Pootis_Bot.Tests
 			Logger.Shutdown();
 
 			//Delete configs
-			if(File.Exists($"Config/{typeof(TestConfig1).Name}.json"))
+			if (File.Exists($"Config/{typeof(TestConfig1).Name}.json"))
 				File.Delete($"Config/{typeof(TestConfig1).Name}.json");
 
-			if(File.Exists($"Config/{typeof(TestConfig2).Name}.json"))
+			if (File.Exists($"Config/{typeof(TestConfig2).Name}.json"))
 				File.Delete($"Config/{typeof(TestConfig2).Name}.json");
 		}
 

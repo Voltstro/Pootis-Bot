@@ -15,19 +15,21 @@ namespace Pootis_Bot.Config
 	public class Config<T> where T : Config<T>, new()
 	{
 		/// <summary>
-		///		What is the expected config version
+		///     What is the expected config version
 		/// </summary>
 		// ReSharper disable once StaticMemberInGenericType
 		[PublicAPI] public static int ExpectedConfigVersion = 1;
 
-		/// <summary>
-		///		Whats the version that this config is.
-		///		<para>If you want to update the config version, change <see cref="Config{T}.ExpectedConfigVersion"/></para>
-		/// </summary>
-		[PublicAPI, DontShowItem] public int ConfigVersion { get; private set; } = ExpectedConfigVersion;
-
 		private static readonly string ConfigPath = $"Config/{typeof(T).Name}.json";
 		private static T instance;
+
+		/// <summary>
+		///     Whats the version that this config is.
+		///     <para>If you want to update the config version, change <see cref="Config{T}.ExpectedConfigVersion" /></para>
+		/// </summary>
+		[PublicAPI]
+		[DontShowItem]
+		public int ConfigVersion { get; private set; } = ExpectedConfigVersion;
 
 		/// <summary>
 		///     The instance of this <see cref="Config{T}" />.
@@ -38,10 +40,7 @@ namespace Pootis_Bot.Config
 		{
 			get
 			{
-				if (instance == null)
-				{
-					StaticReload();
-				}
+				if (instance == null) StaticReload();
 
 				return instance;
 			}
@@ -60,7 +59,7 @@ namespace Pootis_Bot.Config
 		}
 
 		/// <summary>
-		///		Converts the config to json
+		///     Converts the config to json
 		/// </summary>
 		/// <returns></returns>
 		public string ToJson()
@@ -69,7 +68,7 @@ namespace Pootis_Bot.Config
 		}
 
 		/// <summary>
-		///		Reloads the config
+		///     Reloads the config
 		/// </summary>
 		public void Reload()
 		{

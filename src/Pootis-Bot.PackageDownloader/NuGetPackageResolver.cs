@@ -24,8 +24,8 @@ namespace Pootis_Bot.PackageDownloader
 	{
 		private readonly SourceCacheContext cache;
 		private readonly string packagesDir;
-		private ILogger nugetLogger;
 		private NuGetFramework framework;
+		private ILogger nugetLogger;
 		private IEnumerable<SourceRepository> repositories;
 		private ISettings settings;
 
@@ -37,10 +37,10 @@ namespace Pootis_Bot.PackageDownloader
 		public NuGetPackageResolver([NotNull] string framework, [NotNull] string packagesDirectory = "Packages/")
 		{
 			//Null checks
-			if(string.IsNullOrWhiteSpace(framework))
+			if (string.IsNullOrWhiteSpace(framework))
 				throw new ArgumentNullException(nameof(framework));
 
-			if(string.IsNullOrWhiteSpace(packagesDirectory))
+			if (string.IsNullOrWhiteSpace(packagesDirectory))
 				throw new ArgumentNullException(nameof(packagesDirectory));
 
 			settings = Settings.LoadDefaultSettings(packagesDirectory, null, new XPlatMachineWideSetting());
@@ -87,10 +87,10 @@ namespace Pootis_Bot.PackageDownloader
 		public async Task<List<string>> DownloadPackage([NotNull] string packageId, [NotNull] Version version,
 			CancellationToken cancellationToken = default)
 		{
-			if(string.IsNullOrWhiteSpace(packageId))
+			if (string.IsNullOrWhiteSpace(packageId))
 				throw new ArgumentNullException(nameof(packageId));
 
-			if(version == null)
+			if (version == null)
 				throw new ArgumentNullException(nameof(version));
 
 			PackageIdentity package = new PackageIdentity(packageId, new NuGetVersion(version));
@@ -163,7 +163,8 @@ namespace Pootis_Bot.PackageDownloader
 					if (frameworkGroup.TargetFramework.Equals(nearest))
 						foreach (string item in frameworkGroup.Items)
 							if (item.Contains(".dll"))
-								dlls.Add(Path.GetFullPath($"{packagesDir}/{packageToInstall.Id}.{packageToInstall.Version}/{item}"));
+								dlls.Add(Path.GetFullPath(
+									$"{packagesDir}/{packageToInstall.Id}.{packageToInstall.Version}/{item}"));
 			}
 
 			return dlls;
@@ -178,10 +179,10 @@ namespace Pootis_Bot.PackageDownloader
 		public async Task GetPackageDependencies([NotNull] PackageIdentity package,
 			[ItemNotNull] ISet<SourcePackageDependencyInfo> availablePackages)
 		{
-			if(package == null)
+			if (package == null)
 				throw new ArgumentNullException(nameof(package));
 
-			if(availablePackages == null)
+			if (availablePackages == null)
 				throw new ArgumentNullException(nameof(availablePackages));
 
 			if (availablePackages.Contains(package)) return;

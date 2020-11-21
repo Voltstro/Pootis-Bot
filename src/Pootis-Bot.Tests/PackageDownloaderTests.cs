@@ -8,9 +8,9 @@ namespace Pootis_Bot.Tests
 {
 	public class PackageDownloaderTests
 	{
-		private string packagesPath;
 		private NuGetPackageResolver packageResolver;
-		
+		private string packagesPath;
+
 		[OneTimeSetUp]
 		public void Setup()
 		{
