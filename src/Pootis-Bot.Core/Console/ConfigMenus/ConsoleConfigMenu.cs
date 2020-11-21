@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Pootis_Bot.Console.ConfigMenus
 {
+	/// <summary>
+	///		Allows to dynamically generate config menus
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public class ConsoleConfigMenu<T>
 	{
 		private readonly List<ConfigItem> configMenu;
@@ -12,6 +16,10 @@ namespace Pootis_Bot.Console.ConfigMenus
 
 		private bool showingMenu;
 
+		/// <summary>
+		///		Creates a new <see cref="ConsoleConfigMenu{T}"/> instance
+		/// </summary>
+		/// <param name="editingObject"></param>
 		public ConsoleConfigMenu(T editingObject)
 		{
 			configMenu = new List<ConfigItem>();
@@ -36,6 +44,9 @@ namespace Pootis_Bot.Console.ConfigMenus
 			}
 		}
 
+		/// <summary>
+		///		Shows the generated config menu
+		/// </summary>
 		public void Show()
 		{
 			showingMenu = true;
@@ -76,6 +87,9 @@ namespace Pootis_Bot.Console.ConfigMenus
 			}
 		}
 
+		/// <summary>
+		///		Closes the config menu
+		/// </summary>
 		public void Close()
 		{
 			showingMenu = false;
