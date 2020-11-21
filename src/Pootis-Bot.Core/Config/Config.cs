@@ -18,9 +18,10 @@ namespace Pootis_Bot.Config
 		[PublicAPI] public static int ExpectedConfigVersion = 1;
 
 		/// <summary>
-		///		(DON'T EDIT) Whats the version that this config is
+		///		Whats the version that this config is.
+		///		<para>If you want to update the config version, change <see cref="Config{T}.ExpectedConfigVersion"/></para>
 		/// </summary>
-		[PublicAPI] public int ConfigVersion { get; set; } = ExpectedConfigVersion;
+		[PublicAPI] public int ConfigVersion { get; private set; } = ExpectedConfigVersion;
 
 		private static readonly string ConfigPath = $"Config/{typeof(T).Name}.json";
 		private static T instance;
