@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using JetBrains.Annotations;
+using Pootis_Bot.Config;
 using Pootis_Bot.Console;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
@@ -91,6 +92,15 @@ namespace Pootis_Bot.Core
 			Logger.Shutdown();
 
 			IsRunning = false;
+		}
+
+		[ConsoleCommand("config", "Opens the config menu for the bot")]
+		private static void ConfigMenuCommand(string[] args)
+		{
+			ConsoleConfigMenu<BotConfig> configMenu = new ConsoleConfigMenu<BotConfig>(Config<BotConfig>.Instance);
+			configMenu.Show();
+
+			Config<BotConfig>.Instance.Save();
 		}
 	}
 }
