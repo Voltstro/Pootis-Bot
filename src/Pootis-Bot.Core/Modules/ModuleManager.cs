@@ -134,6 +134,20 @@ namespace Pootis_Bot.Modules
 			}
 		}
 
+		internal void InstallDiscordModulesFromLoadedModules(CommandHandler commandHandler)
+		{
+			List<Assembly> installedAssemblies = new List<Assembly>();
+			foreach (Module module in modules)
+			{
+				Assembly moduleAssembly = module.GetType().Assembly;
+				if(installedAssemblies.Contains(moduleAssembly))
+					continue;
+
+				commandHandler.InstallAssemblyModules(moduleAssembly);
+				installedAssemblies.Add(moduleAssembly);
+			}
+		}
+
 		private Assembly LoadModule(string dllPath)
 		{
 			return loadContext.LoadFromAssemblyPath(dllPath);

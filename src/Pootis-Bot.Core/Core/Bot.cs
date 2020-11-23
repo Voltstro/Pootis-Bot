@@ -38,6 +38,11 @@ namespace Pootis_Bot.Core
 		private DiscordSocketClient discordClient;
 
 		/// <summary>
+		///		Command handler
+		/// </summary>
+		private CommandHandler commandHandler;
+
+		/// <summary>
 		///		Config for the bot
 		/// </summary>
 		private BotConfig config;
@@ -108,6 +113,10 @@ namespace Pootis_Bot.Core
 			await discordClient.StartAsync();
 
 			Logger.Info("Login successful!");
+
+			//Setup command handler
+			commandHandler = new CommandHandler(discordClient);
+			moduleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
 		}
 
 		private Task Ready()
