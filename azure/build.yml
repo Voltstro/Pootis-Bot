@@ -16,4 +16,4 @@ steps:
   displayName: 'Upload Artifact'
   inputs:
     targetPath: src/bin/Release
-    artifactName: pootis-bot-$(Agent.JobName)-$(Build.SourceVersion)
+    artifactName: pootis-bot-$(Build.DefinitionName)-$(Build.BuildNumber)
