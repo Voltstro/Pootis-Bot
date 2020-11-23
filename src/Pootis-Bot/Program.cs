@@ -7,7 +7,7 @@ namespace Pootis_Bot
 		public static void Main(string[] args)
 		{
 			Bot bot = new Bot();
-			bot.Run();
+			bot.Run().GetAwaiter().GetResult();
 			bot.ConsoleLoop();
 
 			bot.Dispose();

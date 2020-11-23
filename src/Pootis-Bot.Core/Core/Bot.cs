@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
 using JetBrains.Annotations;
 using Pootis_Bot.Config;
 using Pootis_Bot.Console;
@@ -30,6 +33,16 @@ namespace Pootis_Bot.Core
 		public static string ApplicationLocation { get; private set; }
 
 		/// <summary>
+		///		Client for interacting with Discord
+		/// </summary>
+		private DiscordSocketClient discordClient;
+
+		/// <summary>
+		///		Config for the bot
+		/// </summary>
+		private BotConfig config;
+
+		/// <summary>
 		///     Disposes of this bot instance
 		/// </summary>
 		public void Dispose()
@@ -45,7 +58,7 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		///     Runs the bot
 		/// </summary>
-		public void Run()
+		public async Task Run()
 		{
 			//Don't want to be-able to run the bot multiple times
 			if (IsRunning)
@@ -59,8 +72,74 @@ namespace Pootis_Bot.Core
 			Logger.Init();
 			Logger.Info("Starting bot...");
 
+			//Get config
+			config = Config<BotConfig>.Instance;
+
+			//Load modules
 			moduleManager = new ModuleManager("Modules/", "Assemblies/");
 			moduleManager.LoadModules();
+
+			if (string.IsNullOrWhiteSpace(config.BotToken))
+			{
+				Logger.Error("The token in the config is null or empty! You must set it in the config menu.");
+				OpenConfigMenu();
+			}
+
+			discordClient = new DiscordSocketClient(new DiscordSocketConfig
+			{
+				LogLevel = LogSeverity.Verbose
+			});
+
+			discordClient.Log += Log;
+			discordClient.Ready += Ready;
+
+			Logger.Info("Logging into Discord bot...");
+			try
+			{
+				await discordClient.LoginAsync(TokenType.Bot, config.BotToken);
+			}
+			catch (Discord.Net.HttpException)
+			{
+				Logger.Error("The supplied token was invalid!");
+				Dispose();
+				return;
+			}
+
+			await discordClient.StartAsync();
+
+			Logger.Info("Login successful!");
+		}
+
+		private Task Ready()
+		{
+			Logger.Info("Bot is now ready and online!");
+
+			return Task.CompletedTask;
+		}
+
+		private Task Log(LogMessage message)
+		{
+			switch (message.Severity)
+			{
+				case LogSeverity.Critical:
+				case LogSeverity.Error:
+					Logger.Error(message.Message);
+					break;
+				case LogSeverity.Warning:
+					Logger.Warn(message.Message);
+					break;
+				case LogSeverity.Info:
+					Logger.Info(message.Message);
+					break;
+				case LogSeverity.Verbose:
+				case LogSeverity.Debug:
+					Logger.Debug(message.Message);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -89,6 +168,9 @@ namespace Pootis_Bot.Core
 
 		private void ReleaseResources()
 		{
+			discordClient.StopAsync().GetAwaiter().GetResult();
+			discordClient.Dispose();
+
 			moduleManager.Dispose();
 			Logger.Shutdown();
 
@@ -98,10 +180,28 @@ namespace Pootis_Bot.Core
 		[ConsoleCommand("config", "Opens the config menu for the bot")]
 		private static void ConfigMenuCommand(string[] args)
 		{
-			ConsoleConfigMenu<BotConfig> configMenu = new ConsoleConfigMenu<BotConfig>(Config<BotConfig>.Instance);
-			configMenu.Show();
+			OpenConfigMenu();
+		}
 
-			Config<BotConfig>.Instance.Save();
+		private static void OpenConfigMenu()
+		{
+			BotConfig config = Config<BotConfig>.Instance;
+			ConsoleConfigMenu<BotConfig> configMenu = new ConsoleConfigMenu<BotConfig>(config);
+
+			while (true)
+			{
+				configMenu.Show();
+
+				if (string.IsNullOrWhiteSpace(config.BotToken))
+				{
+					Logger.Error("The bot token is not set! Set the bot token then exit out of the menu.");
+					continue;
+				}
+
+				break;
+			}
+
+			config.Save();
 		}
 	}
 }

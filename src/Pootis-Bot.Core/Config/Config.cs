@@ -29,6 +29,7 @@ namespace Pootis_Bot.Config
 		/// </summary>
 		[PublicAPI]
 		[DontShowItem]
+		[JsonProperty]
 		public int ConfigVersion { get; private set; } = ExpectedConfigVersion;
 
 		/// <summary>
