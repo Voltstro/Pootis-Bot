@@ -10,6 +10,7 @@ steps:
   displayName: Restore Packages
   inputs:
     command: restore
+    selectOrConfig: config
     nugetConfigPath: src/nuget.config
     verbosityRestore: normal
     projects: src/Pootis-Bot.sln
