@@ -15,12 +15,25 @@ namespace Pootis_Bot.Core
 		private readonly CommandService commandService;
 		private readonly BotConfig config;
 
+		/// <summary>
+		///		Creates a new <see cref="CommandHandler"/> instance
+		/// </summary>
+		/// <param name="client"></param>
 		internal CommandHandler(DiscordSocketClient client)
 		{
 			client.MessageReceived += HandleMessage;
 			this.client = client;
 			commandService = new CommandService();
 			config = Config<BotConfig>.Instance;
+		}
+
+		/// <summary>
+		///		Install modules in an assembly
+		/// </summary>
+		/// <param name="assembly"></param>
+		internal void InstallAssemblyModules(Assembly assembly)
+		{
+			commandService.AddModulesAsync(assembly, null);
 		}
 
 		private async Task HandleMessage(SocketMessage msg)
@@ -60,15 +73,6 @@ namespace Pootis_Bot.Core
 				return false;
 
 			return true;
-		}
-
-		/// <summary>
-		///		Install modules in an assembly
-		/// </summary>
-		/// <param name="assembly"></param>
-		internal void InstallAssemblyModules(Assembly assembly)
-		{
-			commandService.AddModulesAsync(assembly, null);
 		}
 	}
 }
