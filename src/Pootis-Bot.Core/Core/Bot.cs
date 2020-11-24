@@ -84,24 +84,27 @@ namespace Pootis_Bot.Core
 			moduleManager = new ModuleManager("Modules/", "Assemblies/");
 			moduleManager.LoadModules();
 
+			//If the token is null or white space, open the config menu
 			if (string.IsNullOrWhiteSpace(config.BotToken))
 			{
 				Logger.Error("The token in the config is null or empty! You must set it in the config menu.");
 				OpenConfigMenu();
 			}
 
+			//Setup the discord client
 			discordClient = new DiscordSocketClient(new DiscordSocketConfig
 			{
 				LogLevel = LogSeverity.Verbose
 			});
-
 			discordClient.Log += Log;
 			discordClient.Ready += Ready;
 
+			//Log in and start the Discord client
 			Logger.Info("Logging into Discord bot...");
 			try
 			{
 				await discordClient.LoginAsync(TokenType.Bot, config.BotToken);
+				await discordClient.StartAsync();
 			}
 			catch (Discord.Net.HttpException)
 			{
@@ -109,8 +112,6 @@ namespace Pootis_Bot.Core
 				Dispose();
 				return;
 			}
-
-			await discordClient.StartAsync();
 
 			Logger.Info("Login successful!");
 
@@ -186,6 +187,7 @@ namespace Pootis_Bot.Core
 			IsRunning = false;
 		}
 
+		[UsedImplicitly]
 		[ConsoleCommand("config", "Opens the config menu for the bot")]
 		private static void ConfigMenuCommand(string[] args)
 		{
