@@ -7,7 +7,7 @@ using Pootis_Bot.Config;
 namespace Pootis_Bot.Core
 {
 	/// <summary>
-	///		Handles commands for Discord
+	///     Handles commands for Discord
 	/// </summary>
 	internal sealed class CommandHandler
 	{
@@ -16,7 +16,7 @@ namespace Pootis_Bot.Core
 		private readonly BotConfig config;
 
 		/// <summary>
-		///		Creates a new <see cref="CommandHandler"/> instance
+		///     Creates a new <see cref="CommandHandler" /> instance
 		/// </summary>
 		/// <param name="client"></param>
 		internal CommandHandler(DiscordSocketClient client)
@@ -28,7 +28,7 @@ namespace Pootis_Bot.Core
 		}
 
 		/// <summary>
-		///		Install modules in an assembly
+		///     Install modules in an assembly
 		/// </summary>
 		/// <param name="assembly"></param>
 		internal void InstallAssemblyModules(Assembly assembly)
@@ -39,10 +39,7 @@ namespace Pootis_Bot.Core
 		private async Task HandleMessage(SocketMessage msg)
 		{
 			//Check the message first
-			if (!CheckMessage(msg, out SocketUserMessage userMessage, out SocketCommandContext context))
-			{
-				return;
-			}
+			if (!CheckMessage(msg, out SocketUserMessage userMessage, out SocketCommandContext context)) return;
 
 			//Does the message start with the prefix or mention of the bot
 			int argPos = 0;
@@ -54,9 +51,7 @@ namespace Pootis_Bot.Core
 
 			//Handle it result
 			if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
-			{
 				await context.Channel.SendMessageAsync("You do not meet the conditions to use that command!");
-			}
 		}
 
 		private bool CheckMessage(SocketMessage message, out SocketUserMessage msg, out SocketCommandContext context)

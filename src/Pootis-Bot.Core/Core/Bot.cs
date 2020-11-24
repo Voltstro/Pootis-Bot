@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using JetBrains.Annotations;
 using Pootis_Bot.Config;
@@ -18,6 +19,24 @@ namespace Pootis_Bot.Core
 	/// </summary>
 	public class Bot : IDisposable
 	{
+		/// <summary>
+		///     Command handler
+		/// </summary>
+		private CommandHandler commandHandler;
+
+		/// <summary>
+		///     Config for the bot
+		/// </summary>
+		private BotConfig config;
+
+		/// <summary>
+		///     Client for interacting with Discord
+		/// </summary>
+		private DiscordSocketClient discordClient;
+
+		/// <summary>
+		///		Handles calling to and managing installed modules
+		/// </summary>
 		private ModuleManager moduleManager;
 
 		/// <summary>
@@ -31,21 +50,6 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		[PublicAPI]
 		public static string ApplicationLocation { get; private set; }
-
-		/// <summary>
-		///		Client for interacting with Discord
-		/// </summary>
-		private DiscordSocketClient discordClient;
-
-		/// <summary>
-		///		Command handler
-		/// </summary>
-		private CommandHandler commandHandler;
-
-		/// <summary>
-		///		Config for the bot
-		/// </summary>
-		private BotConfig config;
 
 		/// <summary>
 		///     Disposes of this bot instance
@@ -106,7 +110,7 @@ namespace Pootis_Bot.Core
 				await discordClient.LoginAsync(TokenType.Bot, config.BotToken);
 				await discordClient.StartAsync();
 			}
-			catch (Discord.Net.HttpException)
+			catch (HttpException)
 			{
 				Logger.Error("The supplied token was invalid!");
 				Dispose();

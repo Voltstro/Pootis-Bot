@@ -140,7 +140,7 @@ namespace Pootis_Bot.Modules
 			foreach (Module module in modules)
 			{
 				Assembly moduleAssembly = module.GetType().Assembly;
-				if(installedAssemblies.Contains(moduleAssembly))
+				if (installedAssemblies.Contains(moduleAssembly))
 					continue;
 
 				commandHandler.InstallAssemblyModules(moduleAssembly);
