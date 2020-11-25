@@ -14,6 +14,7 @@ namespace Pootis_Bot.Console.ConfigMenus
 	public class ConsoleConfigMenu<T>
 	{
 		private readonly List<ConfigItem> configMenu;
+		private readonly string configTitle;
 		private readonly T editingObject;
 
 		private bool showingMenu;
@@ -30,8 +31,15 @@ namespace Pootis_Bot.Console.ConfigMenus
 			configMenu = new List<ConfigItem>();
 			this.editingObject = editingObject;
 
+			Type editingObjectType = typeof(T);
+
+			configTitle = editingObjectType.Name;
+			editingObjectType.GetCustomAttribute(typeof(MenuItemFormat));
+			if (Attribute.GetCustomAttribute(editingObjectType, typeof(MenuItemFormat)) is MenuItemFormat titleFormat)
+				configTitle = titleFormat.FormattedName;
+
 			//Generate options
-			foreach (PropertyInfo property in typeof(T).GetProperties())
+			foreach (PropertyInfo property in editingObjectType.GetProperties())
 				try
 				{
 					if (Attribute.GetCustomAttribute(property, typeof(DontShowItem)) != null)
@@ -63,6 +71,8 @@ namespace Pootis_Bot.Console.ConfigMenus
 		{
 			showingMenu = true;
 			StringBuilder options = new StringBuilder();
+			options.Append($"----==== {configTitle} ====----\n");
+
 			for (int i = 0; i < configMenu.Count; i++) options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
 
 			System.Console.WriteLine(options.ToString());

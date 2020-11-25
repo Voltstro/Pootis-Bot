@@ -7,6 +7,7 @@ namespace Pootis_Bot.Core
 	/// <summary>
 	///     Config used for core stuff in Pootis-Bot
 	/// </summary>
+	[MenuItemFormat("Bot Config")]
 	public class BotConfig : Config<BotConfig>
 	{
 		/// <summary>
