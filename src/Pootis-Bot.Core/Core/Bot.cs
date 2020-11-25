@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using JetBrains.Annotations;
 using Pootis_Bot.Config;
@@ -18,6 +19,24 @@ namespace Pootis_Bot.Core
 	/// </summary>
 	public class Bot : IDisposable
 	{
+		/// <summary>
+		///     Command handler
+		/// </summary>
+		private CommandHandler commandHandler;
+
+		/// <summary>
+		///     Config for the bot
+		/// </summary>
+		private BotConfig config;
+
+		/// <summary>
+		///     Client for interacting with Discord
+		/// </summary>
+		private DiscordSocketClient discordClient;
+
+		/// <summary>
+		///		Handles calling to and managing installed modules
+		/// </summary>
 		private ModuleManager moduleManager;
 
 		/// <summary>
@@ -31,16 +50,6 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		[PublicAPI]
 		public static string ApplicationLocation { get; private set; }
-
-		/// <summary>
-		///		Client for interacting with Discord
-		/// </summary>
-		private DiscordSocketClient discordClient;
-
-		/// <summary>
-		///		Config for the bot
-		/// </summary>
-		private BotConfig config;
 
 		/// <summary>
 		///     Disposes of this bot instance
@@ -79,35 +88,40 @@ namespace Pootis_Bot.Core
 			moduleManager = new ModuleManager("Modules/", "Assemblies/");
 			moduleManager.LoadModules();
 
+			//If the token is null or white space, open the config menu
 			if (string.IsNullOrWhiteSpace(config.BotToken))
 			{
 				Logger.Error("The token in the config is null or empty! You must set it in the config menu.");
 				OpenConfigMenu();
 			}
 
+			//Setup the discord client
 			discordClient = new DiscordSocketClient(new DiscordSocketConfig
 			{
 				LogLevel = LogSeverity.Verbose
 			});
-
 			discordClient.Log += Log;
 			discordClient.Ready += Ready;
 
+			//Log in and start the Discord client
 			Logger.Info("Logging into Discord bot...");
 			try
 			{
 				await discordClient.LoginAsync(TokenType.Bot, config.BotToken);
+				await discordClient.StartAsync();
 			}
-			catch (Discord.Net.HttpException)
+			catch (HttpException)
 			{
 				Logger.Error("The supplied token was invalid!");
 				Dispose();
 				return;
 			}
 
-			await discordClient.StartAsync();
-
 			Logger.Info("Login successful!");
+
+			//Setup command handler
+			commandHandler = new CommandHandler(discordClient);
+			moduleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
 		}
 
 		private Task Ready()
@@ -177,6 +191,7 @@ namespace Pootis_Bot.Core
 			IsRunning = false;
 		}
 
+		[UsedImplicitly]
 		[ConsoleCommand("config", "Opens the config menu for the bot")]
 		private static void ConfigMenuCommand(string[] args)
 		{
