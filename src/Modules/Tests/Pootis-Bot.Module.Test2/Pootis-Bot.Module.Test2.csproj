@@ -5,6 +5,6 @@
     <RootNamespace>Pootis_Bot.Module.Test2</RootNamespace>
   </PropertyGroup>
 
-  <Import Project="..\..\ModulesProperties.props" />
+  <Import Project="..\..\..\ModulesProperties.props" />
 
 </Project>

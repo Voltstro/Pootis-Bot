@@ -9,6 +9,6 @@
     <PackageReference Include="YoutubeExplode" Version="5.1.8" />
   </ItemGroup>
 
-  <Import Project="..\..\ModulesProperties.props" />
+  <Import Project="..\..\..\ModulesProperties.props" />
 
 </Project>

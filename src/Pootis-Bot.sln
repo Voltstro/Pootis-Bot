@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Core", "Pootis-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{32EE362B-EDE9-49FE-93D3-B72D4B3228A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Test", "Modules\Pootis-Bot.Module.Test\Pootis-Bot.Module.Test.csproj", "{B99B4005-B018-4524-960D-058CE7948837}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Test", "Modules\Tests\Pootis-Bot.Module.Test\Pootis-Bot.Module.Test.csproj", "{B99B4005-B018-4524-960D-058CE7948837}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{579D132A-1E20-4255-AC8B-B69BA8DF97CF}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,7 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Shared", "Pootis-Bot.Shared\Pootis-Bot.Shared.csproj", "{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Test2", "Modules\Pootis-Bot.Module.Test2\Pootis-Bot.Module.Test2.csproj", "{480AFB8C-F319-425E-A50E-DC877A12AC87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Test2", "Modules\Tests\Pootis-Bot.Module.Test2\Pootis-Bot.Module.Test2.csproj", "{480AFB8C-F319-425E-A50E-DC877A12AC87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D31A0E5D-C940-40A2-8FAC-1856A7EAD47A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,8 +66,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B99B4005-B018-4524-960D-058CE7948837} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
-		{480AFB8C-F319-425E-A50E-DC877A12AC87} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
+		{B99B4005-B018-4524-960D-058CE7948837} = {D31A0E5D-C940-40A2-8FAC-1856A7EAD47A}
+		{480AFB8C-F319-425E-A50E-DC877A12AC87} = {D31A0E5D-C940-40A2-8FAC-1856A7EAD47A}
+		{D31A0E5D-C940-40A2-8FAC-1856A7EAD47A} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F633C8E5-4849-4385-8482-1EE7166D39CF}

@@ -22,15 +22,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Pootis-Bot.Core\Pootis-Bot.Core.csproj">
+    <ProjectReference Include="$(SolutionDir)Pootis-Bot.Core\Pootis-Bot.Core.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj">
+    <ProjectReference Include="$(SolutionDir)Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\Pootis-Bot.Shared\Pootis-Bot.Shared.csproj">
+    <ProjectReference Include="$(SolutionDir)Pootis-Bot.Shared\Pootis-Bot.Shared.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
