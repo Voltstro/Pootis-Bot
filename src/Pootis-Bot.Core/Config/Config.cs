@@ -93,7 +93,7 @@ namespace Pootis_Bot.Config
 			else
 			{
 				Logger.Debug("Created new config {@Config} instance.", typeof(T).Name);
-				instance = new T();
+				instance = new T {ConfigVersion = ExpectedConfigVersion};
 				instance.Save();
 			}
 		}
