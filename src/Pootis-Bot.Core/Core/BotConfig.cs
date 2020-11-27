@@ -23,5 +23,12 @@ namespace Pootis_Bot.Core
 		[MenuItemFormat("Prefix")]
 		[JsonProperty]
 		public string BotPrefix { get; internal set; }
+
+		/// <summary>
+		///		The name that is used for display purposes
+		/// </summary>
+		[MenuItemFormat("Display Name")]
+		[JsonProperty]
+		public string BotName { get; internal set; }
 	}
 }

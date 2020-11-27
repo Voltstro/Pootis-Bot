@@ -4,17 +4,26 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Pootis_Bot.Config;
+using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Module.Basic
 {
 	public sealed class BasicCommands : ModuleBase<SocketCommandContext>
 	{
+		private readonly string displayName;
+
+		public BasicCommands()
+		{
+			displayName = Config<BotConfig>.Instance.BotName;
+		}
+
 		[Command("hello")]
 		public async Task Hello()
 		{
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Hello!");
-			embed.WithDescription($"Hello! My name is Pootis-Bot!");
+			embed.WithDescription($"Hello! My name is {displayName}!");
 			embed.WithFooter($"Pootis-Bot: v{GetAppVersion()} - Discord.Net: v{GetDiscordNetVersion()}");
 			embed.WithColor(new Color(241, 196, 15));
 
