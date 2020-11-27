@@ -11,11 +11,13 @@ namespace Pootis_Bot.Module.Basic
 {
 	public sealed class BasicCommands : ModuleBase<SocketCommandContext>
 	{
-		private readonly string displayName;
+		private string displayName;
 
 		public BasicCommands()
 		{
-			displayName = Config<BotConfig>.Instance.BotName;
+			BotConfig config = Config<BotConfig>.Instance;
+			displayName = config.BotName;
+			config.Saved += () => displayName = config.BotName;
 		}
 
 		[Command("hello")]

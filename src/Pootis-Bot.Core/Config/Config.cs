@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Pootis_Bot.Console.ConfigMenus;
@@ -48,6 +49,11 @@ namespace Pootis_Bot.Config
 		}
 
 		/// <summary>
+		///		Invoked when this config is saved
+		/// </summary>
+		[PublicAPI] public event Action Saved;
+
+		/// <summary>
 		///     Saves the config to the disk
 		/// </summary>
 		public void Save()
@@ -57,6 +63,7 @@ namespace Pootis_Bot.Config
 
 			string json = ToJson();
 			File.WriteAllText(ConfigPath, json);
+			Saved?.Invoke();
 		}
 
 		/// <summary>
