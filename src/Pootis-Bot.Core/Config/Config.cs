@@ -17,6 +17,8 @@ namespace Pootis_Bot.Config
 	{
 		/// <summary>
 		///     What is the expected config version
+		///		<para>This can be used if you add some extra options to the config in a later release.</para>
+		///		<para>Change this before accessing <see cref="Instance"/> (or do <see cref="Reload"/>), which will cause a config upgrade</para>
 		/// </summary>
 		// ReSharper disable once StaticMemberInGenericType
 		[PublicAPI] public static int ExpectedConfigVersion = 1;
@@ -85,19 +87,19 @@ namespace Pootis_Bot.Config
 
 		private static void StaticReload()
 		{
-			if (File.Exists(ConfigPath))
+			if (File.Exists(ConfigPath)) //If the config file already exists
 			{
 				Logger.Debug("Loaded config {@Config} from {@ConfigLocation}", typeof(T).Name, ConfigPath);
 				instance = JsonConvert.DeserializeObject<T>(File.ReadAllText(ConfigPath));
 
-				if (instance.ConfigVersion != ExpectedConfigVersion)
-				{
-					Logger.Warn("Config {@CConfig} was an outdated version! Updating.", typeof(T).Name);
-					instance.ConfigVersion = ExpectedConfigVersion;
-					instance.Save();
-				}
+				//If the current config version doesn't meet what is expected then we need to re-save it with the new options
+				if (instance.ConfigVersion == ExpectedConfigVersion) return;
+
+				Logger.Warn("Config {@CConfig} was an outdated version! Updating.", typeof(T).Name);
+				instance.ConfigVersion = ExpectedConfigVersion;
+				instance.Save();
 			}
-			else
+			else //If it doesn't then we need to create a new one and write it to disk
 			{
 				Logger.Debug("Created new config {@Config} instance.", typeof(T).Name);
 				instance = new T {ConfigVersion = ExpectedConfigVersion};
