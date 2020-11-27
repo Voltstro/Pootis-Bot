@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
+using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Core
 {
@@ -52,6 +53,12 @@ namespace Pootis_Bot.Core
 			//Handle it result
 			if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
 				await context.Channel.SendMessageAsync("You do not meet the conditions to use that command!");
+			else if (!result.IsSuccess && result.Error == CommandError.Exception)
+			{
+				await context.Channel.SendMessageAsync(
+					"An internal error occurred while trying to handle your command!");
+				Logger.Error($"An error occurred while handling a command! {result.ErrorReason}");
+			}
 		}
 
 		private bool CheckMessage(SocketMessage message, out SocketUserMessage msg, out SocketCommandContext context)

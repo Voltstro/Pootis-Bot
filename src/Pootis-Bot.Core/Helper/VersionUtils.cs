@@ -13,10 +13,13 @@ namespace Pootis_Bot.Helper
 		///		Gets the version of the application
 		/// </summary>
 		/// <returns></returns>
-		public static Version GetApplicationVersion()
+		public static string GetApplicationVersion()
 		{
 			Assembly assembly = Assembly.GetEntryAssembly();
-			return assembly == null ? null : new Version(assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? string.Empty);
+			return assembly == null
+				? null
+				: assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+					?.InformationalVersion ?? string.Empty;
 		}
 
 		/// <summary>
@@ -25,7 +28,7 @@ namespace Pootis_Bot.Helper
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="NullReferenceException"></exception>
-		public static Version GetDiscordNetVersion()
+		public static string GetDiscordNetVersion()
 		{
 			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -33,7 +36,8 @@ namespace Pootis_Bot.Helper
 			if(discordCore == null)
 				throw new NullReferenceException("Discord.Net.Core doesn't appear to be loaded!");
 
-			return new Version(discordCore?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? string.Empty);
+			return discordCore.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+				?.InformationalVersion ?? string.Empty;
 		}
 	}
 }
