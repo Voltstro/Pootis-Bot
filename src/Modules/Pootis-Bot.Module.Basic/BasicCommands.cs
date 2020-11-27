@@ -23,7 +23,11 @@ namespace Pootis_Bot.Module.Basic
 		{
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Hello!");
-			embed.WithDescription($"Hello! My name is {displayName}!");
+			embed.WithDescription($"Hello! My name is {displayName}!\n\n**__Links__**" +
+			                      $"\n<:GitHub:529571722991763456> [Github Page]({Links.GitHub})" +
+			                      $"\n:bookmark: [Documentation]({Links.Documentation})" +
+			                      $"\n<:Discord:529572497130127360> [Voltstro Discord Server]({Links.DiscordServer})" +
+			                      $"\n\nThis project is under the [MIT license]({Links.GitHub}/blob/master/LICENSE.md)");
 			embed.WithFooter($"Pootis-Bot: v{VersionUtils.GetApplicationVersion()} - Discord.Net: v{VersionUtils.GetDiscordNetVersion()}");
 			embed.WithColor(new Color(241, 196, 15));
 
