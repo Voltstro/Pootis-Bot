@@ -48,7 +48,7 @@ namespace Pootis_Bot.Module.Basic
 					$"**Summary**: {match.Command.Summary}\n**Usage**: {BuildCommandUsage(match.Command)}");
 			}
 
-			await Context.Channel.SendMessageAsync("", false, embed.Build());
+			await Context.Channel.SendEmbedAsync(embed);
 		}
 
 		private StringBuilder[] BuildHelpMenu()
