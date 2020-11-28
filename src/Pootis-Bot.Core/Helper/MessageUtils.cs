@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -27,8 +28,11 @@ namespace Pootis_Bot.Helper
 		/// <param name="embed"></param>
 		/// <returns></returns>
 		[PublicAPI]
-		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, EmbedBuilder embed)
+		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [NotNull] EmbedBuilder embed)
 		{
+			if(embed == null)
+				throw new ArgumentNullException(nameof(embed));
+
 			return await SendEmbedAsync(channel, embed.Build());
 		}
 
@@ -39,8 +43,11 @@ namespace Pootis_Bot.Helper
 		/// <param name="embed"></param>
 		/// <returns></returns>
 		[PublicAPI]
-		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, Embed embed)
+		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [NotNull] Embed embed)
 		{
+			if(embed == null)
+				throw new ArgumentNullException(nameof(embed));
+
 			return await channel.SendMessageAsync("", false, embed);
 		}
 	}
