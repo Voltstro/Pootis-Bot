@@ -20,6 +20,7 @@ namespace Pootis_Bot.Module.Basic
 		}
 
 		[Command]
+		[Summary("Gets help on all commands")]
 		public async Task Help()
 		{
 			foreach (StringBuilder stringBuilder in BuildHelpMenu())
@@ -29,6 +30,7 @@ namespace Pootis_Bot.Module.Basic
 		}
 
 		[Command]
+		[Summary("Gets help on a specific command")]
 		public async Task Help([Remainder] string query)
 		{
 			SearchResult searchResult = commandService.Search(Context, query);
@@ -61,7 +63,7 @@ namespace Pootis_Bot.Module.Basic
 
 				foreach (CommandInfo command in module.Commands)
 				{
-					sb.Append($"\n- {command.Name}\n  - Summary: {command.Summary}\n  - Usage: {BuildCommandUsage(command)}");
+					sb.Append($"\n- {command.Name.ToLower()}\n  - Summary: {command.Summary}\n  - Usage: {BuildCommandUsage(command)}");
 				}
 
 				sb.Append("\n```");
@@ -74,10 +76,10 @@ namespace Pootis_Bot.Module.Basic
 		private string BuildCommandUsage(CommandInfo command)
 		{
 			StringBuilder commandUsage = new StringBuilder();
-			commandUsage.Append($"`{command.Name}");
+			commandUsage.Append($"`{command.Name.ToLower()}");
 			foreach (ParameterInfo parameter in command.Parameters)
 			{
-				commandUsage.Append($" <{parameter.Name}");
+				commandUsage.Append($" <{parameter.Name.ToLower()}");
 				if (parameter.DefaultValue != null)
 				{
 					commandUsage.Append($" = {parameter.DefaultValue}");
