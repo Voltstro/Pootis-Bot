@@ -1,7 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Config;
 using Pootis_Bot.Logging;
 
@@ -15,6 +17,7 @@ namespace Pootis_Bot.Core
 		private readonly DiscordSocketClient client;
 		private readonly CommandService commandService;
 		private readonly BotConfig config;
+		private readonly IServiceProvider serviceProvider;
 
 		/// <summary>
 		///     Creates a new <see cref="CommandHandler" /> instance
@@ -22,10 +25,15 @@ namespace Pootis_Bot.Core
 		/// <param name="client"></param>
 		internal CommandHandler(DiscordSocketClient client)
 		{
-			client.MessageReceived += HandleMessage;
-			this.client = client;
-			commandService = new CommandService();
 			config = Config<BotConfig>.Instance;
+			this.client = client;
+			client.MessageReceived += HandleMessage;
+
+			commandService = new CommandService();
+			serviceProvider = new ServiceCollection()
+				.AddSingleton(client)
+				.AddSingleton(commandService)
+				.BuildServiceProvider();
 		}
 
 		/// <summary>
@@ -34,7 +42,7 @@ namespace Pootis_Bot.Core
 		/// <param name="assembly"></param>
 		internal void InstallAssemblyModules(Assembly assembly)
 		{
-			commandService.AddModulesAsync(assembly, null);
+			commandService.AddModulesAsync(assembly, serviceProvider);
 		}
 
 		private async Task HandleMessage(SocketMessage msg)
@@ -48,7 +56,7 @@ namespace Pootis_Bot.Core
 			    !userMessage.HasMentionPrefix(client.CurrentUser, ref argPos)) return;
 
 			//Execute the command
-			IResult result = await commandService.ExecuteAsync(context, argPos, null);
+			IResult result = await commandService.ExecuteAsync(context, argPos, serviceProvider);
 
 			//Handle it result
 			if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
