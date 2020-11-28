@@ -8,6 +8,8 @@ using Pootis_Bot.Helper;
 
 namespace Pootis_Bot.Module.Basic
 {
+	[Name("Basic Commands")]
+	[Summary("Provides commands for basic usage")]
 	public class BasicCommands : ModuleBase<SocketCommandContext>
 	{
 		private string displayName;
