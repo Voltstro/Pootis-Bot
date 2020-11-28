@@ -49,7 +49,7 @@ namespace Pootis_Bot.Module.Basic
 		{
 			if (min >= max)
 			{
-				await Context.Channel.SendMessageAsync("The min value cannot be the same or larger as the max value!");
+				await Context.Channel.SendErrorMessageAsync("The min value cannot be the same or larger as the max value!");
 				return;
 			}
 
@@ -62,7 +62,7 @@ namespace Pootis_Bot.Module.Basic
 		{
 			if (selection.Length == 0)
 			{
-				await Context.Channel.SendMessageAsync("You need to input a selection!");
+				await Context.Channel.SendErrorMessageAsync("You need to input a selection!");
 				return;
 			}
 
