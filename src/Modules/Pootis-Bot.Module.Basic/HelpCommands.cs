@@ -23,9 +23,13 @@ namespace Pootis_Bot.Module.Basic
 		[Summary("Gets help on all commands")]
 		public async Task Help()
 		{
+			await Context.Channel.SendMessageAsync("I will DM you the help info!");
+
+			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
+
 			foreach (StringBuilder stringBuilder in BuildHelpMenu())
 			{
-				await Context.Channel.SendMessageAsync(stringBuilder.ToString());
+				await dm.SendMessageAsync(stringBuilder.ToString());
 			}
 		}
 
