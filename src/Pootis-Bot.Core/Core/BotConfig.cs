@@ -15,20 +15,20 @@ namespace Pootis_Bot.Core
 		/// </summary>
 		[MenuItemFormat("Token")]
 		[JsonProperty]
-		public string BotToken { get; internal set; }
+		public string BotToken { get; internal set; } = string.Empty;
 
 		/// <summary>
 		///     The prefix used for commands
 		/// </summary>
 		[MenuItemFormat("Prefix")]
 		[JsonProperty]
-		public string BotPrefix { get; internal set; }
+		public string BotPrefix { get; internal set; } = "$";
 
 		/// <summary>
 		///		The name that is used for display purposes
 		/// </summary>
 		[MenuItemFormat("Display Name")]
 		[JsonProperty]
-		public string BotName { get; internal set; }
+		public string BotName { get; internal set; } = "Pootis-Bot";
 	}
 }
