@@ -83,6 +83,8 @@ namespace Pootis_Bot.Core
 
 			//Get config
 			config = Config<BotConfig>.Instance;
+			config.Saved += ConfigSaved;
+			ConfigSaved();
 
 			//Load modules
 			moduleManager = new ModuleManager("Modules/", "Assemblies/");
@@ -122,6 +124,11 @@ namespace Pootis_Bot.Core
 			//Setup command handler
 			commandHandler = new CommandHandler(discordClient);
 			moduleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
+		}
+
+		private void ConfigSaved()
+		{
+			System.Console.Title = config.BotName;
 		}
 
 		private Task Ready()
