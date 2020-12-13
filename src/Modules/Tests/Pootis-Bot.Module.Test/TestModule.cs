@@ -17,7 +17,7 @@ namespace Pootis_Bot.Module.Test
 
 		public override ModuleInfo GetModuleInfo()
 		{
-			return new ModuleInfo("Test Module", new Version(1, 0),
+			return new ModuleInfo("Test Module", "Voltstro", new Version(1, 0),
 				new ModuleDependency("YoutubeExplode", new Version(5, 1, 8), "YoutubeExplode"));
 		}
 

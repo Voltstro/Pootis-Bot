@@ -12,15 +12,20 @@ namespace Pootis_Bot.Modules
 		///     Creates a new module info instance
 		/// </summary>
 		/// <param name="name">The name of the module</param>
+		/// <param name="author">Who created this module</param>
 		/// <param name="version">The version of the version</param>
 		/// <param name="dependencies">Packages required by the module</param>
 		[PublicAPI]
-		public ModuleInfo([NotNull] string name, [NotNull] Version version, params ModuleDependency[] dependencies)
+		public ModuleInfo([NotNull] string name, [NotNull] string author, [NotNull] Version version, params ModuleDependency[] dependencies)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException(nameof(name));
 
+			if(string.IsNullOrWhiteSpace(author))
+				throw new ArgumentNullException(nameof(author));
+
 			ModuleName = name;
+			ModuleAuthorName = author;
 			ModuleVersion = version ?? throw new ArgumentNullException(nameof(version));
 			Dependencies = dependencies;
 		}
@@ -29,14 +34,19 @@ namespace Pootis_Bot.Modules
 		///     Creates a new module info instance
 		/// </summary>
 		/// <param name="name">The name of the module</param>
+		/// <param name="author">Who created this module</param>
 		/// <param name="version">The version of the version</param>
 		[PublicAPI]
-		public ModuleInfo([NotNull] string name, [NotNull] Version version)
+		public ModuleInfo([NotNull] string name, [NotNull] string author, [NotNull] Version version)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException(nameof(name));
 
+			if(string.IsNullOrWhiteSpace(author))
+				throw new ArgumentNullException(nameof(author));
+
 			ModuleName = name;
+			ModuleAuthorName = author;
 			ModuleVersion = version ?? throw new ArgumentNullException(nameof(version));
 			Dependencies = Array.Empty<ModuleDependency>();
 		}
@@ -45,6 +55,11 @@ namespace Pootis_Bot.Modules
 		///     The name of the module
 		/// </summary>
 		internal readonly string ModuleName;
+
+		/// <summary>
+		///		Who created this module
+		/// </summary>
+		internal readonly string ModuleAuthorName;
 
 		/// <summary>
 		///     The name of the module

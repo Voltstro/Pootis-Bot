@@ -101,8 +101,8 @@ namespace Pootis_Bot.Modules
 				try
 				{
 					modulesToInit[i].Init();
-					Logger.Info("Loaded module {@Module} version {@Version}", moduleInfo.ModuleName,
-						moduleInfo.ModuleVersion.ToString());
+					Logger.Info("Loaded module {@Module} version {@Version} by {@Author}", moduleInfo.ModuleName,
+						moduleInfo.ModuleVersion.ToString(), moduleInfo.ModuleAuthorName);
 					modules.Add(modulesToInit[i]);
 				}
 				catch (Exception ex)

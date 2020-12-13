@@ -7,7 +7,7 @@ namespace Pootis_Bot.Module.Test2
 	{
 		public override ModuleInfo GetModuleInfo()
 		{
-			return new ModuleInfo("TestModule2", new Version(1, 0));
+			return new ModuleInfo("TestModule2", "Voltstro", new Version(1, 0));
 		}
 	}
 }
