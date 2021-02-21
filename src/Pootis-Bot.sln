@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Core", "Pootis-B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{32EE362B-EDE9-49FE-93D3-B72D4B3228A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Test", "Modules\Tests\Pootis-Bot.Module.Test\Pootis-Bot.Module.Test.csproj", "{B99B4005-B018-4524-960D-058CE7948837}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{579D132A-1E20-4255-AC8B-B69BA8DF97CF}"
 	ProjectSection(SolutionItems) = preProject
 		GeneralProperties.props = GeneralProperties.props
@@ -23,11 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Shared", "Pootis-Bot.Shared\Pootis-Bot.Shared.csproj", "{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Test2", "Modules\Tests\Pootis-Bot.Module.Test2\Pootis-Bot.Module.Test2.csproj", "{480AFB8C-F319-425E-A50E-DC877A12AC87}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D31A0E5D-C940-40A2-8FAC-1856A7EAD47A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.Basic", "Modules\Pootis-Bot.Module.Basic\Pootis-Bot.Module.Basic.csproj", "{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Basic", "Modules\Pootis-Bot.Module.Basic\Pootis-Bot.Module.Basic.csproj", "{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,18 +45,10 @@ Global
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Debug|x64.Build.0 = Debug|x64
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Release|x64.ActiveCfg = Release|x64
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Release|x64.Build.0 = Release|x64
-		{B99B4005-B018-4524-960D-058CE7948837}.Debug|x64.ActiveCfg = Debug|x64
-		{B99B4005-B018-4524-960D-058CE7948837}.Debug|x64.Build.0 = Debug|x64
-		{B99B4005-B018-4524-960D-058CE7948837}.Release|x64.ActiveCfg = Release|x64
-		{B99B4005-B018-4524-960D-058CE7948837}.Release|x64.Build.0 = Release|x64
 		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Debug|x64.ActiveCfg = Debug|x64
 		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Debug|x64.Build.0 = Debug|x64
 		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Release|x64.ActiveCfg = Release|x64
 		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Release|x64.Build.0 = Release|x64
-		{480AFB8C-F319-425E-A50E-DC877A12AC87}.Debug|x64.ActiveCfg = Debug|x64
-		{480AFB8C-F319-425E-A50E-DC877A12AC87}.Debug|x64.Build.0 = Debug|x64
-		{480AFB8C-F319-425E-A50E-DC877A12AC87}.Release|x64.ActiveCfg = Release|x64
-		{480AFB8C-F319-425E-A50E-DC877A12AC87}.Release|x64.Build.0 = Release|x64
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}.Debug|x64.ActiveCfg = Debug|x64
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}.Debug|x64.Build.0 = Debug|x64
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}.Release|x64.ActiveCfg = Release|x64
@@ -72,9 +58,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B99B4005-B018-4524-960D-058CE7948837} = {D31A0E5D-C940-40A2-8FAC-1856A7EAD47A}
-		{480AFB8C-F319-425E-A50E-DC877A12AC87} = {D31A0E5D-C940-40A2-8FAC-1856A7EAD47A}
-		{D31A0E5D-C940-40A2-8FAC-1856A7EAD47A} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
