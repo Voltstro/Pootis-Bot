@@ -128,7 +128,7 @@ namespace Pootis_Bot.Core
 
 			//Setup command handler
 			commandHandler = new CommandHandler(discordClient);
-			moduleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
+			ModuleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
 		}
 
 		private void ConfigSaved()

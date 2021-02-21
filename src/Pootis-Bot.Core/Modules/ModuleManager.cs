@@ -47,7 +47,7 @@ namespace Pootis_Bot.Modules
 		{
 			foreach (Module module in modules)
 			{
-				Logger.Info("Shutting down module {@ModuleName}...", module.GetModuleInfo().ModuleName);
+				Logger.Info("Shutting down module {ModuleName}...", module.GetModuleInfo().ModuleName);
 				module.Shutdown();
 			}
 		}
@@ -101,15 +101,15 @@ namespace Pootis_Bot.Modules
 				try
 				{
 					modulesToInit[i].Init();
-					Logger.Info("Loaded module {@Module} version {@Version} by {@Author}", moduleInfo.ModuleName,
+					Logger.Info("Loaded module {Module} version {Version} by {Author}", moduleInfo.ModuleName,
 						moduleInfo.ModuleVersion.ToString(), moduleInfo.ModuleAuthorName);
 					modules.Add(modulesToInit[i]);
 				}
 				catch (Exception ex)
 				{
 					Logger.Error(
-						"Something when wrong while initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}",
-						moduleInfo.ModuleName, ex.Message);
+						ex, "Something went wrong while initializing {ModuleName}! The module will not be loaded.",
+						moduleInfo.ModuleName);
 					modulesToInit.RemoveAt(i);
 				}
 			}
@@ -127,14 +127,18 @@ namespace Pootis_Bot.Modules
 				catch (Exception ex)
 				{
 					Logger.Error(
-						"Something when wrong while post initializing {@ModuleName}! The module will not be loaded. Ex: {@Exception}",
-						moduleInfo.ModuleName, ex.Message);
+						ex, "Something went wrong while post initializing {ModuleName}! The module will not be loaded.",
+						moduleInfo.ModuleName);
 					modulesToInit.RemoveAt(i);
 				}
 			}
 		}
 
-		internal void InstallDiscordModulesFromLoadedModules(CommandHandler commandHandler)
+		/// <summary>
+		///		Installs discord <see cref="Discord.Commands.ModuleBase"/>s from loaded <see cref="Module"/>s
+		/// </summary>
+		/// <param name="commandHandler"></param>
+		internal static void InstallDiscordModulesFromLoadedModules(CommandHandler commandHandler)
 		{
 			List<Assembly> installedAssemblies = new List<Assembly>();
 			foreach (Module module in modules)
@@ -169,9 +173,8 @@ namespace Pootis_Bot.Modules
 				}
 				catch (MissingMethodException ex)
 				{
-					Logger.Error(
-						"Something when wrong while creating a module from the assembly {@AssemblyName}! It looks like the constructor could be weird! The module will not be loaded: Ex: {@Exception}",
-						assembly.FullName, ex.Message);
+					Logger.Error(ex, "Something went wrong while creating a module from the assembly {AssemblyName}! It looks like the constructor could be weird! The module will not be loaded.",
+						assembly.FullName);
 					continue;
 				}
 
@@ -185,9 +188,8 @@ namespace Pootis_Bot.Modules
 				}
 				catch (Exception ex)
 				{
-					Logger.Error(
-						"Something when wrong while trying to obtain module info from the assembly {@AssemblyName}! The module will not be loaded: Ex: {@Exception}",
-						assembly.FullName, ex.Message);
+					Logger.Error(ex, "Something when wrong while trying to obtain module info from the assembly {AssemblyName}! The module will not be loaded.",
+						assembly.FullName);
 					continue;
 				}
 
@@ -216,7 +218,7 @@ namespace Pootis_Bot.Modules
 					if (modulesToVerify.Exists(x => x.GetModuleInfo().ModuleName == moduleDependency.ModuleName))
 						continue;
 
-					Logger.Error("The module {@Module} depends on the module {@Dependent} which has not been loaded!",
+					Logger.Error("The module {Module} depends on the module {Dependent} which has not been loaded!",
 						info.ModuleName, moduleDependency.ModuleName);
 					modulesToVerify.RemoveAt(i);
 				}
@@ -234,7 +236,7 @@ namespace Pootis_Bot.Modules
 				//The assembly already exists, it should be safe to assume that other dlls that it requires exist as well
 				if (File.Exists($"{assembliesDirectory}/{nuGetPackage.AssemblyName}.dll")) continue;
 
-				Logger.Info("Restoring NuGet packages for {@ModuleName}...", moduleInfo.ModuleName);
+				Logger.Info("Restoring NuGet packages for {ModuleName}...", moduleInfo.ModuleName);
 
 				//Download the packages and extract them
 				List<string> dlls = packageResolver.DownloadPackage(nuGetPackage.PackageId, nuGetPackage.PackageVersion)
@@ -259,7 +261,7 @@ namespace Pootis_Bot.Modules
 					File.Copy(dll, destination, true);
 				}
 
-				Logger.Info("Packages for {@ModuleName} restored.", moduleInfo.ModuleName);
+				Logger.Info("Packages for {ModuleName} restored.", moduleInfo.ModuleName);
 			}
 		}
 	}
