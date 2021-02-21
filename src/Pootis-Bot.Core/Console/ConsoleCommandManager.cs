@@ -40,14 +40,14 @@ namespace Pootis_Bot.Console
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("An error occurred while adding the command `{@Command}`'s method! {@Exception}",
-						attribute.Command, ex);
+					Logger.Error(ex, "An error occurred while adding the command {Command}'s method!",
+						attribute.Command);
 					continue;
 				}
 
 				if (commands.ContainsKey(attribute.Command))
 				{
-					Logger.Error("The command {@Command} already exists!", attribute.Command);
+					Logger.Error("The command {Command} already exists!", attribute.Command);
 					continue;
 				}
 
@@ -57,7 +57,7 @@ namespace Pootis_Bot.Console
 					Method = methodDelegate
 				});
 
-				Logger.Debug("Added command {@Command}", attribute.Command);
+				Logger.Debug("Added command {Command}", attribute.Command);
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace Pootis_Bot.Console
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("An error occurred! {@Exception}", ex);
+					Logger.Error(ex, "An error occurred while invoking {Command}! {Exception}", tokens[0].ToLower());
 				}
 
 				return;
