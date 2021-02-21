@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", 
 		ModulesProperties.props = ModulesProperties.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Shared", "Pootis-Bot.Shared\Pootis-Bot.Shared.csproj", "{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Basic", "Modules\Pootis-Bot.Module.Basic\Pootis-Bot.Module.Basic.csproj", "{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}"
 EndProject
 Global
@@ -45,10 +43,6 @@ Global
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Debug|x64.Build.0 = Debug|x64
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Release|x64.ActiveCfg = Release|x64
 		{3D10096F-5576-4E51-AD70-BD20D928F2C1}.Release|x64.Build.0 = Release|x64
-		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Debug|x64.ActiveCfg = Debug|x64
-		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Debug|x64.Build.0 = Debug|x64
-		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Release|x64.ActiveCfg = Release|x64
-		{4A0B6C86-59E7-413F-9D58-9DE7FA3CA850}.Release|x64.Build.0 = Release|x64
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}.Debug|x64.ActiveCfg = Debug|x64
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}.Debug|x64.Build.0 = Debug|x64
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0}.Release|x64.ActiveCfg = Release|x64
