@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Pootis_Bot.Console.ConfigMenus;
 using Pootis_Bot.Logging;
@@ -21,7 +20,7 @@ namespace Pootis_Bot.Config
 		///		<para>Change this before accessing <see cref="Instance"/> (or do <see cref="Reload"/>), which will cause a config upgrade</para>
 		/// </summary>
 		// ReSharper disable once StaticMemberInGenericType
-		[PublicAPI] public static int ExpectedConfigVersion = 1;
+		public static int ExpectedConfigVersion = 1;
 
 		private static readonly string ConfigPath = $"Config/{typeof(T).Name}.json";
 		private static T instance;
@@ -30,7 +29,6 @@ namespace Pootis_Bot.Config
 		///     Whats the version that this config is.
 		///     <para>If you want to update the config version, change <see cref="Config{T}.ExpectedConfigVersion" /></para>
 		/// </summary>
-		[PublicAPI]
 		[DontShowItem]
 		[JsonProperty]
 		public int ConfigVersion { get; private set; } = ExpectedConfigVersion;
@@ -53,7 +51,7 @@ namespace Pootis_Bot.Config
 		/// <summary>
 		///		Invoked when this config is saved
 		/// </summary>
-		[PublicAPI] public event Action Saved;
+		public event Action Saved;
 
 		/// <summary>
 		///     Saves the config to the disk

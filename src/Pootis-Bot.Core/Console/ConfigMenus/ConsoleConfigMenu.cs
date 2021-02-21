@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
-using JetBrains.Annotations;
 using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Console.ConfigMenus
@@ -23,7 +23,7 @@ namespace Pootis_Bot.Console.ConfigMenus
 		///     Creates a new <see cref="ConsoleConfigMenu{T}" /> instance
 		/// </summary>
 		/// <param name="editingObject"></param>
-		public ConsoleConfigMenu([NotNull] T editingObject)
+		public ConsoleConfigMenu([DisallowNull] T editingObject)
 		{
 			if (editingObject == null)
 				throw new ArgumentNullException(nameof(editingObject));
@@ -66,7 +66,6 @@ namespace Pootis_Bot.Console.ConfigMenus
 		/// <summary>
 		///     Shows the generated config menu
 		/// </summary>
-		[PublicAPI]
 		public void Show()
 		{
 			showingMenu = true;
@@ -109,7 +108,6 @@ namespace Pootis_Bot.Console.ConfigMenus
 		/// <summary>
 		///     Closes the config menu
 		/// </summary>
-		[PublicAPI]
 		public void Close()
 		{
 			showingMenu = false;

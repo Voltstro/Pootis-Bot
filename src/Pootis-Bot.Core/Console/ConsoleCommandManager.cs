@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using JetBrains.Annotations;
 using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Console
@@ -65,8 +65,7 @@ namespace Pootis_Bot.Console
 		///     Executes a command
 		/// </summary>
 		/// <param name="command">The command and arguments to execute</param>
-		[PublicAPI]
-		public static void ExecuteCommand([NotNull] string command)
+		public static void ExecuteCommand([DisallowNull] string command)
 		{
 			List<string> tokens = Tokenize(command);
 			if (tokens.Count < 1)
@@ -98,8 +97,7 @@ namespace Pootis_Bot.Console
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns>Returns <c>true</c> if the command exists</returns>
-		[PublicAPI]
-		public static bool DoesCommandExist([NotNull] string command)
+		public static bool DoesCommandExist([DisallowNull] string command)
 		{
 			if (string.IsNullOrWhiteSpace(command))
 				throw new ArgumentNullException(nameof(command));

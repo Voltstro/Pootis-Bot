@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
 using Pootis_Bot.Console;
 using Pootis_Bot.Core;
 using Pootis_Bot.Logging;
@@ -26,7 +26,7 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="modulesDir">The directory where the modules are kept</param>
 		/// <param name="assembliesDir">The directory of where external assemblies exist</param>
-		internal ModuleManager([NotNull] string modulesDir, [NotNull] string assembliesDir)
+		internal ModuleManager([DisallowNull] string modulesDir, [DisallowNull] string assembliesDir)
 		{
 			if (string.IsNullOrWhiteSpace(modulesDir))
 				throw new ArgumentNullException(nameof(modulesDir));
@@ -57,8 +57,7 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="moduleName"></param>
 		/// <returns></returns>
-		[PublicAPI]
-		public static bool CheckIfModuleIsLoaded([NotNull] string moduleName)
+		public static bool CheckIfModuleIsLoaded([DisallowNull] string moduleName)
 		{
 			if (string.IsNullOrWhiteSpace(moduleName))
 				throw new ArgumentNullException(nameof(moduleName));

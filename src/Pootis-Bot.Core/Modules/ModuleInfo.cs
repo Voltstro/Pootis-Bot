@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pootis_Bot.Modules
 {
@@ -15,8 +15,7 @@ namespace Pootis_Bot.Modules
 		/// <param name="author">Who created this module</param>
 		/// <param name="version">The version of the version</param>
 		/// <param name="dependencies">Packages required by the module</param>
-		[PublicAPI]
-		public ModuleInfo([NotNull] string name, [NotNull] string author, [NotNull] Version version, params ModuleDependency[] dependencies)
+		public ModuleInfo([DisallowNull] string name, [DisallowNull] string author, [DisallowNull] Version version, params ModuleDependency[] dependencies)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException(nameof(name));
@@ -36,8 +35,7 @@ namespace Pootis_Bot.Modules
 		/// <param name="name">The name of the module</param>
 		/// <param name="author">Who created this module</param>
 		/// <param name="version">The version of the version</param>
-		[PublicAPI]
-		public ModuleInfo([NotNull] string name, [NotNull] string author, [NotNull] Version version)
+		public ModuleInfo([DisallowNull] string name, [DisallowNull] string author, [DisallowNull] Version version)
 		{
 			if (string.IsNullOrWhiteSpace(name))
 				throw new ArgumentNullException(nameof(name));

@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using Pootis_Bot.Shared.Exceptions;
 using Serilog;
 using Serilog.Core;
@@ -19,7 +18,6 @@ namespace Pootis_Bot.Logging
 		/// <summary>
 		///     The logger's config, can only be set while the logger isn't running
 		/// </summary>
-		[PublicAPI]
 		public static LoggerConfig LoggerConfig
 		{
 			set
@@ -36,7 +34,6 @@ namespace Pootis_Bot.Logging
 		///     Is the logger initialized?
 		///     <para>Returns true if it is</para>
 		/// </summary>
-		[PublicAPI]
 		public static bool IsLoggerInitialized => log != null;
 
 		/// <summary>

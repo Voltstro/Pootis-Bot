@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
-using JetBrains.Annotations;
 
 namespace Pootis_Bot.Helper
 {
@@ -15,7 +15,6 @@ namespace Pootis_Bot.Helper
 		/// <param name="channel"></param>
 		/// <param name="message"></param>
 		/// <returns></returns>
-		[PublicAPI]
 		public static async Task<RestUserMessage> SendErrorMessageAsync(this ISocketMessageChannel channel, string message)
 		{
 			return await channel.SendMessageAsync($"❌ {message}");
@@ -27,8 +26,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="channel"></param>
 		/// <param name="embed"></param>
 		/// <returns></returns>
-		[PublicAPI]
-		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [NotNull] EmbedBuilder embed)
+		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [DisallowNull] EmbedBuilder embed)
 		{
 			if(embed == null)
 				throw new ArgumentNullException(nameof(embed));
@@ -42,8 +40,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="channel"></param>
 		/// <param name="embed"></param>
 		/// <returns></returns>
-		[PublicAPI]
-		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [NotNull] Embed embed)
+		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [DisallowNull] Embed embed)
 		{
 			if(embed == null)
 				throw new ArgumentNullException(nameof(embed));

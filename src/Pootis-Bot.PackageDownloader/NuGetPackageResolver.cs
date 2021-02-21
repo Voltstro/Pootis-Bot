@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Frameworks;
@@ -34,7 +34,7 @@ namespace Pootis_Bot.PackageDownloader
 		/// </summary>
 		/// <param name="framework">Whats the target framework</param>
 		/// <param name="packagesDirectory">Where is the location of our packages</param>
-		public NuGetPackageResolver([NotNull] string framework, [NotNull] string packagesDirectory = "Packages/")
+		public NuGetPackageResolver([DisallowNull] string framework, [DisallowNull] string packagesDirectory = "Packages/")
 		{
 			//Null checks
 			if (string.IsNullOrWhiteSpace(framework))
@@ -84,7 +84,7 @@ namespace Pootis_Bot.PackageDownloader
 		/// <param name="version">What version of the package to download</param>
 		/// <param name="cancellationToken">Cancellation token to use</param>
 		/// <returns>Returns a list of locations of all the .Dlls</returns>
-		public async Task<List<string>> DownloadPackage([NotNull] string packageId, [NotNull] Version version,
+		public async Task<List<string>> DownloadPackage([DisallowNull] string packageId, [DisallowNull] Version version,
 			CancellationToken cancellationToken = default)
 		{
 			if (string.IsNullOrWhiteSpace(packageId))
@@ -176,8 +176,8 @@ namespace Pootis_Bot.PackageDownloader
 		/// <param name="package">The <see cref="PackageIdentity" /> to use</param>
 		/// <param name="availablePackages"></param>
 		/// <returns></returns>
-		public async Task GetPackageDependencies([NotNull] PackageIdentity package,
-			[ItemNotNull] ISet<SourcePackageDependencyInfo> availablePackages)
+		public async Task GetPackageDependencies([DisallowNull] PackageIdentity package,
+			[DisallowNull] ISet<SourcePackageDependencyInfo> availablePackages)
 		{
 			if (package == null)
 				throw new ArgumentNullException(nameof(package));

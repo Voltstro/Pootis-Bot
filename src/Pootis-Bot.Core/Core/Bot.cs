@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
-using JetBrains.Annotations;
 using Pootis_Bot.Config;
 using Pootis_Bot.Console;
 using Pootis_Bot.Console.ConfigMenus;
@@ -42,13 +41,11 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		///     Whether or not this bot is running
 		/// </summary>
-		[PublicAPI]
 		public bool IsRunning { get; private set; }
 
 		/// <summary>
 		///     The location of the application
 		/// </summary>
-		[PublicAPI]
 		public static string ApplicationLocation { get; private set; }
 
 		/// <summary>
@@ -204,7 +201,6 @@ namespace Pootis_Bot.Core
 			IsRunning = false;
 		}
 
-		[UsedImplicitly]
 		[ConsoleCommand("config", "Opens the config menu for the bot")]
 		private static void ConfigMenuCommand(string[] args)
 		{

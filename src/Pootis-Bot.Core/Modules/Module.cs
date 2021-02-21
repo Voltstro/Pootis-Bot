@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace Pootis_Bot.Modules
+﻿namespace Pootis_Bot.Modules
 {
 	/// <summary>
 	///     A module for Pootis-Bot. Can be used to add command and functions to the bot
@@ -16,7 +14,6 @@ namespace Pootis_Bot.Modules
 		/// <summary>
 		///     Called on initialization
 		/// </summary>
-		[PublicAPI]
 		public virtual void Init()
 		{
 		}
@@ -29,7 +26,6 @@ namespace Pootis_Bot.Modules
 		///         to soft depend on another module
 		///     </para>
 		/// </summary>
-		[PublicAPI]
 		public virtual void PostInit()
 		{
 		}
@@ -37,7 +33,6 @@ namespace Pootis_Bot.Modules
 		/// <summary>
 		///     Called on shutdown
 		/// </summary>
-		[PublicAPI]
 		public virtual void Shutdown()
 		{
 		}
