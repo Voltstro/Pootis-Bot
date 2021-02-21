@@ -114,7 +114,7 @@ namespace Pootis_Bot.Console
 #pragma warning restore IDE0060 // Remove unused parameter
 		{
 			foreach ((string command, CommandInfo commandInfo) in commands)
-				Logger.Info("`{@Command}` - {@Summary}", command, commandInfo.CommandSummary);
+				Logger.Info("`{Command}` - {Summary}", command, commandInfo.CommandSummary);
 		}
 
 		#region Argument Parsing

@@ -52,6 +52,11 @@ namespace Pootis_Bot.Core
 		public static string ApplicationLocation { get; private set; }
 
 		/// <summary>
+		///		Is the loop for handling console commands running?
+		/// </summary>
+		private static bool isConsoleLoopRunning;
+
+		/// <summary>
 		///     Disposes of this bot instance
 		/// </summary>
 		public void Dispose()
@@ -166,16 +171,15 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		///     Starts a console loop
 		/// </summary>
-		public void ConsoleLoop()
+		public static void ConsoleLoop()
 		{
 			ConsoleCommandManager.AddConsoleCommandsFromAssembly(typeof(Bot).Assembly);
-			while (IsRunning)
+			isConsoleLoopRunning = true;
+
+			while (isConsoleLoopRunning)
 			{
 				string input = System.Console.ReadLine();
-				if (input?.ToLower() == "exit" || input?.ToLower() == "quit")
-					break;
-
-				if (input == null)
+				if (string.IsNullOrWhiteSpace(input))
 					continue;
 
 				ConsoleCommandManager.ExecuteCommand(input);
@@ -189,6 +193,8 @@ namespace Pootis_Bot.Core
 
 		private void ReleaseResources()
 		{
+			isConsoleLoopRunning = false;
+
 			discordClient.StopAsync().GetAwaiter().GetResult();
 			discordClient.Dispose();
 
@@ -203,6 +209,12 @@ namespace Pootis_Bot.Core
 		private static void ConfigMenuCommand(string[] args)
 		{
 			OpenConfigMenu();
+		}
+
+		[ConsoleCommand("quit", "Quits running the bot")]
+		private static void ShutdownBotCommand(string[] args)
+		{
+			isConsoleLoopRunning = false;
 		}
 
 		private static void OpenConfigMenu()

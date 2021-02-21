@@ -19,7 +19,7 @@ namespace Pootis_Bot
 
 			Bot bot = new Bot();
 			bot.Run().GetAwaiter().GetResult();
-			bot.ConsoleLoop();
+			Bot.ConsoleLoop();
 
 			bot.Dispose();
 		}
