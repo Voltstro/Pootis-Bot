@@ -1,4 +1,7 @@
-﻿namespace Pootis_Bot.Modules
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord.WebSocket;
+
+namespace Pootis_Bot.Modules
 {
 	/// <summary>
 	///     A module for Pootis-Bot. Can be used to add command and functions to the bot
@@ -26,6 +29,10 @@
 		///     </para>
 		/// </summary>
 		public virtual void PostInit()
+		{
+		}
+
+		public virtual void ClientConnected([DisallowNull] DiscordSocketClient client)
 		{
 		}
 

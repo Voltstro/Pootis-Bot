@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Discord.WebSocket;
 using Pootis_Bot.Console;
 using Pootis_Bot.Core;
 using Pootis_Bot.Logging;
@@ -148,6 +149,25 @@ namespace Pootis_Bot.Modules
 
 				commandHandler.InstallAssemblyModules(moduleAssembly);
 				installedAssemblies.Add(moduleAssembly);
+			}
+		}
+
+		/// <summary>
+		///		Call when the the <see cref="DiscordSocketClient"/> has connected
+		/// </summary>
+		/// <param name="client"></param>
+		internal void ModulesClientConnected(DiscordSocketClient client)
+		{
+			foreach (Module module in modules)
+			{
+				try
+				{
+					module.ClientConnected(client);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(ex, "Something went wrong while invoking ClientConnected in module {ModuleName}", module.GetModuleInfo().ModuleName);
+				}
 			}
 		}
 

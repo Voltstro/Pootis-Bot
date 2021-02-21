@@ -123,6 +123,8 @@ namespace Pootis_Bot.Core
 
 			Logger.Info("Login successful!");
 
+			moduleManager.ModulesClientConnected(discordClient);
+
 			//Setup command handler
 			commandHandler = new CommandHandler(discordClient);
 			ModuleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
