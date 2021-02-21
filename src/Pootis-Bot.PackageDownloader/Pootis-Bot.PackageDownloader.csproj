@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Packaging" Version="5.8.0" />
-    <PackageReference Include="NuGet.Protocol" Version="5.8.0" />
-    <PackageReference Include="NuGet.Resolver" Version="5.8.0" />
+    <PackageReference Include="NuGet.Packaging" Version="5.8.1" />
+    <PackageReference Include="NuGet.Protocol" Version="5.8.1" />
+    <PackageReference Include="NuGet.Resolver" Version="5.8.1" />
   </ItemGroup>
 
   <ItemGroup>
