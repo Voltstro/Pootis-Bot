@@ -30,10 +30,6 @@
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
-    <ProjectReference Include="$(SolutionDir)Pootis-Bot.Shared\Pootis-Bot.Shared.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
   </ItemGroup>
 
 </Project>
