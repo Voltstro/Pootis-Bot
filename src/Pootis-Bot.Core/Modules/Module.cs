@@ -8,6 +8,8 @@ namespace Pootis_Bot.Modules
 	/// </summary>
 	public abstract class Module
 	{
+		private ModuleInfo cachedModuleInfo;
+
 		/// <summary>
 		///     Gets info relating to the modules
 		/// </summary>
@@ -32,6 +34,10 @@ namespace Pootis_Bot.Modules
 		{
 		}
 
+		/// <summary>
+		///		Called when the <see cref="DiscordSocketClient"/> connects
+		/// </summary>
+		/// <param name="client"></param>
 		public virtual void ClientConnected([DisallowNull] DiscordSocketClient client)
 		{
 		}
@@ -41,6 +47,19 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		public virtual void Shutdown()
 		{
+		}
+
+		/// <summary>
+		///		Call this if you are accessing <see cref="ModuleInfo"/> from Pootis's core
+		///		<para>It uses a cached version of <see cref="ModuleInfo"/>, just in-case the module returns something different each time.</para>
+		/// </summary>
+		/// <returns></returns>
+		internal ModuleInfo GetModuleInfoInternal()
+		{
+			if (cachedModuleInfo.ModuleName == null)
+				cachedModuleInfo = GetModuleInfo();
+
+			return cachedModuleInfo;
 		}
 	}
 }

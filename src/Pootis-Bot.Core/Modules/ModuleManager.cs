@@ -48,7 +48,7 @@ namespace Pootis_Bot.Modules
 		{
 			foreach (Module module in modules)
 			{
-				Logger.Info("Shutting down module {ModuleName}...", module.GetModuleInfo().ModuleName);
+				Logger.Info("Shutting down module {ModuleName}...", module.GetModuleInfoInternal().ModuleName);
 				module.Shutdown();
 			}
 		}
@@ -63,7 +63,7 @@ namespace Pootis_Bot.Modules
 			if (string.IsNullOrWhiteSpace(moduleName))
 				throw new ArgumentNullException(nameof(moduleName));
 
-			return modules.Exists(x => x.GetModuleInfo().ModuleName == moduleName);
+			return modules.Exists(x => x.GetModuleInfoInternal().ModuleName == moduleName);
 		}
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace Pootis_Bot.Modules
 			//Init all the modules
 			for (int i = 0; i < modulesToInit.Count; i++)
 			{
-				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfo();
+				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfoInternal();
 
 				//Call the init function
 				try
@@ -117,7 +117,7 @@ namespace Pootis_Bot.Modules
 			//Post init
 			for (int i = 0; i < modulesToInit.Count; i++)
 			{
-				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfo();
+				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfoInternal();
 
 				//Call the init function
 				try
@@ -166,7 +166,7 @@ namespace Pootis_Bot.Modules
 				}
 				catch (Exception ex)
 				{
-					Logger.Error(ex, "Something went wrong while invoking ClientConnected in module {ModuleName}", module.GetModuleInfo().ModuleName);
+					Logger.Error(ex, "Something went wrong while invoking ClientConnected in module {ModuleName}", module.GetModuleInfoInternal().ModuleName);
 				}
 			}
 		}
@@ -203,7 +203,7 @@ namespace Pootis_Bot.Modules
 				//Our first contact with the module code it self, get info about it
 				try
 				{
-					module.GetModuleInfo();
+					module.GetModuleInfoInternal();
 				}
 				catch (Exception ex)
 				{
@@ -223,7 +223,7 @@ namespace Pootis_Bot.Modules
 		{
 			for (int i = 0; i < modulesToVerify.Count; i++)
 			{
-				ModuleInfo info = modulesToVerify[i].GetModuleInfo();
+				ModuleInfo info = modulesToVerify[i].GetModuleInfoInternal();
 
 				//Resolve NuGet packages
 				VerifyModuleNuGetPackages(info.Dependencies.Where(x => x.PackageId != null), info, resolver);
@@ -234,7 +234,7 @@ namespace Pootis_Bot.Modules
 					if (moduleDependency.PackageId != null) continue;
 
 					//The module doesn't exist
-					if (modulesToVerify.Exists(x => x.GetModuleInfo().ModuleName == moduleDependency.ModuleName))
+					if (modulesToVerify.Exists(x => x.GetModuleInfoInternal().ModuleName == moduleDependency.ModuleName))
 						continue;
 
 					Logger.Error("The module {Module} depends on the module {Dependent} which has not been loaded!",
