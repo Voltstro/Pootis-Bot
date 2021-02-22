@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Text;
+using Cysharp.Text;
 using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Console.ConfigMenus
@@ -70,15 +70,15 @@ namespace Pootis_Bot.Console.ConfigMenus
 		public void Show()
 		{
 			showingMenu = true;
-			StringBuilder options = new StringBuilder();
+			Utf16ValueStringBuilder options = ZString.CreateStringBuilder();
 			options.Append($"----==== {configTitle} ====----\n");
-
 			for (int i = 0; i < configMenu.Count; i++)
 				options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
-
 			options.Append("exit - Exits and saves the config menu.");
 
 			System.Console.WriteLine(options.ToString());
+
+			options.Dispose();
 			while (showingMenu)
 			{
 				string input = System.Console.ReadLine();

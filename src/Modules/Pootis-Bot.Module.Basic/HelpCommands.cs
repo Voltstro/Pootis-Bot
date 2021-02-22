@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Cysharp.Text;
 using Discord;
 using Discord.Commands;
 using Pootis_Bot.Helper;
@@ -27,9 +28,10 @@ namespace Pootis_Bot.Module.Basic
 
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
 
-			foreach (StringBuilder stringBuilder in BuildHelpMenu())
+			foreach (Utf16ValueStringBuilder stringBuilder in BuildHelpMenu())
 			{
 				await dm.SendMessageAsync(stringBuilder.ToString());
+				stringBuilder.Dispose();
 			}
 		}
 
@@ -55,12 +57,12 @@ namespace Pootis_Bot.Module.Basic
 			await Context.Channel.SendEmbedAsync(embed);
 		}
 
-		private StringBuilder[] BuildHelpMenu()
+		private Utf16ValueStringBuilder[] BuildHelpMenu()
 		{
-			List<StringBuilder> groups = new List<StringBuilder>();
+			List<Utf16ValueStringBuilder> groups = new List<Utf16ValueStringBuilder>();
 			foreach (ModuleInfo module in commandService.Modules)
 			{
-				StringBuilder sb = new StringBuilder();
+				Utf16ValueStringBuilder sb = ZString.CreateStringBuilder();
 				sb.Append("```diff\n");
 				sb.Append($"+ {module.Name}\n");
 				sb.Append($"  - Summary: {module.Summary}\n");
@@ -79,7 +81,7 @@ namespace Pootis_Bot.Module.Basic
 
 		private string BuildCommandUsage(CommandInfo command)
 		{
-			StringBuilder commandUsage = new StringBuilder();
+			using Utf16ValueStringBuilder commandUsage = ZString.CreateStringBuilder();
 			commandUsage.Append($"`{command.Name.ToLower()}");
 			foreach (ParameterInfo parameter in command.Parameters)
 			{
