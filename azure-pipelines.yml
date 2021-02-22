@@ -1,6 +1,6 @@
 trigger:
 - master
-- v2
+- v1.x
 
 variables:
   buildConfiguration: 'Release'
