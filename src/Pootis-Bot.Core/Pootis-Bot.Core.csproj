@@ -20,6 +20,15 @@
     <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\thirdpartycredits.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <Import Project="..\GeneralProperties.props" />
 
 </Project>
