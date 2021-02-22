@@ -1,6 +1,27 @@
 steps:
-- script: dotnet restore -v minimal Pootis-Bot.sln
-  displayName: Restore Packages
+- task: UseDotNet@2
+  displayName: 'Setup .NET 5'
+  inputs:
+    packageType: sdk
+    version: 5.0.x
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- script: dotnet build src/Pootis-Bot/Pootis-Bot.csproj --no-restore -v minimal -c $(buildConfiguration) --framework $(framework)
+- task: DotNetCoreCLI@2
+  displayName: Restore Packages
+  inputs:
+    command: restore
+    verbosityRestore: normal
+    projects: src/Pootis-Bot.sln
+
+- task: DotNetCoreCLI@2
   displayName: Build Project
+  inputs:
+    command: build
+    projects: src/Pootis-Bot.sln
+    arguments: '--no-restore -v normal -c $(buildConfiguration)'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Upload Artifact'
+  inputs:
+    targetPath: src/bin/Release
+    artifactName: $(Build.DefinitionName)-$(Agent.JobName)-$(Build.BuildNumber)-$(Build.SourceBranchName)

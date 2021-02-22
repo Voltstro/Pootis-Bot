@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Pootis_Bot.PackageDownloader</RootNamespace>
+    <Description>Handles downloading NuGet packages.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGet.Packaging" Version="5.8.1" />
+    <PackageReference Include="NuGet.Protocol" Version="5.8.1" />
+    <PackageReference Include="NuGet.Resolver" Version="5.8.1" />
+  </ItemGroup>
+
+  <Import Project="..\GeneralProperties.props" />
+
+</Project>

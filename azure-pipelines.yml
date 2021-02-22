@@ -4,7 +4,7 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
-  framework: 'netcoreapp3.1'
+  framework: 'net5.0'
 
 jobs:
 - job: Windows
@@ -25,11 +25,12 @@ jobs:
   steps:
   - template: azure/build.yml
 
-- job: DeployDocs
-  dependsOn:
-  - Windows
-  condition: succeeded()
-  pool:
-    vmImage: 'windows-2019'
-  steps:
-  - template: azure/docs.yml
+# For now, we do not want to deploy the docs from the v2 branch
+#- job: DeployDocs
+#  dependsOn:
+#  - Windows
+#  condition: succeeded()
+#  pool:
+#    vmImage: 'windows-2019'
+#  steps:
+#  - template: azure/docs.yml
