@@ -12,6 +12,11 @@ namespace Pootis_Bot.Console.ConfigMenus
 	{
 		internal readonly string FormattedName;
 
+		/// <summary>
+		///		Creates a new <see cref="MenuItemFormat"/>
+		/// </summary>
+		/// <param name="formatted">The formatted <see cref="string"/> that will be shown in the menu.</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public MenuItemFormat([DisallowNull] string formatted)
 		{
 			if(string.IsNullOrWhiteSpace(formatted))

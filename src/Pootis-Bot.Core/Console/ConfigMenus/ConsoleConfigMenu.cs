@@ -23,6 +23,7 @@ namespace Pootis_Bot.Console.ConfigMenus
 		///     Creates a new <see cref="ConsoleConfigMenu{T}" /> instance
 		/// </summary>
 		/// <param name="editingObject"></param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public ConsoleConfigMenu([DisallowNull] T editingObject)
 		{
 			if (editingObject == null)
@@ -145,8 +146,8 @@ namespace Pootis_Bot.Console.ConfigMenus
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("An error occurred while trying to set the value of {@Property}! {@ExMessage}",
-						item.Property.Name, ex.Message);
+					Logger.Error(ex, "An error occurred while trying to set the value of {Property}!",
+						item.Property.Name);
 					break;
 				}
 

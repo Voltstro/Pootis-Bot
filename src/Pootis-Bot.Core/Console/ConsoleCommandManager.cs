@@ -65,8 +65,12 @@ namespace Pootis_Bot.Console
 		///     Executes a command
 		/// </summary>
 		/// <param name="command">The command and arguments to execute</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static void ExecuteCommand([DisallowNull] string command)
 		{
+			if(string.IsNullOrWhiteSpace(command))
+				throw new ArgumentNullException(nameof(command));
+
 			List<string> tokens = Tokenize(command);
 			if (tokens.Count < 1)
 				return;
@@ -83,13 +87,13 @@ namespace Pootis_Bot.Console
 				}
 				catch (Exception ex)
 				{
-					Logger.Error(ex, "An error occurred while invoking {Command}! {Exception}", tokens[0].ToLower());
+					Logger.Error(ex, "An error occurred while invoking {Command}!", tokens[0].ToLower());
 				}
 
 				return;
 			}
 
-			Logger.Error($"Unknown command: `{tokens[0]}`.");
+			Logger.Error("Unknown command: {command}.", tokens[0].ToLower());
 		}
 
 		/// <summary>
@@ -97,6 +101,7 @@ namespace Pootis_Bot.Console
 		/// </summary>
 		/// <param name="command"></param>
 		/// <returns>Returns <c>true</c> if the command exists</returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static bool DoesCommandExist([DisallowNull] string command)
 		{
 			if (string.IsNullOrWhiteSpace(command))

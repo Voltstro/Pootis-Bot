@@ -18,6 +18,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="channel"></param>
 		/// <param name="message"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<RestUserMessage> SendErrorMessageAsync(this ISocketMessageChannel channel, [DisallowNull] string message)
 		{
 			if(string.IsNullOrWhiteSpace(message))
@@ -32,6 +33,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="channel"></param>
 		/// <param name="embed"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [DisallowNull] EmbedBuilder embed)
 		{
 			if(embed == null)
@@ -46,6 +48,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="channel"></param>
 		/// <param name="embed"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [DisallowNull] Embed embed)
 		{
 			if(embed == null)

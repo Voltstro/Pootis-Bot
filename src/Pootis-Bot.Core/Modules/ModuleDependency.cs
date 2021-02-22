@@ -14,6 +14,7 @@ namespace Pootis_Bot.Modules
 		/// <param name="packageId">The package id. (Whats it name on NuGet)</param>
 		/// <param name="packageVersion">The version of the package</param>
 		/// <param name="assemblyName">The name of the assembly that the package will extract to</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public ModuleDependency([DisallowNull] string packageId, [DisallowNull] Version packageVersion,
 			[DisallowNull] string assemblyName)
 		{
@@ -34,6 +35,7 @@ namespace Pootis_Bot.Modules
 		///     Sets-up a dependency for another module
 		/// </summary>
 		/// <param name="moduleName">The name of the module to depend on</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public ModuleDependency([DisallowNull] string moduleName)
 		{
 			if (string.IsNullOrWhiteSpace(moduleName))

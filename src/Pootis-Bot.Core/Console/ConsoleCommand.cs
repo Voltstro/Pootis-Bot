@@ -18,6 +18,7 @@ namespace Pootis_Bot.Console
 		/// </summary>
 		/// <param name="command">What command to enter into the console</param>
 		/// <param name="summary">A basic summary of the command</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public ConsoleCommand([DisallowNull] string command, [DisallowNull] string summary)
 		{
 			if(string.IsNullOrWhiteSpace(command))

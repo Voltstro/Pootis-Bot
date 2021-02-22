@@ -34,6 +34,7 @@ namespace Pootis_Bot.PackageDownloader
 		/// </summary>
 		/// <param name="framework">Whats the target framework</param>
 		/// <param name="packagesDirectory">Where is the location of our packages</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		public NuGetPackageResolver([DisallowNull] string framework, [DisallowNull] string packagesDirectory = "Packages/")
 		{
 			//Null checks
@@ -84,6 +85,7 @@ namespace Pootis_Bot.PackageDownloader
 		/// <param name="version">What version of the package to download</param>
 		/// <param name="cancellationToken">Cancellation token to use</param>
 		/// <returns>Returns a list of locations of all the .Dlls</returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public async Task<List<string>> DownloadPackage([DisallowNull] string packageId, [DisallowNull] Version version,
 			CancellationToken cancellationToken = default)
 		{
@@ -176,6 +178,7 @@ namespace Pootis_Bot.PackageDownloader
 		/// <param name="package">The <see cref="PackageIdentity" /> to use</param>
 		/// <param name="availablePackages"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public async Task GetPackageDependencies([DisallowNull] PackageIdentity package,
 			[DisallowNull] ISet<SourcePackageDependencyInfo> availablePackages)
 		{

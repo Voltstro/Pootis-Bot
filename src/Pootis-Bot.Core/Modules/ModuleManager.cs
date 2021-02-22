@@ -27,6 +27,7 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="modulesDir">The directory where the modules are kept</param>
 		/// <param name="assembliesDir">The directory of where external assemblies exist</param>
+		/// <exception cref="ArgumentNullException"></exception>
 		internal ModuleManager([DisallowNull] string modulesDir, [DisallowNull] string assembliesDir)
 		{
 			if (string.IsNullOrWhiteSpace(modulesDir))
@@ -58,6 +59,7 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="moduleName"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static bool CheckIfModuleIsLoaded([DisallowNull] string moduleName)
 		{
 			if (string.IsNullOrWhiteSpace(moduleName))

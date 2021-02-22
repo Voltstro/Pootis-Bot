@@ -18,6 +18,7 @@ namespace Pootis_Bot.Logging
 		/// <summary>
 		///     The logger's config, can only be set while the logger isn't running
 		/// </summary>
+		/// <exception cref="InitializationException"></exception>
 		public static LoggerConfig LoggerConfig
 		{
 			set

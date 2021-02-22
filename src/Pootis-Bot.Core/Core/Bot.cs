@@ -56,6 +56,7 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		///     Disposes of this bot instance
 		/// </summary>
+		/// <exception cref="InitializationException"></exception>
 		public void Dispose()
 		{
 			//The bot has already shutdown
@@ -69,6 +70,7 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		///     Runs the bot
 		/// </summary>
+		/// <exception cref="InitializationException"></exception>
 		public async Task Run()
 		{
 			//Don't want to be-able to run the bot multiple times

@@ -18,7 +18,7 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		/// <param name="modulesPath">The path of the modules</param>
 		/// <param name="assembliesPath">The path of the assemblies required by the modules</param>
-		public ModuleLoadContext(string modulesPath, string assembliesPath)
+		internal ModuleLoadContext(string modulesPath, string assembliesPath)
 		{
 			this.modulesPath = modulesPath;
 			this.assembliesPath = assembliesPath;
