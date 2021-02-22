@@ -73,7 +73,10 @@ namespace Pootis_Bot.Console.ConfigMenus
 			StringBuilder options = new StringBuilder();
 			options.Append($"----==== {configTitle} ====----\n");
 
-			for (int i = 0; i < configMenu.Count; i++) options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
+			for (int i = 0; i < configMenu.Count; i++)
+				options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
+
+			options.Append("exit - Exits and saves the config menu.");
 
 			System.Console.WriteLine(options.ToString());
 			while (showingMenu)
