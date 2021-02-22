@@ -8,12 +8,12 @@
     <Platforms>x64</Platforms>
     <Authors>Voltstro</Authors>
     <Company>Voltstro</Company>
-    <Copyright>Copyright © Voltstro 2018-2020</Copyright>
+    <Copyright>Copyright © Voltstro 2018-2021</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://pootis-bot.voltstro.dev</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Voltstro/Pootis-Bot</RepositoryUrl>
     <Description>Pootis-Bot, a multipurpose, open-source Discord bot written in the C# language using Discord.NET</Description>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
