@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pootis_Bot.Console.ConfigMenus
 {
@@ -11,8 +12,11 @@ namespace Pootis_Bot.Console.ConfigMenus
 	{
 		internal readonly string FormattedName;
 
-		public MenuItemFormat(string formatted)
+		public MenuItemFormat([DisallowNull] string formatted)
 		{
+			if(string.IsNullOrWhiteSpace(formatted))
+				throw new ArgumentNullException(nameof(formatted));
+
 			FormattedName = formatted;
 		}
 	}

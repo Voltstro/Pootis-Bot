@@ -58,8 +58,8 @@ namespace Pootis_Bot.Console.ConfigMenus
 				}
 				catch (Exception ex)
 				{
-					Logger.Error("An error occurred while setting up selection option for {@Property}! {@ExMessage}",
-						property.Name, ex.Message);
+					Logger.Error(ex, "An error occurred while setting up selection option for {Property}!",
+						property.Name);
 				}
 		}
 

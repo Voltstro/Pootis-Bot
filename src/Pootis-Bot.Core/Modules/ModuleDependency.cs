@@ -6,7 +6,7 @@ namespace Pootis_Bot.Modules
 	/// <summary>
 	///     A NuGet package required by a module
 	/// </summary>
-	public struct ModuleDependency
+	public readonly struct ModuleDependency
 	{
 		/// <summary>
 		///     Sets-up a dependency for a NuGet package

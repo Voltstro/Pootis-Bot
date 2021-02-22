@@ -7,6 +7,9 @@ using Discord.WebSocket;
 
 namespace Pootis_Bot.Helper
 {
+	/// <summary>
+	///		Provides utils for messages
+	/// </summary>
 	public static class MessageUtils
 	{
 		/// <summary>
@@ -15,8 +18,11 @@ namespace Pootis_Bot.Helper
 		/// <param name="channel"></param>
 		/// <param name="message"></param>
 		/// <returns></returns>
-		public static async Task<RestUserMessage> SendErrorMessageAsync(this ISocketMessageChannel channel, string message)
+		public static async Task<RestUserMessage> SendErrorMessageAsync(this ISocketMessageChannel channel, [DisallowNull] string message)
 		{
+			if(string.IsNullOrWhiteSpace(message))
+				throw new ArgumentNullException(nameof(message), "Message cannot be null or blank!");
+
 			return await channel.SendMessageAsync($"❌ {message}");
 		}
 

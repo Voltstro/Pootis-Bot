@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pootis_Bot.Console
 {
@@ -17,8 +18,14 @@ namespace Pootis_Bot.Console
 		/// </summary>
 		/// <param name="command">What command to enter into the console</param>
 		/// <param name="summary">A basic summary of the command</param>
-		public ConsoleCommand(string command, string summary)
+		public ConsoleCommand([DisallowNull] string command, [DisallowNull] string summary)
 		{
+			if(string.IsNullOrWhiteSpace(command))
+				throw new ArgumentNullException(nameof(command));
+
+			if(string.IsNullOrWhiteSpace(summary))
+				throw new ArgumentNullException(nameof(summary));
+
 			Command = command;
 			CommandSummary = summary;
 		}
