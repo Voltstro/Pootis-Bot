@@ -17,5 +17,4 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("59be9470-6d6e-46dd-abb6-a768291d3db6")]
 
-[assembly: InternalsVisibleTo("Pootis-Bot.Core")]
 [assembly: InternalsVisibleTo("Pootis-Bot.Tests")]
