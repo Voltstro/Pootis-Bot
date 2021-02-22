@@ -206,13 +206,13 @@ namespace Pootis_Bot.Core
 		}
 
 		[ConsoleCommand("config", "Opens the config menu for the bot")]
-		private static void ConfigMenuCommand(string[] args)
+		private static void ConfigMenuCommand()
 		{
 			OpenConfigMenu();
 		}
 
 		[ConsoleCommand("quit", "Quits running the bot")]
-		private static void ShutdownBotCommand(string[] args)
+		private static void ShutdownBotCommand()
 		{
 			isConsoleLoopRunning = false;
 		}

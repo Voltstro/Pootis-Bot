@@ -11,13 +11,14 @@ namespace Pootis_Bot.Console
 	/// </summary>
 	public static class ConsoleCommandManager
 	{
-		public delegate void MethodDelegate(string[] args);
+		public delegate void CommandArgumentsDelegate(string[] args);
+		public delegate void CommandDelegate();
 
 		private const BindingFlags BindingFlags = System.Reflection.BindingFlags.Static
 		                                          | System.Reflection.BindingFlags.Public
 		                                          | System.Reflection.BindingFlags.NonPublic;
 
-		private static readonly Dictionary<string, CommandInfo> commands = new Dictionary<string, CommandInfo>();
+		private static readonly Dictionary<string, CommandInfo> Commands = new Dictionary<string, CommandInfo>();
 
 		/// <summary>
 		///     Adds all <see cref="ConsoleCommand" /> found from an <see cref="Assembly" />
@@ -32,11 +33,16 @@ namespace Pootis_Bot.Console
 				if (!(Attribute.GetCustomAttribute(methodInfo, typeof(ConsoleCommand)) is ConsoleCommand attribute))
 					continue;
 
-				//Create the MethodDelegate from the ConCommand's method
-				MethodDelegate methodDelegate;
+				//Create the CommandArgumentsDelegate from the ConCommand's method
+				CommandArgumentsDelegate commandArgumentsDelegate = null;
+				CommandDelegate commandDelegate = null;
 				try
 				{
-					methodDelegate = (MethodDelegate) Delegate.CreateDelegate(typeof(MethodDelegate), methodInfo);
+					if (methodInfo.GetParameters().Length == 0)
+						commandDelegate =
+							(CommandDelegate) Delegate.CreateDelegate(typeof(CommandDelegate), methodInfo);
+					else
+						commandArgumentsDelegate = (CommandArgumentsDelegate) Delegate.CreateDelegate(typeof(CommandArgumentsDelegate), methodInfo);
 				}
 				catch (Exception ex)
 				{
@@ -45,16 +51,17 @@ namespace Pootis_Bot.Console
 					continue;
 				}
 
-				if (commands.ContainsKey(attribute.Command))
+				if (Commands.ContainsKey(attribute.Command))
 				{
 					Logger.Error("The command {Command} already exists!", attribute.Command);
 					continue;
 				}
 
-				commands.Add(attribute.Command, new CommandInfo
+				Commands.Add(attribute.Command, new CommandInfo
 				{
 					CommandSummary = attribute.CommandSummary,
-					Method = methodDelegate
+					CommandArgumentDel = commandArgumentsDelegate, 
+					CommandDel = commandDelegate
 				});
 
 				Logger.Debug("Added command {Command}", attribute.Command);
@@ -75,7 +82,7 @@ namespace Pootis_Bot.Console
 			if (tokens.Count < 1)
 				return;
 
-			if (commands.TryGetValue(tokens[0].ToLower(), out CommandInfo conCommand))
+			if (Commands.TryGetValue(tokens[0].ToLower(), out CommandInfo conCommand))
 			{
 				//Get the arguments that were inputted
 				string[] arguments = tokens.GetRange(1, tokens.Count - 1).ToArray();
@@ -83,7 +90,10 @@ namespace Pootis_Bot.Console
 				//Invoke the method
 				try
 				{
-					conCommand.Method.Invoke(arguments);
+					if(conCommand.CommandArgumentDel != null)
+						conCommand.CommandArgumentDel.Invoke(arguments);
+					else
+						conCommand.CommandDel.Invoke();
 				}
 				catch (Exception ex)
 				{
@@ -107,16 +117,13 @@ namespace Pootis_Bot.Console
 			if (string.IsNullOrWhiteSpace(command))
 				throw new ArgumentNullException(nameof(command));
 
-			return commands.ContainsKey(command);
+			return Commands.ContainsKey(command);
 		}
 
 		[ConsoleCommand("help", "Gets a list of all commands")]
-		// ReSharper disable once UnusedMember.Local
-#pragma warning disable IDE0060 // Remove unused parameter
-		private static void HelpCommand(string[] args)
-#pragma warning restore IDE0060 // Remove unused parameter
+		private static void HelpCommand()
 		{
-			foreach ((string command, CommandInfo commandInfo) in commands)
+			foreach ((string command, CommandInfo commandInfo) in Commands)
 				Logger.Info("`{Command}` - {Summary}", command, commandInfo.CommandSummary);
 		}
 

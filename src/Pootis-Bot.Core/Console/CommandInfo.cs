@@ -1,9 +1,12 @@
-﻿namespace Pootis_Bot.Console
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Pootis_Bot.Console
 {
 	internal struct CommandInfo
 	{
 		internal string CommandSummary;
 
-		internal ConsoleCommandManager.MethodDelegate Method;
+		[MaybeNull] internal ConsoleCommandManager.CommandArgumentsDelegate CommandArgumentDel;
+		[MaybeNull] internal ConsoleCommandManager.CommandDelegate CommandDel;
 	}
 }
