@@ -102,7 +102,7 @@ namespace Pootis_Bot.Modules
 				//Call the init function
 				try
 				{
-					modulesToInit[i].Init();
+					modulesToInit[i].Init().ConfigureAwait(false);
 					Logger.Info("Loaded module {Module} version {Version} by {Author}", moduleInfo.ModuleName,
 						moduleInfo.ModuleVersion.ToString(), moduleInfo.ModuleAuthorName);
 					modules.Add(modulesToInit[i]);
@@ -124,7 +124,7 @@ namespace Pootis_Bot.Modules
 				//Call the init function
 				try
 				{
-					modulesToInit[i].PostInit();
+					modulesToInit[i].PostInit().ConfigureAwait(false);
 				}
 				catch (Exception ex)
 				{
@@ -164,7 +164,7 @@ namespace Pootis_Bot.Modules
 			{
 				try
 				{
-					module.ClientConnected(client);
+					module.ClientConnected(client).ConfigureAwait(false);
 				}
 				catch (Exception ex)
 				{

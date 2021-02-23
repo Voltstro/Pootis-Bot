@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Discord.WebSocket;
 
 namespace Pootis_Bot.Modules
 {
+#pragma warning disable 1998
 	/// <summary>
 	///     A module for Pootis-Bot. Can be used to add command and functions to the bot
 	/// </summary>
@@ -19,7 +21,8 @@ namespace Pootis_Bot.Modules
 		/// <summary>
 		///     Called on initialization
 		/// </summary>
-		public virtual void Init()
+
+		public virtual async Task Init()
 		{
 		}
 
@@ -30,7 +33,7 @@ namespace Pootis_Bot.Modules
 		///         with <see cref="ModuleManager.CheckIfModuleIsLoaded" />, in-case you want to soft-depend on another module.
 		///     </para>
 		/// </summary>
-		public virtual void PostInit()
+		public virtual async Task PostInit()
 		{
 		}
 
@@ -38,7 +41,7 @@ namespace Pootis_Bot.Modules
 		///		Called when the <see cref="DiscordSocketClient"/> connects
 		/// </summary>
 		/// <param name="client"></param>
-		public virtual void ClientConnected([DisallowNull] DiscordSocketClient client)
+		public virtual async Task ClientConnected([DisallowNull] DiscordSocketClient client)
 		{
 		}
 
@@ -62,4 +65,5 @@ namespace Pootis_Bot.Modules
 			return cachedModuleInfo;
 		}
 	}
+#pragma warning restore 1998
 }
