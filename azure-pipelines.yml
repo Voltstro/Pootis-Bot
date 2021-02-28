@@ -25,11 +25,11 @@ jobs:
   steps:
   - template: azure/build.yml
 
-- job: DeployDocs
-  dependsOn:
-  - Windows
-  condition: succeeded()
-  pool:
-    vmImage: 'windows-2019'
-  steps:
-  - template: azure/docs.yml
+#- job: DeployDocs
+#  dependsOn:
+#  - Windows
+#  condition: succeeded()
+#  pool:
+#    vmImage: 'windows-2019'
+#  steps:
+#  - template: azure/docs.yml
