@@ -236,12 +236,30 @@ namespace Pootis_Bot.Modules
 					if (moduleDependency.PackageId != null) continue;
 
 					//The module doesn't exist
-					if (modulesToVerify.Exists(x => x.GetModuleInfoInternal().ModuleName == moduleDependency.ModuleName))
+					Module module = modulesToVerify.FirstOrDefault(x => x.GetModuleInfoInternal().ModuleName == moduleDependency.ModuleName);
+					if (module == null)
+					{
+						Logger.Error("The module '{Module}' depends on the module '{Dependent}' which has not been loaded!",
+							info.ModuleName, moduleDependency.ModuleName);
+						modulesToVerify.RemoveAt(i);
 						continue;
+					}
 
-					Logger.Error("The module {Module} depends on the module {Dependent} which has not been loaded!",
-						info.ModuleName, moduleDependency.ModuleName);
-					modulesToVerify.RemoveAt(i);
+					//Version checking
+					if (module.GetModuleInfoInternal().ModuleVersion.Major > 
+					    moduleDependency.ModuleMinVersion.Major)
+					{
+						Logger.Error("The module '{Module}' expects module '{Dependent}' version {ExceptedDependentVersion}! However, a version too new has been loaded!",
+							info.ModuleName, moduleDependency.ModuleName, moduleDependency.ModuleMinVersion);
+						modulesToVerify.RemoveAt(i);
+					}
+					else if (module.GetModuleInfoInternal().ModuleVersion.Major < 
+					    moduleDependency.ModuleMinVersion.Major)
+					{
+						Logger.Error("The module '{Module}' expects module '{Dependent}' version {ExceptedDependentVersion}! However, a version too old has been loaded!",
+							info.ModuleName, moduleDependency.ModuleName, moduleDependency.ModuleMinVersion);
+						modulesToVerify.RemoveAt(i);
+					}
 				}
 			}
 		}

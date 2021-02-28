@@ -29,14 +29,16 @@ namespace Pootis_Bot.Modules
 			PackageVersion = packageVersion ?? throw new ArgumentNullException(nameof(packageVersion));
 			AssemblyName = assemblyName;
 			ModuleName = null;
+			ModuleMinVersion = null;
 		}
 
 		/// <summary>
 		///     Sets-up a dependency for another module
 		/// </summary>
 		/// <param name="moduleName">The name of the module to depend on</param>
+		/// <param name="minVersion"></param>
 		/// <exception cref="ArgumentNullException"></exception>
-		public ModuleDependency([DisallowNull] string moduleName)
+		public ModuleDependency([DisallowNull] string moduleName, [DisallowNull] Version minVersion)
 		{
 			if (string.IsNullOrWhiteSpace(moduleName))
 				throw new ArgumentNullException(nameof(moduleName));
@@ -45,6 +47,7 @@ namespace Pootis_Bot.Modules
 			PackageVersion = null;
 			AssemblyName = null;
 			ModuleName = moduleName;
+			ModuleMinVersion = minVersion;
 		}
 
 		/// <summary>
@@ -66,5 +69,10 @@ namespace Pootis_Bot.Modules
 		///     The module that a module depends on
 		/// </summary>
 		internal readonly string ModuleName;
+
+		/// <summary>
+		///		Min expected module version
+		/// </summary>
+		internal readonly Version ModuleMinVersion;
 	}
 }
