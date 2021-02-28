@@ -83,55 +83,56 @@ namespace Pootis_Bot.Modules
 
 			//Get all dlls in the directory
 			string[] dlls = Directory.GetFiles(modulesDirectory, "*.dll");
-			List<Module> modulesToInit = new List<Module>();
+
+			List<Module> installedModules = new List<Module>();
 			foreach (string dll in dlls)
 			{
 				Assembly loadedAssembly = LoadModule(dll);
-				modulesToInit.AddRange(LoadModulesInAssembly(loadedAssembly));
+				installedModules.AddRange(LoadModulesInAssembly(loadedAssembly));
 			}
 
 			//Verify its dependencies
-			VerifyModuleDependencies(ref modulesToInit, packageResolver);
+			VerifyModuleDependencies(ref installedModules, packageResolver);
 			packageResolver.Dispose();
 
 			//Init all the modules
-			for (int i = 0; i < modulesToInit.Count; i++)
+			for (int i = 0; i < installedModules.Count; i++)
 			{
-				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfoInternal();
+				ModuleInfo moduleInfo = installedModules[i].GetModuleInfoInternal();
 
 				//Call the init function
 				try
 				{
-					modulesToInit[i].Init().ConfigureAwait(false);
+					installedModules[i].Init().ConfigureAwait(false);
 					Logger.Info("Loaded module {Module} version {Version} by {Author}", moduleInfo.ModuleName,
 						moduleInfo.ModuleVersion.ToString(), moduleInfo.ModuleAuthorName);
-					modules.Add(modulesToInit[i]);
+					modules.Add(installedModules[i]);
 				}
 				catch (Exception ex)
 				{
 					Logger.Error(
 						ex, "Something went wrong while initializing {ModuleName}! The module will not be loaded.",
 						moduleInfo.ModuleName);
-					modulesToInit.RemoveAt(i);
+					installedModules.RemoveAt(i);
 				}
 			}
 
 			//Post init
-			for (int i = 0; i < modulesToInit.Count; i++)
+			for (int i = 0; i < installedModules.Count; i++)
 			{
-				ModuleInfo moduleInfo = modulesToInit[i].GetModuleInfoInternal();
+				ModuleInfo moduleInfo = installedModules[i].GetModuleInfoInternal();
 
 				//Call the init function
 				try
 				{
-					modulesToInit[i].PostInit().ConfigureAwait(false);
+					installedModules[i].PostInit().ConfigureAwait(false);
 				}
 				catch (Exception ex)
 				{
 					Logger.Error(
 						ex, "Something went wrong while post initializing {ModuleName}! The module will not be loaded.",
 						moduleInfo.ModuleName);
-					modulesToInit.RemoveAt(i);
+					installedModules.RemoveAt(i);
 				}
 			}
 		}
@@ -221,7 +222,7 @@ namespace Pootis_Bot.Modules
 			return foundModules;
 		}
 
-		private void VerifyModuleDependencies(ref List<Module> modulesToVerify, NuGetPackageResolver resolver)
+		internal void VerifyModuleDependencies(ref List<Module> modulesToVerify, NuGetPackageResolver resolver)
 		{
 			for (int i = 0; i < modulesToVerify.Count; i++)
 			{
@@ -253,8 +254,8 @@ namespace Pootis_Bot.Modules
 							info.ModuleName, moduleDependency.ModuleName, moduleDependency.ModuleMinVersion);
 						modulesToVerify.RemoveAt(i);
 					}
-					else if (module.GetModuleInfoInternal().ModuleVersion.Major < 
-					    moduleDependency.ModuleMinVersion.Major)
+
+					if (module.GetModuleInfoInternal().ModuleVersion.Major < moduleDependency.ModuleMinVersion.Major)
 					{
 						Logger.Error("The module '{Module}' expects module '{Dependent}' version {ExceptedDependentVersion}! However, a version too old has been loaded!",
 							info.ModuleName, moduleDependency.ModuleName, moduleDependency.ModuleMinVersion);

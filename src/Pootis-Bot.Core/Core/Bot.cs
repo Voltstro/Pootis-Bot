@@ -46,7 +46,7 @@ namespace Pootis_Bot.Core
 		/// <summary>
 		///     The location of the application
 		/// </summary>
-		public static string ApplicationLocation { get; private set; }
+		public static string ApplicationLocation { get; internal set; }
 
 		/// <summary>
 		///		Is the loop for handling console commands running?
