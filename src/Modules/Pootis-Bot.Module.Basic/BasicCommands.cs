@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Pootis_Bot.Config;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helper;
@@ -69,6 +70,26 @@ namespace Pootis_Bot.Module.Basic
 			}
 
 			await Context.Channel.SendMessageAsync($"I choose... {selection[new Random().Next(0, selection.Length)]}");
+		}
+
+		[Command("server")]
+		[Summary("Displays information about the server")]
+		public async Task Server()
+		{
+			SocketGuild guild = Context.Guild;
+
+			EmbedBuilder embed = new EmbedBuilder();
+			embed.WithTitle("Server Details");
+			embed.WithDescription("**__Server__**" +
+			                      $"\n**Server Name:** {guild.Name}" +
+			                      $"\n**Server Id:** {guild.Id}" +
+			                      $"\n**Server Member Count:** {guild.MemberCount}" +
+			                      "\n\n**__Server Owner__**" +
+			                      $"\n**Owner Name: **{guild.Owner.Username}");
+			embed.WithThumbnailUrl(guild.IconUrl);
+			embed.WithColor(new Color(241, 196, 15));
+
+			await Context.Channel.SendEmbedAsync(embed);
 		}
 	}
 }
