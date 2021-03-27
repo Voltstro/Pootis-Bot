@@ -1,8 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Cysharp.Text;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
+using Pootis_Bot.Core;
 using Pootis_Bot.Helper;
 
 namespace Pootis_Bot.Module.Profiles
@@ -13,10 +18,14 @@ namespace Pootis_Bot.Module.Profiles
 	public class ProfileCommands : ModuleBase<SocketCommandContext>
 	{
 		private readonly ProfilesConfig profilesConfig;
+		private string displayName;
 
 		public ProfileCommands()
 		{
 			profilesConfig = Config<ProfilesConfig>.Instance;
+			BotConfig config = Config<BotConfig>.Instance;
+			displayName = config.BotName;
+			config.Saved += () => displayName = config.BotName;
 		}
 
 		[Command]
@@ -62,6 +71,46 @@ namespace Pootis_Bot.Module.Profiles
 			profilesConfig.Save();
 
 			await Context.Channel.SendMessageAsync($"Your profile message was updated to '{message}'");
+		}
+
+		[Command("top10")]
+		[Summary("Gets the top 10 profiles")]
+		public async Task GetTop10Profiles()
+		{
+			Profile[] allProfiles = profilesConfig.GetAllProfiles();
+			Array.Sort(allProfiles, new SortProfiles());
+			//Array.Reverse(allProfiles);
+
+			Utf16ValueStringBuilder sb = ZString.CreateStringBuilder();
+			sb.Append($"```csharp\n 📋 Top 10 {displayName} Profiles\n ========================\n");
+			int count = 1;
+			foreach (Profile user in allProfiles.Where(_ => count <= 10))
+			{
+				SocketUser targetUser = Context.Client.GetUser(user.Id);
+
+				sb.Append(
+					$"\n [{count}] -- # {targetUser.Username}\n         └ Level: {user.LevelNumber}\n         └ Xp: {user.Xp}");
+				count++;
+			}
+
+			Profile callersProfile = profilesConfig.GetOrCreateProfile(Context.User);
+			sb.Append(
+				$"\n------------------------\n 😊 {Context.User.Username}'s Position: {Array.IndexOf(allProfiles, callersProfile) + 1}      {Context.User.Username}'s Level: {callersProfile.LevelNumber}      {Context.User.Username}'s Xp: {callersProfile.Xp}```");
+
+			await Context.Channel.SendMessageAsync(sb.ToString());
+			sb.Dispose();
+		}
+
+		private class SortProfiles : IComparer<Profile>
+		{
+			public int Compare(Profile x, Profile y)
+			{
+				if (y != null && x != null && x.Xp < y.Xp)
+					return 1;
+				if (y != null && x != null && x.Xp > y.Xp)
+					return -1;
+				return 0;
+			}
 		}
 	}
 }

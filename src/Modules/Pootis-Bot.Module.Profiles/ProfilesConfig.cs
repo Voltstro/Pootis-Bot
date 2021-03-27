@@ -37,6 +37,12 @@ namespace Pootis_Bot.Module.Profiles
 			return GetOrCreateProfile(user.Id);
 		}
 
+		/// <summary>
+		///		Gets all <see cref="Profile"/>s
+		/// </summary>
+		/// <returns></returns>
+		public Profile[] GetAllProfiles() => profiles.ToArray();
+
 		private Profile CreateProfile(ulong id)
 		{
 			Profile profile = new Profile(id);
