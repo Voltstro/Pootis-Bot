@@ -7,6 +7,7 @@ using Pootis_Bot.Helper;
 
 namespace Pootis_Bot.Module.Profiles
 {
+	[Group("profile")]
 	[Name("Profile Commands")]
 	[Summary("Provides profile commands")]
 	public class ProfileCommands : ModuleBase<SocketCommandContext>
@@ -18,7 +19,7 @@ namespace Pootis_Bot.Module.Profiles
 			profilesConfig = Config<ProfilesConfig>.Instance;
 		}
 
-		[Command("profile")]
+		[Command]
 		[Summary("Gets a user's profile")]
 		public async Task GetUserProfile([Remainder] SocketUser user)
 		{
@@ -36,11 +37,28 @@ namespace Pootis_Bot.Module.Profiles
 			await Context.Channel.SendEmbedAsync(embed);
 		}
 
-		[Command("profile")]
+		[Command]
 		[Summary("Gets your profile")]
 		public async Task GetUserProfile()
 		{
 			await GetUserProfile(Context.User);
+		}
+
+		[Command("message")]
+		[Summary("Sets your user message")]
+		public async Task SetUserProfileMessage([Remainder] string message)
+		{
+			if (message == null)
+			{
+				await Context.Channel.SendErrorMessageAsync("Your message cannot be null!");
+				return;
+			}
+
+			Profile profile = profilesConfig.GetOrCreateProfile(Context.User);
+			profile.UserProfileMessage = message;
+			profilesConfig.Save();
+
+			await Context.Channel.SendMessageAsync($"Your profile message was updated to '{message}'");
 		}
 	}
 }
