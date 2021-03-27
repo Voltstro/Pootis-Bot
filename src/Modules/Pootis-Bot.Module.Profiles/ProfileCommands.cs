@@ -23,6 +23,9 @@ namespace Pootis_Bot.Module.Profiles
 		[Summary("Gets a user's profile")]
 		public async Task GetUserProfile([Remainder] SocketUser user)
 		{
+			if (user.IsBot || user.IsWebhook)
+				return;
+
 			Profile profile = profilesConfig.GetOrCreateProfile(user);
 
 			EmbedBuilder embed = new EmbedBuilder();
