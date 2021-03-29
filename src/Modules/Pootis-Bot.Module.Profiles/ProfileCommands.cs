@@ -18,12 +18,14 @@ namespace Pootis_Bot.Module.Profiles
 	public class ProfileCommands : ModuleBase<SocketCommandContext>
 	{
 		private readonly ProfilesConfig profilesConfig;
+		private readonly SortProfilesComparer profilesComparer;
 		private string displayName;
 
 		public ProfileCommands()
 		{
 			profilesConfig = Config<ProfilesConfig>.Instance;
 			BotConfig config = Config<BotConfig>.Instance;
+			profilesComparer = new SortProfilesComparer();
 			displayName = config.BotName;
 			config.Saved += () => displayName = config.BotName;
 		}
@@ -78,8 +80,7 @@ namespace Pootis_Bot.Module.Profiles
 		public async Task GetTop10Profiles()
 		{
 			Profile[] allProfiles = profilesConfig.GetAllProfiles();
-			Array.Sort(allProfiles, new SortProfiles());
-			//Array.Reverse(allProfiles);
+			Array.Sort(allProfiles, profilesComparer);
 
 			Utf16ValueStringBuilder sb = ZString.CreateStringBuilder();
 			sb.Append($"```csharp\n 📋 Top 10 {displayName} Profiles\n ========================\n");
@@ -101,7 +102,7 @@ namespace Pootis_Bot.Module.Profiles
 			sb.Dispose();
 		}
 
-		private class SortProfiles : IComparer<Profile>
+		private class SortProfilesComparer : IComparer<Profile>
 		{
 			public int Compare(Profile x, Profile y)
 			{
