@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -9,6 +10,10 @@ namespace Pootis_Bot.Module.Profiles
 {
 	public class ProfilesConfig : Config<ProfilesConfig>
 	{
+		public uint XpGiveAmount { get; internal set; } = 15;
+
+		public TimeSpan XpGiveCooldown { get; internal set; } = new TimeSpan(0, 0, 15);
+
 		[JsonProperty("Profiles")]
 		private List<Profile> profiles = new List<Profile>();
 
