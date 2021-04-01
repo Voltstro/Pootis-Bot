@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
 using Pootis_Bot.Logging;
@@ -19,13 +20,13 @@ namespace Pootis_Bot.Module.Profiles
 			users = new List<UserLevelData>();
 		}
 
-		internal Task HandelUserMessage(SocketMessage message)
+		internal async Task HandelUserMessage(SocketMessage message)
 		{
 			SocketUser messageAuthor = message.Author;
 
 			//We don't allow bots or web hooks
 			if(messageAuthor.IsBot || messageAuthor.IsWebhook)
-				return Task.CompletedTask;
+				return;
 
 			UserLevelData user = GetOrCreateUser(message);
 
@@ -34,34 +35,36 @@ namespace Pootis_Bot.Module.Profiles
 			if (userMessage == user.LastMessage)
 			{
 				user.LastMessage = userMessage;
-				return Task.CompletedTask;
+				return;
 			}
 
 			//Check cooldown time
 			if ((DateTime.UtcNow - user.LastMessageThatAddedXpTime).TotalSeconds <=
 			    profilesConfig.XpGiveCooldown.TotalSeconds)
-			{
-				return Task.CompletedTask;
-			}
+				return;
 
 			//Add XP to the user
-			AddXpToUser(messageAuthor);
+			Profile profile = profilesConfig.GetOrCreateProfile(messageAuthor);
+			uint lastLevel = profile.LevelNumber;
+			AddXpToUser(profile);
 			user.LastMessage = userMessage;
 			user.LastMessageThatAddedXpTime = DateTime.UtcNow;
 
-			return Task.CompletedTask;
+			//We reached a new level
+			if(profile.LevelNumber > lastLevel)
+				await LevelUpMessage(message.Channel, messageAuthor, profile);
 		}
 
-		internal void AddXpToUser(SocketUser user)
+		internal void AddXpToUser(Profile profile)
 		{
-			//We don't allow bots or web hooks
-			if(user.IsBot || user.IsWebhook)
-				return;
-
-			Profile profile = profilesConfig.GetOrCreateProfile(user);
 			profile.Xp += profilesConfig.XpGiveAmount;
 			profilesConfig.Save();
-			Logger.Debug("Added {XpAmount} XP to user {UserId}", profilesConfig.XpGiveAmount, user.Id);
+			Logger.Debug("Added {XpAmount} XP to user {UserId}", profilesConfig.XpGiveAmount, profile.Id);
+		}
+
+		private static async Task LevelUpMessage(ISocketMessageChannel channel, IMentionable user, Profile profile)
+		{
+			await channel.SendMessageAsync($"{user.Mention} leveled up! Now on level **{profile.LevelNumber}**!");
 		}
 
 		private UserLevelData GetOrCreateUser(SocketMessage message)
