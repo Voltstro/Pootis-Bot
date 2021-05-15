@@ -14,6 +14,10 @@ namespace Pootis_Bot.Config
 	/// <typeparam name="T">The class of settings to save</typeparam>
 	public class Config<T> where T : Config<T>, new()
 	{
+		protected Config()
+		{
+		}
+		
 		/// <summary>
 		///     What is the expected config version
 		///		<para>This can be used if you add some extra options to the config in a later release.</para>
