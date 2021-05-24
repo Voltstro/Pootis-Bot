@@ -1,5 +1,5 @@
 ﻿using System;
-using Pootis_Bot.Shared.Exceptions;
+using Pootis_Bot.Exceptions;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
