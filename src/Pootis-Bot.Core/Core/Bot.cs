@@ -8,6 +8,7 @@ using Pootis_Bot.Config;
 using Pootis_Bot.Console;
 using Pootis_Bot.Console.ConfigMenus;
 using Pootis_Bot.Exceptions;
+using Pootis_Bot.Jobs;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 
@@ -89,6 +90,9 @@ namespace Pootis_Bot.Core
 			config = Config<BotConfig>.Instance;
 			config.Saved += ConfigSaved;
 			ConfigSaved();
+			
+			//Init jobs system
+			JobsSystem.InitJobs();
 
 			//Load modules
 			moduleManager = new ModuleManager("Modules/", "Assemblies/");
@@ -198,6 +202,8 @@ namespace Pootis_Bot.Core
 
 			discordClient.StopAsync().GetAwaiter().GetResult();
 			discordClient.Dispose();
+			
+			JobsSystem.Shutdown();
 
 			moduleManager.Dispose();
 			Logger.Shutdown();
