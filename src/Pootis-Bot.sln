@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Basic", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.Module.Profiles", "Modules\Pootis-Bot.Module.Profiles\Pootis-Bot.Module.Profiles.csproj", "{209671DE-3C9C-41AA-8229-06B8B46F0EE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.AutoVC", "Modules\Pootis-Bot.Module.AutoVC\Pootis-Bot.Module.AutoVC.csproj", "{43DECB97-DCEF-4C82-8AB6-65070E9AC92A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -53,6 +55,10 @@ Global
 		{209671DE-3C9C-41AA-8229-06B8B46F0EE0}.Debug|x64.Build.0 = Debug|x64
 		{209671DE-3C9C-41AA-8229-06B8B46F0EE0}.Release|x64.ActiveCfg = Release|x64
 		{209671DE-3C9C-41AA-8229-06B8B46F0EE0}.Release|x64.Build.0 = Release|x64
+		{43DECB97-DCEF-4C82-8AB6-65070E9AC92A}.Debug|x64.ActiveCfg = Debug|x64
+		{43DECB97-DCEF-4C82-8AB6-65070E9AC92A}.Debug|x64.Build.0 = Debug|x64
+		{43DECB97-DCEF-4C82-8AB6-65070E9AC92A}.Release|x64.ActiveCfg = Release|x64
+		{43DECB97-DCEF-4C82-8AB6-65070E9AC92A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D31B3CB9-AB41-4134-9345-2FF70F4AAAF0} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 		{209671DE-3C9C-41AA-8229-06B8B46F0EE0} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
+		{43DECB97-DCEF-4C82-8AB6-65070E9AC92A} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F633C8E5-4849-4385-8482-1EE7166D39CF}
