@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -9,6 +8,9 @@ using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Module.AutoVC
 {
+    /// <summary>
+    ///     Main class for Auto VCs
+    /// </summary>
     internal static class AutoVCService
     {
         private static readonly AutoVCConfig Config;
@@ -18,6 +20,10 @@ namespace Pootis_Bot.Module.AutoVC
             Config ??= Config<AutoVCConfig>.Instance;
         }
         
+        /// <summary>
+        ///     Checks if a channel is an auto VC and deletes it
+        /// </summary>
+        /// <param name="channel"></param>
         public static void DeleteChannel(SocketChannel channel)
         {
             try
@@ -35,6 +41,12 @@ namespace Pootis_Bot.Module.AutoVC
             }
         }
         
+        /// <summary>
+        ///     Creates an active sub auto VC
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="user"></param>
+        /// <param name="guild"></param>
         public static async Task CreateActiveSubAutoVC(SocketVoiceChannel channel, SocketGuildUser user, SocketGuild guild)
         {
             if (Config.TryGetAutoVC(channel.Id, out AutoVC autoVC))
@@ -61,6 +73,10 @@ namespace Pootis_Bot.Module.AutoVC
             }
         }
 
+        /// <summary>
+        ///     Removes an active sub auto VC
+        /// </summary>
+        /// <param name="channel"></param>
         public static async Task RemoveActiveSubAutoVC(SocketVoiceChannel channel)
         {
             if(channel.Users.Count != 0)
@@ -76,6 +92,10 @@ namespace Pootis_Bot.Module.AutoVC
             Logger.Debug("Removed active auto VC {ActiveAutoVCId} as it had no users.", channel.Id);
         }
 
+        /// <summary>
+        ///     Checks all auto VCs to make sure they still exist
+        /// </summary>
+        /// <param name="client"></param>
         public static async Task CheckAutoVCs(DiscordSocketClient client)
         {
             try
@@ -132,9 +152,14 @@ namespace Pootis_Bot.Module.AutoVC
             }
         }
         
-        public static bool IsAutoVCChannel(SocketVoiceState channel)
+        /// <summary>
+        ///     Checks if an <see cref="SocketVoiceChannel"/> is an auto VC
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <returns></returns>
+        public static bool IsAutoVCChannel(SocketVoiceChannel channel)
         {
-            return channel.VoiceChannel != null && Config.TryGetAutoVC(channel.VoiceChannel.Id, out AutoVC _);
+            return channel != null && Config.TryGetAutoVC(channel.Id, out AutoVC _);
         }
     }
 }

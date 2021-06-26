@@ -23,7 +23,7 @@ namespace Pootis_Bot.Module.AutoVC
             client.UserVoiceStateUpdated += (user, channelBefore, channelAfter) =>
             {
                 //The user joined an auto VC channel
-                if (AutoVCService.IsAutoVCChannel(channelAfter))
+                if (AutoVCService.IsAutoVCChannel(channelAfter.VoiceChannel))
                 {
                     _ = Task.Run(() => AutoVCService.CreateActiveSubAutoVC(channelAfter.VoiceChannel,
                         (SocketGuildUser) user,
