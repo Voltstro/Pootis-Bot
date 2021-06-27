@@ -8,6 +8,9 @@ using Pootis_Bot.Module.RuleReaction.Entities;
 
 namespace Pootis_Bot.Module.RuleReaction
 {
+    /// <summary>
+    ///     Provides stuff for the rule reaction service
+    /// </summary>
     internal static class RuleReactionService
     {
         private static readonly RuleReactionConfig Config;
@@ -17,6 +20,10 @@ namespace Pootis_Bot.Module.RuleReaction
             Config ??= Config<RuleReactionConfig>.Instance;
         }
 
+        /// <summary>
+        ///     Checks all servers
+        /// </summary>
+        /// <param name="client"></param>
         public static async Task CheckAllServer(DiscordSocketClient client)
         {
             Logger.Debug("Checking rule reaction servers...");
@@ -27,6 +34,13 @@ namespace Pootis_Bot.Module.RuleReaction
             }
         }
         
+        /// <summary>
+        ///     Checks a <see cref="RuleReactionServer"/>
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="client"></param>
+        /// <param name="careAboutEnabled"></param>
+        /// <returns></returns>
         public static async Task<bool> CheckServer(RuleReactionServer server, DiscordSocketClient client, bool careAboutEnabled = false)
         {
             //Get guild
@@ -68,6 +82,11 @@ namespace Pootis_Bot.Module.RuleReaction
             return false;
         }
 
+        /// <summary>
+        ///     Call when a reaction is added
+        /// </summary>
+        /// <param name="reaction"></param>
+        /// <param name="client"></param>
         public static async Task ReactionAdded(SocketReaction reaction, DiscordSocketClient client)
         {
             RuleReactionServer server = Config.RuleReactionServers.FirstOrDefault(x => x.MessageId == reaction.MessageId);
@@ -81,6 +100,11 @@ namespace Pootis_Bot.Module.RuleReaction
             }
         }
 
+        /// <summary>
+        ///     Call when a role is deleted
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public static Task RoleDeleted(SocketRole role)
         {
             RuleReactionServer server = Config.GetOrCreateRuleReactionServer(role.Guild.Id);
@@ -92,6 +116,11 @@ namespace Pootis_Bot.Module.RuleReaction
             return Task.CompletedTask;
         }
         
+        /// <summary>
+        ///     Call when a channel is deleted
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <returns></returns>
         public static Task ChannelDeleted(SocketChannel channel)
         {
             RuleReactionServer server = Config.RuleReactionServers.FirstOrDefault(x => x.ChannelId == channel.Id);
@@ -103,6 +132,12 @@ namespace Pootis_Bot.Module.RuleReaction
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        ///     Call when a message is deleted
+        /// </summary>
+        /// <param name="cache"></param>
+        /// <param name="messageChannel"></param>
+        /// <returns></returns>
         public static Task MessageDeleted(Cacheable<IMessage, ulong> cache, ISocketMessageChannel messageChannel)
         {
             if(!cache.HasValue)
