@@ -21,7 +21,8 @@ namespace Pootis_Bot.Module.AutoVC
         
         [Command("add")]
         [Summary("Adds an auto voice channel")]
-        [RequireBotPermission(ChannelPermission.ManageChannels)]
+        [RequireBotPermission(GuildPermission.ManageChannels)]
+        [RequireBotPermission(GuildPermission.MoveMembers)]
         public async Task AddAutoVC(string baseName)
         {
             RestVoiceChannel voiceChannel = await Context.Guild.CreateVoiceChannelAsync(ZString.Format(config.BaseName, baseName));

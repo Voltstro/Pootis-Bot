@@ -5,6 +5,8 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Config;
+using Pootis_Bot.Discord;
+using Pootis_Bot.Discord.TypeReaders;
 using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Core
@@ -30,6 +32,7 @@ namespace Pootis_Bot.Core
 			client.MessageReceived += HandleMessage;
 
 			commandService = new CommandService();
+			commandService.AddTypeReader<Emoji>(new EmojiTypeReader());
 			serviceProvider = new ServiceCollection()
 				.AddSingleton(client)
 				.AddSingleton(commandService)
@@ -61,6 +64,8 @@ namespace Pootis_Bot.Core
 			//Handle it result
 			if (!result.IsSuccess && result.Error == CommandError.UnmetPrecondition)
 				await context.Channel.SendMessageAsync("You do not meet the conditions to use that command!");
+			if (result.Error == CommandError.ParseFailed)
+				await context.Channel.SendMessageAsync($"Failed to run command! {result.ErrorReason}");
 			else if (!result.IsSuccess && result.Error == CommandError.Exception)
 			{
 				await context.Channel.SendMessageAsync(
