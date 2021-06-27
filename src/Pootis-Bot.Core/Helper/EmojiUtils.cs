@@ -22,10 +22,20 @@ namespace Pootis_Bot.Helper
         /// <returns></returns>
         public static bool DoesContainEmoji(this string input, out int count)
         {
-            MatchCollection matches = EmojiRegex.Matches(input);
+            MatchCollection matches = input.DoesContainEmoji();
             count = matches.Count;
 
             return matches.Count != 0;
+        }
+
+        /// <summary>
+        ///     Lower-level version of <see cref="DoesContainEmoji(string,out int)"/>
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static MatchCollection DoesContainEmoji(this string input)
+        {
+            return EmojiRegex.Matches(input);
         }
 
         /// <summary>
