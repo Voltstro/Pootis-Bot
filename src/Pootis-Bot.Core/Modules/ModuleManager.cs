@@ -69,6 +69,15 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
+		///		Gets all loaded modules
+		/// </summary>
+		/// <returns></returns>
+		internal static List<Module> GetLoadedModules()
+		{
+			return modules;
+		}
+
+		/// <summary>
 		///     Loads all modules in the <see cref="modulesDirectory" />
 		/// </summary>
 		internal void LoadModules()

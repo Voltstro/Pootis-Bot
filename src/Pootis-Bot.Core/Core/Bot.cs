@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Cysharp.Text;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
@@ -55,17 +57,16 @@ namespace Pootis_Bot.Core
 		private static bool isConsoleLoopRunning;
 
 		/// <summary>
-		///     Disposes of this bot instance
+		///		The bot instance
 		/// </summary>
-		/// <exception cref="InitializationException"></exception>
-		public void Dispose()
+		public static Bot Instance { get; private set; }
+		
+		public Bot()
 		{
-			//The bot has already shutdown
-			if (!IsRunning)
-				throw new InitializationException("The bot has already shutdown!");
+			if (Instance != null)
+				throw new InitializationException("There already is an instance of the bot!");
 
-			ReleaseResources();
-			GC.SuppressFinalize(this);
+			Instance = this;
 		}
 
 		/// <summary>
@@ -191,11 +192,27 @@ namespace Pootis_Bot.Core
 			}
 		}
 
+		#region Destroy
+		
 		~Bot()
 		{
 			ReleaseResources();
 		}
 
+		/// <summary>
+		///     Disposes of this bot instance
+		/// </summary>
+		/// <exception cref="InitializationException"></exception>
+		public void Dispose()
+		{
+			//The bot has already shutdown
+			if (!IsRunning)
+				throw new InitializationException("The bot has already shutdown!");
+
+			ReleaseResources();
+			GC.SuppressFinalize(this);
+		}
+		
 		private void ReleaseResources()
 		{
 			isConsoleLoopRunning = false;
@@ -209,12 +226,24 @@ namespace Pootis_Bot.Core
 			Logger.Shutdown();
 
 			IsRunning = false;
+			Instance = null;
 		}
+
+		#endregion
+
+		#region Commands
 
 		[ConsoleCommand("config", "Opens the config menu for the bot")]
 		private static void ConfigMenuCommand()
 		{
 			OpenConfigMenu();
+		}
+
+		[ConsoleCommand("modules", "Gets a list of all loaded modules")]
+		private static void ModulesCommand()
+		{
+			foreach (ModuleInfo moduleInfo in ModuleManager.GetLoadedModules().Select(module => module.GetModuleInfoInternal()))
+				Logger.Info("{ModuleName} {ModuleVersion} by {ModuleAuthor}", moduleInfo.ModuleName, moduleInfo.ModuleVersion, moduleInfo.ModuleAuthorName);
 		}
 
 		[ConsoleCommand("quit", "Quits running the bot")]
@@ -243,5 +272,7 @@ namespace Pootis_Bot.Core
 
 			config.Save();
 		}
+		
+		#endregion
 	}
 }
