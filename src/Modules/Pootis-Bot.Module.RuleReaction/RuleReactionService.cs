@@ -48,11 +48,7 @@ namespace Pootis_Bot.Module.RuleReaction
             SocketRole role = guild.GetRole(server.RoleId);
             if (role == null)
             {
-                server.RoleId = 0;
-                server.Enabled = false;
-                Config.Save();
-                
-                Logger.Debug("Disabled server {ServerId} rule reaction as the role no longer exists.", server.GuildId);
+                DisableRole(server);
                 return false;
             }
 
@@ -60,28 +56,19 @@ namespace Pootis_Bot.Module.RuleReaction
             SocketTextChannel channel = guild.GetTextChannel(server.ChannelId);
             if (channel == null)
             {
-                server.Enabled = false;
-                server.ChannelId = 0;
-                server.MessageId = 0;
-                Config.Save();
-                
-                Logger.Debug("Disabled server {ServerId} rule reaction as the text channel no longer exists.", server.GuildId);
+                DisableChannel(server);
                 return false;
             }
             
             //Check the message still exists
             IMessage message = await channel.GetMessageAsync(server.MessageId);
             if (message != null) return true;
-            
-            server.Enabled = false;
-            server.MessageId = 0;
-            Config.Save();
-                
-            Logger.Debug("Disabled server {ServerId} rule reaction as the message no longer exists.", server.GuildId);
+
+            DisableMessage(server);
             return false;
         }
 
-        public static async Task ReactionAdded(ISocketMessageChannel channel, SocketReaction reaction, DiscordSocketClient client)
+        public static async Task ReactionAdded(SocketReaction reaction, DiscordSocketClient client)
         {
             RuleReactionServer server = Config.RuleReactionServers.FirstOrDefault(x => x.MessageId == reaction.MessageId);
             if(server is not {Enabled: true})
@@ -92,6 +79,70 @@ namespace Pootis_Bot.Module.RuleReaction
             {
                 await client.GetGuild(server.GuildId).GetUser(reaction.UserId).AddRoleAsync(server.RoleId);
             }
+        }
+
+        public static Task RoleDeleted(SocketRole role)
+        {
+            RuleReactionServer server = Config.GetOrCreateRuleReactionServer(role.Guild.Id);
+            if(server is not {Enabled: true})
+                return Task.CompletedTask;
+
+            if (server.RoleId == role.Id)
+                DisableRole(server);
+            return Task.CompletedTask;
+        }
+        
+        public static Task ChannelDeleted(SocketChannel channel)
+        {
+            RuleReactionServer server = Config.RuleReactionServers.FirstOrDefault(x => x.ChannelId == channel.Id);
+            if(server is not {Enabled: true})
+                return Task.CompletedTask;
+
+            if (server.ChannelId == channel.Id)
+                DisableChannel(server);
+            return Task.CompletedTask;
+        }
+
+        public static Task MessageDeleted(Cacheable<IMessage, ulong> cache, ISocketMessageChannel messageChannel)
+        {
+            if(!cache.HasValue)
+                return Task.CompletedTask;
+            IMessage message = cache.Value;
+
+            RuleReactionServer server = Config.RuleReactionServers.FirstOrDefault(x => x.MessageId == message.Id);
+            if(server is not {Enabled: true})
+                return Task.CompletedTask;
+            
+            if(server.MessageId == message.Id)
+                DisableMessage(server);
+            return Task.CompletedTask;
+        }
+
+        private static void DisableRole(RuleReactionServer server)
+        {
+            server.RoleId = 0;
+            server.Enabled = false;
+            Config.Save();
+            Logger.Debug("Disabled server {ServerId} rule reaction as the role no longer exists.", server.GuildId);
+        }
+
+        private static void DisableChannel(RuleReactionServer server)
+        {
+            server.Enabled = false;
+            server.ChannelId = 0;
+            server.MessageId = 0;
+            Config.Save();
+                
+            Logger.Debug("Disabled server {ServerId} rule reaction as the text channel no longer exists.", server.GuildId);
+        }
+
+        private static void DisableMessage(RuleReactionServer server)
+        {
+            server.Enabled = false;
+            server.MessageId = 0;
+            Config.Save();
+                
+            Logger.Debug("Disabled server {ServerId} rule reaction as the message no longer exists.", server.GuildId);
         }
     }
 }

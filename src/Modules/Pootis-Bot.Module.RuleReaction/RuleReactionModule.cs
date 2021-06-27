@@ -16,7 +16,7 @@ namespace Pootis_Bot.Module.RuleReaction
         {
             client.ReactionAdded += (cacheable, channel, reaction) =>
             {
-                _ = Task.Run(() => RuleReactionService.ReactionAdded(channel, reaction, client));
+                _ = Task.Run(() => RuleReactionService.ReactionAdded(reaction, client));
                 return Task.CompletedTask;
             };
             client.Ready += () =>
@@ -24,6 +24,9 @@ namespace Pootis_Bot.Module.RuleReaction
                 _ = Task.Run(() => RuleReactionService.CheckAllServer(client));
                 return Task.CompletedTask;
             };
+            client.RoleDeleted += RuleReactionService.RoleDeleted;
+            client.ChannelDestroyed += RuleReactionService.ChannelDeleted;
+            client.MessageDeleted += RuleReactionService.MessageDeleted;
             
             return base.ClientConnected(client);
         }
