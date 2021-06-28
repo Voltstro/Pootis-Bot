@@ -1,11 +1,4 @@
 steps:
-- task: UseDotNet@2
-  displayName: 'Setup .NET 5'
-  inputs:
-    packageType: sdk
-    version: 5.0.x
-    installationPath: $(Agent.ToolsDirectory)/dotnet
-
 - task: DotNetCoreCLI@2
   displayName: Restore Packages
   inputs:
