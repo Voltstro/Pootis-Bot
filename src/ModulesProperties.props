@@ -9,6 +9,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>$(SolutionDir)bin\Debug\Modules\</OutputPath>
+    <PublishDir>$(SolutionDir)bin\Debug\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
@@ -16,6 +17,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutputPath>$(SolutionDir)bin\Release\Modules\</OutputPath>
+    <PublishDir>$(SolutionDir)bin\Release\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <Optimize>true</Optimize>

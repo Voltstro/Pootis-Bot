@@ -13,6 +13,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>$(SolutionDir)bin\Debug\</OutputPath>
+    <PublishDir>$(SolutionDir)bin\Debug\publish\$(RuntimeIdentifier)</PublishDir>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
@@ -20,6 +21,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutputPath>$(SolutionDir)bin\Release\</OutputPath>
+    <PublishDir>$(SolutionDir)bin\Release\publish\$(RuntimeIdentifier)</PublishDir>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <Optimize>true</Optimize>
