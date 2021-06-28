@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -20,6 +21,17 @@ namespace Pootis_Bot.Helper
 				? null
 				: assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
 					?.InformationalVersion ?? string.Empty;
+		}
+
+		/// <summary>
+		///		Gets the calling assembly version
+		/// </summary>
+		/// <returns></returns>
+		public static string GetCallingVersion()
+		{
+			Assembly assembly = Assembly.GetCallingAssembly();
+			AssemblyInformationalVersionAttribute assemblyVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+			return assemblyVersion?.InformationalVersion;
 		}
 
 		/// <summary>

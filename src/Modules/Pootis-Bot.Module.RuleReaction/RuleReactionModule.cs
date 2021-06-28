@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Pootis_Bot.Helper;
 using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Module.RuleReaction
@@ -9,7 +10,7 @@ namespace Pootis_Bot.Module.RuleReaction
     {
         public override ModuleInfo GetModuleInfo()
         {
-            return new ModuleInfo("RuleReactionModule", "Voltstro", new Version(1, 0, 0));
+            return new ModuleInfo("RuleReactionModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
         }
 
         public override Task ClientConnected(DiscordSocketClient client)
