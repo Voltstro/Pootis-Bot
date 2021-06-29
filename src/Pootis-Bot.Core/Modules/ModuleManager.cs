@@ -1,10 +1,12 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Discord.WebSocket;
+using Pootis_Bot.Commands.Permissions;
 using Pootis_Bot.Console;
 using Pootis_Bot.Core;
 using Pootis_Bot.Logging;
@@ -179,6 +181,27 @@ namespace Pootis_Bot.Modules
 				catch (Exception ex)
 				{
 					Logger.Error(ex, "Something went wrong while invoking ClientConnected in module {ModuleName}", module.GetModuleInfoInternal().ModuleName);
+				}
+			}
+		}
+
+		/// <summary>
+		///		Adds all modules's permission provider to the <see cref="CommandHandler"/>
+		/// </summary>
+		/// <param name="commandHandler"></param>
+		internal static void InstallPermissionProvidersFromLoadedModules(CommandHandler commandHandler)
+		{
+			foreach (Module module in modules)
+			{
+				try
+				{
+					IPermissionProvider? permissionProvider = module.AddPermissionProvider();
+					if(permissionProvider != null)
+						commandHandler.AddPermissionProvider(permissionProvider);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(ex, "Something went wrong while invoking AddPermissionProvider in module {ModuleName}", module.GetModuleInfoInternal().ModuleName);
 				}
 			}
 		}

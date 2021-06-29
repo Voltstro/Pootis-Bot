@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Pootis_Bot.Commands.Permissions;
 
+#nullable enable
 namespace Pootis_Bot.Modules
 {
 #pragma warning disable 1998
@@ -50,6 +52,15 @@ namespace Pootis_Bot.Modules
 		/// </summary>
 		public virtual void Shutdown()
 		{
+		}
+
+		/// <summary>
+		///		Return a non-null <see cref="IPermissionProvider"/> to add a permission provider to Pootis's command handler.
+		/// </summary>
+		/// <returns></returns>
+		public virtual IPermissionProvider? AddPermissionProvider()
+		{
+			return null;
 		}
 
 		/// <summary>
