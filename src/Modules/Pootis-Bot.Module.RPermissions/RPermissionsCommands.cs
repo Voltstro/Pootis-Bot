@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Cysharp.Text;
 using Discord;
 using Discord.Commands;
@@ -20,8 +21,11 @@ namespace Pootis_Bot.Module.RPermissions
             this.commandService = commandService;
             config = Config<RPermissionsConfig>.Instance;
         }
+
+        #region Add Permissions
         
         [Command("add")]
+        [Summary("Adds a permission to a command")]
         public async Task AddPermission(SocketRole role, string command)
         {
             //Try to find the command first
@@ -36,6 +40,7 @@ namespace Pootis_Bot.Module.RPermissions
         }
         
         [Command("add")]
+        [Summary("Adds a permission to a command, the selection is used to choose which command to add if it has an override.")]
         public async Task AddPermission(SocketRole role, string command, int selection)
         {
             //Try to find the command first
@@ -48,39 +53,7 @@ namespace Pootis_Bot.Module.RPermissions
             
             await AddPermissionInternal(result, role, command, selection);
         }
-
-        #region Get Permissions
-
-        [Command("get")]
-        public async Task GetPermissions(string command)
-        {
-            //Find the command
-            CommandSearchResult result = FindCommand(command);
-            if (!result.IsSuccess)
-            {
-                await Context.Channel.SendMessageAsync(result.ErrorReason);
-                return;
-            }
-            
-            await GetPermissionsInternal(result, command, 0);
-        }
         
-        [Command("get")]
-        public async Task GetPermissions(string command, int selection)
-        {
-            //Find the command
-            CommandSearchResult result = FindCommand(command);
-            if (!result.IsSuccess && result.Error == CommandError.Unsuccessful)
-            {
-                await Context.Channel.SendMessageAsync(result.ErrorReason);
-                return;
-            }
-            
-            await GetPermissionsInternal(result, command, selection);
-        }
-        
-        #endregion
-
         /// <summary>
         ///     Adds a permission to a command
         /// </summary>
@@ -115,10 +88,170 @@ namespace Pootis_Bot.Module.RPermissions
                 $"Added the permission {role.Name} as a requirement for the command `{command}`.");
         }
 
+        #endregion
+
+        #region Remove Permissions
+
+        [Command("remove")]
+        [Summary("Removes an entire command's permissions")]
+        public async Task RemovePermission(string command)
+        {
+            //Find the command
+            CommandSearchResult result = FindCommand(command);
+            if (!result.IsSuccess)
+            {
+                await Context.Channel.SendMessageAsync(result.ErrorReason);
+                return;
+            }
+
+            await RemovePermissionInternal(result, 0, null);
+        }
+        
+        [Command("remove")]
+        [Summary("Removes an entire command's permissions")]
+        public async Task RemovePermission(string command, int selection)
+        {
+            //Find the command
+            CommandSearchResult result = FindCommand(command);
+            if (!result.IsSuccess && result.Error == CommandError.Unsuccessful)
+            {
+                await Context.Channel.SendMessageAsync(result.ErrorReason);
+                return;
+            }
+            
+            await RemovePermissionInternal(result, selection, null);
+        }
+        
+        [Command("remove")]
+        [Summary("Removes an entire command's permissions")]
+        public async Task RemovePermission(SocketRole role, string command)
+        {
+            //Find the command
+            CommandSearchResult result = FindCommand(command);
+            if (!result.IsSuccess)
+            {
+                await Context.Channel.SendMessageAsync(result.ErrorReason);
+                return;
+            }
+            
+            await RemovePermissionInternal(result, 0, role);
+        }
+        
+        [Command("remove")]
+        [Summary("Removes an entire command's permissions")]
+        public async Task RemovePermission(SocketRole role, string command, int selection)
+        {
+            //Find the command
+            CommandSearchResult result = FindCommand(command);
+            if (!result.IsSuccess && result.Error == CommandError.Unsuccessful)
+            {
+                await Context.Channel.SendMessageAsync(result.ErrorReason);
+                return;
+            }
+            
+            await RemovePermissionInternal(result, selection, role);
+        }
+
+        /// <summary>
+        ///     Removes a permission from a command
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="selection"></param>
+        /// <param name="role"></param>
+        private async Task RemovePermissionInternal(CommandSearchResult result, int selection, [AllowNull] IRole role)
+        {
+            //Check selection
+            if (selection > result.SearchResult.Commands.Count)
+            {
+                await Context.Channel.SendMessageAsync("That selection is too high!");
+                return;
+            }
+            
+            if (!config.DoesServerExist(Context.Guild.Id))
+            {
+                await Context.Channel.SendMessageAsync("There are no commands that have permissions in this server.");
+                return;
+            }
+            
+            CommandMatch commandMatch = result.SearchResult.Commands[selection];
+
+            RPermissionServer server = config.GetOrCreateServer(Context.Guild.Id);
+            RPerm perm = server.GetPermissionForCommand(commandMatch.Command);
+            if (perm == null)
+            {
+                await Context.Channel.SendMessageAsync("That command has no permissions!");
+                return;
+            }
+
+            //Remove everything
+            if (role == null)
+            {
+                server.Permissions.Remove(perm);
+                await Context.Channel.SendMessageAsync("All permissions were removed for that command.");
+            }
+            else
+            {
+                //The roles doesn't exist as apart of the permissions
+                if (!perm.DoesRoleExist(role.Id))
+                {
+                    await Context.Channel.SendMessageAsync(
+                        "That role is already not apart of the permissions for that command!");
+                    return;
+                }
+
+                //Remove the role
+                perm.Roles.Remove(role.Id);
+                
+                //If no roles are associated with that command, then remove the command entirely
+                if (perm.Roles.Count == 0)
+                    server.Permissions.Remove(perm);
+
+                await Context.Channel.SendMessageAsync("The role was removed from the permissions.");
+            }
+
+            //If the server has no role, we might as well remove it.
+            if (server.Permissions.Count == 0)
+                config.Servers.Remove(server);
+
+            config.Save();
+        }
+
+        #endregion
+        
+        #region Get Permissions
+
+        [Command("get")]
+        public async Task GetPermissions(string command)
+        {
+            //Find the command
+            CommandSearchResult result = FindCommand(command);
+            if (!result.IsSuccess)
+            {
+                await Context.Channel.SendMessageAsync(result.ErrorReason);
+                return;
+            }
+            
+            await GetPermissionsInternal(result, 0);
+        }
+        
+        [Command("get")]
+        public async Task GetPermissions(string command, int selection)
+        {
+            //Find the command
+            CommandSearchResult result = FindCommand(command);
+            if (!result.IsSuccess && result.Error == CommandError.Unsuccessful)
+            {
+                await Context.Channel.SendMessageAsync(result.ErrorReason);
+                return;
+            }
+            
+            await GetPermissionsInternal(result, selection);
+        }
+        
         /// <summary>
         ///     Gets a command's permissions
         /// </summary>
-        private async Task GetPermissionsInternal(CommandSearchResult result, string command, int selection)
+        private async Task GetPermissionsInternal(CommandSearchResult result, int selection)
         {
             //Check selection
             if (selection > result.SearchResult.Commands.Count)
@@ -148,6 +281,8 @@ namespace Pootis_Bot.Module.RPermissions
             await Context.Channel.SendMessageAsync(sb.ToString());
             sb.Dispose();
         }
+        
+        #endregion
 
         /// <summary>
         ///     Finds a command

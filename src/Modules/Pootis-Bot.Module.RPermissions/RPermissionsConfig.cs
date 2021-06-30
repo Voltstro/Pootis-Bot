@@ -9,6 +9,11 @@ namespace Pootis_Bot.Module.RPermissions
     {
         public List<RPermissionServer> Servers { get; set; } = new List<RPermissionServer>();
 
+        public bool DoesServerExist(ulong guildId)
+        {
+            return Servers.Exists(x => x.GuildId == guildId);
+        }
+        
         public RPermissionServer GetOrCreateServer(ulong guildId)
         {
             RPermissionServer server = Servers.FirstOrDefault(x => x.GuildId == guildId) ?? CreateServer(guildId);

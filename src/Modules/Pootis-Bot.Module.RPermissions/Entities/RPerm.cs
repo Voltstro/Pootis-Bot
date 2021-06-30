@@ -14,5 +14,10 @@ namespace Pootis_Bot.Module.RPermissions.Entities
         {
             Roles.Add(role);
         }
+
+        public bool DoesRoleExist(ulong role)
+        {
+            return Roles.Contains(role);
+        }
     }
 }
