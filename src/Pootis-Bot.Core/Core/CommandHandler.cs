@@ -86,16 +86,20 @@ namespace Pootis_Bot.Core
 				await context.Channel.SendMessageAsync(commandSearchResult.ErrorReason);
 				return;
 			}
-
-			//Guild owner override everything
+			
+			//Guild owners overrider everything
 			if (context.User.Id != context.Guild.Owner.Id)
 			{
-				//Check permissions with the command
-				CommandPermissionResult permissionResult = await CheckCommandWithPermissionProviders(commandSearchResult.CommandMatch.Command, context);
-				if (!permissionResult.IsSuccess)
+				if (context.User is SocketGuildUser {GuildPermissions: {Administrator: false}})
 				{
-					await context.Channel.SendMessageAsync(permissionResult.ErrorReason);
-					return;
+					//Check permissions with the command
+					CommandPermissionResult permissionResult = await CheckCommandWithPermissionProviders(commandSearchResult.CommandMatch.Command, context);
+					if (!permissionResult.IsSuccess)
+					{
+													
+						await context.Channel.SendMessageAsync(permissionResult.ErrorReason);
+						return;
+					}
 				}
 			}
 
