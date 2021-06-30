@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.RuleReact
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.WelcomeMessage", "Modules\Pootis-Bot.Module.WelcomeMessage\Pootis-Bot.Module.WelcomeMessage.csproj", "{A7C5CED9-A9D4-4A16-8764-AA48AE385B19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.RPermissions", "Modules\Pootis-Bot.Module.RPermissions\Pootis-Bot.Module.RPermissions.csproj", "{8B6D79A6-5972-4B91-9961-EB8E6DF316C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,10 @@ Global
 		{A7C5CED9-A9D4-4A16-8764-AA48AE385B19}.Debug|x64.Build.0 = Debug|x64
 		{A7C5CED9-A9D4-4A16-8764-AA48AE385B19}.Release|x64.ActiveCfg = Release|x64
 		{A7C5CED9-A9D4-4A16-8764-AA48AE385B19}.Release|x64.Build.0 = Release|x64
+		{8B6D79A6-5972-4B91-9961-EB8E6DF316C6}.Debug|x64.ActiveCfg = Debug|x64
+		{8B6D79A6-5972-4B91-9961-EB8E6DF316C6}.Debug|x64.Build.0 = Debug|x64
+		{8B6D79A6-5972-4B91-9961-EB8E6DF316C6}.Release|x64.ActiveCfg = Release|x64
+		{8B6D79A6-5972-4B91-9961-EB8E6DF316C6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{43DECB97-DCEF-4C82-8AB6-65070E9AC92A} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 		{A3B70EE6-51D1-42F4-A59D-81201C288969} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 		{A7C5CED9-A9D4-4A16-8764-AA48AE385B19} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
+		{8B6D79A6-5972-4B91-9961-EB8E6DF316C6} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F633C8E5-4849-4385-8482-1EE7166D39CF}
