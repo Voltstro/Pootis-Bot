@@ -68,7 +68,8 @@ namespace Pootis_Bot.Module.Basic
 
 				foreach (CommandInfo command in module.Commands)
 				{
-					sb.Append($"\n- {command.Name.ToLower()}\n  - Summary: {command.Summary}\n  - Usage: {BuildCommandUsage(command)}");
+					sb.Append(
+						$"\n- {BuildCommandFormat(command)}\n  - Summary: {command.Summary}\n  - Usage: {BuildCommandUsage(command)}");
 				}
 
 				sb.Append("\n```");
@@ -81,7 +82,7 @@ namespace Pootis_Bot.Module.Basic
 		private string BuildCommandUsage(CommandInfo command)
 		{
 			using Utf16ValueStringBuilder commandUsage = ZString.CreateStringBuilder();
-			commandUsage.Append($"`{command.Name.ToLower()}");
+			commandUsage.Append($"`{BuildCommandFormat(command)}");
 			foreach (ParameterInfo parameter in command.Parameters)
 			{
 				commandUsage.Append($" <{parameter.Name.ToLower()}");
@@ -95,6 +96,21 @@ namespace Pootis_Bot.Module.Basic
 
 			commandUsage.Append("`");
 			return commandUsage.ToString();
+		}
+
+		private string BuildCommandFormat(CommandInfo command)
+		{
+			string groupName = command.Module.Group;
+			string commandName = command.Name.ToLower();
+
+			string commandFormat = commandName;
+			if (string.IsNullOrEmpty(groupName)) 
+				return commandFormat;
+			
+			groupName = groupName.ToLower();
+			if (groupName != commandName)
+				commandFormat = $"{groupName} {commandName}";
+			return commandFormat;
 		}
 	}
 }
