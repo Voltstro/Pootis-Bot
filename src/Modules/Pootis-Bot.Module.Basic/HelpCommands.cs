@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Text;
 using Discord;
@@ -27,10 +28,9 @@ namespace Pootis_Bot.Module.Basic
 
 			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
 
-			foreach (Utf16ValueStringBuilder stringBuilder in BuildHelpMenu())
+			foreach (string message in BuildHelpMenu())
 			{
-				await dm.SendMessageAsync(stringBuilder.ToString());
-				stringBuilder.Dispose();
+				await dm.SendMessageAsync(message);
 			}
 		}
 
@@ -56,27 +56,31 @@ namespace Pootis_Bot.Module.Basic
 			await Context.Channel.SendEmbedAsync(embed);
 		}
 
-		private Utf16ValueStringBuilder[] BuildHelpMenu()
+		private IEnumerable<string> BuildHelpMenu()
 		{
-			List<Utf16ValueStringBuilder> groups = new List<Utf16ValueStringBuilder>();
-			foreach (ModuleInfo module in commandService.Modules)
+			List<string> groups = new();
+			ModuleInfo[] modules = commandService.Modules.ToArray();
+			foreach (ModuleInfo module in modules)
 			{
-				Utf16ValueStringBuilder sb = ZString.CreateStringBuilder();
-				sb.Append("```diff\n");
-				sb.Append($"+ {module.Name}\n");
-				sb.Append($"  - Summary: {module.Summary}\n");
+				string message = $"```diff\n+ {module.Name}\n  - Summary: {module.Summary}\n";
+				message = module.Commands.Aggregate(message, (current, command) => current + $"\n- {BuildCommandFormat(command)}\n  - Summary: {command.Summary}\n  - Usage: {BuildCommandUsage(command)}");
+				message += "\n```";
 
-				foreach (CommandInfo command in module.Commands)
+				//If its the first group, ignore
+				if (groups.Count != 0)
 				{
-					sb.Append(
-						$"\n- {BuildCommandFormat(command)}\n  - Summary: {command.Summary}\n  - Usage: {BuildCommandUsage(command)}");
+					//Get the combined message size of the last group and this group
+					int lastMessageAndNewMessageLength = groups[^1].Length + message.Length;
+					if (lastMessageAndNewMessageLength < 1998)
+						groups[^1] += message;
+					else //Too big, send as its own
+						groups.Add(message);
 				}
-
-				sb.Append("\n```");
-				groups.Add(sb);
+				else
+					groups.Add(message);
 			}
 
-			return groups.ToArray();
+			return groups;
 		}
 
 		private string BuildCommandUsage(CommandInfo command)
