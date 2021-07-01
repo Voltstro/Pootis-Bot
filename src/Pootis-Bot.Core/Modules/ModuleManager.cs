@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Discord.WebSocket;
+using Pootis_Bot.Commands;
 using Pootis_Bot.Commands.Permissions;
 using Pootis_Bot.Console;
 using Pootis_Bot.Core;

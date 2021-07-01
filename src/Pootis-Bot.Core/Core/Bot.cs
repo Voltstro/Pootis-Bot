@@ -6,6 +6,7 @@ using Cysharp.Text;
 using Discord;
 using Discord.Net;
 using Discord.WebSocket;
+using Pootis_Bot.Commands;
 using Pootis_Bot.Config;
 using Pootis_Bot.Console;
 using Pootis_Bot.Console.ConfigMenus;

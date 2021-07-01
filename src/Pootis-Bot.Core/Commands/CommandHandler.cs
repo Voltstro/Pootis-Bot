@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using Pootis_Bot.Commands;
 using Pootis_Bot.Commands.Permissions;
 using Pootis_Bot.Config;
+using Pootis_Bot.Core;
 using Pootis_Bot.Discord;
 using Pootis_Bot.Discord.TypeReaders;
 using Pootis_Bot.Logging;
 
-namespace Pootis_Bot.Core
+namespace Pootis_Bot.Commands
 {
 	/// <summary>
 	///     Handles commands for Discord
