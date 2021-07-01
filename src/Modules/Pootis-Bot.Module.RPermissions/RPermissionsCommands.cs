@@ -9,6 +9,7 @@ using Pootis_Bot.Module.RPermissions.Entities;
 
 namespace Pootis_Bot.Module.RPermissions
 {
+    [Name("RPermission Commands")]
     [Group("perm")]
     [Summary("Provides commands for setting up permissions")]
     public class RPermissionsCommands : ModuleBase<SocketCommandContext>
@@ -123,7 +124,7 @@ namespace Pootis_Bot.Module.RPermissions
         }
         
         [Command("remove")]
-        [Summary("Removes an entire command's permissions")]
+        [Summary("Removes a role from a command's permissions")]
         public async Task RemovePermission(SocketRole role, string command)
         {
             //Find the command
@@ -138,7 +139,7 @@ namespace Pootis_Bot.Module.RPermissions
         }
         
         [Command("remove")]
-        [Summary("Removes an entire command's permissions")]
+        [Summary("Removes a role from a command's permissions")]
         public async Task RemovePermission(SocketRole role, string command, int selection)
         {
             //Find the command
@@ -221,6 +222,7 @@ namespace Pootis_Bot.Module.RPermissions
         #region Get Permissions
 
         [Command("get")]
+        [Summary("Gets all permissions of a command")]
         public async Task GetPermissions(string command)
         {
             //Find the command
@@ -235,6 +237,7 @@ namespace Pootis_Bot.Module.RPermissions
         }
         
         [Command("get")]
+        [Summary("Gets all permissions of a command")]
         public async Task GetPermissions(string command, int selection)
         {
             //Find the command

@@ -23,6 +23,7 @@ namespace Pootis_Bot.Module.RuleReaction
         }
         
         [Command("emoji")]
+        [Summary("Sets the emoji to use for reactions")]
         public async Task SetEmoji(Emoji emoji)
         {
             config.GetOrCreateRuleReactionServer(Context.Guild.Id).Emoji = emoji.Name;
@@ -32,6 +33,7 @@ namespace Pootis_Bot.Module.RuleReaction
 
         [Command("message")]
         [Alias("msg")]
+        [Summary("Sets what message to use (NOTE: The message needs to be in the same channel where the command is executed)")]
         public async Task SetMessageCommand(ulong messageId)
         {
             await SetMessage(Context.Channel, messageId, Context.Channel, Context.Guild);
@@ -39,12 +41,14 @@ namespace Pootis_Bot.Module.RuleReaction
 
         [Command("message")]
         [Alias("msg")]
+        [Summary("Sets what message to use (Spefiy channel as to where the message is)")]
         public async Task SetMessageCommand(SocketTextChannel channel, ulong messageId)
         {
             await SetMessage(channel, messageId, Context.Channel, Context.Guild);
         }
 
         [Command("role")]
+        [Summary("Sets what role will be given on reaction")]
         public async Task SetRole(SocketRole role)
         {
             config.GetOrCreateRuleReactionServer(Context.Guild.Id).RoleId = role.Id;
@@ -54,6 +58,7 @@ namespace Pootis_Bot.Module.RuleReaction
         }
 
         [Command("enable")]
+        [Summary("Verifys everything is ready to go and enables rule reaction")]
         public async Task EnableRuleReaction()
         {
             RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
@@ -69,6 +74,7 @@ namespace Pootis_Bot.Module.RuleReaction
         }
 
         [Command("disable")]
+        [Summary("Disables rule reaction")]
         public async Task DisableRuleReaction()
         {
             RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
