@@ -2,8 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Rest;
-using Discord.WebSocket;
 
 namespace Pootis_Bot.Helper
 {
@@ -12,6 +10,19 @@ namespace Pootis_Bot.Helper
 	/// </summary>
 	public static class MessageUtils
 	{
+		private const string ChannelUrl = "https://discordapp.com/channels/{0}/{1}/{2}";
+		
+		/// <summary>
+		///		Gets a message URL
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="guild"></param>
+		/// <returns></returns>
+		public static string GetMessageUrl(this IMessage message, [MaybeNull] IGuild guild = null)
+		{
+			return string.Format(ChannelUrl, guild != null ? guild.Id.ToString() : "@me", message.Channel.Id.ToString(), message.Id.ToString());
+		}
+		
 		/// <summary>
 		///		Send an error message to a message channel
 		/// </summary>
@@ -19,7 +30,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="message"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static async Task<RestUserMessage> SendErrorMessageAsync(this ISocketMessageChannel channel, [DisallowNull] string message)
+		public static async Task<IUserMessage> SendErrorMessageAsync(this IMessageChannel channel, [DisallowNull] string message)
 		{
 			if(string.IsNullOrWhiteSpace(message))
 				throw new ArgumentNullException(nameof(message), "Message cannot be null or blank!");
@@ -34,7 +45,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="embed"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [DisallowNull] EmbedBuilder embed)
+		public static async Task<IUserMessage> SendEmbedAsync(this IMessageChannel channel, [DisallowNull] EmbedBuilder embed)
 		{
 			if(embed == null)
 				throw new ArgumentNullException(nameof(embed));
@@ -49,7 +60,7 @@ namespace Pootis_Bot.Helper
 		/// <param name="embed"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"></exception>
-		public static async Task<RestUserMessage> SendEmbedAsync(this ISocketMessageChannel channel, [DisallowNull] Embed embed)
+		public static async Task<IUserMessage> SendEmbedAsync(this IMessageChannel channel, [DisallowNull] Embed embed)
 		{
 			if(embed == null)
 				throw new ArgumentNullException(nameof(embed));
