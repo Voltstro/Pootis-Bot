@@ -20,6 +20,14 @@ namespace Pootis_Bot.Module.Reminders
             Config ??= Config<RemindersConfig>.Instance;
             BotConfig ??= Config<BotConfig>.Instance;
         }
+
+        public static void StartAllReminders(BaseSocketClient client)
+        {
+            foreach (Reminder reminder in Config.Reminders)
+            {
+                StartReminder(reminder, client);
+            }
+        }
         
         public static void CreateAndStartReminder(SocketUser user, string message, IUserMessage messageData, IGuild guild, DateTime startTime, DateTime endTime, BaseSocketClient client)
         {
@@ -27,8 +35,8 @@ namespace Pootis_Bot.Module.Reminders
             Config.Save();
             StartReminder(reminder, client);
         }
-        
-        public static void StartReminder(Reminder reminder, BaseSocketClient client)
+
+        private static void StartReminder(Reminder reminder, BaseSocketClient client)
         {
             _ = Task.Run(() => StartReminderAsync(reminder, client));
         }
