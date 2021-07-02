@@ -15,17 +15,9 @@ namespace Pootis_Bot.Tests
 		[OneTimeSetUp]
 		public void Setup()
 		{
-			Logger.Init();
-
 			string directory = Path.GetFullPath(TestContext.CurrentContext.TestDirectory);
 			Bot.ApplicationLocation = directory;
 			moduleManager = new ModuleManager($"Modules/", $"Assemblies/");
-		}
-
-		[OneTimeTearDown]
-		public void Teardown()
-		{
-			Logger.Shutdown();
 		}
 
 		[Test]

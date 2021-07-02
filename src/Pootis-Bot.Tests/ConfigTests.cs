@@ -7,17 +7,9 @@ namespace Pootis_Bot.Tests
 {
 	public class ConfigTests
 	{
-		[OneTimeSetUp]
-		public void Setup()
-		{
-			Logger.Init();
-		}
-
 		[OneTimeTearDown]
 		public void Teardown()
 		{
-			Logger.Shutdown();
-
 			//Delete configs
 			if (File.Exists($"Config/{typeof(TestConfig1).Name}.json"))
 				File.Delete($"Config/{typeof(TestConfig1).Name}.json");
