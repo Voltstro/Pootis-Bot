@@ -20,16 +20,17 @@ namespace Pootis_Bot.Module.RuleReaction
                 _ = Task.Run(() => RuleReactionService.ReactionAdded(reaction, client));
                 return Task.CompletedTask;
             };
-            client.Ready += () =>
-            {
-                _ = Task.Run(() => RuleReactionService.CheckAllServer(client));
-                return Task.CompletedTask;
-            };
             client.RoleDeleted += RuleReactionService.RoleDeleted;
             client.ChannelDestroyed += RuleReactionService.ChannelDeleted;
             client.MessageDeleted += RuleReactionService.MessageDeleted;
             
             return base.ClientConnected(client);
+        }
+
+        public override Task ClientReady(DiscordSocketClient client, bool firstReady)
+        {
+            _ = Task.Run(() => RuleReactionService.CheckAllServer(client));
+            return base.ClientReady(client, firstReady);
         }
     }
 }

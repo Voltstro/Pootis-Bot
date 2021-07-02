@@ -184,6 +184,25 @@ namespace Pootis_Bot.Modules
 				}
 			}
 		}
+		
+		/// <summary>
+		///		Call when the the <see cref="DiscordSocketClient"/> is ready
+		/// </summary>
+		/// <param name="client"></param>
+		internal void ModulesClientReady(DiscordSocketClient client, bool firstReady)
+		{
+			foreach (Module module in modules)
+			{
+				try
+				{
+					module.ClientReady(client, firstReady).ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(ex, "Something went wrong while invoking ClientReady in module {ModuleName}", module.GetModuleInfoInternal().ModuleName);
+				}
+			}
+		}
 
 		/// <summary>
 		///		Adds all modules's permission provider to the <see cref="CommandHandler"/>

@@ -41,6 +41,11 @@ namespace Pootis_Bot.Core
 		private ModuleManager moduleManager;
 
 		/// <summary>
+		///		Is this the bot's first ready
+		/// </summary>
+		private bool firstReady = true;
+
+		/// <summary>
 		///     Whether or not this bot is running
 		/// </summary>
 		public bool IsRunning { get; private set; }
@@ -141,8 +146,10 @@ namespace Pootis_Bot.Core
 
 		private Task Ready()
 		{
+			moduleManager.ModulesClientReady(discordClient, firstReady);
+			firstReady = false;
+			
 			Logger.Info("Bot is now ready and online!");
-
 			return Task.CompletedTask;
 		}
 

@@ -48,6 +48,15 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
+		///		Called when the <see cref="DiscordShardedClient"/> is ready
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="firstReady"></param>
+		public virtual async Task ClientReady([DisallowNull] DiscordSocketClient client, bool firstReady)
+		{
+		}
+
+		/// <summary>
 		///     Called on shutdown
 		/// </summary>
 		public virtual void Shutdown()

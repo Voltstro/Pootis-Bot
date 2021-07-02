@@ -39,17 +39,18 @@ namespace Pootis_Bot.Module.AutoVC
 
                 return Task.CompletedTask;
             };
-            
-            //Check current channels
-            client.Ready += () => PerformAutoVcChecks(client);
-
             return base.ClientConnected(client);
         }
 
-        private static Task PerformAutoVcChecks(DiscordSocketClient client)
+        public override Task ClientReady(DiscordSocketClient client, bool firstReady)
+        {
+            PerformAutoVcChecks(client);
+            return base.ClientReady(client, firstReady);
+        }
+
+        private static void PerformAutoVcChecks(DiscordSocketClient client)
         {
             _ = Task.Run(() => AutoVCService.CheckAutoVCs(client));
-            return Task.CompletedTask;
         }
     }
 }

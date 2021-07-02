@@ -15,16 +15,16 @@ namespace Pootis_Bot.Module.WelcomeMessage
 
         public override Task ClientConnected(DiscordSocketClient client)
         {
-            client.Ready += () =>
-            {
-                _ = Task.Run(() => WelcomeMessageService.CheckAllServers(client));
-                return Task.CompletedTask;
-            };
             client.UserJoined += WelcomeMessageService.UserJoined;
             client.UserLeft += WelcomeMessageService.UserLeft;
             client.ChannelDestroyed += WelcomeMessageService.ChannelDeleted;
-            
             return base.ClientConnected(client);
+        }
+
+        public override Task ClientReady(DiscordSocketClient client, bool firstReady)
+        {
+            _ = Task.Run(() => WelcomeMessageService.CheckAllServers(client));
+            return base.ClientReady(client, firstReady);
         }
     }
 }
