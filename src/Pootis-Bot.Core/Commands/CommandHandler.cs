@@ -12,6 +12,7 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Discord;
 using Pootis_Bot.Discord.TypeReaders;
 using Pootis_Bot.Logging;
+using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Commands
 {
@@ -72,7 +73,11 @@ namespace Pootis_Bot.Commands
 			//Does the message start with the prefix or mention of the bot
 			int argPos = 0;
 			if (!userMessage.HasStringPrefix(config.BotPrefix, ref argPos) &&
-			    !userMessage.HasMentionPrefix(client.CurrentUser, ref argPos)) return;
+			    !userMessage.HasMentionPrefix(client.CurrentUser, ref argPos))
+			{
+				ModuleManager.ModulesClientMessage(client, userMessage);
+				return;
+			}
 
 			//First, find the command
 			SearchResult searchResult = commandService.Search(context, argPos);
@@ -96,7 +101,6 @@ namespace Pootis_Bot.Commands
 					CommandPermissionResult permissionResult = await CheckCommandWithPermissionProviders(commandSearchResult.CommandMatch.Command, context);
 					if (!permissionResult.IsSuccess)
 					{
-													
 						await context.Channel.SendMessageAsync(permissionResult.ErrorReason);
 						return;
 					}
@@ -120,15 +124,14 @@ namespace Pootis_Bot.Commands
 			msg = null;
 			context = null;
 
-			if (!(message is SocketUserMessage userMessage)) return false;
+			if (message is not SocketUserMessage userMessage) 
+				return false;
+			
 			msg = userMessage;
 
 			context = new SocketCommandContext(client, msg);
 
-			if (message.Author.IsBot || message.Author.IsWebhook)
-				return false;
-
-			return true;
+			return !message.Author.IsBot && !message.Author.IsWebhook;
 		}
 
 		private async Task<CommandPermissionResult> CheckCommandWithPermissionProviders(CommandInfo commandInfo, ICommandContext context)

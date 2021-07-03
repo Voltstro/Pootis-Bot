@@ -20,14 +20,9 @@ namespace Pootis_Bot.Module.Profiles
 			users = new List<UserLevelData>();
 		}
 
-		internal async Task HandelUserMessage(SocketMessage message)
+		internal async Task HandelUserMessage(SocketUserMessage message)
 		{
 			SocketUser messageAuthor = message.Author;
-
-			//We don't allow bots or web hooks
-			if(messageAuthor.IsBot || messageAuthor.IsWebhook)
-				return;
-
 			UserLevelData user = GetOrCreateUser(message);
 
 			//Make sure the message isn't the same

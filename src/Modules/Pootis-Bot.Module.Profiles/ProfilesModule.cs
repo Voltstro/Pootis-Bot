@@ -8,15 +8,22 @@ namespace Pootis_Bot.Module.Profiles
 {
 	public sealed class ProfilesModule : Modules.Module
 	{
+		private XpLevelManager xpLevelManager;
+		
 		public override ModuleInfo GetModuleInfo()
 		{
 			return new ModuleInfo("ProfilesModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
 		}
 
-		public override Task ClientConnected(DiscordSocketClient client)
+		public override Task Init()
 		{
-			client.MessageReceived += new XpLevelManager().HandelUserMessage;
-			return Task.CompletedTask;
+			xpLevelManager = new XpLevelManager();
+			return base.Init();
+		}
+
+		public override async Task ClientMessage(DiscordSocketClient client, SocketUserMessage message)
+		{
+			await xpLevelManager.HandelUserMessage(message);
 		}
 	}
 }

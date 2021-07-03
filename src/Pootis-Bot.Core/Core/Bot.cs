@@ -131,7 +131,7 @@ namespace Pootis_Bot.Core
 
 			Logger.Info("Login successful!");
 
-			moduleManager.ModulesClientConnected(discordClient);
+			ModuleManager.ModulesClientConnected(discordClient);
 
 			//Setup command handler
 			commandHandler = new CommandHandler(discordClient);
@@ -146,7 +146,7 @@ namespace Pootis_Bot.Core
 
 		private Task Ready()
 		{
-			moduleManager.ModulesClientReady(discordClient, firstReady);
+			ModuleManager.ModulesClientReady(discordClient, firstReady);
 			firstReady = false;
 			
 			Logger.Info("Bot is now ready and online!");

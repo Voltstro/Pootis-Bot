@@ -170,7 +170,7 @@ namespace Pootis_Bot.Modules
 		///		Call when the the <see cref="DiscordSocketClient"/> has connected
 		/// </summary>
 		/// <param name="client"></param>
-		internal void ModulesClientConnected(DiscordSocketClient client)
+		internal static void ModulesClientConnected(DiscordSocketClient client)
 		{
 			foreach (Module module in modules)
 			{
@@ -184,12 +184,13 @@ namespace Pootis_Bot.Modules
 				}
 			}
 		}
-		
-		/// <summary>
-		///		Call when the the <see cref="DiscordSocketClient"/> is ready
-		/// </summary>
-		/// <param name="client"></param>
-		internal void ModulesClientReady(DiscordSocketClient client, bool firstReady)
+
+		///  <summary>
+		/// 		Call when the the <see cref="DiscordSocketClient"/> is ready
+		///  </summary>
+		///  <param name="client"></param>
+		///  <param name="firstReady"></param>
+		internal static void ModulesClientReady(DiscordSocketClient client, bool firstReady)
 		{
 			foreach (Module module in modules)
 			{
@@ -200,6 +201,26 @@ namespace Pootis_Bot.Modules
 				catch (Exception ex)
 				{
 					Logger.Error(ex, "Something went wrong while invoking ClientReady in module {ModuleName}", module.GetModuleInfoInternal().ModuleName);
+				}
+			}
+		}
+
+		/// <summary>
+		///		Call when the <see cref="DiscordSocketClient"/> gets a message that isn't a command
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="message"></param>
+		internal static void ModulesClientMessage(DiscordSocketClient client, SocketUserMessage message)
+		{
+			foreach (Module module in modules)
+			{
+				try
+				{
+					module.ClientMessage(client, message).ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(ex, "Something went wrong while invoking ClientMessage in module {ModuleName}", module.GetModuleInfoInternal().ModuleName);
 				}
 			}
 		}

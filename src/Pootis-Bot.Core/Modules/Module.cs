@@ -21,9 +21,17 @@ namespace Pootis_Bot.Modules
 		public abstract ModuleInfo GetModuleInfo();
 
 		/// <summary>
+		///		Return a non-null <see cref="IPermissionProvider"/> to add a permission provider to Pootis's command handler.
+		/// </summary>
+		/// <returns></returns>
+		public virtual IPermissionProvider? AddPermissionProvider()
+		{
+			return null;
+		}
+
+		/// <summary>
 		///     Called on initialization
 		/// </summary>
-
 		public virtual async Task Init()
 		{
 		}
@@ -40,6 +48,15 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
+		///     Called on shutdown
+		/// </summary>
+		public virtual void Shutdown()
+		{
+		}
+
+		#region Discord Client Events
+		
+		/// <summary>
 		///		Called when the <see cref="DiscordSocketClient"/> connects
 		/// </summary>
 		/// <param name="client"></param>
@@ -48,29 +65,29 @@ namespace Pootis_Bot.Modules
 		}
 
 		/// <summary>
-		///		Called when the <see cref="DiscordShardedClient"/> is ready
+		///		Called when the <see cref="DiscordSocketClient"/> is ready
 		/// </summary>
 		/// <param name="client"></param>
-		/// <param name="firstReady"></param>
+		/// <param name="firstReady">
+		///		Is this the first time that the bot's been ready?
+		///		<para>
+		///			The bot may disconnect and reconnect, invoking that the client is ready multiple times.
+		///		</para>
+		/// </param>
 		public virtual async Task ClientReady([DisallowNull] DiscordSocketClient client, bool firstReady)
 		{
 		}
 
-		/// <summary>
-		///     Called on shutdown
-		/// </summary>
-		public virtual void Shutdown()
+		///  <summary>
+		/// 		Called when the <see cref="DiscordSocketClient"/> gets a message that isn't installed command
+		///  </summary>
+		///  <param name="client"></param>
+		///  <param name="message"></param>
+		public virtual async Task ClientMessage([DisallowNull] DiscordSocketClient client, SocketUserMessage message)
 		{
 		}
 
-		/// <summary>
-		///		Return a non-null <see cref="IPermissionProvider"/> to add a permission provider to Pootis's command handler.
-		/// </summary>
-		/// <returns></returns>
-		public virtual IPermissionProvider? AddPermissionProvider()
-		{
-			return null;
-		}
+		#endregion
 
 		/// <summary>
 		///		Call this if you are accessing <see cref="ModuleInfo"/> from Pootis's core
