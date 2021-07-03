@@ -18,13 +18,13 @@ namespace Pootis_Bot.Modules
 		///     Gets info relating to the modules
 		/// </summary>
 		/// <returns></returns>
-		public abstract ModuleInfo GetModuleInfo();
+		protected abstract ModuleInfo GetModuleInfo();
 
 		/// <summary>
 		///		Return a non-null <see cref="IPermissionProvider"/> to add a permission provider to Pootis's command handler.
 		/// </summary>
 		/// <returns></returns>
-		public virtual IPermissionProvider? AddPermissionProvider()
+		protected virtual IPermissionProvider? AddPermissionProvider()
 		{
 			return null;
 		}
@@ -32,7 +32,7 @@ namespace Pootis_Bot.Modules
 		/// <summary>
 		///     Called on initialization
 		/// </summary>
-		public virtual async Task Init()
+		protected virtual async Task Init()
 		{
 		}
 
@@ -43,14 +43,14 @@ namespace Pootis_Bot.Modules
 		///         with <see cref="ModuleManager.CheckIfModuleIsLoaded" />, in-case you want to soft-depend on another module.
 		///     </para>
 		/// </summary>
-		public virtual async Task PostInit()
+		protected virtual async Task PostInit()
 		{
 		}
 
 		/// <summary>
 		///     Called on shutdown
 		/// </summary>
-		public virtual void Shutdown()
+		protected virtual void Shutdown()
 		{
 		}
 
@@ -60,7 +60,7 @@ namespace Pootis_Bot.Modules
 		///		Called when the <see cref="DiscordSocketClient"/> connects
 		/// </summary>
 		/// <param name="client"></param>
-		public virtual async Task ClientConnected([DisallowNull] DiscordSocketClient client)
+		protected virtual async Task ClientConnected([DisallowNull] DiscordSocketClient client)
 		{
 		}
 
@@ -74,7 +74,7 @@ namespace Pootis_Bot.Modules
 		///			The bot may disconnect and reconnect, invoking that the client is ready multiple times.
 		///		</para>
 		/// </param>
-		public virtual async Task ClientReady([DisallowNull] DiscordSocketClient client, bool firstReady)
+		protected virtual async Task ClientReady([DisallowNull] DiscordSocketClient client, bool firstReady)
 		{
 		}
 
@@ -83,11 +83,13 @@ namespace Pootis_Bot.Modules
 		///  </summary>
 		///  <param name="client"></param>
 		///  <param name="message"></param>
-		public virtual async Task ClientMessage([DisallowNull] DiscordSocketClient client, SocketUserMessage message)
+		protected virtual async Task ClientMessage([DisallowNull] DiscordSocketClient client, SocketUserMessage message)
 		{
 		}
 
 		#endregion
+
+		#region Internal
 
 		/// <summary>
 		///		Call this if you are accessing <see cref="ModuleInfo"/> from Pootis's core
@@ -101,6 +103,65 @@ namespace Pootis_Bot.Modules
 
 			return cachedModuleInfo;
 		}
+
+		/// <summary>
+		///		Call this from Pootis's Core to call <see cref="Init"/>
+		/// </summary>
+		internal void InitInternal()
+		{
+			Init().ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///		Call this from Pootis's Core to call <see cref="AddPermissionProvider"/>
+		/// </summary>
+		/// <returns></returns>
+		internal IPermissionProvider? AddPermissionProviderInternal()
+		{
+			return AddPermissionProvider();
+		}
+
+		/// <summary>
+		///		Call this from Pootis's Core to call <see cref="PostInit"/>
+		/// </summary>
+		internal void PostInitInternal()
+		{
+			PostInit().ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///		Call this from Pootis's Core to call <see cref="Shutdown"/>
+		/// </summary>
+		internal void ShutdownInternal()
+		{
+			Shutdown();
+		}
+
+		/// <summary>
+		///		Call this from Pootis's Core to call <see cref="ClientConnected"/>
+		/// </summary>
+		internal void ClientConnectedInternal(DiscordSocketClient client)
+		{
+			ClientConnected(client).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///		Call this from Pootis's Core to call <see cref="ClientReady"/>
+		/// </summary>
+		internal void ClientReadyInternal(DiscordSocketClient client, bool firstReady)
+		{
+			ClientReady(client, firstReady).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///		Call this from Pootis's Core to call <see cref="ClientMessage"/>
+		/// </summary>
+		internal void ClientMessageInternal(DiscordSocketClient client, SocketUserMessage message)
+		{
+			ClientMessage(client, message).ConfigureAwait(false);
+		}
+		
+		#endregion
 	}
 #pragma warning restore 1998
 }

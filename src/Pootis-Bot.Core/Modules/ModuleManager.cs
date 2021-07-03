@@ -52,7 +52,7 @@ namespace Pootis_Bot.Modules
 			foreach (Module module in modules)
 			{
 				Logger.Info("Shutting down module {ModuleName}...", module.GetModuleInfoInternal().ModuleName);
-				module.Shutdown();
+				module.ShutdownInternal();
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace Pootis_Bot.Modules
 				//Call the init function
 				try
 				{
-					installedModules[i].Init().ConfigureAwait(false);
+					installedModules[i].InitInternal();
 					Logger.Info("Loaded module {Module} version {Version} by {Author}", moduleInfo.ModuleName,
 						moduleInfo.ModuleVersion.ToString(), moduleInfo.ModuleAuthorName);
 					modules.Add(installedModules[i]);
@@ -136,7 +136,7 @@ namespace Pootis_Bot.Modules
 				//Call the init function
 				try
 				{
-					installedModules[i].PostInit().ConfigureAwait(false);
+					installedModules[i].PostInitInternal();
 				}
 				catch (Exception ex)
 				{
@@ -176,7 +176,7 @@ namespace Pootis_Bot.Modules
 			{
 				try
 				{
-					module.ClientConnected(client).ConfigureAwait(false);
+					module.ClientConnectedInternal(client);
 				}
 				catch (Exception ex)
 				{
@@ -196,7 +196,7 @@ namespace Pootis_Bot.Modules
 			{
 				try
 				{
-					module.ClientReady(client, firstReady).ConfigureAwait(false);
+					module.ClientReadyInternal(client, firstReady);
 				}
 				catch (Exception ex)
 				{
@@ -216,7 +216,7 @@ namespace Pootis_Bot.Modules
 			{
 				try
 				{
-					module.ClientMessage(client, message).ConfigureAwait(false);
+					module.ClientMessageInternal(client, message);
 				}
 				catch (Exception ex)
 				{
@@ -235,7 +235,7 @@ namespace Pootis_Bot.Modules
 			{
 				try
 				{
-					IPermissionProvider permissionProvider = module.AddPermissionProvider();
+					IPermissionProvider permissionProvider = module.AddPermissionProviderInternal();
 					if(permissionProvider != null)
 						commandHandler.AddPermissionProvider(permissionProvider);
 				}

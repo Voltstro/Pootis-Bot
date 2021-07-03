@@ -8,12 +8,12 @@ namespace Pootis_Bot.Module.WelcomeMessage
 {
     internal sealed class WelcomeMessageModule : Modules.Module
     {
-        public override ModuleInfo GetModuleInfo()
+        protected override ModuleInfo GetModuleInfo()
         {
             return new ModuleInfo("WelcomeMessageModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
         }
 
-        public override Task ClientConnected(DiscordSocketClient client)
+        protected override Task ClientConnected(DiscordSocketClient client)
         {
             client.UserJoined += WelcomeMessageService.UserJoined;
             client.UserLeft += WelcomeMessageService.UserLeft;
@@ -21,7 +21,7 @@ namespace Pootis_Bot.Module.WelcomeMessage
             return base.ClientConnected(client);
         }
 
-        public override Task ClientReady(DiscordSocketClient client, bool firstReady)
+        protected override Task ClientReady(DiscordSocketClient client, bool firstReady)
         {
             _ = Task.Run(() => WelcomeMessageService.CheckAllServers(client));
             return base.ClientReady(client, firstReady);

@@ -8,12 +8,12 @@ namespace Pootis_Bot.Module.RuleReaction
 {
     internal sealed class RuleReactionModule : Modules.Module
     {
-        public override ModuleInfo GetModuleInfo()
+        protected override ModuleInfo GetModuleInfo()
         {
             return new ModuleInfo("RuleReactionModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
         }
 
-        public override Task ClientConnected(DiscordSocketClient client)
+        protected override Task ClientConnected(DiscordSocketClient client)
         {
             client.ReactionAdded += (cacheable, channel, reaction) =>
             {
@@ -27,7 +27,7 @@ namespace Pootis_Bot.Module.RuleReaction
             return base.ClientConnected(client);
         }
 
-        public override Task ClientReady(DiscordSocketClient client, bool firstReady)
+        protected override Task ClientReady(DiscordSocketClient client, bool firstReady)
         {
             _ = Task.Run(() => RuleReactionService.CheckAllServer(client));
             return base.ClientReady(client, firstReady);

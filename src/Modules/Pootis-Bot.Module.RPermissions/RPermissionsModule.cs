@@ -7,12 +7,12 @@ namespace Pootis_Bot.Module.RPermissions
 {
     internal sealed class RPermissionsModule : Modules.Module
     {
-        public override ModuleInfo GetModuleInfo()
+        protected override ModuleInfo GetModuleInfo()
         {
             return new ModuleInfo("RPermissionsModule", "Voltstro", Version.Parse(VersionUtils.GetCallingVersion()));
         }
 
-        public override IPermissionProvider AddPermissionProvider()
+        protected override IPermissionProvider AddPermissionProvider()
         {
             return new RPermissionsProvider();
         }

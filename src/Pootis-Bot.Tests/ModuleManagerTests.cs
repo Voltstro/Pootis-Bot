@@ -72,7 +72,7 @@ namespace Pootis_Bot.Tests
 
 		private class TestModule : Module
 		{
-			public override ModuleInfo GetModuleInfo()
+			protected override ModuleInfo GetModuleInfo()
 			{
 				return new ModuleInfo("TestModule", "Voltstro", new Version(1, 0));
 			}
@@ -80,7 +80,7 @@ namespace Pootis_Bot.Tests
 
 		private class DependentModule : Module
 		{
-			public override ModuleInfo GetModuleInfo()
+			protected override ModuleInfo GetModuleInfo()
 			{
 				return new ModuleInfo("DependentModule", "Voltstro", new Version(2, 0));
 			}
@@ -88,7 +88,7 @@ namespace Pootis_Bot.Tests
 
 		private class DependCorrectModule : Module
 		{
-			public override ModuleInfo GetModuleInfo()
+			protected override ModuleInfo GetModuleInfo()
 			{
 				return new ModuleInfo("DependCorrectModule", "Voltstro", new Version(1, 0), 
 					new ModuleDependency("DependentModule", new Version(2, 0)));
@@ -97,7 +97,7 @@ namespace Pootis_Bot.Tests
 
 		private class DependTooOldModule : Module
 		{
-			public override ModuleInfo GetModuleInfo()
+			protected override ModuleInfo GetModuleInfo()
 			{
 				return new ModuleInfo("DependCorrectModule", "Voltstro", new Version(1, 0), 
 					new ModuleDependency("DependentModule", new Version(3, 0)));
@@ -106,7 +106,7 @@ namespace Pootis_Bot.Tests
 
 		private class DependTooNewModule : Module
 		{
-			public override ModuleInfo GetModuleInfo()
+			protected override ModuleInfo GetModuleInfo()
 			{
 				return new ModuleInfo("DependCorrectModule", "Voltstro", new Version(1, 0), 
 					new ModuleDependency("DependentModule", new Version(1, 0)));

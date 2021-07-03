@@ -8,12 +8,12 @@ namespace Pootis_Bot.Module.AutoVC
 {
     internal sealed class AutoVCModule : Modules.Module
     {
-        public override ModuleInfo GetModuleInfo()
+        protected override ModuleInfo GetModuleInfo()
         {
             return new ModuleInfo("AutoVCModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
         }
 
-        public override Task ClientConnected(DiscordSocketClient client)
+        protected override Task ClientConnected(DiscordSocketClient client)
         {
             //Setup events
             client.ChannelDestroyed += channel =>
@@ -42,7 +42,7 @@ namespace Pootis_Bot.Module.AutoVC
             return base.ClientConnected(client);
         }
 
-        public override Task ClientReady(DiscordSocketClient client, bool firstReady)
+        protected override Task ClientReady(DiscordSocketClient client, bool firstReady)
         {
             PerformAutoVcChecks(client);
             return base.ClientReady(client, firstReady);

@@ -8,12 +8,12 @@ namespace Pootis_Bot.Module.Basic
 {
 	public sealed class BasicModule : Modules.Module
 	{
-		public override ModuleInfo GetModuleInfo()
+		protected override ModuleInfo GetModuleInfo()
 		{
 			return new ModuleInfo("BasicModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
 		}
 
-		public override Task ClientConnected(DiscordSocketClient client)
+		protected override Task ClientConnected(DiscordSocketClient client)
 		{
 			GameStatusManager.OnConnected(client);
 			return Task.CompletedTask;
