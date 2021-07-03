@@ -6,7 +6,7 @@ using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Module.Reminders
 {
-    public class RemindersModule : Modules.Module
+    internal sealed class RemindersModule : Modules.Module
     {
         public override ModuleInfo GetModuleInfo()
         {

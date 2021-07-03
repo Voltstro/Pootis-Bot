@@ -6,7 +6,7 @@ using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Module.AutoVC
 {
-    public class AutoVCModule : Modules.Module
+    internal sealed class AutoVCModule : Modules.Module
     {
         public override ModuleInfo GetModuleInfo()
         {

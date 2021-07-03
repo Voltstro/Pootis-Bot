@@ -5,7 +5,7 @@ using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Module.RPermissions
 {
-    public class RPermissionsModule : Modules.Module
+    internal sealed class RPermissionsModule : Modules.Module
     {
         public override ModuleInfo GetModuleInfo()
         {

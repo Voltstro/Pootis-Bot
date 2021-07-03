@@ -6,7 +6,7 @@ using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Module.RuleReaction
 {
-    public class RuleReactionModule : Modules.Module
+    internal sealed class RuleReactionModule : Modules.Module
     {
         public override ModuleInfo GetModuleInfo()
         {

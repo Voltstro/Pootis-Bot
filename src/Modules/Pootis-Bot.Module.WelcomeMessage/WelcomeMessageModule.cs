@@ -6,7 +6,7 @@ using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Module.WelcomeMessage
 {
-    public class WelcomeMessageModule : Modules.Module
+    internal sealed class WelcomeMessageModule : Modules.Module
     {
         public override ModuleInfo GetModuleInfo()
         {

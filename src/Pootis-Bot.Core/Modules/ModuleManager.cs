@@ -256,7 +256,7 @@ namespace Pootis_Bot.Modules
 			List<Module> foundModules = new List<Module>();
 			ConsoleCommandManager.AddConsoleCommandsFromAssembly(assembly);
 
-			foreach (Type type in assembly.GetTypes().Where(x => x.IsClass && x.IsPublic))
+			foreach (Type type in assembly.GetTypes().Where(x => x.IsClass))
 			{
 				if (!typeof(Module).IsAssignableFrom(type)) continue;
 

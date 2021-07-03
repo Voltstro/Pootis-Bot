@@ -6,7 +6,7 @@ using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Module.Profiles
 {
-	public sealed class ProfilesModule : Modules.Module
+	internal sealed class ProfilesModule : Modules.Module
 	{
 		private XpLevelManager xpLevelManager;
 		
