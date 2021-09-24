@@ -8,9 +8,9 @@ namespace Pootis_Bot.Module.RuleReaction
     /// <summary>
     ///     Rule reaction config
     /// </summary>
-    internal class RuleReactionConfig : Config<RuleReactionConfig>
+    public class RuleReactionConfig : Config<RuleReactionConfig>
     {
-        public List<RuleReactionServer> RuleReactionServers { get; set; } = new List<RuleReactionServer>();
+        public List<RuleReactionServer> RuleReactionServers { get; private set; } = new List<RuleReactionServer>();
         
         /// <summary>
         ///     Gets or creates a <see cref="RuleReactionServer"/>

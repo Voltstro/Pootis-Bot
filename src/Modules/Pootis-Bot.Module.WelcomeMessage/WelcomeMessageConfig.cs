@@ -6,9 +6,9 @@ using Pootis_Bot.Module.WelcomeMessage.Entities;
 
 namespace Pootis_Bot.Module.WelcomeMessage
 {
-    internal class WelcomeMessageConfig : Config<WelcomeMessageConfig>
+    public class WelcomeMessageConfig : Config<WelcomeMessageConfig>
     {
-        public List<WelcomeMessageServer> WelcomeMessageServers { get; set; } = new List<WelcomeMessageServer>();
+        public List<WelcomeMessageServer> WelcomeMessageServers { get; private set; } = new List<WelcomeMessageServer>();
 
         public WelcomeMessageServer GetOrCreateWelcomeMessageServer(SocketGuild guild)
         {

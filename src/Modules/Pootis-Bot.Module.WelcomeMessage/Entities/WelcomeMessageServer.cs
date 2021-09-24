@@ -1,6 +1,6 @@
 ﻿namespace Pootis_Bot.Module.WelcomeMessage.Entities
 {
-    internal class WelcomeMessageServer
+    public class WelcomeMessageServer
     {
         public ulong GuildId { get; set; }
 

@@ -7,7 +7,7 @@ namespace Pootis_Bot.Module.AutoVC
     /// <summary>
     ///     Config for auto VC module
     /// </summary>
-    internal class AutoVCConfig : Config<AutoVCConfig>
+    public class AutoVCConfig : Config<AutoVCConfig>
     {
         /// <summary>
         ///     The base name the auto VCs will have

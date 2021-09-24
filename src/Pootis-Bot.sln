@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.RPermissi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.Reminders", "Modules\Pootis-Bot.Module.Reminders\Pootis-Bot.Module.Reminders.csproj", "{14773416-78AE-433B-8B23-D4A30418ABCC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pootis-Bot.Module.Upgrade", "Modules\Pootis-Bot.Module.Upgrade\Pootis-Bot.Module.Upgrade.csproj", "{47373550-789D-488C-9EE0-B40E5098A0BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{14773416-78AE-433B-8B23-D4A30418ABCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14773416-78AE-433B-8B23-D4A30418ABCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14773416-78AE-433B-8B23-D4A30418ABCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47373550-789D-488C-9EE0-B40E5098A0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47373550-789D-488C-9EE0-B40E5098A0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47373550-789D-488C-9EE0-B40E5098A0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47373550-789D-488C-9EE0-B40E5098A0BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{A7C5CED9-A9D4-4A16-8764-AA48AE385B19} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 		{8B6D79A6-5972-4B91-9961-EB8E6DF316C6} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 		{14773416-78AE-433B-8B23-D4A30418ABCC} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
+		{47373550-789D-488C-9EE0-B40E5098A0BE} = {32EE362B-EDE9-49FE-93D3-B72D4B3228A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F633C8E5-4849-4385-8482-1EE7166D39CF}

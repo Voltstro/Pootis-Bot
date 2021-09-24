@@ -2,7 +2,7 @@
 
 namespace Pootis_Bot.Module.AutoVC
 {
-    internal class AutoVC
+    public class AutoVC
     {
         public ulong GuildId { get; set; }
         

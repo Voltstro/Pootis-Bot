@@ -10,9 +10,9 @@ namespace Pootis_Bot.Module.Profiles
 {
 	public class ProfilesConfig : Config<ProfilesConfig>
 	{
-		public uint XpGiveAmount { get; internal set; } = 15;
+		public uint XpGiveAmount { get; set; } = 15;
 
-		public TimeSpan XpGiveCooldown { get; internal set; } = new TimeSpan(0, 0, 15);
+		public TimeSpan XpGiveCooldown { get; set; } = new TimeSpan(0, 0, 15);
 
 		[JsonProperty("Profiles")]
 		private List<Profile> profiles = new List<Profile>();

@@ -5,7 +5,7 @@ using Discord.Commands;
 
 namespace Pootis_Bot.Module.RPermissions.Entities
 {
-    internal class RPermissionServer
+    public class RPermissionServer
     {
         public ulong GuildId { get; set; }
 

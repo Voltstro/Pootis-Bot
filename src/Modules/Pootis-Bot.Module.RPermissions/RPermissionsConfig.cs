@@ -5,7 +5,7 @@ using Pootis_Bot.Module.RPermissions.Entities;
 
 namespace Pootis_Bot.Module.RPermissions
 {
-    internal class RPermissionsConfig : Config<RPermissionsConfig>
+    public class RPermissionsConfig : Config<RPermissionsConfig>
     {
         public List<RPermissionServer> Servers { get; set; } = new List<RPermissionServer>();
 

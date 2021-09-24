@@ -2,7 +2,7 @@
 
 namespace Pootis_Bot.Module.RPermissions.Entities
 {
-    internal class RPerm
+    public class RPerm
     {
         public string Command { get; set; }
 

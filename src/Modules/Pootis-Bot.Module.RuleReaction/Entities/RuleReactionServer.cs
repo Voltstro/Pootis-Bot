@@ -1,6 +1,6 @@
 ﻿namespace Pootis_Bot.Module.RuleReaction.Entities
 {
-    internal class RuleReactionServer
+    public class RuleReactionServer
     {
         public ulong GuildId { get; set; }
         
