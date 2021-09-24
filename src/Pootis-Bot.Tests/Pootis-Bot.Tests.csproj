@@ -3,10 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Pootis_Bot.Tests</RootNamespace>
-
     <IsPackable>false</IsPackable>
-
-    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

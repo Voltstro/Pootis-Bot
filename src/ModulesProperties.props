@@ -4,10 +4,11 @@
 
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Platforms>x64</Platforms>
+    <Platforms>AnyCPU</Platforms>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <OutputPath>$(SolutionDir)bin\Debug\Modules\</OutputPath>
     <PublishDir>$(SolutionDir)bin\Debug\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
     <DebugType>full</DebugType>
@@ -15,7 +16,7 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <OutputPath>$(SolutionDir)bin\Release\Modules\</OutputPath>
     <PublishDir>$(SolutionDir)bin\Release\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
     <DebugType>none</DebugType>
