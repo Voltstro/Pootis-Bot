@@ -75,16 +75,16 @@ namespace Pootis_Bot.Module.Upgrade.OldEntities.Server
 		/// <summary>
 		/// API settings
 		/// </summary>
-		[JsonProperty("ApiKeys")] public ConfigApis Apis;
+		[JsonProperty("ApiKeys")] public ConfigApis Apis { get; set; }
 
 		/// <summary>
 		/// Audio settings
 		/// </summary>
-		public ConfigAudio AudioSettings;
+		public ConfigAudio AudioSettings { get; set; }
 
 		/// <summary>
 		/// Setting related to voting
 		/// </summary>
-		public VoteSettings VoteSettings;
+		public VoteSettings VoteSettings { get; set; }
 	}
 }
