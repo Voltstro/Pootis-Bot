@@ -124,13 +124,16 @@ namespace Pootis_Bot.Module.Upgrade
             WelcomeMessageConfig config = WelcomeMessageConfig.Instance;
             WelcomeMessageServer welcomeMessage = config.GetOrCreateWelcomeMessageServer(server.GuildId);
             welcomeMessage.GuildId = server.GuildId;
-            welcomeMessage.WelcomeMessage = server.WelcomeMessage;
-            welcomeMessage.GoodbyeMessage = server.WelcomeGoodbyeMessage;
+            welcomeMessage.WelcomeMessage = server.WelcomeMessage.ReplaceLegacyTemplates();
+            welcomeMessage.GoodbyeMessage = server.WelcomeGoodbyeMessage.ReplaceLegacyTemplates();
             welcomeMessage.WelcomeMessageEnabled = server.WelcomeMessageEnabled;
             welcomeMessage.GoodbyeMessageEnabled = server.GoodbyeMessageEnabled;
             welcomeMessage.ChannelId = server.WelcomeChannelId;
             config.Save();
         }
+
+        private static string ReplaceLegacyTemplates(this string str) =>
+            str.Replace("[user]", "%USER%").Replace("[server]", "%SERVER%");
 
         private static void UpgradeRuleReaction(ServerList server)
         {

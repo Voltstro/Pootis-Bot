@@ -43,6 +43,9 @@ namespace Pootis_Bot.Module.WelcomeMessage
                 return false;
             }
 
+            if (!server.GoodbyeMessageEnabled && !server.WelcomeMessageEnabled)
+                return true;
+
             SocketTextChannel channel = guild.GetTextChannel(server.ChannelId);
             if (channel == null)
             {
@@ -81,6 +84,9 @@ namespace Pootis_Bot.Module.WelcomeMessage
         {
             WelcomeMessageServer server = Config.WelcomeMessageServers.FirstOrDefault(x => x.ChannelId == channel.Id);
             if(server == null)
+                return Task.CompletedTask;
+            
+            if(!server.WelcomeMessageEnabled && !server.GoodbyeMessageEnabled)
                 return Task.CompletedTask;
 
             if (server.ChannelId == channel.Id)
