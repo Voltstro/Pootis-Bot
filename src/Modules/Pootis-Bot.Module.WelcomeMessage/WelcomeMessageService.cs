@@ -19,9 +19,9 @@ namespace Pootis_Bot.Module.WelcomeMessage
         public static void CheckAllServers(DiscordSocketClient client)
         {
             Logger.Debug("Checking welcome message servers...");
-            foreach (WelcomeMessageServer server in Config.WelcomeMessageServers)
+            for (int i = 0; i < Config.WelcomeMessageServers.Count; i++)
             {
-                CheckServer(server.GuildId, client);
+                CheckServer(Config.WelcomeMessageServers[i].GuildId, client);
             }
         }
         
