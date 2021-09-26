@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
+using Pootis_Bot.Helper;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Module.RuleReaction.Entities;
 using Emoji = Pootis_Bot.Discord.Emoji;
@@ -20,6 +21,26 @@ namespace Pootis_Bot.Module.RuleReaction
         public RuleReactionCommands()
         {
             config = Config<RuleReactionConfig>.Instance;
+        }
+
+        [Command("status")]
+        [Summary("Status of the rule reaction")]
+        public async Task Status()
+        {
+            RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
+
+            IMessage message = null;
+            SocketTextChannel channel = Context.Guild.GetTextChannel(server.ChannelId);
+            if (channel != null)
+                message = await channel.GetMessageAsync(server.MessageId);
+            
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithTitle("Rule Reaction Status");
+            embedBuilder.WithDescription($"Status of Rule Reaction for **{Context.Guild.Name}**");
+            embedBuilder.AddField("Enabled?", server.Enabled);
+            embedBuilder.AddField("Message", message == null ? "No Message" : $"[Link]({message.GetMessageUrl()})");
+            embedBuilder.AddField("Emoji", string.IsNullOrEmpty(server.Emoji) ? "No Emoji" : server.Emoji);
+            await Context.Channel.SendEmbedAsync(embedBuilder);
         }
         
         [Command("emoji")]

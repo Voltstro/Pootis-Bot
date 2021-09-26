@@ -3,6 +3,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
+using Pootis_Bot.Helper;
 using Pootis_Bot.Module.WelcomeMessage.Entities;
 
 namespace Pootis_Bot.Module.WelcomeMessage
@@ -18,6 +19,25 @@ namespace Pootis_Bot.Module.WelcomeMessage
         public WelcomeMessageCommands()
         {
             config = Config<WelcomeMessageConfig>.Instance;
+        }
+        
+        [Command("status")]
+        [Summary("Status of the welcome and goodbye messages")]
+        public async Task Status()
+        {
+            WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
+            
+            SocketTextChannel channel = Context.Guild.GetTextChannel(server.ChannelId);
+
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithTitle("Rule Reaction Status");
+            embedBuilder.WithDescription($"Status of Rule Reaction for **{Context.Guild.Name}**");
+            embedBuilder.AddField("Channel", channel == null ? "No Channel" : channel.Mention);
+            embedBuilder.AddField("Welcome Message Enabled?", server.WelcomeMessageEnabled, true);
+            embedBuilder.AddField("Welcome Message", server.WelcomeMessage, true);
+            embedBuilder.AddField("Goodbye Message Enabled?", server.GoodbyeMessageEnabled, true);
+            embedBuilder.AddField("Goodbye Message", server.GoodbyeMessage, true);
+            await Context.Channel.SendEmbedAsync(embedBuilder);
         }
         
         [Command("channel")]
