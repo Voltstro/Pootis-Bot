@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
+using Pootis_Bot.Helper;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Module.RuleReaction.Entities;
 
@@ -96,7 +97,11 @@ namespace Pootis_Bot.Module.RuleReaction
             //If the emote is right, add the role
             if (reaction.Emote.Name == server.Emoji)
             {
-                await client.GetGuild(server.GuildId).GetUser(reaction.UserId).AddRoleAsync(server.RoleId);
+                SocketGuildUser user = client.GetGuild(server.GuildId).GetUser(reaction.UserId);
+                if(user.HasRole(server.RoleId))
+                    return;
+                
+                await user.AddRoleAsync(server.RoleId);
             }
         }
 
