@@ -101,47 +101,45 @@ namespace Pootis_Bot.Module.AutoVC
             try
             {
                 Logger.Debug("Checking auto VCs...");
-
-                List<AutoVC> autoVCs = Config.AutoVCs;
-                for (int i = 0; i < autoVCs.Count; i++)
+                
+                for (int i = 0; i < Config.AutoVCs.Count; i++)
                 {
                     //Get the Guild
-                    SocketGuild guild = client.GetGuild(autoVCs[i].GuildId);
+                    SocketGuild guild = client.GetGuild(Config.AutoVCs[i].GuildId);
                     if (guild == null)
                     {
                         Logger.Debug("The guild {GuildId} doesn't exist anymore, removing auto VC data.",
-                            autoVCs[i].GuildId);
-                        autoVCs.RemoveAt(i);
+                            Config.AutoVCs[i].GuildId);
+                        Config.AutoVCs.RemoveAt(i);
                         continue;
                     }
 
                     //Check active auto sub VCs
-                    for (int j = 0; j < autoVCs[i].ActiveSubAutoVc.Count; j++)
+                    for (int j = 0; j < Config.AutoVCs[i].ActiveSubAutoVc.Count; j++)
                     {
-                        SocketVoiceChannel activeVc = guild.GetVoiceChannel(autoVCs[i].ActiveSubAutoVc[j]);
+                        SocketVoiceChannel activeVc = guild.GetVoiceChannel(Config.AutoVCs[i].ActiveSubAutoVc[j]);
                         if (activeVc == null)
                         {
                             Logger.Debug(
                                 "The active sub auto VC {ActiveSubVcId} doesn't exist anymore, removing active sub VC data.",
-                                autoVCs[i].ActiveSubAutoVc[j]);
-                            autoVCs[i].ActiveSubAutoVc.RemoveAt(j);
+                                Config.AutoVCs[i].ActiveSubAutoVc[j]);
+                            Config.AutoVCs[i].ActiveSubAutoVc.RemoveAt(j);
                             continue;
                         }
 
                         if (activeVc.Users.Count != 0) continue;
 
-                        Logger.Debug("The active sub auto VC {ActiveSubVcId} doesn't have any users in it, deleting channel.", autoVCs[i].ActiveSubAutoVc[j]);
+                        Logger.Debug("The active sub auto VC {ActiveSubVcId} doesn't have any users in it, deleting channel.", Config.AutoVCs[i].ActiveSubAutoVc[j]);
                         await activeVc.DeleteAsync();
-                        autoVCs[i].ActiveSubAutoVc.RemoveAt(j);
+                        Config.AutoVCs[i].ActiveSubAutoVc.RemoveAt(j);
                     }
 
                     //The auto VC doesn't exist anymore
-                    if (guild.GetVoiceChannel(autoVCs[i].ChannelId) != null) continue;
+                    if (guild.GetVoiceChannel(Config.AutoVCs[i].ChannelId) != null) continue;
 
                     Logger.Debug("The auto VC channel {AutoVCId} doesn't exist anymore, removing data.",
-                        autoVCs[i].ChannelId);
-                    autoVCs.RemoveAt(i);
-                    continue;
+                        Config.AutoVCs[i].ChannelId);
+                    Config.AutoVCs.RemoveAt(i);
                 }
 
                 Config.Save();
