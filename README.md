@@ -10,18 +10,26 @@ Pootis-Bot, a multipurpose, modular, open-source Discord bot written in the C# l
 
 # Bot Features
 
-**NOTE**: The current V2.x re-write is lacking a lot of the features that 1.x had. Once the 2.x re-write is complete it should offer the same and even more functionality as 1.x.
+Due to modular design of Pootis-Bot, any number of features could be added to Pootis.
 
-- Multi Server Capabilities
-- Moderation
-- User Accounts
-- Leveling system
-- Music Service (Downloads from YouTube)
-- Google, YouTube, Giphy, Wikipedia and Steam user search support
-- Rule reaction feature
-- Auto Voice Channels
-- Basic Anti-Spam features
-- Cross-Platform (Windows, Linux, MacOS)
+The bot by default comes with a few modules, theses modules can of course be removed.
+
+## Included Modules
+
+- Basic Bot Stuff 
+    - (Hello, ping, help, etc)
+- AutoVC
+    - Allows for a voice channel to automatically create smaller sub chats
+- Profiles
+    - XP, levels
+- Reminders
+    - Remind you about stuff
+- Rule Reaction
+    - Require a message to be reacted to gain entry
+- Welcome & Goodbye Message
+    - Set a custom welcome and goodbye message for when your users join and leave
+- Permissions
+    - Set permissions on any bot command.
 
 ## Getting Started
 
@@ -63,7 +71,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Quick Notes
 
-* This is the first piece of software that I have publicly released, there are bound to be mistakes and pieces of code that aren't "professional" or whatever you want to say.
-* The name 'Pootis-Bot' was suggested by my friend. Yes, I know what game it is from, I play it!
-* The robot heavy icon is Valve Corporation’s model.
-* Thanks for Discord for generally being awesome (most of the time).
+* We all know that there is a crap tone of open-source Discord bots, many of which are either made for one server, or just as a hobby. Pootis is no exception to both of theses, it was designed for my crappy Discord server, but turned into something that I worked on the side as a hobby.
