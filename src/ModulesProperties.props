@@ -3,6 +3,8 @@
 <Project>
 
   <PropertyGroup>
+    <Authors>Voltstro</Authors>
+    <Copyright>Copyright © Voltstro 2021</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <Platforms>AnyCPU</Platforms>
     <Configurations>Debug;Release</Configurations>
