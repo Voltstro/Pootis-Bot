@@ -37,8 +37,8 @@
     </ProjectReference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Release'">
-    <Delete Files="$(OutDir)$(TargetName).deps.json" />
+  <Target Name="PostPublish" AfterTargets="Publish" Condition="'$(Configuration)'=='Release'">
+    <Delete Files="$(PublishDir)$(TargetName).deps.json" />
   </Target>
 
 </Project>
