@@ -108,14 +108,14 @@ namespace Pootis_Bot.Commands
 			}
 
 			//Execute the command
-			IResult result = await commandSearchResult.CommandMatch.ExecuteAsync(context, commandSearchResult.ParseResult, serviceProvider);
+			ExecuteResult result = (ExecuteResult) await commandSearchResult.CommandMatch.ExecuteAsync(context, commandSearchResult.ParseResult, serviceProvider);
 
 			//Handle the result
 			if (!result.IsSuccess && result.Error == CommandError.Exception)
 			{
 				await context.Channel.SendMessageAsync(
 					"An internal error occurred while trying to handle your command!");
-				Logger.Error($"An error occurred while handling a command! {result.ErrorReason}");
+				Logger.Error(result.Exception, "An error occurred while handling a command!");
 			}
 		}
 

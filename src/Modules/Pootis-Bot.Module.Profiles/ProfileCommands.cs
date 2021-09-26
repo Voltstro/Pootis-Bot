@@ -83,11 +83,17 @@ namespace Pootis_Bot.Module.Profiles
 			Array.Sort(allProfiles, profilesComparer);
 
 			Utf16ValueStringBuilder sb = ZString.CreateStringBuilder();
-			sb.Append($"```csharp\n 📋 Top 10 {displayName} Profiles\n ========================\n");
+			sb.Append($"```csharp\n 📋 Top 10 {displayName} Profiles for {Context.Guild.Name}\n =====================================\n");
 			int count = 1;
-			foreach (Profile user in allProfiles.Where(_ => count <= 10))
+			foreach (Profile user in allProfiles)
 			{
-				SocketUser targetUser = Context.Client.GetUser(user.Id);
+				if(count > 10)
+					break;
+				
+				SocketUser targetUser = Context.Guild.GetUser(user.Id);
+				
+				if(targetUser == null)
+					continue;
 
 				sb.Append(
 					$"\n [{count}] -- # {targetUser.Username}\n         └ Level: {user.LevelNumber}\n         └ Xp: {user.Xp}");
