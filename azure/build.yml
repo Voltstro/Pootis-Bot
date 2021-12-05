@@ -1,4 +1,9 @@
 steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET 6'
+  inputs:
+    version: 6.x
+
 - task: DotNetCoreCLI@2
   displayName: Restore Packages
   inputs:
