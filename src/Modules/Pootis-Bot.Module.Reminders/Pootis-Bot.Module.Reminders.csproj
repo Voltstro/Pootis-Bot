@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Pootis_Bot.Module.Reminders</RootNamespace>
     <Version>0.0.1</Version>
   </PropertyGroup>
