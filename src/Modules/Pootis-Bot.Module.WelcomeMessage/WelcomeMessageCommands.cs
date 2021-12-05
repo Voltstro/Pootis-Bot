@@ -30,8 +30,8 @@ namespace Pootis_Bot.Module.WelcomeMessage
             SocketTextChannel channel = Context.Guild.GetTextChannel(server.ChannelId);
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle("Rule Reaction Status");
-            embedBuilder.WithDescription($"Status of Rule Reaction for **{Context.Guild.Name}**");
+            embedBuilder.WithTitle("Welcome Message Status");
+            embedBuilder.WithDescription($"Status of Welcome Message for **{Context.Guild.Name}**");
             embedBuilder.AddField("Channel", channel == null ? "No Channel" : channel.Mention);
             embedBuilder.AddField("Welcome Message Enabled?", server.WelcomeMessageEnabled, true);
             embedBuilder.AddField("Welcome Message", server.WelcomeMessage, true);
