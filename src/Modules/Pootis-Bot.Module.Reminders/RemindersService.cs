@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
 using Pootis_Bot.Core;
+using Pootis_Bot.Discord;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Module.Reminders.Entities;
@@ -62,9 +64,15 @@ namespace Pootis_Bot.Module.Reminders
                     embed.WithTitle($"{BotConfig.BotName} Reminder");
                     embed.WithAuthor($"Reminder set at: {reminder.StartTime:hh:mm:ss tt} UTC", client.CurrentUser.GetAvatarUrl(), reminder.MessageUrl);
                     embed.WithDescription($"\"{reminder.Message}\"");
-                    IDMChannel dm = await user.GetOrCreateDMChannelAsync();
-                    if (dm != null)
-                        await dm.SendEmbedAsync(embed);
+                    DmChat dmChat = new(user);
+                    try
+                    {
+                        await dmChat.SendMessage(embed);
+                    }
+                    catch (Exception)
+                    {
+                        //All good, logged within dmChat.SendMessage
+                    }
                 }
                 else
                 {

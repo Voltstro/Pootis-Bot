@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Text;
 using Discord;
 using Discord.Commands;
+using Discord.Net;
+using Pootis_Bot.Discord;
 using Pootis_Bot.Helper;
 
 namespace Pootis_Bot.Module.Basic
@@ -26,11 +29,24 @@ namespace Pootis_Bot.Module.Basic
 		{
 			await Context.Channel.SendMessageAsync("I will DM you the help info!");
 
-			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
+			DmChat dmChat = new(Context.User);
 
 			foreach (string message in BuildHelpMenu())
 			{
-				await dm.SendMessageAsync(message);
+				try
+				{
+					await dmChat.SendMessage(message);
+				}
+				catch (HttpException)
+				{
+					await Context.Channel.SendMessageAsync(
+						"Sorry, but I can't seem to send you a DM for some reason, you might have your account set to not allow DMs from users.");
+				}
+				catch (Exception)
+				{
+					await Context.Channel.SendMessageAsync(
+						"Sorry, but I can't seem to send you a DM for some reason, this might be an issue with Discord.");
+				}
 			}
 		}
 
