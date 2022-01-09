@@ -143,7 +143,7 @@ namespace Pootis_Bot.Module.RuleReaction
         /// <param name="cache"></param>
         /// <param name="messageChannel"></param>
         /// <returns></returns>
-        public static Task MessageDeleted(Cacheable<IMessage, ulong> cache, ISocketMessageChannel messageChannel)
+        public static Task MessageDeleted(Cacheable<IMessage, ulong> cache, Cacheable<IMessageChannel, ulong> messageChannel)
         {
             if(!cache.HasValue)
                 return Task.CompletedTask;

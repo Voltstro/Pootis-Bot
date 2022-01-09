@@ -19,7 +19,7 @@ public class DmChat
     /// <param name="user">The user to start a DM with</param>
     public DmChat(IUser user)
     {
-        dm = user.GetOrCreateDMChannelAsync().GetAwaiter().GetResult();
+        dm = user.CreateDMChannelAsync().GetAwaiter().GetResult();
     }
 
     /// <summary>

@@ -110,7 +110,8 @@ namespace Pootis_Bot.Core
 			//Setup the discord client
 			discordClient = new DiscordSocketClient(new DiscordSocketConfig
 			{
-				LogLevel = LogSeverity.Verbose
+				LogLevel = LogSeverity.Verbose,
+				GatewayIntents = config.GatewayIntents
 			});
 			discordClient.Log += Log;
 			discordClient.Ready += Ready;

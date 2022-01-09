@@ -70,14 +70,14 @@ namespace Pootis_Bot.Module.WelcomeMessage
             await user.Guild.GetTextChannel(server.ChannelId).SendMessageAsync(message);
         }
         
-        public static async Task UserLeft(SocketGuildUser user)
+        public static async Task UserLeft(SocketGuild guild, SocketUser user)
         {
-            WelcomeMessageServer server = Config.GetOrCreateWelcomeMessageServer(user.Guild);
+            WelcomeMessageServer server = Config.GetOrCreateWelcomeMessageServer(guild);
             if (!server.GoodbyeMessageEnabled)
                 return;
 
-            string message = server.GoodbyeMessage.Replace("%SERVER%", user.Guild.Name).Replace("%USER%", user.Username);
-            await user.Guild.GetTextChannel(server.ChannelId).SendMessageAsync(message);
+            string message = server.GoodbyeMessage.Replace("%SERVER%", guild.Name).Replace("%USER%", user.Username);
+            await guild.GetTextChannel(server.ChannelId).SendMessageAsync(message);
         }
 
         public static Task ChannelDeleted(SocketChannel channel)

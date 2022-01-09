@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Discord;
+using Newtonsoft.Json;
 using Pootis_Bot.Config;
 using Pootis_Bot.Console.ConfigMenus;
 
@@ -30,5 +31,14 @@ namespace Pootis_Bot.Core
 		[MenuItemFormat("Display Name")]
 		[JsonProperty]
 		public string BotName { get; internal set; } = "Pootis-Bot";
+
+		/// <summary>
+		///		Required <see cref="GatewayIntents"/> for the discord client
+		/// </summary>
+		[DontShowItem]
+		[JsonProperty]
+		public GatewayIntents GatewayIntents { get; internal set; } = GatewayIntents.AllUnprivileged |
+		                                                              GatewayIntents.GuildMembers |
+		                                                              GatewayIntents.GuildPresences;
 	}
 }
