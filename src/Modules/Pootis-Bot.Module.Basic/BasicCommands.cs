@@ -22,6 +22,7 @@ namespace Pootis_Bot.Module.Basic
 			config.Saved += () => displayName = config.BotName;
 		}
 
+		/*
 		[Command("hello")]
 		[Summary("Gets basic info about the bot")]
 		public async Task Hello()
@@ -38,6 +39,7 @@ namespace Pootis_Bot.Module.Basic
 
 			await Context.Channel.SendMessageAsync("", false, embed.Build());
 		}
+		*/
 
 		[Command("ping")]
 		[Summary("Gets the ping of the bot")]

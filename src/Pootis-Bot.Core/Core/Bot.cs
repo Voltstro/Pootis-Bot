@@ -145,13 +145,14 @@ namespace Pootis_Bot.Core
 			System.Console.Title = config.BotName;
 		}
 
-		private Task Ready()
+		private async Task Ready()
 		{
 			ModuleManager.ModulesClientReady(discordClient, firstReady);
 			firstReady = false;
+
+			await commandHandler.RegisterInteractionCommands();
 			
 			Logger.Info("Bot is now ready and online!");
-			return Task.CompletedTask;
 		}
 
 		private Task Log(LogMessage message)

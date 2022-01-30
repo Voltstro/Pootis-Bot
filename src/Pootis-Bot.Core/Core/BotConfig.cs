@@ -40,5 +40,11 @@ namespace Pootis_Bot.Core
 		public GatewayIntents GatewayIntents { get; internal set; } = GatewayIntents.AllUnprivileged |
 		                                                              GatewayIntents.GuildMembers |
 		                                                              GatewayIntents.GuildPresences;
+
+#if DEBUG
+		[DontShowItem]
+		[JsonProperty]
+		public ulong TestingGuildId { get; internal set; }
+#endif
 	}
 }

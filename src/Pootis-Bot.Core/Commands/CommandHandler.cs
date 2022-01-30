@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Commands.Permissions;
 using Pootis_Bot.Config;
 using Pootis_Bot.Core;
-using Pootis_Bot.Discord;
 using Pootis_Bot.Discord.TypeReaders;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
+using Emoji = Pootis_Bot.Discord.Emoji;
+using ExecuteResult = Discord.Commands.ExecuteResult;
+using PreconditionResult = Discord.Commands.PreconditionResult;
 
 namespace Pootis_Bot.Commands
 {
@@ -22,7 +26,10 @@ namespace Pootis_Bot.Commands
 	internal sealed class CommandHandler
 	{
 		private readonly DiscordSocketClient client;
+		
 		private readonly CommandService commandService;
+		private readonly InteractionService interactionService;
+
 		private readonly BotConfig config;
 		private readonly IServiceProvider serviceProvider;
 
@@ -37,14 +44,36 @@ namespace Pootis_Bot.Commands
 			config = Config<BotConfig>.Instance;
 			this.client = client;
 			client.MessageReceived += HandleMessage;
+			client.InteractionCreated += HandleInteraction;
 
 			commandService = new CommandService();
 			commandService.AddTypeReader<Emoji>(new EmojiTypeReader());
+
+			interactionService = new InteractionService(client);
+
 			serviceProvider = new ServiceCollection()
 				.AddSingleton(client)
 				.AddSingleton(commandService)
 				.BuildServiceProvider();
 			permissionProviders = new List<IPermissionProvider>();
+		}
+
+		private async Task HandleInteraction(SocketInteraction interaction)
+		{
+			try
+			{
+				SocketInteractionContext ctx = new(client, interaction);
+				await interactionService.ExecuteCommandAsync(ctx, serviceProvider);
+			}
+			catch (Exception ex)
+			{
+				Logger.Error(ex, "Error handling interaction!");
+				
+				//If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
+				//response, or at least let the user know that something went wrong during the command execution.
+				if(interaction.Type == InteractionType.ApplicationCommand)
+					await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
+			}
 		}
 
 		/// <summary>
@@ -53,6 +82,7 @@ namespace Pootis_Bot.Commands
 		/// <param name="assembly"></param>
 		internal void InstallAssemblyModules(Assembly assembly)
 		{
+			interactionService.AddModulesAsync(assembly, serviceProvider);
 			commandService.AddModulesAsync(assembly, serviceProvider);
 		}
 
@@ -63,6 +93,18 @@ namespace Pootis_Bot.Commands
 		internal void AddPermissionProvider(IPermissionProvider permissionProvider)
 		{
 			permissionProviders.Add(permissionProvider);
+		}
+
+		/// <summary>
+		///		Registers all interaction commands to all guilds
+		/// </summary>
+		internal async Task RegisterInteractionCommands()
+		{
+#if DEBUG
+			await interactionService.RegisterCommandsToGuildAsync(BotConfig.Instance.TestingGuildId, true);
+#else
+			await interactionService.RegisterCommandsGloballyAsync(true);
+#endif
 		}
 
 		private async Task HandleMessage(SocketMessage msg)
