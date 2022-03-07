@@ -12,6 +12,7 @@ using Pootis_Bot.Console.ConfigMenus;
 using Pootis_Bot.Exceptions;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
+using Serilog.Events;
 
 namespace Pootis_Bot.Core
 {
@@ -157,25 +158,18 @@ namespace Pootis_Bot.Core
 
 		private Task Log(LogMessage message)
 		{
-			switch (message.Severity)
+			LogEventLevel severity = message.Severity switch
 			{
-				case LogSeverity.Critical:
-				case LogSeverity.Error:
-					Logger.Error(message.Message);
-					break;
-				case LogSeverity.Warning:
-					Logger.Warn(message.Message);
-					break;
-				case LogSeverity.Info:
-					Logger.Info(message.Message);
-					break;
-				case LogSeverity.Verbose:
-				case LogSeverity.Debug:
-					Logger.Debug(message.Message);
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+				LogSeverity.Critical => LogEventLevel.Fatal,
+				LogSeverity.Error => LogEventLevel.Error,
+				LogSeverity.Warning => LogEventLevel.Warning,
+				LogSeverity.Info => LogEventLevel.Information,
+				LogSeverity.Verbose => LogEventLevel.Verbose,
+				LogSeverity.Debug => LogEventLevel.Debug,
+				_ => LogEventLevel.Information
+			};
+			
+			Logger.Write(severity, message.Exception, $"[{message.Source}] {message.Message}");
 
 			return Task.CompletedTask;
 		}

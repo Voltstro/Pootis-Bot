@@ -91,6 +91,22 @@ namespace Pootis_Bot.Logging
 			log.Dispose();
 		}
 
+		#region Write
+
+		/// <summary>
+		///		Writes to the logger, try to use the other methods
+		/// </summary>
+		/// <param name="logSeverity"></param>
+		/// <param name="ex"></param>
+		/// <param name="message"></param>
+		/// <param name="values"></param>
+		public static void Write(LogEventLevel logSeverity, Exception ex, string message, params object[] values)
+		{
+			log.Write(logSeverity, ex, message, values);
+		}
+
+		#endregion
+
 		#region Debug Logging
 
 		/// <summary>
