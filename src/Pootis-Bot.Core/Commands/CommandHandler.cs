@@ -16,6 +16,7 @@ using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using Emoji = Pootis_Bot.Discord.Emoji;
 using ExecuteResult = Discord.Commands.ExecuteResult;
+using IResult = Discord.Interactions.IResult;
 using PreconditionResult = Discord.Commands.PreconditionResult;
 
 namespace Pootis_Bot.Commands
@@ -58,24 +59,6 @@ namespace Pootis_Bot.Commands
 			permissionProviders = new List<IPermissionProvider>();
 		}
 
-		private async Task HandleInteraction(SocketInteraction interaction)
-		{
-			try
-			{
-				SocketInteractionContext ctx = new(client, interaction);
-				await interactionService.ExecuteCommandAsync(ctx, serviceProvider);
-			}
-			catch (Exception ex)
-			{
-				Logger.Error(ex, "Error handling interaction!");
-				
-				//If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
-				//response, or at least let the user know that something went wrong during the command execution.
-				if(interaction.Type == InteractionType.ApplicationCommand)
-					await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
-			}
-		}
-
 		/// <summary>
 		///     Install modules in an assembly
 		/// </summary>
@@ -106,6 +89,89 @@ namespace Pootis_Bot.Commands
 			await interactionService.RegisterCommandsGloballyAsync(true);
 #endif
 		}
+
+		#region Interaction Commands
+
+		private async Task HandleInteraction(SocketInteraction interaction)
+		{
+			try
+			{
+				SocketInteractionContext ctx = new(client, interaction);
+
+				switch (interaction)
+				{
+					case ISlashCommandInteraction slashCommandInteraction:
+						SearchResult<SlashCommandInfo> result = interactionService.SearchSlashCommand(slashCommandInteraction);
+						if(CheckSearchResult(result))
+							ExecuteSlashCommand(ctx, result.Command);
+						break;
+				}
+				
+				//await interactionService.ExecuteCommandAsync(ctx, serviceProvider);
+			}
+			catch (Exception ex)
+			{
+				Logger.Error(ex, "Error handling interaction!");
+				
+				//If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
+				//response, or at least let the user know that something went wrong during the command execution.
+				if(interaction.Type == InteractionType.ApplicationCommand)
+					await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
+			}
+		}
+
+		private async void ExecuteSlashCommand(SocketInteractionContext ctx, SlashCommandInfo slashCommandInfo)
+		{
+			IResult result = await slashCommandInfo.ExecuteAsync(ctx, serviceProvider);
+			Logger.Debug(CheckInteractionResult(ctx, result)
+				? $"Success handling slash command {slashCommandInfo.Name}"
+				: $"Error handling slash command {slashCommandInfo.Name}. If their is an issue you need to worry about it would have already been displayed.");
+		}
+
+		private bool CheckInteractionResult(SocketInteractionContext ctx, IResult result)
+		{
+			if (result.IsSuccess) 
+				return true;
+			
+			
+			switch (result.Error)
+			{
+				case InteractionCommandError.UnknownCommand: //Interactions shouldn't ever have this right?
+					ctx.Interaction.RespondAsync("Unknown Command!");
+					break;
+				case InteractionCommandError.ParseFailed:
+				case InteractionCommandError.ConvertFailed:
+				case InteractionCommandError.BadArgs:
+					ctx.Interaction.RespondAsync("Command has bad arguments!");
+					break;
+				case InteractionCommandError.Exception:
+				case InteractionCommandError.Unsuccessful:
+					ctx.Interaction.RespondAsync(
+						"Sorry, but an internal error occured while executing this command!");
+					Logger.Error($"An error occured while executing a command!\n{result.ErrorReason}");
+					break;
+				case InteractionCommandError.UnmetPrecondition:
+					ctx.Interaction.RespondAsync(
+						"Sorry, but you don't meet the preconditions to run this command!");
+					break;
+				case null:
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+				
+			return false;
+		}
+
+		private static bool CheckSearchResult<T>(SearchResult<T> searchResult)
+			where T : class, ICommandInfo
+		{
+			return searchResult.IsSuccess;
+		}
+		
+		#endregion
+		
+		#region Message Commands
 
 		private async Task HandleMessage(SocketMessage msg)
 		{
@@ -271,5 +337,7 @@ namespace Pootis_Bot.Commands
 			KeyValuePair<CommandMatch, ParseResult> chosenOverload = successfulParses[0];
 			return CommandSearchResult.FromSuccess(chosenOverload.Key, chosenOverload.Value);
 		}
+		
+		#endregion
 	}
 }
