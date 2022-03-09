@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿/*
+
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Cysharp.Text;
 using Discord;
@@ -305,3 +307,5 @@ namespace Pootis_Bot.Module.RPermissions
         }
     }
 }
+
+*/

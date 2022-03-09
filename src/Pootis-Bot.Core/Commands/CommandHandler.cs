@@ -55,6 +55,7 @@ namespace Pootis_Bot.Commands
 			serviceProvider = new ServiceCollection()
 				.AddSingleton(client)
 				.AddSingleton(commandService)
+				.AddSingleton(interactionService)
 				.BuildServiceProvider();
 			permissionProviders = new List<IPermissionProvider>();
 		}
@@ -83,6 +84,7 @@ namespace Pootis_Bot.Commands
 		/// </summary>
 		internal async Task RegisterInteractionCommands()
 		{
+
 #if DEBUG
 			await interactionService.RegisterCommandsToGuildAsync(BotConfig.Instance.TestingGuildId, true);
 #else
@@ -122,6 +124,21 @@ namespace Pootis_Bot.Commands
 
 		private async void ExecuteSlashCommand(SocketInteractionContext ctx, SlashCommandInfo slashCommandInfo)
 		{
+			//Check permissions
+			if (ctx.User.Id != ctx.Guild.Owner.Id) //Guild owners always have everything
+			{
+				if (ctx.User is SocketGuildUser {GuildPermissions.Administrator: false})
+				{
+					//Check permissions with the command
+					CommandPermissionResult permissionResult = await CheckSlashCommandWithPermissionProviders(slashCommandInfo, ctx);
+					if (!permissionResult.IsSuccess)
+					{
+						await ctx.Interaction.RespondAsync(permissionResult.ErrorReason);
+						return;
+					}
+				}
+			}
+			
 			IResult result = await slashCommandInfo.ExecuteAsync(ctx, serviceProvider);
 			Logger.Debug(CheckInteractionResult(ctx, result)
 				? $"Success handling slash command {slashCommandInfo.Name}"
@@ -161,6 +178,27 @@ namespace Pootis_Bot.Commands
 			}
 				
 			return false;
+		}
+		
+		private async Task<CommandPermissionResult> CheckSlashCommandWithPermissionProviders(SlashCommandInfo commandInfo, SocketInteractionContext context)
+		{
+			foreach (IPermissionProvider permissionProvider in permissionProviders)
+			{
+				//Try/Catch this since its most likely talking with third-party module code
+				try
+				{
+					PermissionResult result = await permissionProvider.OnExecuteSlashCommand(commandInfo, context);
+					if(!result.IsSuccess)
+						return CommandPermissionResult.FromError(result.ErrorReason);
+				}
+				catch (Exception ex)
+				{
+					Logger.Error(ex, "An internal error occured with the permission provider {PermissionProviderName}!", permissionProvider.GetType().Name);
+					return CommandPermissionResult.FromError("An internal error occured while checking the command's permissions!");
+				}
+			}
+
+			return CommandPermissionResult.FromSuccess();
 		}
 
 		private static bool CheckSearchResult<T>(SearchResult<T> searchResult)

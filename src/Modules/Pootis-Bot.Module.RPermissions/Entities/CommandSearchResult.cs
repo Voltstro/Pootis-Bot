@@ -1,4 +1,6 @@
 ﻿using Discord.Commands;
+using Discord.Interactions;
+using IResult = Discord.Commands.IResult;
 
 namespace Pootis_Bot.Module.RPermissions.Entities
 {
@@ -8,21 +10,21 @@ namespace Pootis_Bot.Module.RPermissions.Entities
         public string ErrorReason { get; init; }
         public bool IsSuccess { get; init; }
         
-        public SearchResult SearchResult { get; init; }
+        public SlashCommandInfo SlashCommand { get; init; }
 
-        public static CommandSearchResult FromSuccess(SearchResult searchResult) => new CommandSearchResult
+        public static CommandSearchResult FromSuccess(SlashCommandInfo command) => new CommandSearchResult
         {
             IsSuccess = true,
             Error = null,
-            SearchResult = searchResult
+            SlashCommand = command
         };
         
-        public static CommandSearchResult FromError(string errorReason, CommandError error, SearchResult searchResult) => new CommandSearchResult
+        public static CommandSearchResult FromError(string errorReason, CommandError error, SlashCommandInfo command) => new CommandSearchResult
         {
             IsSuccess = false,
             ErrorReason = errorReason,
             Error = error,
-            SearchResult = searchResult
+            SlashCommand = command
         };
     }
 }
