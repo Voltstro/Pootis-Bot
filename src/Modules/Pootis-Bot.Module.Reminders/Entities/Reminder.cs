@@ -1,16 +1,24 @@
 ﻿using System;
 
-namespace Pootis_Bot.Module.Reminders.Entities
-{
-    public class Reminder
-    {
-        public ulong UserId { get; set; }
-        
-        public string Message { get; set; }
+namespace Pootis_Bot.Module.Reminders.Entities;
 
-        public string MessageUrl { get; set; }
+public readonly struct Reminder
+{
+    public Reminder(ulong userId, string message, string messageUrl, DateTime endTime, DateTime startTime)
+    {
+        UserId = userId;
+        Message = message;
+        MessageUrl = messageUrl;
+        EndTime = endTime;
+        StartTime = startTime;
+    }
         
-        public DateTime EndTime { get; set; }
+    public ulong UserId { get; }
         
-        public DateTime StartTime { get; set; } }
-}
+    public string Message { get; }
+
+    public string MessageUrl { get; }
+        
+    public DateTime EndTime { get; }
+        
+    public DateTime StartTime { get; } }
