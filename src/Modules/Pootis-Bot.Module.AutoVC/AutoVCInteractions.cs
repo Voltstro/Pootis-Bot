@@ -8,11 +8,11 @@ using Pootis_Bot.Config;
 namespace Pootis_Bot.Module.AutoVC;
 
 [Group("autovc", "Provides commands for auto voice channels")]
-public class AutoVCCommands : InteractionModuleBase<SocketInteractionContext>
+public class AutoVCInteractions : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly AutoVCConfig config;
 
-    public AutoVCCommands()
+    public AutoVCInteractions()
     {
         config = Config<AutoVCConfig>.Instance;
     }
