@@ -1,23 +1,47 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Pootis_Bot.Module.RPermissions.Entities
+namespace Pootis_Bot.Module.RPermissions.Entities;
+
+public class RPerm
 {
-    public class RPerm
+    internal RPerm(string command)
     {
-        public string Command { get; set; }
+        Command = command;
+        Arguments = new List<RPermArgument>();
+        Roles = new List<ulong>();
+    }
 
-        public List<RPermArgument> Arguments { get; set; } = new List<RPermArgument>();
+    [JsonConstructor]
+    internal RPerm(string command, List<RPermArgument> arguments, List<ulong> roles)
+    {
+        Command = command;
+        Arguments = arguments;
+        Roles = roles;
+    }
+    
+    public string Command { get; }
 
-        public List<ulong> Roles { get; set; } = new List<ulong>();
+    public List<RPermArgument> Arguments { get; }
 
-        public void AddRole(ulong role)
-        {
-            Roles.Add(role);
-        }
+    public List<ulong> Roles { get; }
 
-        public bool DoesRoleExist(ulong role)
-        {
-            return Roles.Contains(role);
-        }
+    /// <summary>
+    ///     Adds a role
+    /// </summary>
+    /// <param name="role"></param>
+    public void AddRole(ulong role)
+    {
+        Roles.Add(role);
+    }
+
+    /// <summary>
+    ///     Does a role exist?
+    /// </summary>
+    /// <param name="role"></param>
+    /// <returns></returns>
+    public bool DoesRoleExist(ulong role)
+    {
+        return Roles.Contains(role);
     }
 }

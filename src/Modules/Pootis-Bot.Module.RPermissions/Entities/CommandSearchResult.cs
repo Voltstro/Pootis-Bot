@@ -1,30 +1,29 @@
-﻿using Discord.Commands;
-using Discord.Interactions;
-using IResult = Discord.Commands.IResult;
+﻿using Discord.Interactions;
 
-namespace Pootis_Bot.Module.RPermissions.Entities
+namespace Pootis_Bot.Module.RPermissions.Entities;
+
+internal class CommandSearchResult
 {
-    internal class CommandSearchResult : IResult
-    {
-        public CommandError? Error { get; init; }
-        public string ErrorReason { get; init; }
-        public bool IsSuccess { get; init; }
-        
-        public SlashCommandInfo SlashCommand { get; init; }
+    public string? ErrorReason { get; private init; }
+    public bool IsSuccess { get; private init; }
 
-        public static CommandSearchResult FromSuccess(SlashCommandInfo command) => new CommandSearchResult
+    public SlashCommandInfo? SlashCommand { get; private init; }
+
+    public static CommandSearchResult FromSuccess(SlashCommandInfo command)
+    {
+        return new()
         {
-            IsSuccess = true,
-            Error = null,
-            SlashCommand = command
+            SlashCommand = command,
+            IsSuccess = true
         };
-        
-        public static CommandSearchResult FromError(string errorReason, CommandError error, SlashCommandInfo command) => new CommandSearchResult
+    }
+
+    public static CommandSearchResult FromError(string errorReason)
+    {
+        return new()
         {
             IsSuccess = false,
-            ErrorReason = errorReason,
-            Error = error,
-            SlashCommand = command
+            ErrorReason = errorReason
         };
     }
 }

@@ -7,53 +7,37 @@ using Pootis_Bot.Commands.Permissions;
 using Pootis_Bot.Config;
 using Pootis_Bot.Module.RPermissions.Entities;
 
-namespace Pootis_Bot.Module.RPermissions
+namespace Pootis_Bot.Module.RPermissions;
+
+internal class RPermissionsProvider : IPermissionProvider
 {
-    public class RPermissionsProvider : IPermissionProvider
+    private readonly RPermissionsConfig config;
+
+    public RPermissionsProvider()
     {
-        private readonly RPermissionsConfig config;
-        
-        public RPermissionsProvider()
-        {
-            config = Config<RPermissionsConfig>.Instance;
-        }
-        
-        public Task<PermissionResult> OnExecuteCommand(CommandInfo commandInfo, ICommandContext context)
-        {
-            if(!config.DoesServerExist(context.Guild.Id))
-                return Task.FromResult(PermissionResult.FromSuccess());
+        config = Config<RPermissionsConfig>.Instance;
+    }
 
-            RPermissionServer server = config.GetOrCreateServer(context.Guild.Id);
-            RPerm perm = server.GetPermissionForCommand(commandInfo);
-            if(perm == null)
-                return Task.FromResult(PermissionResult.FromSuccess());
+    public Task<PermissionResult> OnExecuteCommand(CommandInfo commandInfo, ICommandContext context)
+    {
+        return Task.FromResult(PermissionResult.FromSuccess());
+    }
 
-            if (context.User is SocketGuildUser user)
-            {
-                return Task.FromResult(perm.Roles.Any(role => user.Roles.Any(x => x.Id == role)) 
-                    ? PermissionResult.FromSuccess() : PermissionResult.FromError("You lack sufficient permissions to execute that command!"));
-            }
-            
+    public Task<PermissionResult> OnExecuteSlashCommand(SlashCommandInfo info, SocketInteractionContext context)
+    {
+        if (!config.DoesServerExist(context.Guild.Id))
             return Task.FromResult(PermissionResult.FromSuccess());
-        }
 
-        public Task<PermissionResult> OnExecuteSlashCommand(SlashCommandInfo info, SocketInteractionContext context)
-        {
-            if(!config.DoesServerExist(context.Guild.Id))
-                return Task.FromResult(PermissionResult.FromSuccess());
-            
-            RPermissionServer server = config.GetOrCreateServer(context.Guild.Id);
-            RPerm perm = server.SlashCommandGetPerm(info);
-            if(perm == null)
-                return Task.FromResult(PermissionResult.FromSuccess());
-            
-            if (context.User is SocketGuildUser user)
-            {
-                return Task.FromResult(perm.Roles.Any(role => user.Roles.Any(x => x.Id == role)) 
-                    ? PermissionResult.FromSuccess() : PermissionResult.FromError("You lack sufficient permissions to execute that command!"));
-            }
-            
+        RPermissionServer server = config.GetOrCreateServer(context.Guild.Id);
+        RPerm? perm = server.SlashCommandGetPerm(info);
+        if (perm == null) //No permission for that command, so all good
             return Task.FromResult(PermissionResult.FromSuccess());
-        }
+
+        if (context.User is SocketGuildUser user)
+            return Task.FromResult(perm.Roles.Any(role => user.Roles.Any(x => x.Id == role))
+                ? PermissionResult.FromSuccess()
+                : PermissionResult.FromError("You lack sufficient permissions to execute that command!"));
+
+        return Task.FromResult(PermissionResult.FromSuccess());
     }
 }

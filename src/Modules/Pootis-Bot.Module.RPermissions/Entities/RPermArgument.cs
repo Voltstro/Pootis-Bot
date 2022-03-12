@@ -1,9 +1,13 @@
-﻿namespace Pootis_Bot.Module.RPermissions.Entities
+﻿namespace Pootis_Bot.Module.RPermissions.Entities;
+
+public struct RPermArgument
 {
-    public struct RPermArgument
+    internal RPermArgument(string argumentName, string argumentType)
     {
-        public string ArgumentName { get; set; }
-        
-        public string ArgumentType { get; set; }
+        ArgumentName = argumentName;
+        ArgumentType = argumentType;
     }
+    
+    public string ArgumentName { get; }
+    public string ArgumentType { get; }
 }
