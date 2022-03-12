@@ -1,163 +1,163 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord.Rest;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
 using Pootis_Bot.Logging;
 
-namespace Pootis_Bot.Module.AutoVC
+namespace Pootis_Bot.Module.AutoVC;
+
+/// <summary>
+///     Main class for Auto VCs
+/// </summary>
+internal static class AutoVCService
 {
-    /// <summary>
-    ///     Main class for Auto VCs
-    /// </summary>
-    internal static class AutoVCService
+    private static readonly AutoVCConfig Config;
+
+    static AutoVCService()
     {
-        private static readonly AutoVCConfig Config;
-        
-        static AutoVCService()
-        {
-            Config ??= Config<AutoVCConfig>.Instance;
-        }
-        
-        /// <summary>
-        ///     Checks if a channel is an auto VC and deletes it
-        /// </summary>
-        /// <param name="channel"></param>
-        public static void DeleteChannel(SocketChannel channel)
-        {
-            try
-            {
-                if (!Config.TryGetAutoVC(channel.Id, out AutoVC autoVC)) return;
-            
-                Config.AutoVCs.Remove(autoVC);
-                Config.Save();
-                
-                Logger.Debug("Auto VC {AutoVCId} was removed.", autoVC.ChannelId);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Something went wrong while trying to remove a auto VC!");
-            }
-        }
-        
-        /// <summary>
-        ///     Creates an active sub auto VC
-        /// </summary>
-        /// <param name="channel"></param>
-        /// <param name="user"></param>
-        /// <param name="guild"></param>
-        public static async Task CreateActiveSubAutoVC(SocketVoiceChannel channel, SocketGuildUser user, SocketGuild guild)
-        {
-            if (Config.TryGetAutoVC(channel.Id, out AutoVC autoVC))
-            {
-                //Setup and create the new channel
-                RestVoiceChannel newChannel = await guild.CreateVoiceChannelAsync(
-                    $"{autoVC.ChannelName} #{autoVC.ActiveSubAutoVc.Count + 1}",
-                    properties =>
-                    {
-                        properties.CategoryId = channel.CategoryId;
-                        properties.Bitrate = channel.Bitrate;
-                        properties.Position = channel.Position + 1;
-                    });
-                if (newChannel.CategoryId != null)
-                    await newChannel.SyncPermissionsAsync();
-                
-                //Add it to our list
-                autoVC.ActiveSubAutoVc.Add(newChannel.Id);
-                Config.Save();
+        Config ??= Config<AutoVCConfig>.Instance;
+    }
 
-                //Move the user into the new channel
-                await user.ModifyAsync(x => { x.ChannelId = newChannel.Id; });
-                Logger.Debug("Created the auto VC {AutoVCId} and moved user {UserId} to it.", channel.Id, user.Id);
-            }
-        }
-
-        /// <summary>
-        ///     Removes an active sub auto VC
-        /// </summary>
-        /// <param name="channel"></param>
-        public static async Task RemoveActiveSubAutoVC(SocketVoiceChannel channel)
+    /// <summary>
+    ///     Checks if a channel is an auto VC and deletes it
+    /// </summary>
+    /// <param name="channel"></param>
+    public static void DeleteChannel(SocketChannel channel)
+    {
+        try
         {
-            if(channel.Users.Count != 0)
-                return;
-            
-            AutoVC autoVC = Config.AutoVCs.Find(x => x?.GuildId == channel.Guild.Id);
-            if(autoVC == null)
-                return;
-            
-            await channel.DeleteAsync();
-            autoVC.ActiveSubAutoVc.Remove(channel.Id);
+            if (!Config.TryGetAutoVC(channel.Id, out AutoVC autoVC)) return;
+
+            Config.AutoVCs.Remove(autoVC);
             Config.Save();
-            Logger.Debug("Removed active auto VC {ActiveAutoVCId} as it had no users.", channel.Id);
-        }
 
-        /// <summary>
-        ///     Checks all auto VCs to make sure they still exist
-        /// </summary>
-        /// <param name="client"></param>
-        public static async Task CheckAutoVCs(DiscordSocketClient client)
+            Logger.Debug("Auto VC {AutoVCId} was removed.", autoVC.ChannelId);
+        }
+        catch (Exception ex)
         {
-            try
-            {
-                Logger.Debug("Checking auto VCs...");
-                
-                for (int i = 0; i < Config.AutoVCs.Count; i++)
+            Logger.Error(ex, "Something went wrong while trying to remove a auto VC!");
+        }
+    }
+
+    /// <summary>
+    ///     Creates an active sub auto VC
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <param name="user"></param>
+    /// <param name="guild"></param>
+    public static async Task CreateActiveSubAutoVC(SocketVoiceChannel channel, SocketGuildUser user, SocketGuild guild)
+    {
+        if (Config.TryGetAutoVC(channel.Id, out AutoVC autoVC))
+        {
+            //Setup and create the new channel
+            RestVoiceChannel newChannel = await guild.CreateVoiceChannelAsync(
+                $"{autoVC.ChannelName} #{autoVC.ActiveSubAutoVc.Count + 1}",
+                properties =>
                 {
-                    //Get the Guild
-                    SocketGuild guild = client.GetGuild(Config.AutoVCs[i].GuildId);
-                    if (guild == null)
+                    properties.CategoryId = channel.CategoryId;
+                    properties.Bitrate = channel.Bitrate;
+                    properties.Position = channel.Position + 1;
+                });
+            if (newChannel.CategoryId != null)
+                await newChannel.SyncPermissionsAsync();
+
+            //Add it to our list
+            autoVC.ActiveSubAutoVc.Add(newChannel.Id);
+            Config.Save();
+
+            //Move the user into the new channel
+            await user.ModifyAsync(x => { x.ChannelId = newChannel.Id; });
+            Logger.Debug("Created the auto VC {AutoVCId} and moved user {UserId} to it.", channel.Id, user.Id);
+        }
+    }
+
+    /// <summary>
+    ///     Removes an active sub auto VC
+    /// </summary>
+    /// <param name="channel"></param>
+    public static async Task RemoveActiveSubAutoVC(SocketVoiceChannel channel)
+    {
+        if (channel.Users.Count != 0)
+            return;
+
+        AutoVC? autoVC = Config.AutoVCs.Find(x => x?.GuildId == channel.Guild.Id);
+        if (autoVC == null)
+            return;
+
+        await channel.DeleteAsync();
+        autoVC.ActiveSubAutoVc.Remove(channel.Id);
+        Config.Save();
+        Logger.Debug("Removed active auto VC {ActiveAutoVCId} as it had no users.", channel.Id);
+    }
+
+    /// <summary>
+    ///     Checks all auto VCs to make sure they still exist
+    /// </summary>
+    /// <param name="client"></param>
+    public static async Task CheckAutoVCs(DiscordSocketClient client)
+    {
+        try
+        {
+            Logger.Debug("Checking auto VCs...");
+
+            for (int i = 0; i < Config.AutoVCs.Count; i++)
+            {
+                //Get the Guild
+                SocketGuild guild = client.GetGuild(Config.AutoVCs[i].GuildId);
+                if (guild == null)
+                {
+                    Logger.Debug("The guild {GuildId} doesn't exist anymore, removing auto VC data.",
+                        Config.AutoVCs[i].GuildId);
+                    Config.AutoVCs.RemoveAt(i);
+                    continue;
+                }
+
+                //Check active auto sub VCs
+                for (int j = 0; j < Config.AutoVCs[i].ActiveSubAutoVc.Count; j++)
+                {
+                    SocketVoiceChannel activeVc = guild.GetVoiceChannel(Config.AutoVCs[i].ActiveSubAutoVc[j]);
+                    if (activeVc == null)
                     {
-                        Logger.Debug("The guild {GuildId} doesn't exist anymore, removing auto VC data.",
-                            Config.AutoVCs[i].GuildId);
-                        Config.AutoVCs.RemoveAt(i);
+                        Logger.Debug(
+                            "The active sub auto VC {ActiveSubVcId} doesn't exist anymore, removing active sub VC data.",
+                            Config.AutoVCs[i].ActiveSubAutoVc[j]);
+                        Config.AutoVCs[i].ActiveSubAutoVc.RemoveAt(j);
                         continue;
                     }
 
-                    //Check active auto sub VCs
-                    for (int j = 0; j < Config.AutoVCs[i].ActiveSubAutoVc.Count; j++)
-                    {
-                        SocketVoiceChannel activeVc = guild.GetVoiceChannel(Config.AutoVCs[i].ActiveSubAutoVc[j]);
-                        if (activeVc == null)
-                        {
-                            Logger.Debug(
-                                "The active sub auto VC {ActiveSubVcId} doesn't exist anymore, removing active sub VC data.",
-                                Config.AutoVCs[i].ActiveSubAutoVc[j]);
-                            Config.AutoVCs[i].ActiveSubAutoVc.RemoveAt(j);
-                            continue;
-                        }
+                    if (activeVc.Users.Count != 0) continue;
 
-                        if (activeVc.Users.Count != 0) continue;
-
-                        Logger.Debug("The active sub auto VC {ActiveSubVcId} doesn't have any users in it, deleting channel.", Config.AutoVCs[i].ActiveSubAutoVc[j]);
-                        await activeVc.DeleteAsync();
-                        Config.AutoVCs[i].ActiveSubAutoVc.RemoveAt(j);
-                    }
-
-                    //The auto VC doesn't exist anymore
-                    if (guild.GetVoiceChannel(Config.AutoVCs[i].ChannelId) != null) continue;
-
-                    Logger.Debug("The auto VC channel {AutoVCId} doesn't exist anymore, removing data.",
-                        Config.AutoVCs[i].ChannelId);
-                    Config.AutoVCs.RemoveAt(i);
+                    Logger.Debug(
+                        "The active sub auto VC {ActiveSubVcId} doesn't have any users in it, deleting channel.",
+                        Config.AutoVCs[i].ActiveSubAutoVc[j]);
+                    await activeVc.DeleteAsync();
+                    Config.AutoVCs[i].ActiveSubAutoVc.RemoveAt(j);
                 }
 
-                Config.Save();
+                //The auto VC doesn't exist anymore
+                if (guild.GetVoiceChannel(Config.AutoVCs[i].ChannelId) != null) continue;
+
+                Logger.Debug("The auto VC channel {AutoVCId} doesn't exist anymore, removing data.",
+                    Config.AutoVCs[i].ChannelId);
+                Config.AutoVCs.RemoveAt(i);
             }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Something went wrong checking the auto VCs!");
-            }
+
+            Config.Save();
         }
-        
-        /// <summary>
-        ///     Checks if an <see cref="SocketVoiceChannel"/> is an auto VC
-        /// </summary>
-        /// <param name="channel"></param>
-        /// <returns></returns>
-        public static bool IsAutoVCChannel(SocketVoiceChannel channel)
+        catch (Exception ex)
         {
-            return channel != null && Config.TryGetAutoVC(channel.Id, out AutoVC _);
+            Logger.Error(ex, "Something went wrong checking the auto VCs!");
         }
+    }
+
+    /// <summary>
+    ///     Checks if an <see cref="SocketVoiceChannel" /> is an auto VC
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <returns></returns>
+    public static bool IsAutoVCChannel(SocketVoiceChannel? channel)
+    {
+        return channel != null && Config.TryGetAutoVC(channel.Id, out AutoVC _);
     }
 }

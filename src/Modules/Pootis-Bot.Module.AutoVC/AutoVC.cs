@@ -1,15 +1,22 @@
 ﻿using System.Collections.Generic;
 
-namespace Pootis_Bot.Module.AutoVC
-{
-    public class AutoVC
-    {
-        public ulong GuildId { get; set; }
-        
-        public ulong ChannelId { get; set; }
-        
-        public string ChannelName { get; set; }
+namespace Pootis_Bot.Module.AutoVC;
 
-        public List<ulong> ActiveSubAutoVc { get; set; }
+public class AutoVC
+{
+    public AutoVC(ulong guildId, ulong channelId, string channelName)
+    {
+        GuildId = guildId;
+        ChannelId = channelId;
+        ChannelName = channelName;
+        ActiveSubAutoVc = new List<ulong>();
     }
+
+    public ulong GuildId { get; }
+
+    public ulong ChannelId { get; }
+
+    public string ChannelName { get; }
+
+    public List<ulong> ActiveSubAutoVc { get; }
 }
