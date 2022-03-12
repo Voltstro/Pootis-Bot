@@ -1,23 +1,24 @@
-﻿namespace Pootis_Bot.Module.WelcomeMessage.Entities
+﻿namespace Pootis_Bot.Module.WelcomeMessage.Entities;
+
+public class WelcomeMessageServer
 {
-    public class WelcomeMessageServer
+    public WelcomeMessageServer(ulong guildId)
     {
-        public ulong GuildId { get; set; }
+        GuildId = guildId;
+    }
 
-        public ulong ChannelId { get; set; }
-        
-        public string WelcomeMessage { get; set; }
-        
-        public bool WelcomeMessageEnabled { get; set; }
-        
-        public string GoodbyeMessage { get; set; }
-        
-        public bool GoodbyeMessageEnabled { get; set; }
+    public ulong GuildId { get; set; }
+    public ulong ChannelId { get; set; }
 
-        public void Disable()
-        {
-            WelcomeMessageEnabled = false;
-            GoodbyeMessageEnabled = false;
-        }
+    public string? WelcomeMessage { get; set; }
+    public bool WelcomeMessageEnabled { get; set; }
+
+    public string? GoodbyeMessage { get; set; }
+    public bool GoodbyeMessageEnabled { get; set; }
+
+    public void Disable()
+    {
+        WelcomeMessageEnabled = false;
+        GoodbyeMessageEnabled = false;
     }
 }

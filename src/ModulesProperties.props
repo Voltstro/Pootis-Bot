@@ -2,44 +2,44 @@
 
 <Project>
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Authors>Voltstro</Authors>
-    <Copyright>Copyright © Voltstro 2021</Copyright>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Platforms>AnyCPU</Platforms>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Authors>Voltstro</Authors>
+        <Copyright>Copyright © Voltstro 2021</Copyright>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <Platforms>AnyCPU</Platforms>
+        <Configurations>Debug;Release</Configurations>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <OutputPath>$(SolutionDir)bin\Debug\Modules\</OutputPath>
-    <PublishDir>$(SolutionDir)bin\Debug\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <OutputPath>$(SolutionDir)bin\Debug\Modules\</OutputPath>
+        <PublishDir>$(SolutionDir)bin\Debug\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>$(SolutionDir)bin\Release\Modules\</OutputPath>
-    <PublishDir>$(SolutionDir)bin\Release\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <OutputPath>$(SolutionDir)bin\Release\Modules\</OutputPath>
+        <PublishDir>$(SolutionDir)bin\Release\publish\$(RuntimeIdentifier)\Modules\</PublishDir>
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)Pootis-Bot.Core\Pootis-Bot.Core.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
-    <ProjectReference Include="$(SolutionDir)Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="$(SolutionDir)Pootis-Bot.Core\Pootis-Bot.Core.csproj">
+            <Private>false</Private>
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </ProjectReference>
+        <ProjectReference Include="$(SolutionDir)Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj">
+            <Private>false</Private>
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </ProjectReference>
+    </ItemGroup>
 
-  <Target Name="PostPublish" AfterTargets="Publish" Condition="'$(Configuration)'=='Release'">
-    <Delete Files="$(PublishDir)$(TargetName).deps.json" />
-  </Target>
+    <Target Name="PostPublish" AfterTargets="Publish" Condition="'$(Configuration)'=='Release'">
+        <Delete Files="$(PublishDir)$(TargetName).deps.json"/>
+    </Target>
 
 </Project>
