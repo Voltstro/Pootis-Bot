@@ -4,26 +4,26 @@ using Discord.WebSocket;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Modules;
 
-namespace Pootis_Bot.Module.Profiles
+namespace Pootis_Bot.Module.Profiles;
+
+internal sealed class ProfilesModule : Modules.Module
 {
-	internal sealed class ProfilesModule : Modules.Module
-	{
-		private XpLevelManager xpLevelManager;
+    //It won't be null
+    private XpLevelManager xpLevelManager = null!;
 
-		protected override ModuleInfo GetModuleInfo()
-		{
-			return new ModuleInfo("ProfilesModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
-		}
+    protected override ModuleInfo GetModuleInfo()
+    {
+        return new ModuleInfo("ProfilesModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
+    }
 
-		protected override Task Init()
-		{
-			xpLevelManager = new XpLevelManager();
-			return base.Init();
-		}
+    protected override Task Init()
+    {
+        xpLevelManager = new XpLevelManager();
+        return base.Init();
+    }
 
-		protected override async Task ClientMessage(DiscordSocketClient client, SocketUserMessage message)
-		{
-			await xpLevelManager.HandelUserMessage(message);
-		}
-	}
+    protected override async Task ClientMessage(DiscordSocketClient client, SocketUserMessage message)
+    {
+        await xpLevelManager.HandelUserMessage(message);
+    }
 }
