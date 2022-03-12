@@ -1,35 +1,31 @@
 ﻿using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
-using Pootis_Bot.Helper;
 using Pootis_Bot.Module.WelcomeMessage.Entities;
 
 namespace Pootis_Bot.Module.WelcomeMessage
 {
-    [Group("welcomemessage")]
-    [Name("Welcome/Goodbye Messages")]
-    [Summary("Provides the commands for setting up welcome and goodbye messages")]
     [RequireBotPermission(GuildPermission.SendMessages)]
-    public class WelcomeMessageCommands : ModuleBase<SocketCommandContext>
+    [Group("welcomemessage", "Welcome and goodbye message configuration commands")]
+    public class WelcomeMessageInteractions : InteractionModuleBase<SocketInteractionContext>
     {
         private readonly WelcomeMessageConfig config;
         
-        public WelcomeMessageCommands()
+        public WelcomeMessageInteractions()
         {
             config = Config<WelcomeMessageConfig>.Instance;
         }
         
-        [Command("status")]
-        [Summary("Status of the welcome and goodbye messages")]
+        [SlashCommand("status", "Gets the status of your welcome & goodbye messages configuration")]
         public async Task Status()
         {
             WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
             
             SocketTextChannel channel = Context.Guild.GetTextChannel(server.ChannelId);
 
-            EmbedBuilder embedBuilder = new EmbedBuilder();
+            EmbedBuilder embedBuilder = new ();
             embedBuilder.WithTitle("Welcome Message Status");
             embedBuilder.WithDescription($"Status of Welcome Message for **{Context.Guild.Name}**");
             embedBuilder.AddField("Channel", channel == null ? "No Channel" : channel.Mention);
@@ -37,41 +33,39 @@ namespace Pootis_Bot.Module.WelcomeMessage
             embedBuilder.AddField("Welcome Message", server.WelcomeMessage, true);
             embedBuilder.AddField("Goodbye Message Enabled?", server.GoodbyeMessageEnabled, true);
             embedBuilder.AddField("Goodbye Message", server.GoodbyeMessage, true);
-            await Context.Channel.SendEmbedAsync(embedBuilder);
+            await RespondAsync(embed: embedBuilder.Build());
         }
         
-        [Command("channel")]
-        [Summary("Sets the channel to where messages will be sent")]
-        public async Task SetChannel([Remainder] SocketTextChannel channel)
+        [SlashCommand("channel", "Sets the channel to where messages will be sent")]
+        public async Task SetChannel(SocketTextChannel channel)
         {
             config.GetOrCreateWelcomeMessageServer(Context.Guild).ChannelId = channel.Id;
             config.Save();
 
-            await Context.Channel.SendMessageAsync($"Channel was set to {channel.Mention}.");
+            await RespondAsync($"Channel was set to {channel.Mention}.");
         }
         
-        [Command("welcome")]
-        [Summary("Sets the welcome message")]
-        public async Task SetWelcomeMessage([Remainder] string message)
+        //[Command("welcome")]
+        //[Summary("Sets the welcome message")]
+        [SlashCommand("welcome", "Sets the welcome message")]
+        public async Task SetWelcomeMessage(string message)
         {
             config.GetOrCreateWelcomeMessageServer(Context.Guild).WelcomeMessage = message;
             config.Save();
 
-            await Context.Channel.SendMessageAsync("Welcome message set.");
+            await RespondAsync("Welcome message has been set.");
         }
-
-        [Command("goodbye")]
-        [Summary("Sets the goodbye message")]
-        public async Task SetGoodbyeMessage([Remainder] string message)
+        
+        [SlashCommand("goodbye", "Sets the goodbye message")]
+        public async Task SetGoodbyeMessage(string message)
         {
             config.GetOrCreateWelcomeMessageServer(Context.Guild).GoodbyeMessage = message;
             config.Save();
 
-            await Context.Channel.SendMessageAsync("Goodbye message set.");
+            await RespondAsync("Goodbye message has been set.");
         }
-
-        [Command("enable welcome")]
-        [Summary("Enables the welcome message")]
+        
+        [SlashCommand("enable-welcome", "Enables the welcome message")]
         public async Task EnableWelcomeMessage()
         {
             WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
@@ -79,25 +73,24 @@ namespace Pootis_Bot.Module.WelcomeMessage
             //Check if its already enabled
             if (server.WelcomeMessageEnabled)
             {
-                await Context.Channel.SendMessageAsync("The welcome message is already enabled!");
+                await RespondAsync("The welcome message is already enabled!");
                 return;
             }
             
             //Make sure we are ready to go
             if (!WelcomeMessageService.CheckServer(server, Context.Client) || string.IsNullOrWhiteSpace(server.WelcomeMessage))
             {
-                await Context.Channel.SendMessageAsync("The welcome message is not setup correctly!");
+                await RespondAsync("The welcome message is not setup correctly!");
                 return;
             }
 
             //Enable it
             server.WelcomeMessageEnabled = true;
             config.Save();
-            await Context.Channel.SendMessageAsync("The welcome message is now enabled.");
+            await RespondAsync("The welcome message is now enabled.");
         }
         
-        [Command("disable welcome")]
-        [Summary("Disables the welcome message")]
+        [SlashCommand("disable-welcome", "Disables the welcome message")]
         public async Task DisableWelcomeMessage()
         {
             WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
@@ -105,18 +98,19 @@ namespace Pootis_Bot.Module.WelcomeMessage
             //Check if it is already disabled
             if (!server.WelcomeMessageEnabled)
             {
-                await Context.Channel.SendMessageAsync("The welcome message is already disabled!");
+                await RespondAsync("The welcome message is already disabled!");
                 return;
             }
 
             //Disable it
             server.WelcomeMessageEnabled = false;
             config.Save();
-            await Context.Channel.SendMessageAsync("The welcome message is now disabled.");
+            await RespondAsync("The welcome message is now disabled.");
         }
         
-        [Command("enable goodbye")]
-        [Summary("Enables the goodbye message")]
+        //[Command("enable goodbye")]
+        //[Summary("Enables the goodbye message")]
+        [SlashCommand("enable-goodbye", "Enables the goodbye message")]
         public async Task EnableGoodbyeMessage()
         {
             WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
@@ -124,25 +118,26 @@ namespace Pootis_Bot.Module.WelcomeMessage
             //Check if its already enabled
             if (server.GoodbyeMessageEnabled)
             {
-                await Context.Channel.SendMessageAsync("The goodbye message is already enabled!");
+                await RespondAsync("The goodbye message is already enabled!");
                 return;
             }
             
             //Make sure we are ready to go
             if (!WelcomeMessageService.CheckServer(server, Context.Client) || string.IsNullOrWhiteSpace(server.GoodbyeMessage))
             {
-                await Context.Channel.SendMessageAsync("The goodbye message is not setup correctly!");
+                await RespondAsync("The goodbye message is not setup correctly!");
                 return;
             }
 
             //Enable it
             server.GoodbyeMessageEnabled = true;
             config.Save();
-            await Context.Channel.SendMessageAsync("The goodbye message is now enabled.");
+            await RespondAsync("The goodbye message is now enabled.");
         }
         
-        [Command("disable goodbye")]
-        [Summary("Disables the goodbye message")]
+        //[Command("disable goodbye")]
+        //[Summary("Disables the goodbye message")]
+        [SlashCommand("disable-goodbye", "Disables the goodbye message")]
         public async Task DisableGoodbyeMessage()
         {
             WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
@@ -150,14 +145,14 @@ namespace Pootis_Bot.Module.WelcomeMessage
             //Check if it is already disabled
             if (!server.GoodbyeMessageEnabled)
             {
-                await Context.Channel.SendMessageAsync("The goodbye message is already disabled!");
+                await RespondAsync("The goodbye message is already disabled!");
                 return;
             }
 
             //Disable it
             server.GoodbyeMessageEnabled = false;
             config.Save();
-            await Context.Channel.SendMessageAsync("The goodbye message is now disabled.");
+            await RespondAsync("The goodbye message is now disabled.");
         }
     }
 }
