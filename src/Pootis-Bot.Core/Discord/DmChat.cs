@@ -12,9 +12,9 @@ namespace Pootis_Bot.Discord;
 public class DmChat
 {
     private readonly IDMChannel dm;
-    
+
     /// <summary>
-    ///     Creates a new <see cref="DmChat"/> instance
+    ///     Creates a new <see cref="DmChat" /> instance
     /// </summary>
     /// <param name="user">The user to start a DM with</param>
     public DmChat(IUser user)
@@ -46,7 +46,7 @@ public class DmChat
             throw;
         }
     }
-    
+
     /// <summary>
     ///     Sends a message to a user
     /// </summary>
@@ -58,7 +58,7 @@ public class DmChat
     {
         return await SendMessage(embed.Build());
     }
-    
+
     /// <summary>
     ///     Sends a message to a user
     /// </summary>

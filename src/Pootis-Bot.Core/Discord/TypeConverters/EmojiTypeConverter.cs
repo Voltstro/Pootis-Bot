@@ -11,9 +11,13 @@ namespace Pootis_Bot.Discord.TypeConverters;
 
 internal sealed class EmojiTypeConverter : TypeConverter<Emoji>
 {
-    public override ApplicationCommandOptionType GetDiscordType() => ApplicationCommandOptionType.String;
+    public override ApplicationCommandOptionType GetDiscordType()
+    {
+        return ApplicationCommandOptionType.String;
+    }
 
-    public override Task<TypeConverterResult> ReadAsync(IInteractionContext context, IApplicationCommandInteractionDataOption option, IServiceProvider services)
+    public override Task<TypeConverterResult> ReadAsync(IInteractionContext context,
+        IApplicationCommandInteractionDataOption option, IServiceProvider services)
     {
         string input = option.Value as string;
         if (string.IsNullOrWhiteSpace(input))
@@ -37,7 +41,7 @@ internal sealed class EmojiTypeConverter : TypeConverter<Emoji>
         if (context.Guild is not SocketGuild guild)
             return Task.FromResult(TypeConverterResult.FromError(InteractionCommandError.ConvertFailed,
                 "Something went wrong trying to parse the emoji!"));
-            
+
         //Get all emotes from the server
         GuildEmote emote = guild.Emotes.FirstOrDefault(x => $"<:{x.Name}:{x.Id}>" == input);
         if (emote == null)

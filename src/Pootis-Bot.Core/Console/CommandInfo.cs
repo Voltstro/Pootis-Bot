@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Pootis_Bot.Console
-{
-	internal struct CommandInfo
-	{
-		internal string CommandSummary;
+namespace Pootis_Bot.Console;
 
-		[MaybeNull] internal ConsoleCommandManager.CommandArgumentsDelegate CommandArgumentDel;
-		[MaybeNull] internal ConsoleCommandManager.CommandDelegate CommandDel;
-	}
+internal struct CommandInfo
+{
+    internal string CommandSummary;
+
+    [MaybeNull] internal ConsoleCommandManager.CommandArgumentsDelegate CommandArgumentDel;
+    [MaybeNull] internal ConsoleCommandManager.CommandDelegate CommandDel;
 }

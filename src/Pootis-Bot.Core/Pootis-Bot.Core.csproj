@@ -1,34 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <RootNamespace>Pootis_Bot</RootNamespace>
-    <Description>Core code of Pootis-Bot.</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace>Pootis_Bot</RootNamespace>
+        <Description>Core code of Pootis-Bot.</Description>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="3.4.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Serilog" Version="2.10.0" PrivateAssets="All" />
-    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" PrivateAssets="All" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" PrivateAssets="All" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" PrivateAssets="All" />
-    <PackageReference Include="ZString" Version="2.4.4" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Discord.Net" Version="3.4.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="Serilog" Version="2.10.0" PrivateAssets="All"/>
+        <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" PrivateAssets="All"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" PrivateAssets="All"/>
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" PrivateAssets="All"/>
+        <PackageReference Include="ZString" Version="2.4.4"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Pootis-Bot.PackageDownloader\Pootis-Bot.PackageDownloader.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="..\..\thirdpartycredits.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\LICENSE.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="..\..\thirdpartycredits.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\..\LICENSE.md">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <Import Project="..\GeneralProperties.props" />
+    <Import Project="..\GeneralProperties.props"/>
 
 </Project>

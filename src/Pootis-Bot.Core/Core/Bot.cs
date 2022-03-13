@@ -14,263 +14,264 @@ using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
 using Serilog.Events;
 
-namespace Pootis_Bot.Core
+namespace Pootis_Bot.Core;
+
+/// <summary>
+///     Main class for handling the bot
+/// </summary>
+public class Bot : IDisposable
 {
 	/// <summary>
-	///     Main class for handling the bot
+	///     Is the loop for handling console commands running?
 	/// </summary>
-	public class Bot : IDisposable
-	{
-		/// <summary>
-		///     Command handler
-		/// </summary>
-		private CommandHandler commandHandler;
+	private static bool isConsoleLoopRunning;
 
-		/// <summary>
-		///     Config for the bot
-		/// </summary>
-		private BotConfig config;
+    /// <summary>
+    ///     Command handler
+    /// </summary>
+    private CommandHandler commandHandler;
 
-		/// <summary>
-		///     Client for interacting with Discord
-		/// </summary>
-		private DiscordSocketClient discordClient;
+    /// <summary>
+    ///     Config for the bot
+    /// </summary>
+    private BotConfig config;
 
-		/// <summary>
-		///		Handles calling to and managing installed modules
-		/// </summary>
-		private ModuleManager moduleManager;
+    /// <summary>
+    ///     Client for interacting with Discord
+    /// </summary>
+    private DiscordSocketClient discordClient;
 
-		/// <summary>
-		///		Is this the bot's first ready
-		/// </summary>
-		private bool firstReady = true;
+    /// <summary>
+    ///     Is this the bot's first ready
+    /// </summary>
+    private bool firstReady = true;
 
-		/// <summary>
-		///     Whether or not this bot is running
-		/// </summary>
-		public bool IsRunning { get; private set; }
+    /// <summary>
+    ///     Handles calling to and managing installed modules
+    /// </summary>
+    private ModuleManager moduleManager;
 
-		/// <summary>
-		///     The location of the application
-		/// </summary>
-		public static string ApplicationLocation { get; internal set; }
+    public Bot()
+    {
+        if (Instance != null)
+            throw new InitializationException("There already is an instance of the bot!");
 
-		/// <summary>
-		///		Is the loop for handling console commands running?
-		/// </summary>
-		private static bool isConsoleLoopRunning;
+        Instance = this;
+    }
 
-		/// <summary>
-		///		The bot instance
-		/// </summary>
-		public static Bot Instance { get; private set; }
-		
-		public Bot()
-		{
-			if (Instance != null)
-				throw new InitializationException("There already is an instance of the bot!");
+    /// <summary>
+    ///     Whether or not this bot is running
+    /// </summary>
+    public bool IsRunning { get; private set; }
 
-			Instance = this;
-		}
+    /// <summary>
+    ///     The location of the application
+    /// </summary>
+    public static string ApplicationLocation { get; internal set; }
 
-		/// <summary>
-		///     Runs the bot
-		/// </summary>
-		/// <exception cref="InitializationException"></exception>
-		public async Task Run()
-		{
-			//Don't want to be-able to run the bot multiple times
-			if (IsRunning)
-				throw new InitializationException("A bot is already running!");
+    /// <summary>
+    ///     The bot instance
+    /// </summary>
+    public static Bot Instance { get; private set; }
 
-			ApplicationLocation = Path.GetDirectoryName(typeof(Bot).Assembly.Location);
+    /// <summary>
+    ///     Runs the bot
+    /// </summary>
+    /// <exception cref="InitializationException"></exception>
+    public async Task Run()
+    {
+        //Don't want to be-able to run the bot multiple times
+        if (IsRunning)
+            throw new InitializationException("A bot is already running!");
 
-			IsRunning = true;
+        ApplicationLocation = Path.GetDirectoryName(typeof(Bot).Assembly.Location);
 
-			//Init the logger
-			Logger.Init();
-			Logger.Info("Starting bot...");
+        IsRunning = true;
 
-			//Get config
-			config = Config<BotConfig>.Instance;
-			config.Saved += ConfigSaved;
-			ConfigSaved();
+        //Init the logger
+        Logger.Init();
+        Logger.Info("Starting bot...");
 
-			//Load modules
-			moduleManager = new ModuleManager("Modules/", "Assemblies/");
-			moduleManager.LoadModules();
+        //Get config
+        config = Config<BotConfig>.Instance;
+        config.Saved += ConfigSaved;
+        ConfigSaved();
 
-			//If the token is null or white space, open the config menu
-			if (string.IsNullOrWhiteSpace(config.BotToken))
-			{
-				Logger.Error("The token in the config is null or empty! You must set it in the config menu.");
-				OpenConfigMenu();
-			}
+        //Load modules
+        moduleManager = new ModuleManager("Modules/", "Assemblies/");
+        moduleManager.LoadModules();
 
-			//Setup the discord client
-			discordClient = new DiscordSocketClient(new DiscordSocketConfig
-			{
-				LogLevel = LogSeverity.Verbose,
-				GatewayIntents = config.GatewayIntents
-			});
-			discordClient.Log += Log;
-			discordClient.Ready += Ready;
+        //If the token is null or white space, open the config menu
+        if (string.IsNullOrWhiteSpace(config.BotToken))
+        {
+            Logger.Error("The token in the config is null or empty! You must set it in the config menu.");
+            OpenConfigMenu();
+        }
 
-			//Log in and start the Discord client
-			Logger.Info("Logging into Discord bot...");
-			try
-			{
-				await discordClient.LoginAsync(TokenType.Bot, config.BotToken);
-				await discordClient.StartAsync();
-			}
-			catch (HttpException)
-			{
-				Logger.Error("The supplied token was invalid!");
-				Dispose();
-				return;
-			}
+        //Setup the discord client
+        discordClient = new DiscordSocketClient(new DiscordSocketConfig
+        {
+            LogLevel = LogSeverity.Verbose,
+            GatewayIntents = config.GatewayIntents
+        });
+        discordClient.Log += Log;
+        discordClient.Ready += Ready;
 
-			Logger.Info("Login successful!");
+        //Log in and start the Discord client
+        Logger.Info("Logging into Discord bot...");
+        try
+        {
+            await discordClient.LoginAsync(TokenType.Bot, config.BotToken);
+            await discordClient.StartAsync();
+        }
+        catch (HttpException)
+        {
+            Logger.Error("The supplied token was invalid!");
+            Dispose();
+            return;
+        }
 
-			ModuleManager.ModulesClientConnected(discordClient);
+        Logger.Info("Login successful!");
 
-			//Setup command handler
-			commandHandler = new CommandHandler(discordClient);
-			ModuleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
-			ModuleManager.InstallPermissionProvidersFromLoadedModules(commandHandler);
-		}
+        ModuleManager.ModulesClientConnected(discordClient);
 
-		private void ConfigSaved()
-		{
-			System.Console.Title = config.BotName;
-		}
+        //Setup command handler
+        commandHandler = new CommandHandler(discordClient);
+        ModuleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
+        ModuleManager.InstallPermissionProvidersFromLoadedModules(commandHandler);
+    }
 
-		private async Task Ready()
-		{
-			ModuleManager.ModulesClientReady(discordClient, firstReady);
-			firstReady = false;
+    private void ConfigSaved()
+    {
+        System.Console.Title = config.BotName;
+    }
 
-			await commandHandler.RegisterInteractionCommands();
-			
-			Logger.Info("Bot is now ready and online!");
-		}
+    private async Task Ready()
+    {
+        ModuleManager.ModulesClientReady(discordClient, firstReady);
+        firstReady = false;
 
-		private Task Log(LogMessage message)
-		{
-			LogEventLevel severity = message.Severity switch
-			{
-				LogSeverity.Critical => LogEventLevel.Fatal,
-				LogSeverity.Error => LogEventLevel.Error,
-				LogSeverity.Warning => LogEventLevel.Warning,
-				LogSeverity.Info => LogEventLevel.Information,
-				LogSeverity.Verbose => LogEventLevel.Verbose,
-				LogSeverity.Debug => LogEventLevel.Debug,
-				_ => LogEventLevel.Information
-			};
-			
-			Logger.Write(severity, message.Exception, $"[{message.Source}] {message.Message}");
+        await commandHandler.RegisterInteractionCommands();
 
-			return Task.CompletedTask;
-		}
+        Logger.Info("Bot is now ready and online!");
+    }
 
-		/// <summary>
-		///     Starts a console loop
-		/// </summary>
-		public static void ConsoleLoop()
-		{
-			ConsoleCommandManager.AddConsoleCommandsFromAssembly(typeof(Bot).Assembly);
-			isConsoleLoopRunning = true;
+    private Task Log(LogMessage message)
+    {
+        LogEventLevel severity = message.Severity switch
+        {
+            LogSeverity.Critical => LogEventLevel.Fatal,
+            LogSeverity.Error => LogEventLevel.Error,
+            LogSeverity.Warning => LogEventLevel.Warning,
+            LogSeverity.Info => LogEventLevel.Information,
+            LogSeverity.Verbose => LogEventLevel.Verbose,
+            LogSeverity.Debug => LogEventLevel.Debug,
+            _ => LogEventLevel.Information
+        };
 
-			while (isConsoleLoopRunning)
-			{
-				string input = System.Console.ReadLine();
-				if (string.IsNullOrWhiteSpace(input))
-					continue;
+        Logger.Write(severity, message.Exception, $"[{message.Source}] {message.Message}");
 
-				ConsoleCommandManager.ExecuteCommand(input);
-			}
-		}
+        return Task.CompletedTask;
+    }
 
-		#region Destroy
-		
-		~Bot()
-		{
-			ReleaseResources();
-		}
+    /// <summary>
+    ///     Starts a console loop
+    /// </summary>
+    public static void ConsoleLoop()
+    {
+        ConsoleCommandManager.AddConsoleCommandsFromAssembly(typeof(Bot).Assembly);
+        isConsoleLoopRunning = true;
 
-		/// <summary>
-		///     Disposes of this bot instance
-		/// </summary>
-		/// <exception cref="InitializationException"></exception>
-		public void Dispose()
-		{
-			//The bot has already shutdown
-			if (!IsRunning)
-				throw new InitializationException("The bot has already shutdown!");
+        while (isConsoleLoopRunning)
+        {
+            string input = System.Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(input))
+                continue;
 
-			ReleaseResources();
-			GC.SuppressFinalize(this);
-		}
-		
-		private void ReleaseResources()
-		{
-			isConsoleLoopRunning = false;
+            ConsoleCommandManager.ExecuteCommand(input);
+        }
+    }
 
-			discordClient.StopAsync().GetAwaiter().GetResult();
-			discordClient.Dispose();
+    #region Destroy
 
-			moduleManager.Dispose();
-			Logger.Shutdown();
+    ~Bot()
+    {
+        ReleaseResources();
+    }
 
-			IsRunning = false;
-			Instance = null;
-		}
+    /// <summary>
+    ///     Disposes of this bot instance
+    /// </summary>
+    /// <exception cref="InitializationException"></exception>
+    public void Dispose()
+    {
+        //The bot has already shutdown
+        if (!IsRunning)
+            throw new InitializationException("The bot has already shutdown!");
 
-		#endregion
+        ReleaseResources();
+        GC.SuppressFinalize(this);
+    }
 
-		#region Commands
+    private void ReleaseResources()
+    {
+        isConsoleLoopRunning = false;
 
-		[ConsoleCommand("config", "Opens the config menu for the bot")]
-		private static void ConfigMenuCommand()
-		{
-			OpenConfigMenu();
-		}
+        discordClient.StopAsync().GetAwaiter().GetResult();
+        discordClient.Dispose();
 
-		[ConsoleCommand("modules", "Gets a list of all loaded modules")]
-		private static void ModulesCommand()
-		{
-			foreach (ModuleInfo moduleInfo in ModuleManager.GetLoadedModules().Select(module => module.GetModuleInfoInternal()))
-				Logger.Info("{ModuleName} {ModuleVersion} by {ModuleAuthor}", moduleInfo.ModuleName, moduleInfo.ModuleVersion, moduleInfo.ModuleAuthorName);
-		}
+        moduleManager.Dispose();
+        Logger.Shutdown();
 
-		[ConsoleCommand("quit", "Quits running the bot")]
-		private static void ShutdownBotCommand()
-		{
-			isConsoleLoopRunning = false;
-		}
+        IsRunning = false;
+        Instance = null;
+    }
 
-		private static void OpenConfigMenu()
-		{
-			BotConfig config = Config<BotConfig>.Instance;
-			ConsoleConfigMenu<BotConfig> configMenu = new ConsoleConfigMenu<BotConfig>(config);
+    #endregion
 
-			while (true)
-			{
-				configMenu.Show();
+    #region Commands
 
-				if (string.IsNullOrWhiteSpace(config.BotToken))
-				{
-					Logger.Error("The bot token is not set! Set the bot token then exit out of the menu.");
-					continue;
-				}
+    [ConsoleCommand("config", "Opens the config menu for the bot")]
+    private static void ConfigMenuCommand()
+    {
+        OpenConfigMenu();
+    }
 
-				break;
-			}
+    [ConsoleCommand("modules", "Gets a list of all loaded modules")]
+    private static void ModulesCommand()
+    {
+        foreach (ModuleInfo moduleInfo in ModuleManager.GetLoadedModules()
+                     .Select(module => module.GetModuleInfoInternal()))
+            Logger.Info("{ModuleName} {ModuleVersion} by {ModuleAuthor}", moduleInfo.ModuleName,
+                moduleInfo.ModuleVersion, moduleInfo.ModuleAuthorName);
+    }
 
-			config.Save();
-		}
-		
-		#endregion
-	}
+    [ConsoleCommand("quit", "Quits running the bot")]
+    private static void ShutdownBotCommand()
+    {
+        isConsoleLoopRunning = false;
+    }
+
+    private static void OpenConfigMenu()
+    {
+        BotConfig config = Config<BotConfig>.Instance;
+        ConsoleConfigMenu<BotConfig> configMenu = new(config);
+
+        while (true)
+        {
+            configMenu.Show();
+
+            if (string.IsNullOrWhiteSpace(config.BotToken))
+            {
+                Logger.Error("The bot token is not set! Set the bot token then exit out of the menu.");
+                continue;
+            }
+
+            break;
+        }
+
+        config.Save();
+    }
+
+    #endregion
 }

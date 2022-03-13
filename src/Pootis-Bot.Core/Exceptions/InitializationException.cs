@@ -1,24 +1,23 @@
 ﻿using System;
 
-namespace Pootis_Bot.Exceptions
+namespace Pootis_Bot.Exceptions;
+
+/// <summary>
+///     An error when something failed while initializing or de-initializing
+/// </summary>
+public class InitializationException : Exception
 {
-	/// <summary>
-	///     An error when something failed while initializing or de-initializing
-	/// </summary>
-	public class InitializationException : Exception
-	{
-		public InitializationException()
-		{
-		}
+    public InitializationException()
+    {
+    }
 
-		public InitializationException(string message)
-			: base(message)
-		{
-		}
+    public InitializationException(string message)
+        : base(message)
+    {
+    }
 
-		public InitializationException(string message, Exception inner)
-			: base(message, inner)
-		{
-		}
-	}
+    public InitializationException(string message, Exception inner)
+        : base(message, inner)
+    {
+    }
 }

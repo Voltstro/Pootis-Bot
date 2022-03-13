@@ -20,364 +20,371 @@ using ExecuteResult = Discord.Commands.ExecuteResult;
 using IResult = Discord.Interactions.IResult;
 using PreconditionResult = Discord.Commands.PreconditionResult;
 
-namespace Pootis_Bot.Commands
+namespace Pootis_Bot.Commands;
+
+/// <summary>
+///     Handles commands for Discord
+/// </summary>
+internal sealed class CommandHandler
 {
-	/// <summary>
-	///     Handles commands for Discord
-	/// </summary>
-	internal sealed class CommandHandler
-	{
-		private readonly DiscordSocketClient client;
-		
-		private readonly CommandService commandService;
-		private readonly InteractionService interactionService;
+    private readonly DiscordSocketClient client;
 
-		private readonly BotConfig config;
-		private readonly IServiceProvider serviceProvider;
+    private readonly CommandService commandService;
 
-		private readonly List<IPermissionProvider> permissionProviders;
+    private readonly BotConfig config;
+    private readonly InteractionService interactionService;
 
-		/// <summary>
-		///     Creates a new <see cref="CommandHandler" /> instance
-		/// </summary>
-		/// <param name="client"></param>
-		internal CommandHandler(DiscordSocketClient client)
-		{
-			config = Config<BotConfig>.Instance;
-			this.client = client;
-			client.MessageReceived += HandleMessage;
-			client.InteractionCreated += HandleInteraction;
+    private readonly List<IPermissionProvider> permissionProviders;
+    private readonly IServiceProvider serviceProvider;
 
-			commandService = new CommandService();
-			commandService.AddTypeReader<Emoji>(new EmojiTypeReader());
+    /// <summary>
+    ///     Creates a new <see cref="CommandHandler" /> instance
+    /// </summary>
+    /// <param name="client"></param>
+    internal CommandHandler(DiscordSocketClient client)
+    {
+        config = Config<BotConfig>.Instance;
+        this.client = client;
+        client.MessageReceived += HandleMessage;
+        client.InteractionCreated += HandleInteraction;
 
-			interactionService = new InteractionService(client);
-			interactionService.AddTypeConverter<Emoji>(new EmojiTypeConverter());
+        commandService = new CommandService();
+        commandService.AddTypeReader<Emoji>(new EmojiTypeReader());
 
-			serviceProvider = new ServiceCollection()
-				.AddSingleton(client)
-				.AddSingleton(commandService)
-				.AddSingleton(interactionService)
-				.BuildServiceProvider();
-			permissionProviders = new List<IPermissionProvider>();
-		}
+        interactionService = new InteractionService(client);
+        interactionService.AddTypeConverter<Emoji>(new EmojiTypeConverter());
 
-		/// <summary>
-		///     Install modules in an assembly
-		/// </summary>
-		/// <param name="assembly"></param>
-		internal void InstallAssemblyModules(Assembly assembly)
-		{
-			interactionService.AddModulesAsync(assembly, serviceProvider);
-			commandService.AddModulesAsync(assembly, serviceProvider);
-		}
+        serviceProvider = new ServiceCollection()
+            .AddSingleton(client)
+            .AddSingleton(commandService)
+            .AddSingleton(interactionService)
+            .BuildServiceProvider();
+        permissionProviders = new List<IPermissionProvider>();
+    }
 
-		/// <summary>
-		///		Adds a <see cref="IPermissionProvider"/>
-		/// </summary>
-		/// <param name="permissionProvider"></param>
-		internal void AddPermissionProvider(IPermissionProvider permissionProvider)
-		{
-			permissionProviders.Add(permissionProvider);
-		}
+    /// <summary>
+    ///     Install modules in an assembly
+    /// </summary>
+    /// <param name="assembly"></param>
+    internal void InstallAssemblyModules(Assembly assembly)
+    {
+        interactionService.AddModulesAsync(assembly, serviceProvider);
+        commandService.AddModulesAsync(assembly, serviceProvider);
+    }
 
-		/// <summary>
-		///		Registers all interaction commands to all guilds
-		/// </summary>
-		internal async Task RegisterInteractionCommands()
-		{
+    /// <summary>
+    ///     Adds a <see cref="IPermissionProvider" />
+    /// </summary>
+    /// <param name="permissionProvider"></param>
+    internal void AddPermissionProvider(IPermissionProvider permissionProvider)
+    {
+        permissionProviders.Add(permissionProvider);
+    }
 
+    /// <summary>
+    ///     Registers all interaction commands to all guilds
+    /// </summary>
+    internal async Task RegisterInteractionCommands()
+    {
 #if DEBUG
-			await interactionService.RegisterCommandsToGuildAsync(BotConfig.Instance.TestingGuildId, true);
+        await interactionService.RegisterCommandsToGuildAsync(BotConfig.Instance.TestingGuildId);
 #else
 			await interactionService.RegisterCommandsGloballyAsync(true);
 #endif
-		}
+    }
 
-		#region Interaction Commands
+    #region Interaction Commands
 
-		private async Task HandleInteraction(SocketInteraction interaction)
-		{
-			try
-			{
-				SocketInteractionContext ctx = new(client, interaction);
+    private async Task HandleInteraction(SocketInteraction interaction)
+    {
+        try
+        {
+            SocketInteractionContext ctx = new(client, interaction);
 
-				switch (interaction)
-				{
-					case ISlashCommandInteraction slashCommandInteraction:
-						SearchResult<SlashCommandInfo> result = interactionService.SearchSlashCommand(slashCommandInteraction);
-						if(CheckSearchResult(result))
-							ExecuteSlashCommand(ctx, result.Command);
-						break;
-				}
-				
-				//await interactionService.ExecuteCommandAsync(ctx, serviceProvider);
-			}
-			catch (Exception ex)
-			{
-				Logger.Error(ex, "Error handling interaction!");
-				
-				//If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
-				//response, or at least let the user know that something went wrong during the command execution.
-				if(interaction.Type == InteractionType.ApplicationCommand)
-					await interaction.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
-			}
-		}
+            switch (interaction)
+            {
+                case ISlashCommandInteraction slashCommandInteraction:
+                    SearchResult<SlashCommandInfo> result =
+                        interactionService.SearchSlashCommand(slashCommandInteraction);
+                    if (CheckSearchResult(result))
+                        ExecuteSlashCommand(ctx, result.Command);
+                    break;
+            }
 
-		private async void ExecuteSlashCommand(SocketInteractionContext ctx, SlashCommandInfo slashCommandInfo)
-		{
-			//Check permissions
-			if (ctx.User.Id != ctx.Guild.Owner.Id) //Guild owners always have everything
-			{
-				if (ctx.User is SocketGuildUser {GuildPermissions.Administrator: false})
-				{
-					//Check permissions with the command
-					CommandPermissionResult permissionResult = await CheckSlashCommandWithPermissionProviders(slashCommandInfo, ctx);
-					if (!permissionResult.IsSuccess)
-					{
-						await ctx.Interaction.RespondAsync(permissionResult.ErrorReason);
-						return;
-					}
-				}
-			}
-			
-			IResult result = await slashCommandInfo.ExecuteAsync(ctx, serviceProvider);
-			Logger.Debug(CheckInteractionResult(ctx, result)
-				? $"Success handling slash command {slashCommandInfo.Name}"
-				: $"Error handling slash command {slashCommandInfo.Name}. If their is an issue you need to worry about it would have already been displayed.");
-		}
+            //await interactionService.ExecuteCommandAsync(ctx, serviceProvider);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Error handling interaction!");
 
-		private bool CheckInteractionResult(SocketInteractionContext ctx, IResult result)
-		{
-			if (result.IsSuccess) 
-				return true;
-			
-			
-			switch (result.Error)
-			{
-				case InteractionCommandError.UnknownCommand: //Interactions shouldn't ever have this right?
-					ctx.Interaction.RespondAsync("Unknown Command!");
-					break;
-				case InteractionCommandError.ParseFailed:
-				case InteractionCommandError.ConvertFailed:
-				case InteractionCommandError.BadArgs:
-					ctx.Interaction.RespondAsync($"Command has bad arguments! {result.ErrorReason}");
-					break;
-				case InteractionCommandError.Exception:
-				case InteractionCommandError.Unsuccessful:
-					ctx.Interaction.RespondAsync(
-						"Sorry, but an internal error occured while executing this command!");
-					Logger.Error($"An error occured while executing a command!\n{result.ErrorReason}");
-					break;
-				case InteractionCommandError.UnmetPrecondition:
-					ctx.Interaction.RespondAsync(
-						"Sorry, but you don't meet the preconditions to run this command!");
-					break;
-				case null:
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-				
-			return false;
-		}
-		
-		private async Task<CommandPermissionResult> CheckSlashCommandWithPermissionProviders(SlashCommandInfo commandInfo, SocketInteractionContext context)
-		{
-			foreach (IPermissionProvider permissionProvider in permissionProviders)
-			{
-				//Try/Catch this since its most likely talking with third-party module code
-				try
-				{
-					PermissionResult result = await permissionProvider.OnExecuteSlashCommand(commandInfo, context);
-					if(!result.IsSuccess)
-						return CommandPermissionResult.FromError(result.ErrorReason);
-				}
-				catch (Exception ex)
-				{
-					Logger.Error(ex, "An internal error occured with the permission provider {PermissionProviderName}!", permissionProvider.GetType().Name);
-					return CommandPermissionResult.FromError("An internal error occured while checking the command's permissions!");
-				}
-			}
+            //If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
+            //response, or at least let the user know that something went wrong during the command execution.
+            if (interaction.Type == InteractionType.ApplicationCommand)
+                await interaction.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
+        }
+    }
 
-			return CommandPermissionResult.FromSuccess();
-		}
+    private async void ExecuteSlashCommand(SocketInteractionContext ctx, SlashCommandInfo slashCommandInfo)
+    {
+        //Check permissions
+        if (ctx.User.Id != ctx.Guild.Owner.Id) //Guild owners always have everything
+            if (ctx.User is SocketGuildUser {GuildPermissions.Administrator: false})
+            {
+                //Check permissions with the command
+                CommandPermissionResult permissionResult =
+                    await CheckSlashCommandWithPermissionProviders(slashCommandInfo, ctx);
+                if (!permissionResult.IsSuccess)
+                {
+                    await ctx.Interaction.RespondAsync(permissionResult.ErrorReason);
+                    return;
+                }
+            }
 
-		private static bool CheckSearchResult<T>(SearchResult<T> searchResult)
-			where T : class, ICommandInfo
-		{
-			return searchResult.IsSuccess;
-		}
-		
-		#endregion
-		
-		#region Message Commands
+        IResult result = await slashCommandInfo.ExecuteAsync(ctx, serviceProvider);
+        Logger.Debug(CheckInteractionResult(ctx, result)
+            ? $"Success handling slash command {slashCommandInfo.Name}"
+            : $"Error handling slash command {slashCommandInfo.Name}. If their is an issue you need to worry about it would have already been displayed.");
+    }
 
-		private async Task HandleMessage(SocketMessage msg)
-		{
-			//Check the message first
-			if (!CheckMessage(msg, out SocketUserMessage userMessage, out SocketCommandContext context)) return;
+    private bool CheckInteractionResult(SocketInteractionContext ctx, IResult result)
+    {
+        if (result.IsSuccess)
+            return true;
 
-			//Does the message start with the prefix or mention of the bot
-			int argPos = 0;
-			if (!userMessage.HasStringPrefix(config.BotPrefix, ref argPos) &&
-			    !userMessage.HasMentionPrefix(client.CurrentUser, ref argPos))
-			{
-				ModuleManager.ModulesClientMessage(client, userMessage);
-				return;
-			}
 
-			//First, find the command
-			SearchResult searchResult = commandService.Search(context, argPos);
-			if(!searchResult.IsSuccess)
-				return;
+        switch (result.Error)
+        {
+            case InteractionCommandError.UnknownCommand: //Interactions shouldn't ever have this right?
+                ctx.Interaction.RespondAsync("Unknown Command!");
+                break;
+            case InteractionCommandError.ParseFailed:
+            case InteractionCommandError.ConvertFailed:
+            case InteractionCommandError.BadArgs:
+                ctx.Interaction.RespondAsync($"Command has bad arguments! {result.ErrorReason}");
+                break;
+            case InteractionCommandError.Exception:
+            case InteractionCommandError.Unsuccessful:
+                ctx.Interaction.RespondAsync(
+                    "Sorry, but an internal error occured while executing this command!");
+                Logger.Error($"An error occured while executing a command!\n{result.ErrorReason}");
+                break;
+            case InteractionCommandError.UnmetPrecondition:
+                ctx.Interaction.RespondAsync(
+                    "Sorry, but you don't meet the preconditions to run this command!");
+                break;
+            case null:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
-			//Try to find the command
-			CommandSearchResult commandSearchResult = await FindLikelyCommand(context, searchResult);
-			if (!commandSearchResult.IsSuccess)
-			{
-				await context.Channel.SendMessageAsync(commandSearchResult.ErrorReason);
-				return;
-			}
-			
-			//Guild owners overrider everything
-			if (context.User.Id != context.Guild.Owner.Id)
-			{
-				if (context.User is SocketGuildUser {GuildPermissions: {Administrator: false}})
-				{
-					//Check permissions with the command
-					CommandPermissionResult permissionResult = await CheckCommandWithPermissionProviders(commandSearchResult.CommandMatch.Command, context);
-					if (!permissionResult.IsSuccess)
-					{
-						await context.Channel.SendMessageAsync(permissionResult.ErrorReason);
-						return;
-					}
-				}
-			}
+        return false;
+    }
 
-			//Execute the command
-			ExecuteResult result = (ExecuteResult) await commandSearchResult.CommandMatch.ExecuteAsync(context, commandSearchResult.ParseResult, serviceProvider);
+    private async Task<CommandPermissionResult> CheckSlashCommandWithPermissionProviders(SlashCommandInfo commandInfo,
+        SocketInteractionContext context)
+    {
+        foreach (IPermissionProvider permissionProvider in permissionProviders)
+            //Try/Catch this since its most likely talking with third-party module code
+            try
+            {
+                PermissionResult result = await permissionProvider.OnExecuteSlashCommand(commandInfo, context);
+                if (!result.IsSuccess)
+                    return CommandPermissionResult.FromError(result.ErrorReason);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "An internal error occured with the permission provider {PermissionProviderName}!",
+                    permissionProvider.GetType().Name);
+                return CommandPermissionResult.FromError(
+                    "An internal error occured while checking the command's permissions!");
+            }
 
-			//Handle the result
-			if (!result.IsSuccess && result.Error == CommandError.Exception)
-			{
-				await context.Channel.SendMessageAsync(
-					"An internal error occurred while trying to handle your command!");
-				Logger.Error(result.Exception, "An error occurred while handling a command!");
-			}
-		}
+        return CommandPermissionResult.FromSuccess();
+    }
 
-		private bool CheckMessage(SocketMessage message, out SocketUserMessage msg, out SocketCommandContext context)
-		{
-			msg = null;
-			context = null;
+    private static bool CheckSearchResult<T>(SearchResult<T> searchResult)
+        where T : class, ICommandInfo
+    {
+        return searchResult.IsSuccess;
+    }
 
-			if (message is not SocketUserMessage userMessage) 
-				return false;
-			
-			msg = userMessage;
+    #endregion
 
-			context = new SocketCommandContext(client, msg);
+    #region Message Commands
 
-			return !message.Author.IsBot && !message.Author.IsWebhook;
-		}
+    private async Task HandleMessage(SocketMessage msg)
+    {
+        //Check the message first
+        if (!CheckMessage(msg, out SocketUserMessage userMessage, out SocketCommandContext context)) return;
 
-		private async Task<CommandPermissionResult> CheckCommandWithPermissionProviders(CommandInfo commandInfo, ICommandContext context)
-		{
-			foreach (IPermissionProvider permissionProvider in permissionProviders)
-			{
-				//Try/Catch this since its most likely talking with third-party module code
-				try
-				{
-					PermissionResult result = await permissionProvider.OnExecuteCommand(commandInfo, context);
-					if(!result.IsSuccess)
-						return CommandPermissionResult.FromError(result.ErrorReason);
-				}
-				catch (Exception ex)
-				{
-					Logger.Error(ex, "An internal error occured with the permission provider {PermissionProviderName}!", permissionProvider.GetType().Name);
-					return CommandPermissionResult.FromError("An internal error occured while checking the command's permissions!");
-				}
-			}
+        //Does the message start with the prefix or mention of the bot
+        int argPos = 0;
+        if (!userMessage.HasStringPrefix(config.BotPrefix, ref argPos) &&
+            !userMessage.HasMentionPrefix(client.CurrentUser, ref argPos))
+        {
+            ModuleManager.ModulesClientMessage(client, userMessage);
+            return;
+        }
 
-			return CommandPermissionResult.FromSuccess();
-		}
-		
-		//99.9% of this code comes from Discord.NET: 
-		//https://github.com/discord-net/Discord.Net/blob/22bb1b02dd9ec20c2485657f1b55193e18df393f/src/Discord.Net.Commands/CommandService.cs#L504
-		private async Task<CommandSearchResult> FindLikelyCommand(ICommandContext context, SearchResult searchResult)
-		{
-			IReadOnlyList<CommandMatch> commands = searchResult.Commands;
-			
-			Dictionary<CommandMatch, PreconditionResult> preconditionResults = new Dictionary<CommandMatch, PreconditionResult>();
-			foreach (CommandMatch match in commands)
-			{
-				preconditionResults[match] = await match.Command.CheckPreconditionsAsync(context, serviceProvider).ConfigureAwait(false);
-			}
+        //First, find the command
+        SearchResult searchResult = commandService.Search(context, argPos);
+        if (!searchResult.IsSuccess)
+            return;
 
-			KeyValuePair<CommandMatch, PreconditionResult>[] successfulPreconditions = preconditionResults
-				.Where(x => x.Value.IsSuccess)
-				.ToArray();
+        //Try to find the command
+        CommandSearchResult commandSearchResult = await FindLikelyCommand(context, searchResult);
+        if (!commandSearchResult.IsSuccess)
+        {
+            await context.Channel.SendMessageAsync(commandSearchResult.ErrorReason);
+            return;
+        }
 
-			if (successfulPreconditions.Length == 0)
-			{
-				//All preconditions failed, return the one from the highest priority command
-				KeyValuePair<CommandMatch, PreconditionResult> bestCandidate = preconditionResults
-					.OrderByDescending(x => x.Key.Command.Priority)
-					.FirstOrDefault(x => !x.Value.IsSuccess);
+        //Guild owners overrider everything
+        if (context.User.Id != context.Guild.Owner.Id)
+            if (context.User is SocketGuildUser {GuildPermissions: {Administrator: false}})
+            {
+                //Check permissions with the command
+                CommandPermissionResult permissionResult =
+                    await CheckCommandWithPermissionProviders(commandSearchResult.CommandMatch.Command, context);
+                if (!permissionResult.IsSuccess)
+                {
+                    await context.Channel.SendMessageAsync(permissionResult.ErrorReason);
+                    return;
+                }
+            }
 
-				return CommandSearchResult.FromError(CommandError.UnmetPrecondition, "You lack the preconditions to run this command!");
-			}
-			
-			//If we get this far, at least one precondition was successful.
-			Dictionary<CommandMatch, ParseResult> parseResultsDict = new Dictionary<CommandMatch, ParseResult>();
-			foreach (KeyValuePair<CommandMatch, PreconditionResult> pair in successfulPreconditions)
-			{
-				ParseResult parseResult = await pair.Key.ParseAsync(context, searchResult, pair.Value, serviceProvider).ConfigureAwait(false);
+        //Execute the command
+        ExecuteResult result =
+            (ExecuteResult) await commandSearchResult.CommandMatch.ExecuteAsync(context,
+                commandSearchResult.ParseResult, serviceProvider);
 
-				parseResultsDict[pair.Key] = parseResult;
-			}
-			
-			//Calculates the 'score' of a command given a parse result
-			static float CalculateScore(CommandMatch match, ParseResult parseResult)
-			{
-				float argValuesScore = 0, paramValuesScore = 0;
+        //Handle the result
+        if (!result.IsSuccess && result.Error == CommandError.Exception)
+        {
+            await context.Channel.SendMessageAsync(
+                "An internal error occurred while trying to handle your command!");
+            Logger.Error(result.Exception, "An error occurred while handling a command!");
+        }
+    }
 
-				if (match.Command.Parameters.Count > 0)
-				{
-					float argValuesSum = parseResult.ArgValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ?? 0;
-					float paramValuesSum = parseResult.ParamValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ?? 0;
+    private bool CheckMessage(SocketMessage message, out SocketUserMessage msg, out SocketCommandContext context)
+    {
+        msg = null;
+        context = null;
 
-					argValuesScore = argValuesSum / match.Command.Parameters.Count;
-					paramValuesScore = paramValuesSum / match.Command.Parameters.Count;
-				}
+        if (message is not SocketUserMessage userMessage)
+            return false;
 
-				float totalArgsScore = (argValuesScore + paramValuesScore) / 2;
-				return match.Command.Priority + totalArgsScore * 0.99f;
-			}
-			
-			//Order the parse results by their score so that we choose the most likely result to execute
-			IOrderedEnumerable<KeyValuePair<CommandMatch, ParseResult>> parseResults = parseResultsDict
-				.OrderByDescending(x => CalculateScore(x.Key, x.Value));
+        msg = userMessage;
 
-			KeyValuePair<CommandMatch, ParseResult>[] successfulParses = parseResults
-				.Where(x => x.Value.IsSuccess)
-				.ToArray();
+        context = new SocketCommandContext(client, msg);
 
-			if (successfulParses.Length == 0)
-			{
-				//All parses failed, return the one from the highest priority command, using score as a tie breaker
-				KeyValuePair<CommandMatch, ParseResult> bestMatch = parseResults
-					.FirstOrDefault(x => !x.Value.IsSuccess);
-				
-				return CommandSearchResult.FromError(CommandError.ParseFailed, $"Fail to parse `{bestMatch.Value.ErrorParameter.Name}` argument! {bestMatch.Value.ErrorReason}");
-			}
+        return !message.Author.IsBot && !message.Author.IsWebhook;
+    }
 
-			//If we get this far, at least one parse was successful. Execute the most likely overload.
-			KeyValuePair<CommandMatch, ParseResult> chosenOverload = successfulParses[0];
-			return CommandSearchResult.FromSuccess(chosenOverload.Key, chosenOverload.Value);
-		}
-		
-		#endregion
-	}
+    private async Task<CommandPermissionResult> CheckCommandWithPermissionProviders(CommandInfo commandInfo,
+        ICommandContext context)
+    {
+        foreach (IPermissionProvider permissionProvider in permissionProviders)
+            //Try/Catch this since its most likely talking with third-party module code
+            try
+            {
+                PermissionResult result = await permissionProvider.OnExecuteCommand(commandInfo, context);
+                if (!result.IsSuccess)
+                    return CommandPermissionResult.FromError(result.ErrorReason);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "An internal error occured with the permission provider {PermissionProviderName}!",
+                    permissionProvider.GetType().Name);
+                return CommandPermissionResult.FromError(
+                    "An internal error occured while checking the command's permissions!");
+            }
+
+        return CommandPermissionResult.FromSuccess();
+    }
+
+    //99.9% of this code comes from Discord.NET: 
+    //https://github.com/discord-net/Discord.Net/blob/22bb1b02dd9ec20c2485657f1b55193e18df393f/src/Discord.Net.Commands/CommandService.cs#L504
+    private async Task<CommandSearchResult> FindLikelyCommand(ICommandContext context, SearchResult searchResult)
+    {
+        IReadOnlyList<CommandMatch> commands = searchResult.Commands;
+
+        Dictionary<CommandMatch, PreconditionResult> preconditionResults = new();
+        foreach (CommandMatch match in commands)
+            preconditionResults[match] =
+                await match.Command.CheckPreconditionsAsync(context, serviceProvider).ConfigureAwait(false);
+
+        KeyValuePair<CommandMatch, PreconditionResult>[] successfulPreconditions = preconditionResults
+            .Where(x => x.Value.IsSuccess)
+            .ToArray();
+
+        if (successfulPreconditions.Length == 0)
+        {
+            //All preconditions failed, return the one from the highest priority command
+            KeyValuePair<CommandMatch, PreconditionResult> bestCandidate = preconditionResults
+                .OrderByDescending(x => x.Key.Command.Priority)
+                .FirstOrDefault(x => !x.Value.IsSuccess);
+
+            return CommandSearchResult.FromError(CommandError.UnmetPrecondition,
+                "You lack the preconditions to run this command!");
+        }
+
+        //If we get this far, at least one precondition was successful.
+        Dictionary<CommandMatch, ParseResult> parseResultsDict = new();
+        foreach (KeyValuePair<CommandMatch, PreconditionResult> pair in successfulPreconditions)
+        {
+            ParseResult parseResult = await pair.Key.ParseAsync(context, searchResult, pair.Value, serviceProvider)
+                .ConfigureAwait(false);
+
+            parseResultsDict[pair.Key] = parseResult;
+        }
+
+        //Calculates the 'score' of a command given a parse result
+        static float CalculateScore(CommandMatch match, ParseResult parseResult)
+        {
+            float argValuesScore = 0, paramValuesScore = 0;
+
+            if (match.Command.Parameters.Count > 0)
+            {
+                float argValuesSum =
+                    parseResult.ArgValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ??
+                    0;
+                float paramValuesSum =
+                    parseResult.ParamValues?.Sum(x =>
+                        x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ?? 0;
+
+                argValuesScore = argValuesSum / match.Command.Parameters.Count;
+                paramValuesScore = paramValuesSum / match.Command.Parameters.Count;
+            }
+
+            float totalArgsScore = (argValuesScore + paramValuesScore) / 2;
+            return match.Command.Priority + totalArgsScore * 0.99f;
+        }
+
+        //Order the parse results by their score so that we choose the most likely result to execute
+        IOrderedEnumerable<KeyValuePair<CommandMatch, ParseResult>> parseResults = parseResultsDict
+            .OrderByDescending(x => CalculateScore(x.Key, x.Value));
+
+        KeyValuePair<CommandMatch, ParseResult>[] successfulParses = parseResults
+            .Where(x => x.Value.IsSuccess)
+            .ToArray();
+
+        if (successfulParses.Length == 0)
+        {
+            //All parses failed, return the one from the highest priority command, using score as a tie breaker
+            KeyValuePair<CommandMatch, ParseResult> bestMatch = parseResults
+                .FirstOrDefault(x => !x.Value.IsSuccess);
+
+            return CommandSearchResult.FromError(CommandError.ParseFailed,
+                $"Fail to parse `{bestMatch.Value.ErrorParameter.Name}` argument! {bestMatch.Value.ErrorReason}");
+        }
+
+        //If we get this far, at least one parse was successful. Execute the most likely overload.
+        KeyValuePair<CommandMatch, ParseResult> chosenOverload = successfulParses[0];
+        return CommandSearchResult.FromSuccess(chosenOverload.Key, chosenOverload.Value);
+    }
+
+    #endregion
 }
