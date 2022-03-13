@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Text;
+using Discord;
 using Discord.Interactions;
 using Discord.Net;
 using Pootis_Bot.Discord;
@@ -19,55 +20,57 @@ namespace Pootis_Bot.Module.Basic
 			interactionService = cmdService;
 		}
 
-		[SlashCommand("", "Gets help on all commands")]
-		public async Task Help()
+		[SlashCommand("get", "Gets help on commands")]
+		public async Task Help(string? command = null)
 		{
-			await RespondAsync("I will DM you the help info!");
-
-			DmChat dmChat = new(Context.User);
-
-			foreach (string message in BuildHelpMenu())
+			if (string.IsNullOrWhiteSpace(command))
 			{
-				try
+				await RespondAsync("I will DM you the help info!");
+
+				DmChat dmChat = new(Context.User);
+
+				foreach (string message in BuildHelpMenu())
 				{
-					await dmChat.SendMessage(message);
-				}
-				catch (HttpException)
-				{
-					await Context.Channel.SendMessageAsync(
-						"Sorry, but I can't seem to send you a DM for some reason, you might have your account set to not allow DMs from users.");
-				}
-				catch (Exception)
-				{
-					await Context.Channel.SendMessageAsync(
-						"Sorry, but I can't seem to send you a DM for some reason, this might be an issue with Discord.");
+					try
+					{
+						await dmChat.SendMessage(message);
+					}
+					catch (HttpException)
+					{
+						await Context.Channel.SendMessageAsync(
+							"Sorry, but I can't seem to send you a DM for some reason, you might have your account set to not allow DMs from users.");
+					}
+					catch (Exception)
+					{
+						await Context.Channel.SendMessageAsync(
+							"Sorry, but I can't seem to send you a DM for some reason, this might be an issue with Discord.");
+					}
 				}
 			}
+			else
+			{
+				command = command.ToLowerInvariant();
+				
+				SlashCommandInfo[] searchResult = interactionService.SlashCommands.Where(x => x.Name == command).ToArray();
+				if (searchResult.Length == 0)
+				{
+					await RespondAsync("No results where found!");
+					return;
+				}
+				
+				EmbedBuilder embed = new ();
+				embed.WithTitle($"Help for `{command}`");
+
+				foreach (SlashCommandInfo commandInfo in searchResult)
+				{
+					embed.AddField(commandInfo.Name,
+						$"**Summary**: {commandInfo.Description}\n**Usage**: {BuildCommandUsage(commandInfo)}");
+				}
+
+				await RespondAsync(embed: embed.Build());
+			}
+			
 		}
-
-		/*
-		[Command]
-		[global::Discord.Commands.Summary("Gets help on a specific command")]
-		public async Task Help([Remainder] string query)
-		{
-			SearchResult searchResult = interactionService.Search(Context, query);
-			if (!searchResult.IsSuccess)
-			{
-				await Context.Channel.SendErrorMessageAsync("That command does not exist!");
-				return;
-			}
-
-			EmbedBuilder embed = new EmbedBuilder();
-			embed.WithTitle($"Help for `{query}`");
-			foreach (CommandMatch match in searchResult.Commands)
-			{
-				embed.AddField(match.Command.Name,
-					$"**Summary**: {match.Command.Summary}\n**Usage**: {BuildCommandUsage(match.Command)}");
-			}
-
-			await Context.Channel.SendEmbedAsync(embed);
-		}
-		*/
 
 		private IEnumerable<string> BuildHelpMenu()
 		{
