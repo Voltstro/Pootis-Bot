@@ -3,31 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Text;
-using Discord;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.Net;
 using Pootis_Bot.Discord;
-using Pootis_Bot.Helper;
 
 namespace Pootis_Bot.Module.Basic
 {
-	[Group("help")]
-	[Name("Help Commands")]
-	[Summary("Provides help commands")]
-	public class HelpCommands : ModuleBase<SocketCommandContext>
+	[Group("help", "Provides help commands")]
+	public class HelpCommands : InteractionModuleBase<SocketInteractionContext>
 	{
-		private readonly CommandService commandService;
+		private readonly InteractionService interactionService;
 
-		public HelpCommands(CommandService cmdService)
+		public HelpCommands(InteractionService cmdService)
 		{
-			commandService = cmdService;
+			interactionService = cmdService;
 		}
 
-		[Command]
-		[Summary("Gets help on all commands")]
+		[SlashCommand("", "Gets help on all commands")]
 		public async Task Help()
 		{
-			await Context.Channel.SendMessageAsync("I will DM you the help info!");
+			await RespondAsync("I will DM you the help info!");
 
 			DmChat dmChat = new(Context.User);
 
@@ -50,11 +45,12 @@ namespace Pootis_Bot.Module.Basic
 			}
 		}
 
+		/*
 		[Command]
-		[Summary("Gets help on a specific command")]
+		[global::Discord.Commands.Summary("Gets help on a specific command")]
 		public async Task Help([Remainder] string query)
 		{
-			SearchResult searchResult = commandService.Search(Context, query);
+			SearchResult searchResult = interactionService.Search(Context, query);
 			if (!searchResult.IsSuccess)
 			{
 				await Context.Channel.SendErrorMessageAsync("That command does not exist!");
@@ -71,15 +67,16 @@ namespace Pootis_Bot.Module.Basic
 
 			await Context.Channel.SendEmbedAsync(embed);
 		}
+		*/
 
 		private IEnumerable<string> BuildHelpMenu()
 		{
 			List<string> groups = new();
-			ModuleInfo[] modules = commandService.Modules.ToArray();
+			ModuleInfo[] modules = interactionService.Modules.ToArray();
 			foreach (ModuleInfo module in modules)
 			{
-				string message = $"```diff\n+ {module.Name}\n  - Summary: {module.Summary}\n";
-				message = module.Commands.Aggregate(message, (current, command) => current + $"\n- {BuildCommandFormat(command)}\n  - Summary: {command.Summary}\n  - Usage: {BuildCommandUsage(command)}");
+				string message = $"```diff\n+ {module.Name}\n  - Summary: {module.Description}\n";
+				message = module.SlashCommands.Aggregate(message, (current, command) => current + $"\n- {BuildCommandFormat(command)}\n  - Summary: {command.Description}\n  - Usage: {BuildCommandUsage(command)}");
 				message += "\n```";
 
 				//If its the first group, ignore
@@ -99,11 +96,11 @@ namespace Pootis_Bot.Module.Basic
 			return groups;
 		}
 
-		private string BuildCommandUsage(CommandInfo command)
+		private string BuildCommandUsage(SlashCommandInfo command)
 		{
 			using Utf16ValueStringBuilder commandUsage = ZString.CreateStringBuilder();
 			commandUsage.Append($"`{BuildCommandFormat(command)}");
-			foreach (ParameterInfo parameter in command.Parameters)
+			foreach (SlashCommandParameterInfo parameter in command.Parameters)
 			{
 				commandUsage.Append($" <{parameter.Name.ToLower()}");
 				if (parameter.DefaultValue != null)
@@ -118,9 +115,9 @@ namespace Pootis_Bot.Module.Basic
 			return commandUsage.ToString();
 		}
 
-		private string BuildCommandFormat(CommandInfo command)
+		private string BuildCommandFormat(SlashCommandInfo command)
 		{
-			string groupName = command.Module.Group;
+			string groupName = command.Module.SlashGroupName;
 			string commandName = command.Name.ToLower();
 
 			string commandFormat = commandName;
