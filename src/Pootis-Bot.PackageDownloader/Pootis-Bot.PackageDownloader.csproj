@@ -1,16 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <RootNamespace>Pootis_Bot.PackageDownloader</RootNamespace>
-    <Description>Handles downloading NuGet packages.</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace>Pootis_Bot.PackageDownloader</RootNamespace>
+        <Description>Handles downloading NuGet packages.</Description>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NuGet.Packaging" Version="6.0.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.0.0" />
-    <PackageReference Include="NuGet.Resolver" Version="6.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="NuGet.Packaging" Version="6.1.0" />
+        <PackageReference Include="NuGet.Protocol" Version="6.1.0" />
+        <PackageReference Include="NuGet.Resolver" Version="6.1.0" />
+    </ItemGroup>
 
-  <Import Project="..\GeneralProperties.props" />
+    <Import Project="..\GeneralProperties.props" />
 
 </Project>

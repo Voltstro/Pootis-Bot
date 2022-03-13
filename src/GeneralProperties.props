@@ -2,31 +2,31 @@
 
 <Project>
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Authors>Voltstro</Authors>
-    <Copyright>Copyright (c) Voltstro 2018-2022</Copyright>
-    <Version>2.0.0-preview.1</Version>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Platforms>AnyCPU</Platforms>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Authors>Voltstro</Authors>
+        <Copyright>Copyright (c) Voltstro 2018-2022</Copyright>
+        <Version>2.0.0-preview.1</Version>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <Platforms>AnyCPU</Platforms>
+        <Configurations>Debug;Release</Configurations>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <OutputPath>$(SolutionDir)bin\Debug\</OutputPath>
-    <PublishDir>$(SolutionDir)bin\Debug\publish\$(RuntimeIdentifier)</PublishDir>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <OutputPath>$(SolutionDir)bin\Debug\</OutputPath>
+        <PublishDir>$(SolutionDir)bin\Debug\publish\$(RuntimeIdentifier)</PublishDir>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <OutputPath>$(SolutionDir)bin\Release\</OutputPath>
-    <PublishDir>$(SolutionDir)bin\Release\publish\$(RuntimeIdentifier)</PublishDir>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <OutputPath>$(SolutionDir)bin\Release\</OutputPath>
+        <PublishDir>$(SolutionDir)bin\Release\publish\$(RuntimeIdentifier)</PublishDir>
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
 
 </Project>

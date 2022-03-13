@@ -16,6 +16,9 @@ namespace Pootis_Bot.Tests
 		{
 			packagesPath = $"{Path.GetDirectoryName(typeof(PackageDownloaderTests).Assembly.Location)}/Packages/";
 			packageResolver = new NuGetPackageResolver("netstandard2.1", packagesPath);
+			
+			if(Directory.Exists(packagesPath))
+				Directory.Delete(packagesPath, true);
 		}
 
 		[Test]
