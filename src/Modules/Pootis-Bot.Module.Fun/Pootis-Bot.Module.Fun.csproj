@@ -4,10 +4,12 @@
         <RootNamespace>Pootis_Bot.Module.Fun</RootNamespace>
         <Version>0.0.1</Version>
         <Nullable>enable</Nullable>
+        <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Wiki.Net" Version="3.1.0" />
+        <PackageReference Include="Wiki.Net" Version="3.1.0" PrivateAssets="all" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" PrivateAssets="all" IncludeAssets="none" />
     </ItemGroup>
 
     <Import Project="..\..\ModulesProperties.props" />
