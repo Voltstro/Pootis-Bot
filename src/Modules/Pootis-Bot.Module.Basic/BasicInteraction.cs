@@ -23,18 +23,19 @@ public class BasicInteraction : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("hello", "Provides about info")]
     public async Task Hello()
     {
-        EmbedBuilder embed = new ();
+        EmbedBuilder embed = new();
         embed.WithTitle("Hello!");
         embed.WithDescription($"Hello! My name is {displayName}!\n\n**__Links__**" +
                               $"\n<:GitHub:529571722991763456> [Github Page]({Links.GitHub})" +
                               $"\n:bookmark: [Documentation]({Links.Documentation})" +
                               $"\n<:Discord:529572497130127360> [Voltstro Discord Server]({Links.DiscordServer})" +
                               $"\n\nThis project is under the [MIT license]({Links.GitHub}/blob/master/LICENSE.md)");
-        embed.WithFooter($"Pootis-Bot: v{VersionUtils.GetApplicationVersion()} - Discord.Net: v{VersionUtils.GetDiscordNetVersion()}");
+        embed.WithFooter(
+            $"Pootis-Bot: v{VersionUtils.GetApplicationVersion()} - Discord.Net: v{VersionUtils.GetDiscordNetVersion()}");
         embed.WithColor(new Color(241, 196, 15));
         await RespondAsync(embed: embed.Build());
     }
-    
+
     [SlashCommand("ping", "Gets the ping of the bot")]
     public async Task Ping()
     {
@@ -58,7 +59,7 @@ public class BasicInteraction : InteractionModuleBase<SocketInteractionContext>
     {
         SocketGuild guild = Context.Guild;
 
-        EmbedBuilder embed = new ();
+        EmbedBuilder embed = new();
         embed.WithTitle("Server Details");
         embed.WithDescription("**__Server__**" +
                               $"\n**Server Name:** {guild.Name}" +

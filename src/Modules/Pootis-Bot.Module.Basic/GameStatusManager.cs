@@ -15,22 +15,25 @@ public static class GameStatusManager
 {
     private static DiscordSocketClient? discordClient;
     private static GameStatusConfig? config;
-        
+
     internal static void OnConnected(DiscordSocketClient client)
     {
         discordClient = client;
         config = Config<GameStatusConfig>.Instance;
-            
-        if(!string.IsNullOrEmpty(config.DefaultMessage))
+
+        if (!string.IsNullOrEmpty(config.DefaultMessage))
             SetStatus(config.DefaultMessage);
     }
-        
+
     /// <summary>
     ///     Allows you to set the status to a custom message
     /// </summary>
     /// <param name="status">The status message</param>
     /// <param name="isStreaming">Show the bot as streaming or not?</param>
-    /// <exception cref="NullReferenceException">Occurs when <see cref="isStreaming"/> is true and the streaming URL in the config is empty or null</exception>
+    /// <exception cref="NullReferenceException">
+    ///     Occurs when <see cref="isStreaming" /> is true and the streaming URL in the
+    ///     config is empty or null
+    /// </exception>
     public static void SetStatus(string status, bool isStreaming = false)
     {
         if (config == null)
@@ -38,7 +41,7 @@ public static class GameStatusManager
 
         if (discordClient == null)
             throw new ArgumentException("The client hasn't connected yet!");
-            
+
         string? streamingUrl = null;
         if (isStreaming)
         {

@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <RootNamespace>Pootis_Bot.Module.Basic</RootNamespace>
-    <Version>0.0.1</Version>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace>Pootis_Bot.Module.Basic</RootNamespace>
+        <Version>0.0.1</Version>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <Import Project="..\..\ModulesProperties.props" />
+    <Import Project="..\..\ModulesProperties.props"/>
 
 </Project>
