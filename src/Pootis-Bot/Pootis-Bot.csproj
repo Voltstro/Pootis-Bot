@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Pootis_Bot</RootNamespace>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
-    <Description>Entry point of Pootis-Bot. Is what glues everything together.</Description>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Pootis_Bot</RootNamespace>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
+        <Description>Entry point of Pootis-Bot. Is what glues everything together.</Description>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pootis-Bot.Core\Pootis-Bot.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Pootis-Bot.Core\Pootis-Bot.Core.csproj"/>
+    </ItemGroup>
 
-  <Import Project="..\GeneralProperties.props" />
+    <Import Project="..\GeneralProperties.props"/>
 
 </Project>
