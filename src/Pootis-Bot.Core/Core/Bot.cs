@@ -98,7 +98,7 @@ public class Bot : IDisposable
         ConfigSaved();
 
         //Load modules
-        moduleManager = new ModuleManager("Modules/", "Assemblies/");
+        moduleManager = new ModuleManager("Modules/", "Cache/NuGetAssemblies", "Cache/PackagesDownload");
         moduleManager.LoadModules();
 
         //If the token is null or white space, open the config menu

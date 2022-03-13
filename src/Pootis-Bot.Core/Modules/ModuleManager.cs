@@ -20,17 +20,20 @@ namespace Pootis_Bot.Modules;
 public sealed class ModuleManager : IDisposable
 {
     private static List<Module> modules;
-    private readonly string assembliesDirectory;
     private readonly ModuleLoadContext loadContext;
+    
+    private readonly string assembliesDirectory;
     private readonly string modulesDirectory;
+    private readonly string packagesDirectory;
 
     /// <summary>
     ///     Creates a new module manager instance
     /// </summary>
     /// <param name="modulesDir">The directory where the modules are kept</param>
     /// <param name="assembliesDir">The directory of where external assemblies exist</param>
+    /// <param name="packagesDir"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    internal ModuleManager([DisallowNull] string modulesDir, [DisallowNull] string assembliesDir)
+    internal ModuleManager([DisallowNull] string modulesDir, [DisallowNull] string assembliesDir, string packagesDir)
     {
         if (string.IsNullOrWhiteSpace(modulesDir))
             throw new ArgumentNullException(nameof(modulesDir));
@@ -40,6 +43,7 @@ public sealed class ModuleManager : IDisposable
 
         modulesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{modulesDir}");
         assembliesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{assembliesDir}");
+        packagesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{packagesDir}");
         modules = new List<Module>();
         loadContext = new ModuleLoadContext(modulesDirectory, assembliesDirectory);
     }
@@ -89,7 +93,7 @@ public sealed class ModuleManager : IDisposable
             Directory.CreateDirectory(modulesDirectory);
 
         //Pre-create package resolver
-        NuGetPackageResolver packageResolver = new("netstandard2.1", $"{Bot.ApplicationLocation}/Packages/");
+        NuGetPackageResolver packageResolver = new("netstandard2.1", packagesDirectory);
 
         //Get all dlls in the directory
         string[] dlls = Directory.GetFiles(modulesDirectory, "*.dll");
@@ -335,6 +339,9 @@ public sealed class ModuleManager : IDisposable
                 }
             }
         }
+        
+        if(Directory.Exists(packagesDirectory))
+            Directory.Delete(packagesDirectory, true);
     }
 
     private void VerifyModuleNuGetPackages(IEnumerable<ModuleDependency> nugetDependencies, ModuleInfo moduleInfo,
