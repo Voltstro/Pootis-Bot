@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>Pootis_Bot.Module.Fun</RootNamespace>
+        <Version>0.0.1</Version>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Wiki.Net" Version="3.1.0" />
+    </ItemGroup>
+
+    <Import Project="..\..\ModulesProperties.props" />
+
+</Project>
