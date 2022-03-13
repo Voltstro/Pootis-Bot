@@ -23,6 +23,9 @@ internal class XpLevelManager
     internal async Task HandelUserMessage(SocketUserMessage message)
     {
         SocketUser messageAuthor = message.Author;
+        if(messageAuthor.IsBot || messageAuthor.IsWebhook)
+            return;
+        
         UserLevelData user = GetOrCreateUser(message);
 
         //Make sure the message isn't the same

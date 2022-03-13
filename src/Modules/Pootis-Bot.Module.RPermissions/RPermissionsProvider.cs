@@ -18,11 +18,6 @@ internal class RPermissionsProvider : IPermissionProvider
         config = Config<RPermissionsConfig>.Instance;
     }
 
-    public Task<PermissionResult> OnExecuteCommand(CommandInfo commandInfo, ICommandContext context)
-    {
-        return Task.FromResult(PermissionResult.FromSuccess());
-    }
-
     public Task<PermissionResult> OnExecuteSlashCommand(SlashCommandInfo info, SocketInteractionContext context)
     {
         if (!config.DoesServerExist(context.Guild.Id))
