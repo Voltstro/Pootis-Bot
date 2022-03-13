@@ -14,6 +14,7 @@ namespace Pootis_Bot.Module.Basic
 	public class HelpCommands : InteractionModuleBase<SocketInteractionContext>
 	{
 		private readonly InteractionService interactionService;
+		private string[]? cachedHelpMenu;
 
 		public HelpCommands(InteractionService cmdService)
 		{
@@ -29,7 +30,7 @@ namespace Pootis_Bot.Module.Basic
 
 				DmChat dmChat = new(Context.User);
 
-				foreach (string message in BuildHelpMenu())
+				foreach (string message in GetHelpMenu())
 				{
 					try
 					{
@@ -72,8 +73,11 @@ namespace Pootis_Bot.Module.Basic
 			
 		}
 
-		private IEnumerable<string> BuildHelpMenu()
+		private IEnumerable<string> GetHelpMenu()
 		{
+			if (cachedHelpMenu != null) 
+				return cachedHelpMenu;
+			
 			List<string> groups = new();
 			ModuleInfo[] modules = interactionService.Modules.ToArray();
 			foreach (ModuleInfo module in modules)
@@ -96,7 +100,8 @@ namespace Pootis_Bot.Module.Basic
 					groups.Add(message);
 			}
 
-			return groups;
+			cachedHelpMenu = groups.ToArray();
+			return cachedHelpMenu;
 		}
 
 		private string BuildCommandUsage(SlashCommandInfo command)
