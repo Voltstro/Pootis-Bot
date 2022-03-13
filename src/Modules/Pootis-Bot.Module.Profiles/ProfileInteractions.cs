@@ -10,6 +10,7 @@ using Pootis_Bot.Core;
 
 namespace Pootis_Bot.Module.Profiles;
 
+[Group("", "Commands for profile related things")]
 public class ProfileInteractions : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly SortProfilesComparer profilesComparer;
