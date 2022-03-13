@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Commands.Permissions;
 using Pootis_Bot.Config;
 using Pootis_Bot.Core;
+using Pootis_Bot.Discord.TypeConverters;
 using Pootis_Bot.Discord.TypeReaders;
 using Pootis_Bot.Logging;
 using Pootis_Bot.Modules;
@@ -51,6 +52,7 @@ namespace Pootis_Bot.Commands
 			commandService.AddTypeReader<Emoji>(new EmojiTypeReader());
 
 			interactionService = new InteractionService(client);
+			interactionService.AddTypeConverter<Emoji>(new EmojiTypeConverter());
 
 			serviceProvider = new ServiceCollection()
 				.AddSingleton(client)
@@ -159,7 +161,7 @@ namespace Pootis_Bot.Commands
 				case InteractionCommandError.ParseFailed:
 				case InteractionCommandError.ConvertFailed:
 				case InteractionCommandError.BadArgs:
-					ctx.Interaction.RespondAsync("Command has bad arguments!");
+					ctx.Interaction.RespondAsync($"Command has bad arguments! {result.ErrorReason}");
 					break;
 				case InteractionCommandError.Exception:
 				case InteractionCommandError.Unsuccessful:
