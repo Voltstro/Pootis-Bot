@@ -8,121 +8,119 @@ using Pootis_Bot.Logging;
 using Pootis_Bot.Module.RuleReaction.Entities;
 using Emoji = Pootis_Bot.Discord.Emoji;
 
-namespace Pootis_Bot.Module.RuleReaction
+namespace Pootis_Bot.Module.RuleReaction;
+
+[Group("rulereaction", "Provides rule reaction configuration commands")]
+[RequireBotPermission(GuildPermission.ManageRoles)]
+public class RuleReactionInteractions : InteractionModuleBase<SocketInteractionContext>
 {
-    [Group("rulereaction", "Provides rule reaction configuration commands")]
-    [RequireBotPermission(GuildPermission.ManageRoles)]
-    public class RuleReactionInteractions : InteractionModuleBase<SocketInteractionContext>
+    private readonly RuleReactionConfig config;
+
+    public RuleReactionInteractions()
     {
-        private readonly RuleReactionConfig config;
-        
-        public RuleReactionInteractions()
+        config = Config<RuleReactionConfig>.Instance;
+    }
+
+    [SlashCommand("status", "Status of the rule reaction")]
+    public async Task Status()
+    {
+        RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
+
+        IMessage? message = null;
+        SocketTextChannel? channel = Context.Guild.GetTextChannel(server.ChannelId);
+        if (channel != null)
+            message = await channel.GetMessageAsync(server.MessageId);
+
+        EmbedBuilder embedBuilder = new();
+        embedBuilder.WithTitle("Rule Reaction Status");
+        embedBuilder.WithDescription($"Status of Rule Reaction for **{Context.Guild.Name}**");
+        embedBuilder.AddField("Enabled?", server.Enabled);
+        embedBuilder.AddField("Message", message == null ? "No Message" : $"[Link]({message.GetMessageUrl()})");
+        embedBuilder.AddField("Emoji", string.IsNullOrEmpty(server.Emoji) ? "No Emoji" : server.Emoji);
+        await RespondAsync(embed: embedBuilder.Build());
+    }
+
+    [SlashCommand("emoji", "Sets the emoji to use for reactions")]
+    public async Task SetEmoji(Emoji emoji)
+    {
+        config.GetOrCreateRuleReactionServer(Context.Guild.Id).Emoji = emoji.Name;
+        config.Save();
+        await RespondAsync($"Rule reaction emoji was set to {emoji}.");
+    }
+
+    [SlashCommand("message", "Sets what message to use")]
+    public async Task SetMessageCommand(ulong messageId, IMessageChannel? channel = null)
+    {
+        IMessageChannel? channelThatItIsIn = channel;
+        if (channelThatItIsIn == null)
+            channelThatItIsIn = Context.Channel;
+
+        await SetMessage(channelThatItIsIn, messageId, Context.Guild);
+    }
+
+    [SlashCommand("role", "Sets what role will be given on reaction")]
+    public async Task SetRole(SocketRole role)
+    {
+        config.GetOrCreateRuleReactionServer(Context.Guild.Id).RoleId = role.Id;
+        config.Save();
+
+        await RespondAsync($"Rule reaction role was set to {role.Name}.");
+    }
+
+    [SlashCommand("enable", "Verify that everything is ready to go and enables rule reaction")]
+    public async Task EnableRuleReaction()
+    {
+        RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
+        if (server.Enabled)
         {
-            config = Config<RuleReactionConfig>.Instance;
+            await RespondAsync("Rule reaction is already enabled!");
+            return;
         }
 
-        [SlashCommand("status", "Status of the rule reaction")]
-        public async Task Status()
+        if (!await RuleReactionService.CheckServer(server, Context.Client))
         {
-            RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
-
-            IMessage message = null;
-            SocketTextChannel channel = Context.Guild.GetTextChannel(server.ChannelId);
-            if (channel != null)
-                message = await channel.GetMessageAsync(server.MessageId);
-            
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.WithTitle("Rule Reaction Status");
-            embedBuilder.WithDescription($"Status of Rule Reaction for **{Context.Guild.Name}**");
-            embedBuilder.AddField("Enabled?", server.Enabled);
-            embedBuilder.AddField("Message", message == null ? "No Message" : $"[Link]({message.GetMessageUrl()})");
-            embedBuilder.AddField("Emoji", string.IsNullOrEmpty(server.Emoji) ? "No Emoji" : server.Emoji);
-            await RespondAsync(embed: embedBuilder.Build());
-        }
-        
-        [SlashCommand("emoji", "Sets the emoji to use for reactions")]
-        public async Task SetEmoji(Emoji emoji)
-        {
-            config.GetOrCreateRuleReactionServer(Context.Guild.Id).Emoji = emoji.Name;
-            config.Save();
-            await RespondAsync($"Rule reaction emoji was set to {emoji}.");
-        }
-        
-        [SlashCommand("message", "Sets what message to use")]
-        public async Task SetMessageCommand(ulong messageId, IMessageChannel channel = null)
-        {
-            IMessageChannel channelThatItIsIn = channel;
-            if (channelThatItIsIn == null)
-                channelThatItIsIn = Context.Channel;
-            
-            await SetMessage(channelThatItIsIn, messageId, Context.Guild);
+            await RespondAsync("The rule reaction is not setup correctly!");
+            return;
         }
 
-        [SlashCommand("role", "Sets what role will be given on reaction")]
-        public async Task SetRole(SocketRole role)
-        {
-            config.GetOrCreateRuleReactionServer(Context.Guild.Id).RoleId = role.Id;
-            config.Save();
+        server.Enabled = true;
+        config.Save();
+        await RespondAsync("Rule reaction is now enabled.");
+    }
 
-            await RespondAsync($"Rule reaction role was set to {role.Name}.");
+    [SlashCommand("disable", "Disables rule reaction")]
+    public async Task DisableRuleReaction()
+    {
+        RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
+        if (!server.Enabled)
+        {
+            await RespondAsync("Rule reaction is already disabled!");
+            return;
         }
 
-        [SlashCommand("enable","Verify that everything is ready to go and enables rule reaction")]
-        public async Task EnableRuleReaction()
-        {
-            RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
-            if (server.Enabled)
-            {
-                await RespondAsync("Rule reaction is already enabled!");
-                return;
-            }
-            
-            if (!await RuleReactionService.CheckServer(server, Context.Client))
-            {
-                await RespondAsync("The rule reaction is not setup correctly!");
-                return;
-            }
+        server.Enabled = false;
+        config.Save();
+        await RespondAsync("Rule reaction is now disabled.");
+    }
 
-            server.Enabled = true;
-            config.Save();
-            await RespondAsync("Rule reaction is now enabled.");
+    private async Task SetMessage(IMessageChannel channel, ulong messageId, SocketGuild guild)
+    {
+        IMessage message = await channel.GetMessageAsync(messageId);
+
+        //That message doesn't exist
+        if (message == null)
+        {
+            await RespondAsync("That message doesn't exist!");
+            return;
         }
 
-        [SlashCommand("disable", "Disables rule reaction")]
-        public async Task DisableRuleReaction()
-        {
-            RuleReactionServer server = config.GetOrCreateRuleReactionServer(Context.Guild.Id);
-            if (!server.Enabled)
-            {
-                await RespondAsync("Rule reaction is already disabled!");
-                return;
-            }
-            
-            server.Enabled = false;
-            config.Save();
-            await RespondAsync("Rule reaction is now disabled.");
-            
-        }
+        //Set the message and channel IDs
+        RuleReactionServer reactionServer = config.GetOrCreateRuleReactionServer(guild.Id);
+        reactionServer.ChannelId = channel.Id;
+        reactionServer.MessageId = message.Id;
+        config.Save();
 
-        private async Task SetMessage(IMessageChannel channel, ulong messageId, SocketGuild guild)
-        {
-            IMessage message = await channel.GetMessageAsync(messageId);
-            
-            //That message doesn't exist
-            if (message == null)
-            {
-                await RespondAsync("That message doesn't exist!");
-                return;
-            }
-
-            //Set the message and channel IDs
-            RuleReactionServer reactionServer = config.GetOrCreateRuleReactionServer(guild.Id);
-            reactionServer.ChannelId = channel.Id;
-            reactionServer.MessageId = message.Id;
-            config.Save();
-            
-            Logger.Debug("Guild {GuildId} set their rule reaction message to {MessageId}.", guild.Id, message.Id);
-            await RespondAsync("The rule reaction message is set!");
-        }
+        Logger.Debug("Guild {GuildId} set their rule reaction message to {MessageId}.", guild.Id, message.Id);
+        await RespondAsync("The rule reaction message is set!");
     }
 }

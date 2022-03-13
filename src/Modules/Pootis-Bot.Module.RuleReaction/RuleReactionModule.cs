@@ -4,33 +4,32 @@ using Discord.WebSocket;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Modules;
 
-namespace Pootis_Bot.Module.RuleReaction
+namespace Pootis_Bot.Module.RuleReaction;
+
+internal sealed class RuleReactionModule : Modules.Module
 {
-    internal sealed class RuleReactionModule : Modules.Module
+    protected override ModuleInfo GetModuleInfo()
     {
-        protected override ModuleInfo GetModuleInfo()
-        {
-            return new ModuleInfo("RuleReactionModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
-        }
+        return new ModuleInfo("RuleReactionModule", "Voltstro", new Version(VersionUtils.GetCallingVersion()));
+    }
 
-        protected override Task ClientConnected(DiscordSocketClient client)
+    protected override Task ClientConnected(DiscordSocketClient client)
+    {
+        client.ReactionAdded += (cacheable, channel, reaction) =>
         {
-            client.ReactionAdded += (cacheable, channel, reaction) =>
-            {
-                _ = Task.Run(() => RuleReactionService.ReactionAdded(reaction, client));
-                return Task.CompletedTask;
-            };
-            client.RoleDeleted += RuleReactionService.RoleDeleted;
-            client.ChannelDestroyed += RuleReactionService.ChannelDeleted;
-            client.MessageDeleted += RuleReactionService.MessageDeleted;
-            
-            return base.ClientConnected(client);
-        }
+            _ = Task.Run(() => RuleReactionService.ReactionAdded(reaction, client));
+            return Task.CompletedTask;
+        };
+        client.RoleDeleted += RuleReactionService.RoleDeleted;
+        client.ChannelDestroyed += RuleReactionService.ChannelDeleted;
+        client.MessageDeleted += RuleReactionService.MessageDeleted;
 
-        protected override Task ClientReady(DiscordSocketClient client, bool firstReady)
-        {
-            _ = Task.Run(() => RuleReactionService.CheckAllServer(client));
-            return base.ClientReady(client, firstReady);
-        }
+        return base.ClientConnected(client);
+    }
+
+    protected override Task ClientReady(DiscordSocketClient client, bool firstReady)
+    {
+        _ = Task.Run(() => RuleReactionService.CheckAllServer(client));
+        return base.ClientReady(client, firstReady);
     }
 }
