@@ -22,7 +22,7 @@ namespace Pootis_Bot.Services
 
 			await Task.Delay(convert);
 
-			IDMChannel dm = await guild.GetOrCreateDMChannelAsync();
+			IDMChannel dm = await guild.CreateDMChannelAsync();
 
 			EmbedBuilder embed = new EmbedBuilder();
 			embed.WithTitle("Reminder");

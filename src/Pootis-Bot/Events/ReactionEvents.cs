@@ -16,7 +16,7 @@ namespace Pootis_Bot.Events
 	/// </summary>
 	public class ReactionEvents
 	{
-		public Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel,
+		public Task ReactionAdded(Cacheable<IUserMessage, ulong> cache, Cacheable<IMessageChannel, ulong> channel,
 			SocketReaction reaction)
 		{
 			try
@@ -35,7 +35,7 @@ namespace Pootis_Bot.Events
 				if (reaction.MessageId == 0)
 					return Task.CompletedTask;
 
-				SocketGuild guild = ((SocketGuildChannel) channel).Guild;
+				SocketGuild guild = ((SocketGuildChannel) channel.Value).Guild;
 				ServerList server = ServerListsManager.GetServer(guild);
 
 				//If the message the user reacted to is the rules message

@@ -179,7 +179,7 @@ namespace Pootis_Bot.Services.Voting
 				userDmEmbed.WithDescription($"Your vote that you started on the **{guild.Name}** guild is now over.\n" +
 				                            $"You can see the results [here](https://discordapp.com/channels/{guild.Id}/{vote.VoteMessageChannelId}/{vote.VoteMessageId}).");
 
-				IDMChannel userDm = await user.GetOrCreateDMChannelAsync();
+				IDMChannel userDm = await user.CreateDMChannelAsync();
 				await userDm.SendMessageAsync("", false, userDmEmbed.Build());
 			}
 

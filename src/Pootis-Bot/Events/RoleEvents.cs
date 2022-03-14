@@ -26,7 +26,7 @@ namespace Pootis_Bot.Events
 				ServerList server = ServerListsManager.GetServer(guild);
 
 				//Setup the dm channel even though we might not even use it just makes it so I don't have to repeat this a whole bunch of times.
-				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
+				IDMChannel dm = await guild.Owner.CreateDMChannelAsync();
 
 				//The rule role was deleted
 				if (role.Id == server.RuleRoleId)
@@ -83,7 +83,7 @@ namespace Pootis_Bot.Events
 				SocketGuild guild = before.Guild;
 				ServerList server = ServerListsManager.GetServer(guild);
 
-				IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
+				IDMChannel dm = await guild.Owner.CreateDMChannelAsync();
 
 				//Check all server role pings to make sure they are still mentionable
 				List<ServerRoleToRoleMention> rolesToRemove = server.RoleToRoleMentions

@@ -14,20 +14,20 @@ namespace Pootis_Bot.Events
 	/// </summary>
 	public class MessageEvents
 	{
-		public async Task MessageDeleted(Cacheable<IMessage, ulong> cache, ISocketMessageChannel channel)
+		public async Task MessageDeleted(Cacheable<IMessage, ulong> messageCache, Cacheable<IMessageChannel, ulong> channel)
 		{
 			try
 			{
-				SocketGuild guild = ((SocketGuildChannel) channel).Guild;
+				SocketGuild guild = ((SocketGuildChannel) channel.Value).Guild;
 				ServerList server = ServerListsManager.GetServer(guild);
-				if (cache.Id == server.RuleMessageId)
+				if (messageCache.Id == server.RuleMessageId)
 				{
 					//The rule reaction will be disabled and the owner of the guild will be notified.
 					server.RuleEnabled = false;
 
 					ServerListsManager.SaveServerList();
 
-					IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
+					IDMChannel dm = await guild.Owner.CreateDMChannelAsync();
 					await dm.SendMessageAsync(
 						$"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the message being deleted.\n" +
 						"You can enable it again after setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");
@@ -40,11 +40,11 @@ namespace Pootis_Bot.Events
 		}
 
 		public async Task MessageBulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> cacheable,
-			ISocketMessageChannel channel)
+			Cacheable<IMessageChannel, ulong> channel)
 		{
 			try
 			{
-				SocketGuild guild = ((SocketGuildChannel) channel).Guild;
+				SocketGuild guild = ((SocketGuildChannel) channel.Value).Guild;
 				ServerList server = ServerListsManager.GetServer(guild);
 
 				//Depending on how many message were deleted, this could take awhile. Or well I assume that, it would need to be tested
@@ -57,7 +57,7 @@ namespace Pootis_Bot.Events
 
 					ServerListsManager.SaveServerList();
 
-					IDMChannel dm = await guild.Owner.GetOrCreateDMChannelAsync();
+					IDMChannel dm = await guild.Owner.CreateDMChannelAsync();
 					await dm.SendMessageAsync(
 						$"Your rule reaction on the Discord server **{guild.Name}** has been disabled due to the message being deleted.\n" +
 						"You can enable it again after setting setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");

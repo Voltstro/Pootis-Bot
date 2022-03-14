@@ -66,13 +66,13 @@ namespace Pootis_Bot.Events
 			}
 		}
 
-		public async Task UserLeft(SocketGuildUser user)
+		public async Task UserLeft(SocketGuild guild, SocketUser user)
 		{
 			try
 			{
 				if (!user.IsBot)
 				{
-					ServerList server = ServerListsManager.GetServer(user.Guild);
+					ServerList server = ServerListsManager.GetServer(guild);
 					if (server.GoodbyeMessageEnabled)
 					{
 						//Format the message

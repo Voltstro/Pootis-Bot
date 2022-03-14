@@ -86,7 +86,7 @@ namespace Pootis_Bot.Services
 			if (client.GetChannel(server.WelcomeChannelId) == null && server.WelcomeMessageEnabled)
 			{
 				SocketGuild guild = client.GetGuild(server.GuildId);
-				IDMChannel ownerDm = await client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
+				IDMChannel ownerDm = await client.GetGuild(server.GuildId).Owner.CreateDMChannelAsync();
 
 				await ownerDm.SendMessageAsync(
 					$"{guild.Owner.Mention}, your server **{guild.Name}** welcome channel has been disabled due to that it no longer exist since the last bot up time.\n" +
@@ -175,7 +175,7 @@ namespace Pootis_Bot.Services
 
 				ServerListsManager.SaveServerList();
 
-				IDMChannel dm = await client.GetGuild(server.GuildId).Owner.GetOrCreateDMChannelAsync();
+				IDMChannel dm = await client.GetGuild(server.GuildId).Owner.CreateDMChannelAsync();
 				await dm.SendMessageAsync(
 					$"Your rule reaction on the Discord server **{client.GetGuild(server.GuildId).Name}** has been disabled due to the message being deleted.\n" +
 					"You can enable it again after setting a new reaction message with the command `setuprulesmessage` and then enabling the feature again with `togglerulereaction`.");

@@ -40,7 +40,8 @@ namespace Pootis_Bot.Core
 
 			Client = new DiscordSocketClient(new DiscordSocketConfig
 			{
-				LogLevel = LogSeverity.Verbose
+				LogLevel = LogSeverity.Verbose,
+				GatewayIntents = Config.bot.GatewayIntents
 			});
 
 			Logger.Debug("Setting up events");

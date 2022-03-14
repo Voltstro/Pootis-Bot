@@ -26,7 +26,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		[RequireGuildOwner]
 		public async Task Setup()
 		{
-			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
+			IDMChannel dm = await Context.User.CreateDMChannelAsync();
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			EmbedBuilder embed = new EmbedBuilder();
 
@@ -115,7 +115,7 @@ namespace Pootis_Bot.Modules.Server.Setup
 		[RequireGuildOwner]
 		public async Task SetupSpam()
 		{
-			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
+			IDMChannel dm = await Context.User.CreateDMChannelAsync();
 			ServerList server = ServerListsManager.GetServer(Context.Guild);
 			EmbedBuilder embed = new EmbedBuilder();
 

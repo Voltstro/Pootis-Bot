@@ -36,7 +36,7 @@ namespace Pootis_Bot.Modules.Account
 			File.WriteAllText($"temp/{Context.User.Id}.json", json);
 
 			//Get the user's dm and send the file
-			IDMChannel dm = await Context.User.GetOrCreateDMChannelAsync();
+			IDMChannel dm = await Context.User.CreateDMChannelAsync();
 			await dm.SendFileAsync($"temp/{Context.User.Id}.json", "Here is your user data, all in one JSON file!");
 
 			//Delete the file

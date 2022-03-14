@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Discord;
+using Newtonsoft.Json;
 using Pootis_Bot.Attributes;
 using Pootis_Bot.Structs.Config;
 
@@ -88,5 +89,12 @@ namespace Pootis_Bot.Entities
 		/// Setting related to voting
 		/// </summary>
 		public VoteSettings VoteSettings;
+		
+		/// <summary>
+		///		Gateway intents
+		/// </summary>
+		public GatewayIntents GatewayIntents { get; set; } = GatewayIntents.AllUnprivileged |
+		                                                              GatewayIntents.GuildMembers |
+		                                                              GatewayIntents.GuildPresences;
 	}
 }
