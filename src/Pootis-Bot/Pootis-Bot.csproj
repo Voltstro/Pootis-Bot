@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <Import Project="..\NativeDefines.props" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,12 +10,13 @@
     <Platforms>x64</Platforms>
     <Authors>Voltstro</Authors>
     <Company>Voltstro</Company>
-    <Copyright>Copyright © Voltstro 2018-2021</Copyright>
+    <Copyright>Copyright (c) Voltstro 2018-2022</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://pootis-bot.voltstro.dev</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Voltstro/Pootis-Bot</RepositoryUrl>
     <Description>Pootis-Bot, a multipurpose, open-source Discord bot written in the C# language using Discord.NET</Description>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -28,18 +31,6 @@
     <OutputPath>bin\Release\</OutputPath>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">
-    <DefineConstants>$(DefineConstants);LINUX</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">
-    <DefineConstants>$(DefineConstants);OSX</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -77,5 +68,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Import Project="..\NativeDefines.targets" />
 
 </Project>

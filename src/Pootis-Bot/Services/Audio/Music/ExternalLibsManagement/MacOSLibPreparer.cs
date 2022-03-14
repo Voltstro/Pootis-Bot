@@ -1,4 +1,4 @@
-#if OSX
+#if MACOS
 
 using System;
 using System.Diagnostics;

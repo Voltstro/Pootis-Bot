@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot", "src\Pootis-Bo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pootis-Bot.ConsoleCommandHandler", "src\Pootis-Bot.ConsoleCommandHandler\Pootis-Bot.ConsoleCommandHandler.csproj", "{DD065395-E260-4862-8DF1-55AE17A26BC0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{57E157AB-1FB5-47F4-9213-385BEE118AD2}"
+	ProjectSection(SolutionItems) = preProject
+		src\NativeDefines.props = src\NativeDefines.props
+		src\NativeDefines.targets = src\NativeDefines.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
