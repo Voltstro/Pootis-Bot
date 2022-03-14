@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Pootis_Bot.Core.Logging;
 using YoutubeExplode;
+using YoutubeExplode.Common;
+using YoutubeExplode.Search;
 using YoutubeExplode.Videos;
 
 namespace Pootis_Bot.Services.Google.YouTube
@@ -21,18 +23,18 @@ namespace Pootis_Bot.Services.Google.YouTube
 		{
 			try
 			{
-				IReadOnlyList<Video> response = await ytClient.Search.GetVideosAsync(search).BufferAsync(5);
+				IReadOnlyList<VideoSearchResult> response = await ytClient.Search.GetVideosAsync(search);
 
 				//Create a new list
 				IList<YouTubeVideo> videos = new List<YouTubeVideo>(response.Count);
-				foreach (Video result in response)
+				foreach (VideoSearchResult result in response)
 					videos.Add(new YouTubeVideo
 					{
 						VideoId = result.Id.Value,
 						VideoTitle = result.Title,
-						VideoAuthor = result.Author,
-						VideoDescription = result.Description,
-						VideoDuration = result.Duration
+						VideoAuthor = result.Author.Title,
+						VideoDescription = "YouTube broke descriptions :( I am too lazy to bother fixing anything.",
+						VideoDuration = result.Duration.GetValueOrDefault()
 					});
 
 				return videos;
@@ -53,8 +55,8 @@ namespace Pootis_Bot.Services.Google.YouTube
 			return new YouTubeVideo
 			{
 				VideoId = videoId,
-				VideoDuration = video.Duration,
-				VideoAuthor = video.Author,
+				VideoDuration = video.Duration.GetValueOrDefault(),
+				VideoAuthor = video.Author.Title,
 				VideoTitle = video.Title
 			};
 		}
