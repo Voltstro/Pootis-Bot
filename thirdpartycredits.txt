@@ -1,13 +1,14 @@
-Pootis Bot uses third party libraries and code for certain functions.
+Pootis-Bot uses third party libraries and code for certain functions.
 The required legal notices for using such libraries and code is down below.
 
 ================================================================================
 Discord.Net
+https://discordnet.dev/
 ================================================================================
 
 	The MIT License (MIT)
 
-	Copyright (c) 2015-2019 Discord.Net Contributors
+	Copyright (c) 2015-2022 Discord.Net Contributors
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +30,7 @@ Discord.Net
 
 ================================================================================
 Newtonsoft.Json
+https://www.newtonsoft.com/json
 ================================================================================
 
 	The MIT License (MIT)
@@ -55,6 +57,7 @@ Newtonsoft.Json
 
 ================================================================================
 Serilog
+https://serilog.net/
 ================================================================================
 
 	Copyright 2013-2020 Serilog Contributors
@@ -73,10 +76,11 @@ Serilog
 
 ================================================================================
 YoutubeExplode
+https://github.com/Tyrrrz/YoutubeExplode
 ================================================================================
 
 	YoutubeExplode
- 	Copyright (C) 2016-2020 Alexey Golub
+ 	Copyright (C) 2016-2022 Oleksii Holub
 
 	This program is free software: you can redistribute it and/or modify
  	it under the terms of the GNU Lesser General Public License as published by
@@ -93,6 +97,7 @@ YoutubeExplode
 
 ================================================================================
 SteamWebAPI2
+https://github.com/babelshift/SteamWebAPI2
 ================================================================================
 
 	MIT License
@@ -119,6 +124,7 @@ SteamWebAPI2
 
 ================================================================================
 Google.Apis.Customsearch.v1
+https://developers.google.com/api-client-library/dotnet/apis/customsearch/v1
 ================================================================================
 
 	Copyright 2017 Google Inc.
@@ -137,6 +143,7 @@ Google.Apis.Customsearch.v1
 
 ================================================================================
 MP3Sharp
+https://github.com/Nihlus/MP3Sharp
 ================================================================================
 
 	MP3Sharp
