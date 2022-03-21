@@ -15,7 +15,9 @@ namespace Pootis_Bot.Console.ConfigMenus;
 /// <typeparam name="T"></typeparam>
 public class ConsoleConfigMenu<T>
 {
-    private readonly List<ConfigItem> configMenu;
+    private readonly Dictionary<string, ConfigItem> configMenu;
+    private readonly List<string> options;
+    
     private readonly string configTitle;
     private readonly T editingObject;
 
@@ -37,7 +39,8 @@ public class ConsoleConfigMenu<T>
         if (editingObject == null)
             throw new ArgumentNullException(nameof(editingObject));
 
-        configMenu = new List<ConfigItem>();
+        configMenu = new Dictionary<string, ConfigItem>();
+        options = new List<string>();
         this.editingObject = editingObject;
 
         Type editingObjectType = typeof(T);
@@ -48,7 +51,11 @@ public class ConsoleConfigMenu<T>
             configTitle = titleFormat.FormattedName;
 
         //Generate options
-        foreach (PropertyInfo property in editingObjectType.GetProperties())
+        PropertyInfo[] properties = editingObjectType.GetProperties();
+        int propertiesSize = properties.Length;
+        for (int i = 0; i < propertiesSize; i++)
+        {
+            PropertyInfo property = properties[i];
             try
             {
                 if (Attribute.GetCustomAttribute(property, typeof(DontShowItem)) != null)
@@ -59,7 +66,8 @@ public class ConsoleConfigMenu<T>
                 if (Attribute.GetCustomAttribute(property, typeof(MenuItemFormat)) is MenuItemFormat attribute)
                     formatName = attribute.FormattedName;
 
-                configMenu.Add(new ConfigItem
+                options.Add(formatName);
+                configMenu.Add(formatName, new ConfigItem
                 {
                     ConfigFormatName = formatName,
                     Property = property
@@ -70,6 +78,9 @@ public class ConsoleConfigMenu<T>
                 Logger.Error(ex, "An error occurred while setting up selection option for {Property}!",
                     property.Name);
             }
+        }
+        
+        options.Add("Exit");
     }
 
     /// <summary>
@@ -78,42 +89,22 @@ public class ConsoleConfigMenu<T>
     public void Show()
     {
         showingMenu = true;
-        Utf16ValueStringBuilder options = ZString.CreateStringBuilder();
-        options.Append($"----==== {configTitle} ====----\n");
-        for (int i = 0; i < configMenu.Count; i++)
-            options.Append($"{i} - {configMenu[i].ConfigFormatName}\n");
-        options.Append("exit - Exits and saves the config menu.");
-
-        System.Console.WriteLine(options.ToString());
-
-        options.Dispose();
+        
+        AnsiConsole.Write(new Rule($"[blue]{configTitle}[/]"));
         while (showingMenu)
         {
-            string input = System.Console.ReadLine();
-            if (input == null)
-                continue;
-
-            if (input.ToLower() == "exit")
+            string input = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title("What option do you want to change?")
+                .AddChoices(options));
+            
+            if(input == "Exit")
             {
-                System.Console.WriteLine("Exiting config menu...");
-                showingMenu = false;
+                AnsiConsole.WriteLine("Exited config menu.");
+                Close();
                 break;
             }
-
-            if (int.TryParse(input, out int menu))
-            {
-                if (menu > configMenu.Count)
-                {
-                    System.Console.WriteLine($"Input number cannot be greater then {configMenu.Count}!");
-                    continue;
-                }
-
-                EditField(configMenu[menu]);
-            }
-            else
-            {
-                System.Console.WriteLine("Input either needs to be '1', '2', '3', etc... or 'exit'.");
-            }
+            
+            EditField(configMenu[input]);
         }
     }
 
