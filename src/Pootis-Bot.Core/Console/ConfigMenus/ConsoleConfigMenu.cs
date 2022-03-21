@@ -89,8 +89,14 @@ public class ConsoleConfigMenu<T>
     public void Show()
     {
         showingMenu = true;
+
+        Rule rule = new($"[blue]{configTitle}[/]")
+        {
+            Alignment = Justify.Left
+        };
+        AnsiConsole.Write(rule);
+        AnsiConsole.Write("\n");
         
-        AnsiConsole.Write(new Rule($"[blue]{configTitle}[/]"));
         while (showingMenu)
         {
             string input = AnsiConsole.Prompt(new SelectionPrompt<string>()

@@ -237,15 +237,6 @@ public class Bot : IDisposable
         OpenConfigMenu();
     }
 
-    [ConsoleCommand("modules", "Gets a list of all loaded modules")]
-    private static void ModulesCommand()
-    {
-        foreach (ModuleInfo moduleInfo in ModuleManager.GetLoadedModules()
-                     .Select(module => module.GetModuleInfoInternal()))
-            Logger.Info("{ModuleName} {ModuleVersion} by {ModuleAuthor}", moduleInfo.ModuleName,
-                moduleInfo.ModuleVersion, moduleInfo.ModuleAuthorName);
-    }
-
     [ConsoleCommand("quit", "Quits running the bot")]
     private static void ShutdownBotCommand()
     {

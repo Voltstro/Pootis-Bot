@@ -11,6 +11,7 @@ using Pootis_Bot.Console;
 using Pootis_Bot.Core;
 using Pootis_Bot.Logging;
 using Pootis_Bot.PackageDownloader;
+using Spectre.Console;
 
 namespace Pootis_Bot.Modules;
 
@@ -382,5 +383,28 @@ public sealed class ModuleManager : IDisposable
 
             Logger.Info("Packages for {ModuleName} restored.", moduleInfo.ModuleName);
         }
+    }
+    
+    [ConsoleCommand("modules", "Gets a list of all loaded modules")]
+    private static void ModulesCommand()
+    {
+        Table table = new()
+        {
+            Border = TableBorder.MinimalDoubleHead
+        };
+        table.AddColumn("[bold]Module Name[/]");
+        table.AddColumn("[bold]Module Version[/]");
+        table.AddColumn("[bold]Module Author[/]");
+
+        foreach (ModuleInfo moduleInfo in GetLoadedModules()
+                     .Select(module => module.GetModuleInfoInternal()))
+            table.AddRow($"[blue]{moduleInfo.ModuleName}[/]", moduleInfo.ModuleVersion.ToString(), moduleInfo.ModuleAuthorName);
+
+        Rule rule = new("[blue]Modules[/]")
+        {
+            Alignment = Justify.Left
+        };
+        AnsiConsole.Write(rule);
+        AnsiConsole.Write(table);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Pootis_Bot.Logging;
+using Spectre.Console;
 
 namespace Pootis_Bot.Console;
 
@@ -126,8 +127,25 @@ public static class ConsoleCommandManager
     [ConsoleCommand("help", "Gets a list of all commands")]
     private static void HelpCommand()
     {
+        Table table = new()
+        {
+            Border = TableBorder.MinimalDoubleHead
+        };
+
+        table.AddColumn("[bold]Command[/]");
+        table.AddColumn("[bold]Summary[/]");
+
         foreach ((string command, CommandInfo commandInfo) in Commands)
-            Logger.Info("`{Command}` - {Summary}", command, commandInfo.CommandSummary);
+        {
+            table.AddRow($"`[blue]{command}[/]`", commandInfo.CommandSummary);
+        }
+
+        Rule rule = new("[blue]Command Help[/]")
+        {
+            Alignment = Justify.Left
+        };
+        AnsiConsole.Write(rule);
+        AnsiConsole.Write(table);
     }
 
     #region Argument Parsing
