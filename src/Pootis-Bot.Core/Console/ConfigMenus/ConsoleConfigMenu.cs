@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Cysharp.Text;
+using Pootis_Bot.Console.ConfigMenus.TypeReaders;
 using Pootis_Bot.Logging;
+using Spectre.Console;
 
 namespace Pootis_Bot.Console.ConfigMenus;
 
@@ -18,6 +20,12 @@ public class ConsoleConfigMenu<T>
     private readonly T editingObject;
 
     private bool showingMenu;
+
+    private readonly Dictionary<Type, ITypeReader> typeReaders = new()
+    {
+        [typeof(string)] = new StringTypeReader(),
+        [typeof(bool)] = new BoolTypeReader()
+    };
 
     /// <summary>
     ///     Creates a new <see cref="ConsoleConfigMenu{T}" /> instance
@@ -119,42 +127,24 @@ public class ConsoleConfigMenu<T>
 
     private void EditField(ConfigItem item)
     {
-        string input = null;
-        while (true)
-            try
-            {
-                System.Console.WriteLine($"Enter what you want to set {item.ConfigFormatName} to:");
-                input = System.Console.ReadLine();
+        if (!typeReaders.TryGetValue(item.Property.PropertyType, out ITypeReader typeReader))
+            throw new ArgumentException("Missing type reader!");
+        
+        try
+        {
+            string input = AnsiConsole.Prompt(new TextPrompt<string>($"Enter what you want to set {item.ConfigFormatName} to:")
+                .Validate(typeReader.Validate)
+                .ValidationErrorMessage(typeReader.ValidationErrorMessage));
+            
+            typeReader.SetProperty(item.Property, editingObject, input);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "An error occurred while trying to set the value of {Property}!",
+                item.Property.Name);
+        }
 
-                if (input == null)
-                    continue;
-
-                //TODO: Add support for other types, we can do this using the same method of Discord.Net's 'TypeReaders'.
-                if (item.Property.PropertyType == typeof(string))
-                {
-                    item.Property.SetValue(editingObject, input);
-                    break;
-                }
-
-                if (item.Property.PropertyType == typeof(bool))
-                {
-                    if (bool.TryParse(input.ToLower(), out bool value))
-                    {
-                        item.Property.SetValue(editingObject, value);
-                        break;
-                    }
-
-                    System.Console.WriteLine("Input either needs to be 'true' or 'false'!");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "An error occurred while trying to set the value of {Property}!",
-                    item.Property.Name);
-                break;
-            }
-
-        System.Console.WriteLine($"{item.ConfigFormatName} was set to '{input}'.");
+        AnsiConsole.WriteLine($"{item.ConfigFormatName} was successfully set!");
     }
 
     private struct ConfigItem
