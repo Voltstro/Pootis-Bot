@@ -3,6 +3,7 @@ using Pootis_Bot.Exceptions;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Sinks.Spectre;
 
 namespace Pootis_Bot.Logging;
 
@@ -70,7 +71,7 @@ public static class Logger
 
         log = new LoggerConfiguration()
             .MinimumLevel.ControlledBy(level)
-            .WriteTo.Console(outputTemplate: outPutTemplate)
+            .WriteTo.Spectre(outPutTemplate)
             .WriteTo.Async(a => a.File(logFileName, outputTemplate: outPutTemplate,
                 buffered: loggerConfig.BufferedFileWrite))
             .CreateLogger();
