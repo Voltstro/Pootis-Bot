@@ -19,13 +19,6 @@ public class BotConfig : Config<BotConfig>
     public string BotToken { get; internal set; } = string.Empty;
 
     /// <summary>
-    ///     The prefix used for commands
-    /// </summary>
-    [MenuItemFormat("Prefix")]
-    [JsonProperty]
-    public string BotPrefix { get; internal set; } = "$";
-
-    /// <summary>
     ///     The name that is used for display purposes
     /// </summary>
     [MenuItemFormat("Display Name")]

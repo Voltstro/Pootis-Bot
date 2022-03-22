@@ -54,7 +54,6 @@ namespace Pootis_Bot.Module.Upgrade
         {
             BotConfig botConfig = BotConfig.Instance;
             botConfig.BotName = configFile.BotName;
-            botConfig.BotPrefix = configFile.BotPrefix;
             botConfig.Save();
 
             if (ModuleManager.CheckIfModuleIsLoaded("ProfilesModule"))
