@@ -4,7 +4,9 @@ using Discord;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
 using Pootis_Bot.Console;
+using Pootis_Bot.Console.ConfigMenus;
 using Pootis_Bot.Logging;
+using Spectre.Console;
 
 namespace Pootis_Bot.Module.Basic;
 
@@ -16,6 +18,9 @@ public static class GameStatusManager
     private static DiscordSocketClient? discordClient;
     private static GameStatusConfig? config;
 
+    private static string? currentStatus;
+    private static bool currentStreaming;
+
     internal static void OnConnected(DiscordSocketClient client)
     {
         discordClient = client;
@@ -23,6 +28,9 @@ public static class GameStatusManager
 
         if (!string.IsNullOrEmpty(config.DefaultMessage))
             SetStatus(config.DefaultMessage);
+
+        currentStatus = config.DefaultMessage;
+        currentStreaming = false;
     }
 
     /// <summary>
@@ -34,7 +42,7 @@ public static class GameStatusManager
     ///     Occurs when <see cref="isStreaming" /> is true and the streaming URL in the
     ///     config is empty or null
     /// </exception>
-    public static void SetStatus(string status, bool isStreaming = false)
+    public static void SetStatus(string? status, bool isStreaming = false)
     {
         if (config == null)
             throw new ArgumentException("The client hasn't connected yet!");
@@ -54,9 +62,12 @@ public static class GameStatusManager
         ActivityType activityType = isStreaming ? ActivityType.Streaming : ActivityType.Playing;
         discordClient.SetGameAsync(status, streamingUrl, activityType);
         Logger.Info("Activity was set to '{Status}'", status);
+
+        currentStatus = status;
+        currentStreaming = isStreaming;
     }
 
-    [ConsoleCommand("setstatus", "Sets the status of a command")]
+    [ConsoleCommand("status_manage", "Sets the status of a command")]
     internal static void SetStatusCommand(string[] args)
     {
         //Make sure our discord client isn't null
@@ -66,31 +77,40 @@ public static class GameStatusManager
             return;
         }
 
-        //Check the args lenght
-        if (args.Length < 2)
+        Rule rule = new("[blue]Manage Status[/]")
         {
-            Logger.Error("This commands needs at least two arguments! [Streaming:True/False] [Status]");
-            return;
-        }
+            Alignment = Justify.Left
+        };
+        AnsiConsole.Write(rule);
+        while (true)
+        {
+            AnsiConsole.Write("\n");
+            string input = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title("Selection an option:")
+                .AddChoices(new []{"Set Current Status", "Toggle Streaming Mode", "Status Config", "Exit"}));
 
-        //Get our first arg, streaming mode or not
-        string streamingMode = args[0].ToLower();
-        if (!bool.TryParse(streamingMode, out bool result))
-        {
-            Logger.Error("First argument needs to be either true or false!");
-            return;
-        }
-
-        //Now to join the message without the first argument
-        ReadOnlySpan<string> argsCut = args.AsSpan().Slice(1, args.Length - 1);
-        string status = ZString.Join(' ', argsCut);
-        try
-        {
-            SetStatus(status, result);
-        }
-        catch (NullReferenceException)
-        {
-            Logger.Error("The streaming URL in the game status config is empty or null!");
+            if (input == "Set Current Status")
+            {
+                string status = AnsiConsole.Ask<string>("What do you want to set the status to?");
+                SetStatus(status, currentStreaming);
+                AnsiConsole.WriteLine("Status successfully set!");
+            }
+            else if (input == "Toggle Streaming Mode")
+            {
+                SetStatus(currentStatus, !currentStreaming);
+                AnsiConsole.WriteLine("Streaming status toggled.");
+            }
+            else if (input == "Status Config")
+            {
+                ConsoleConfigMenu<GameStatusConfig> statusConfig = new(config);
+                statusConfig.Show();
+                config.Save();
+            }
+            else if (input == "Exit")
+            {
+                AnsiConsole.WriteLine("Exited out of status management.");
+                break;
+            }
         }
     }
 }
