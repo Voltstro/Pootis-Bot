@@ -51,12 +51,18 @@ public class Bot : IDisposable
     /// </summary>
     private ModuleManager moduleManager;
 
-    public Bot()
+    /// <summary>
+    ///     Bot Settings
+    /// </summary>
+    private BotSettings botSettings;
+    
+    public Bot(BotSettings settings)
     {
         if (Instance != null)
             throw new InitializationException("There already is an instance of the bot!");
 
         Instance = this;
+        botSettings = settings;
     }
 
     /// <summary>
@@ -139,6 +145,13 @@ public class Bot : IDisposable
         commandHandler = new CommandHandler(discordClient);
         ModuleManager.InstallDiscordModulesFromLoadedModules(commandHandler);
         ModuleManager.InstallPermissionProvidersFromLoadedModules(commandHandler);
+
+        //Headless mode we will lock it here
+        if (botSettings.Headless)
+        {
+            Logger.Info("Bot is running in headless mode.");
+            await Task.Delay(-1);
+        }
     }
 
     private void ConfigSaved()
