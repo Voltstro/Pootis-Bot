@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Commands.Permissions;
 
 #nullable enable
@@ -18,15 +19,6 @@ public abstract class Module
     /// </summary>
     /// <returns></returns>
     protected abstract ModuleInfo GetModuleInfo();
-
-    /// <summary>
-    ///     Return a non-null <see cref="IPermissionProvider" /> to add a permission provider to Pootis's command handler.
-    /// </summary>
-    /// <returns></returns>
-    protected virtual IPermissionProvider? AddPermissionProvider()
-    {
-        return null;
-    }
 
     /// <summary>
     ///     Called on initialization
@@ -50,6 +42,23 @@ public abstract class Module
     ///     Called on shutdown
     /// </summary>
     protected virtual void Shutdown()
+    {
+    }
+    
+    /// <summary>
+    ///     Return a non-null <see cref="IPermissionProvider" /> to add a permission provider to Pootis's command handler.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual IPermissionProvider? AddPermissionProvider()
+    {
+        return null;
+    }
+
+    /// <summary>
+    ///     Called while Pootis is setting up the command handler. Allows you to add a service
+    /// </summary>
+    /// <param name="services"></param>
+    protected virtual void AddToServices(IServiceCollection services)
     {
     }
 
@@ -161,6 +170,15 @@ public abstract class Module
     internal void ClientMessageInternal(DiscordSocketClient client, SocketUserMessage message)
     {
         ClientMessage(client, message).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    ///     Call this from Pootis's Core to call <see cref="AddToServices" />
+    /// </summary>
+    /// <param name="serviceCollection"></param>
+    internal void AddToServicesInternal(IServiceCollection serviceCollection)
+    {
+        AddToServices(serviceCollection);
     }
 
     #endregion

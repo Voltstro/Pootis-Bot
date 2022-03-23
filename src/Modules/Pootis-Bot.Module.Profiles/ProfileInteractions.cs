@@ -15,15 +15,20 @@ public class ProfileInteractions : InteractionModuleBase<SocketInteractionContex
 {
     private readonly SortProfilesComparer profilesComparer;
     private readonly ProfilesConfig profilesConfig;
+    private readonly XpLevelManager levelManager;
+
     private string displayName;
 
-    public ProfileInteractions()
+    public ProfileInteractions(DiscordSocketClient client, XpLevelManager xpLevelManager)
     {
         profilesConfig = Config<ProfilesConfig>.Instance;
         BotConfig config = Config<BotConfig>.Instance;
         profilesComparer = new SortProfilesComparer();
         displayName = config.BotName;
         config.Saved += () => displayName = config.BotName;
+
+        levelManager = xpLevelManager;
+        client.MessageReceived += OnMessageReceived;
     }
 
     [SlashCommand("profile", "Gets a user's profile", true)]
@@ -99,6 +104,12 @@ public class ProfileInteractions : InteractionModuleBase<SocketInteractionContex
 
         await RespondAsync(sb.ToString());
         sb.Dispose();
+    }
+    
+    private async Task OnMessageReceived(SocketMessage message)
+    {
+        if (message is SocketUserMessage socketMessage)
+            await levelManager.HandelUserMessage(socketMessage);
     }
 
     private class SortProfilesComparer : IComparer<Profile>

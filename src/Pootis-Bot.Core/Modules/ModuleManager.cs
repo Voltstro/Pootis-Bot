@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Pootis_Bot.Commands;
 using Pootis_Bot.Commands.Permissions;
 using Pootis_Bot.Console;
@@ -244,6 +245,21 @@ public sealed class ModuleManager : IDisposable
                 Logger.Error(ex, "Something went wrong while invoking AddPermissionProvider in module {ModuleName}",
                     module.GetModuleInfoInternal().ModuleName);
             }
+    }
+
+    internal static void InstallServicesFromLoadedModules(IServiceCollection serviceCollection)
+    {
+        foreach (Module module in modules)
+        {
+            try
+            {
+                module.AddToServicesInternal(serviceCollection);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Something went wrong while invoking AddToServices in module {ModuleName}", module.GetModuleInfoInternal().ModuleName);
+            }
+        }
     }
 
     private Assembly LoadModule(string dllPath)

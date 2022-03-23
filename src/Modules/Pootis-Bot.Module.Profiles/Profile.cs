@@ -23,10 +23,19 @@ public class Profile
         UserProfileMessage = message;
     }
 
+    /// <summary>
+    ///     The Discord ID of the user
+    /// </summary>
     public ulong Id { get; set; }
 
+    /// <summary>
+    ///     How much XP does the user have
+    /// </summary>
     public uint Xp { get; set; }
 
+    /// <summary>
+    ///     The user's custom profile message
+    /// </summary>
     public string UserProfileMessage { get; set; }
 
     /// <summary>

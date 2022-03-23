@@ -9,7 +9,10 @@ using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Module.Profiles;
 
-internal class XpLevelManager
+/// <summary>
+///     Handles dealing with XP for profiles
+/// </summary>
+public class XpLevelManager
 {
     private readonly ProfilesConfig profilesConfig;
     private readonly List<UserLevelData> users;
@@ -53,7 +56,11 @@ internal class XpLevelManager
             await LevelUpMessage(message.Channel, messageAuthor, profile);
     }
 
-    internal void AddXpToUser(Profile profile)
+    /// <summary>
+    ///     Adds XP to a <see cref="Profile"/>
+    /// </summary>
+    /// <param name="profile"></param>
+    public void AddXpToUser(Profile profile)
     {
         profile.Xp += profilesConfig.XpGiveAmount;
         profilesConfig.Save();

@@ -41,10 +41,12 @@ internal sealed class CommandHandler
         interactionService = new InteractionService(client);
         interactionService.AddTypeConverter<Emoji>(new EmojiTypeConverter());
 
-        serviceProvider = new ServiceCollection()
+        IServiceCollection serviceCollection = new ServiceCollection()
             .AddSingleton(client)
-            .AddSingleton(interactionService)
-            .BuildServiceProvider();
+            .AddSingleton(interactionService);
+        ModuleManager.InstallServicesFromLoadedModules(serviceCollection);
+        serviceProvider = serviceCollection.BuildServiceProvider();
+        
         permissionProviders = new List<IPermissionProvider>();
     }
 
