@@ -8,6 +8,13 @@ namespace Pootis_Bot.Module.Fun;
 [Group("", "Fun related commands")]
 public class FunInteractions : InteractionModuleBase<SocketInteractionContext>
 {
+    private readonly WikiSearcher wikiSearcher;
+    
+    public FunInteractions(WikiSearcher searcher)
+    {
+        wikiSearcher = searcher;
+    }
+    
     [SlashCommand("wiki", "Searches wikipedia")]
     public async Task WikiSearch(string search)
     {
@@ -19,7 +26,7 @@ public class FunInteractions : InteractionModuleBase<SocketInteractionContext>
 
         await RespondAsync("Searching...");
         
-        WikiSearchResponse searchResult = WikiSearcher.Search(search, new WikiSearchSettings
+        WikiSearchResponse searchResult = wikiSearcher.Search(search, new WikiSearchSettings
         {
             ResultLimit = 8
         });
@@ -34,7 +41,7 @@ public class FunInteractions : InteractionModuleBase<SocketInteractionContext>
         embedBuilder.WithTitle($"Wikipedia Search Results for `{search}`");
         foreach (WikiSearchResult querySearchResult in searchResult.Query.SearchResults)
         {
-            embedBuilder.AddField($"{querySearchResult.Title} - ({querySearchResult.ConstantUrl("en")})",
+            embedBuilder.AddField($"{querySearchResult.Title} - ({querySearchResult.ConstantUrl.AbsoluteUri})",
                 $"{querySearchResult.Preview}...");
         }
 
