@@ -74,10 +74,12 @@ internal sealed class CommandHandler
     internal async Task RegisterInteractionCommands()
     {
 #if DEBUG
-        await interactionService.RegisterCommandsToGuildAsync(BotConfig.Instance.TestingGuildId);
-#else
-			await interactionService.RegisterCommandsGloballyAsync(true);
+        ulong? testingGuidId = BotConfig.Instance.TestingGuildId;
+        if (testingGuidId.HasValue && testingGuidId.Value != 0)
+            await interactionService.RegisterCommandsToGuildAsync(testingGuidId.Value);
+        else
 #endif
+            await interactionService.RegisterCommandsGloballyAsync(true);
     }
 
     #region Interaction Commands

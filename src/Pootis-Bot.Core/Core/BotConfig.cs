@@ -35,6 +35,6 @@ public class BotConfig : Config<BotConfig>
                                                                   GatewayIntents.GuildPresences;
 
 #if DEBUG
-    [DontShowItem] [JsonProperty] public ulong TestingGuildId { get; internal set; }
+    [DontShowItem] [JsonProperty] public ulong? TestingGuildId { get; internal set; }
 #endif
 }
