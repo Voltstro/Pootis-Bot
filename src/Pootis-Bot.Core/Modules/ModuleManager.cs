@@ -23,7 +23,8 @@ public sealed class ModuleManager : IDisposable
 {
     private static List<Module> modules;
     private readonly ModuleLoadContext loadContext;
-    
+
+    private readonly string baseDir;
     private readonly string assembliesDirectory;
     private readonly string modulesDirectory;
     private readonly string packagesDirectory;
@@ -31,11 +32,12 @@ public sealed class ModuleManager : IDisposable
     /// <summary>
     ///     Creates a new module manager instance
     /// </summary>
+    /// <param name="baseDir"></param>
     /// <param name="modulesDir">The directory where the modules are kept</param>
     /// <param name="assembliesDir">The directory of where external assemblies exist</param>
     /// <param name="packagesDir"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    internal ModuleManager([DisallowNull] string modulesDir, [DisallowNull] string assembliesDir, string packagesDir)
+    internal ModuleManager([DisallowNull] string baseDir, [DisallowNull] string modulesDir, [DisallowNull] string assembliesDir, string packagesDir)
     {
         if (string.IsNullOrWhiteSpace(modulesDir))
             throw new ArgumentNullException(nameof(modulesDir));
@@ -43,9 +45,13 @@ public sealed class ModuleManager : IDisposable
         if (string.IsNullOrWhiteSpace(assembliesDir))
             throw new ArgumentNullException(nameof(assembliesDir));
 
-        modulesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{modulesDir}");
-        assembliesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{assembliesDir}");
-        packagesDirectory = Path.GetFullPath($"{Bot.ApplicationLocation}/{packagesDir}");
+        if (string.IsNullOrWhiteSpace(baseDir))
+            throw new ArgumentNullException(nameof(baseDir));
+
+        this.baseDir = baseDir;
+        modulesDirectory = Path.GetFullPath($"{baseDir}/{modulesDir}");
+        assembliesDirectory = Path.GetFullPath($"{baseDir}/{assembliesDir}");
+        packagesDirectory = Path.GetFullPath($"{baseDir}/{packagesDir}");
         modules = new List<Module>();
         loadContext = new ModuleLoadContext(modulesDirectory, assembliesDirectory);
     }
@@ -391,7 +397,7 @@ public sealed class ModuleManager : IDisposable
                     continue;
 
                 //The required dll exists in the root
-                if (File.Exists($"{Bot.ApplicationLocation}/{dllName}"))
+                if (File.Exists($"{baseDir}/{dllName}"))
                     continue;
 
                 File.Copy(dll, destination, true);

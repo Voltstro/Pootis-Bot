@@ -15,8 +15,7 @@ public class ModuleManagerTests
     public void Setup()
     {
         string directory = Path.GetFullPath(TestContext.CurrentContext.TestDirectory);
-        Bot.ApplicationLocation = directory;
-        moduleManager = new ModuleManager("Modules/", "Assemblies/", "Packages/");
+        moduleManager = new ModuleManager(directory, "Modules/", "Assemblies/", "Packages/");
     }
 
     [Test]

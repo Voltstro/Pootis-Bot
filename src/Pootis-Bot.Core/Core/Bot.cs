@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
@@ -72,7 +72,7 @@ public class Bot : IDisposable
     /// <summary>
     ///     The location of the application
     /// </summary>
-    public static string ApplicationLocation { get; internal set; }
+    public static string ApplicationLocation => AppContext.BaseDirectory;
 
     /// <summary>
     ///     The bot instance
@@ -89,13 +89,12 @@ public class Bot : IDisposable
         if (IsRunning)
             throw new InitializationException("A bot is already running!");
 
-        ApplicationLocation = Path.GetDirectoryName(typeof(Bot).Assembly.Location);
-
-        IsRunning = true;
-
-        //Init the logger
-        Logger.Init();
+        //Make sure logger is init
+        if (!Logger.IsLoggerInitialized)
+            throw new InitializationException("Logger has not been initialized!");
+        
         Logger.Info("Starting bot...");
+        IsRunning = true;
 
         //Get config
         config = Config<BotConfig>.Instance;
@@ -103,19 +102,18 @@ public class Bot : IDisposable
         ConfigSaved();
 
         //Load modules
-        moduleManager = new ModuleManager("Modules/", "Cache/NuGetAssemblies", "Cache/PackagesDownload");
+        moduleManager = new ModuleManager(ApplicationLocation, "Modules/", "Cache/NuGetAssemblies", "Cache/PackagesDownload");
         moduleManager.LoadModules();
 
         //If the token is null or white space, open the config menu
         if (string.IsNullOrWhiteSpace(config.BotToken))
         {
+            //Error in headless mode
             if (botSettings.Headless)
-            {
-                Logger.Error("The token in the config is null or empty! It must be set!");
-                Environment.Exit(-1);
-                return;
-            }
-            
+                throw new InitializationException(
+                    "The token in the config is null or empty! It must be set (either via the config file, or env variables)!");
+
+            //Normal mode we can open the config menu
             Logger.Error("The token in the config is null or empty! You must set it in the config menu.");
             OpenConfigMenu();
         }
@@ -136,14 +134,15 @@ public class Bot : IDisposable
             await discordClient.LoginAsync(TokenType.Bot, config.BotToken);
             await discordClient.StartAsync();
         }
-        catch (HttpException)
+        catch (HttpException ex)
         {
-            Logger.Error("The supplied token was invalid!");
-            Dispose();
-            return;
+            if (ex.HttpCode == HttpStatusCode.Unauthorized)
+                throw new InitializationException("The supplied token was invalid!");
+
+            throw new InitializationException($"Failed to connect to Discord! Error: {ex.HttpCode}");
         }
 
-        Logger.Info("Login successful!");
+        Logger.Info("Login was successful!");
 
         ModuleManager.ModulesClientConnected(discordClient);
 
@@ -194,10 +193,14 @@ public class Bot : IDisposable
     }
 
     /// <summary>
-    ///     Starts a console loop
+    ///     Starts a console loop.
+    ///     <para>Can only be one console loop per app!</para>
     /// </summary>
     public static void ConsoleLoop()
     {
+        if (isConsoleLoopRunning)
+            throw new InvalidOperationException("A console loop is already running!");
+        
         ConsoleCommandManager.AddConsoleCommandsFromAssembly(typeof(Bot).Assembly);
         isConsoleLoopRunning = true;
 
@@ -234,8 +237,6 @@ public class Bot : IDisposable
 
     private void ReleaseResources()
     {
-        isConsoleLoopRunning = false;
-
         discordClient.StopAsync().GetAwaiter().GetResult();
         discordClient.Dispose();
 
