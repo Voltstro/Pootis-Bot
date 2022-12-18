@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
 using Pootis_Bot.Console.ConfigMenus;
+using Pootis_Bot.Core;
 using Pootis_Bot.Logging;
 
 namespace Pootis_Bot.Config;
@@ -96,8 +98,12 @@ public class Config<T> where T : Config<T>, new()
             Logger.Debug("Loaded config {Config} from {ConfigLocation}", typeof(T).Name, ConfigPath);
             instance = JsonConvert.DeserializeObject<T>(File.ReadAllText(ConfigPath));
 
+            //Load ENV variables
+            LoadEnv();
+            
             //If the current config version doesn't meet what is expected then we need to re-save it with the new options
-            if (instance.ConfigVersion == ExpectedConfigVersion) return;
+            if (instance.ConfigVersion == ExpectedConfigVersion)
+                return;
 
             Logger.Warn("Config {CConfig} was an outdated version! Updating.", typeof(T).Name);
             instance.ConfigVersion = ExpectedConfigVersion;
@@ -108,6 +114,24 @@ public class Config<T> where T : Config<T>, new()
             Logger.Debug("Created new config {Config} instance.", typeof(T).Name);
             instance = new T {ConfigVersion = ExpectedConfigVersion};
             instance.Save();
+            LoadEnv();
+        }
+    }
+
+    private static void LoadEnv()
+    {
+        PropertyInfo[] properties = typeof(T).GetProperties();
+        foreach (PropertyInfo property in properties)
+        {
+            if (Attribute.GetCustomAttribute(property, typeof(ConfigEnvironmentVarAttribute))
+                is not ConfigEnvironmentVarAttribute attribute)
+                continue;
+
+            string variable = Environment.GetEnvironmentVariable(attribute.EnvironmentVariable);
+            if(variable == null)
+                continue;
+            
+            property.SetValue(instance, variable);
         }
     }
 }

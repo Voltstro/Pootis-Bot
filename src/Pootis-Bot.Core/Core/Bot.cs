@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Net;
@@ -110,6 +109,13 @@ public class Bot : IDisposable
         //If the token is null or white space, open the config menu
         if (string.IsNullOrWhiteSpace(config.BotToken))
         {
+            if (botSettings.Headless)
+            {
+                Logger.Error("The token in the config is null or empty! It must be set!");
+                Environment.Exit(-1);
+                return;
+            }
+            
             Logger.Error("The token in the config is null or empty! You must set it in the config menu.");
             OpenConfigMenu();
         }

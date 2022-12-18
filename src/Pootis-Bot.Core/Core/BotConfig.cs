@@ -14,6 +14,7 @@ public class BotConfig : Config<BotConfig>
     /// <summary>
     ///     The token used to connect to Discord
     /// </summary>
+    [ConfigEnvironmentVar("PB_TOKEN")]
     [MenuItemFormat("Token")]
     [JsonProperty]
     public string BotToken { get; internal set; } = string.Empty;
@@ -21,6 +22,7 @@ public class BotConfig : Config<BotConfig>
     /// <summary>
     ///     The name that is used for display purposes
     /// </summary>
+    [ConfigEnvironmentVar("PB_NAME")]
     [MenuItemFormat("Display Name")]
     [JsonProperty]
     public string BotName { get; internal set; } = "Pootis-Bot";

@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Wiki.Net" Version="4.1.0" PrivateAssets="all" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" PrivateAssets="all" IncludeAssets="none" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" PrivateAssets="all" IncludeAssets="none" />
     </ItemGroup>
 
     <Import Project="..\..\ModulesProperties.props" />
