@@ -1,36 +1,31 @@
-trigger:
-- master
-- v1.x
-
 variables:
   buildConfiguration: 'Release'
-  framework: 'net5.0'
 
 jobs:
-- job: Windows
+- job: Build
   pool:
-    vmImage: 'windows-2019'
+    vmImage: ubuntu-22.04
   steps:
-  - template: azure/build.yml
+  - task: UseDotNet@2
+    displayName: Install .NET 7
+    inputs:
+      version: 7.x
 
-- job: Linux
-  pool:
-    vmImage: 'ubuntu-18.04'
-  steps:
-  - template: azure/build.yml
+  - task: DotNetCoreCLI@2
+    displayName: Restore Packages
+    inputs:
+      command: restore
+      projects: src/Pootis-Bot.sln
 
-- job: MacOS
-  pool:
-    vmImage: 'macOS-10.15'
-  steps:
-  - template: azure/build.yml
+  - task: DotNetCoreCLI@2
+    displayName: Build Project
+    inputs:
+      command: publish
+      projects: src/Pootis-Bot.sln
+      arguments: '--no-restore -c $(buildConfiguration)'
 
-# For now, we do not want to deploy the docs from the v2 branch
-#- job: DeployDocs
-#  dependsOn:
-#  - Windows
-#  condition: succeeded()
-#  pool:
-#    vmImage: 'windows-2019'
-#  steps:
-#  - template: azure/docs.yml
+  - task: PublishPipelineArtifact@1
+    displayName: Upload Artifact
+    inputs:
+      targetPath: src/bin/Release/publish
+      artifactName: $(Build.DefinitionName)-$(Agent.JobName)-$(Build.BuildNumber)-$(Build.SourceBranchName)
