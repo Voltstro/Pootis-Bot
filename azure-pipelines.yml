@@ -1,24 +1,37 @@
 variables:
   buildConfiguration: 'Release'
 
-jobs:
-- job: Build
-  pool:
-    vmImage: ubuntu-22.04
-  steps:
-  - task: UseDotNet@2
-    displayName: Install .NET 7
-    inputs:
-      version: 7.x
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: ubuntu-22.04
+    steps:
+    - task: UseDotNet@2
+      displayName: Install .NET 7
+      inputs:
+        version: 7.x
 
-  - script: 'dotnet restore src/Pootis-Bot.sln'
-    displayName: Restore Packages
+    - script: 'dotnet restore src/Pootis-Bot.sln'
+      displayName: Restore Packages
 
-  - script: 'dotnet publish src/Pootis-Bot.sln --no-restore -c $(buildConfiguration)'
-    displayName: Build Project
+    - script: 'dotnet publish src/Pootis-Bot.sln --no-restore -c $(buildConfiguration)'
+      displayName: Build Project
 
-  - task: PublishPipelineArtifact@1
-    displayName: Upload Artifact
-    inputs:
-      targetPath: src/bin/Release/publish
-      artifactName: $(Build.DefinitionName)-$(Agent.JobName)-$(Build.BuildNumber)-$(Build.SourceBranchName)
+    - task: PublishPipelineArtifact@1
+      displayName: Upload Artifact
+      inputs:
+        targetPath: src/bin/Release/publish
+        artifactName: $(Build.DefinitionName)-$(Agent.JobName)-$(Build.BuildNumber)-$(Build.SourceBranchName)
+
+- stage: Deploy
+  dependsOn: Build
+  condition: succeeded('Build')
+  jobs:
+  - job: Docker Deploy
+    pool:
+      vmImage: ubuntu-22.04
+    steps:
+    - script: docker build -t voltstro/pootis-bot:autobuild .
+      displayName: Docker Build 
