@@ -39,5 +39,8 @@ stages:
         DOCKER_USER: $(DOCKER_USER)
         DOCKER_PASSWORD: $(DOCKER_PASSWORD)
 
+    - script: docker buildx create --use
+      displayName: Docker BuildX Create
+
     - script: docker buildx build --push --platform linux/amd64,linux/arm64 --tag voltstro/pootis-bot:autobuild .
-      displayName: Docker Build 
+      displayName: Docker BuildX Build
