@@ -11,18 +11,11 @@ jobs:
     inputs:
       version: 7.x
 
-  - task: DotNetCoreCLI@2
+  - script: 'dotnet restore src/Pootis-Bot.sln'
     displayName: Restore Packages
-    inputs:
-      command: restore
-      projects: src/Pootis-Bot.sln
 
-  - task: DotNetCoreCLI@2
+  - script: 'dotnet publish src/Pootis-Bot.sln --no-restore -c $(buildConfiguration)'
     displayName: Build Project
-    inputs:
-      command: publish
-      projects: src/Pootis-Bot.sln
-      arguments: '--no-restore -c $(buildConfiguration)'
 
   - task: PublishPipelineArtifact@1
     displayName: Upload Artifact
