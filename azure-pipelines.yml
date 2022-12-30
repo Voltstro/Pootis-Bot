@@ -33,5 +33,8 @@ stages:
     pool:
       vmImage: ubuntu-22.04
     steps:
+    - script: echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USER)" --password-stdin
+      displayName: Docker Login
+
     - script: docker build -t voltstro/pootis-bot:autobuild .
       displayName: Docker Build 
