@@ -71,7 +71,7 @@ public static class GameStatusManager
     internal static void SetStatusCommand(string[] args)
     {
         //Make sure our discord client isn't null
-        if (discordClient == null)
+        if (discordClient == null || config == null)
         {
             Logger.Error("The client hasn't connected yet!");
             return;

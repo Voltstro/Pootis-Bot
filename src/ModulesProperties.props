@@ -3,7 +3,7 @@
 <Project>
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Authors>Voltstro</Authors>
         <Copyright>Copyright (c) Voltstro 2018-2022</Copyright>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
