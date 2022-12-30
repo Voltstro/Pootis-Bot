@@ -29,7 +29,7 @@ stages:
   dependsOn: Build
   condition: succeeded('Build')
   jobs:
-  - job: Docker Deploy
+  - job: Docker
     pool:
       vmImage: ubuntu-22.04
     steps:
