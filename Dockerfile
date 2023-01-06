@@ -6,7 +6,7 @@ RUN dotnet restore src/Pootis-Bot.sln
 
 COPY LICENSE.md LICENSE.md
 COPY thirdpartycredits.txt thirdpartycredits.txt
-RUN dotnet publish src/Pootis-Bot.sln --no-restore -c Release
+RUN dotnet publish src/Pootis-Bot.sln --no-restore -c Release -f net7.0
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:7.0-alpine3.17
 ENV PB_NAME="Pootis-Bot Docker"
