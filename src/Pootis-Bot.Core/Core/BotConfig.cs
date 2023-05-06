@@ -34,7 +34,8 @@ public class BotConfig : Config<BotConfig>
     [JsonProperty]
     public GatewayIntents GatewayIntents { get; internal set; } = GatewayIntents.AllUnprivileged |
                                                                   GatewayIntents.GuildMembers |
-                                                                  GatewayIntents.GuildPresences;
+                                                                  GatewayIntents.GuildPresences |
+                                                                  GatewayIntents.MessageContent;
 
 #if DEBUG
     [DontShowItem] [JsonProperty] public ulong? TestingGuildId { get; internal set; }
