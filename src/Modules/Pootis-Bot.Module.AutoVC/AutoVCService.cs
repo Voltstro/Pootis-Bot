@@ -78,7 +78,7 @@ internal static class AutoVCService
     /// <param name="channel"></param>
     public static async Task RemoveActiveSubAutoVC(SocketVoiceChannel channel)
     {
-        if (channel.Users.Count != 0)
+        if (channel.ConnectedUsers.Count != 0)
             return;
 
         AutoVC? autoVC = Config.AutoVCs.Find(x => x?.GuildId == channel.Guild.Id);

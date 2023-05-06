@@ -46,6 +46,6 @@ public class AutoVCConfig : Config<AutoVCConfig>
     /// <param name="name"></param>
     public void AddAutoVc(ulong channelId, ulong guildId, string name)
     {
-        AutoVCs.Add(new AutoVC(channelId, guildId, name));
+        AutoVCs.Add(new AutoVC(guildId, channelId, name));
     }
 }
