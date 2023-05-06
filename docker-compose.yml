@@ -1,0 +1,13 @@
+#Example docker-compose.yml for file for using Pootis-Bot in Docker
+version: "3.9"
+services:
+  pootis:
+    image: voltstro/pootis-bot:testing
+    restart: unless-stopped
+    environment:
+      - PB_NAME
+      - PB_TOKEN
+    volumes:
+      - /data/pootis/Config:/app/Config
+      - /data/pootis/Cache:/app/Cache
+      - /data/pootis/Logs:/app/Logs

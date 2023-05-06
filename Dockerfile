@@ -10,7 +10,7 @@ COPY thirdpartycredits.txt thirdpartycredits.txt
 RUN dotnet publish src/Pootis-Bot.sln --no-restore -c Release
 
 # Runtime
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:7.0
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:7.0-alpine
 ENV PB_NAME="Pootis-Bot Docker"
 
 WORKDIR /app
