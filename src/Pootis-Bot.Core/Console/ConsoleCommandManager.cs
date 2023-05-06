@@ -142,7 +142,7 @@ public static class ConsoleCommandManager
 
         Rule rule = new("[blue]Command Help[/]")
         {
-            Alignment = Justify.Left
+            Justification = Justify.Left
         };
         AnsiConsole.Write(rule);
         AnsiConsole.Write(table);

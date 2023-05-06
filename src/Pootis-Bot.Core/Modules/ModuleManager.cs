@@ -424,7 +424,7 @@ public sealed class ModuleManager : IDisposable
 
         Rule rule = new("[blue]Modules[/]")
         {
-            Alignment = Justify.Left
+            Justification = Justify.Left
         };
         AnsiConsole.Write(rule);
         AnsiConsole.Write(table);

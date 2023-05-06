@@ -92,7 +92,7 @@ public class ConsoleConfigMenu<T>
 
         Rule rule = new($"[blue]{configTitle}[/]")
         {
-            Alignment = Justify.Left
+            Justification = Justify.Left
         };
         AnsiConsole.Write(rule);
         AnsiConsole.Write("\n");

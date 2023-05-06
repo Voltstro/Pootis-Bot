@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NuGet.Packaging" Version="6.4.0" />
-        <PackageReference Include="NuGet.Protocol" Version="6.4.0" />
-        <PackageReference Include="NuGet.Resolver" Version="6.4.0" />
+        <PackageReference Include="NuGet.Packaging" Version="6.5.0" />
+        <PackageReference Include="NuGet.Protocol" Version="6.5.0" />
+        <PackageReference Include="NuGet.Resolver" Version="6.5.0" />
     </ItemGroup>
 
     <Import Project="..\GeneralProperties.props" />

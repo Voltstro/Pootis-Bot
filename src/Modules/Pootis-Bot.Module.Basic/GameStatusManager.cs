@@ -79,7 +79,7 @@ public static class GameStatusManager
 
         Rule rule = new("[blue]Manage Status[/]")
         {
-            Alignment = Justify.Left
+            Justification = Justify.Left
         };
         AnsiConsole.Write(rule);
         while (true)
