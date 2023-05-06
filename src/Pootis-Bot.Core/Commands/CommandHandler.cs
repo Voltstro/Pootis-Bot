@@ -40,6 +40,8 @@ internal sealed class CommandHandler
 
         interactionService = new InteractionService(client);
         interactionService.AddTypeConverter<Emoji>(new EmojiTypeConverter());
+        
+        interactionService.SlashCommandExecuted += CommandExecuted;
 
         IServiceCollection serviceCollection = new ServiceCollection()
             .AddSingleton(client)
@@ -129,17 +131,22 @@ internal sealed class CommandHandler
                 }
             }
 
-        IResult result = await slashCommandInfo.ExecuteAsync(ctx, serviceProvider);
+        await slashCommandInfo.ExecuteAsync(ctx, serviceProvider);
+    }
+    
+    private Task CommandExecuted(SlashCommandInfo command, IInteractionContext ctx, IResult result)
+    {
         Logger.Debug(CheckInteractionResult(ctx, result)
-            ? $"Success handling slash command {slashCommandInfo.Name}"
-            : $"Error handling slash command {slashCommandInfo.Name}. If their is an issue you need to worry about it would have already been displayed.");
+            ? $"Success handling slash command {command.Name}"
+            : $"Error handling slash command {command.Name}. If their is an issue you need to worry about it would have already been displayed.");
+        
+        return Task.CompletedTask;
     }
 
-    private bool CheckInteractionResult(SocketInteractionContext ctx, IResult result)
+    private bool CheckInteractionResult(IInteractionContext ctx, IResult result)
     {
         if (result.IsSuccess)
             return true;
-
 
         switch (result.Error)
         {

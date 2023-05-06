@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Pootis_Bot.Config;
+using Pootis_Bot.Logging;
 using Pootis_Bot.Module.WelcomeMessage.Entities;
 
 namespace Pootis_Bot.Module.WelcomeMessage;
@@ -21,19 +23,27 @@ public class WelcomeMessageInteractions : InteractionModuleBase<SocketInteractio
     [SlashCommand("status", "Gets the status of your welcome & goodbye messages configuration")]
     public async Task Status()
     {
-        WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
+        try
+        {
+            WelcomeMessageServer server = config.GetOrCreateWelcomeMessageServer(Context.Guild);
 
-        SocketTextChannel channel = Context.Guild.GetTextChannel(server.ChannelId);
+            SocketTextChannel channel = Context.Guild.GetTextChannel(server.ChannelId);
 
-        EmbedBuilder embedBuilder = new();
-        embedBuilder.WithTitle("Welcome Message Status");
-        embedBuilder.WithDescription($"Status of Welcome Message for **{Context.Guild.Name}**");
-        embedBuilder.AddField("Channel", channel == null ? "No Channel" : channel.Mention);
-        embedBuilder.AddField("Welcome Message Enabled?", server.WelcomeMessageEnabled, true);
-        embedBuilder.AddField("Welcome Message", server.WelcomeMessage, true);
-        embedBuilder.AddField("Goodbye Message Enabled?", server.GoodbyeMessageEnabled, true);
-        embedBuilder.AddField("Goodbye Message", server.GoodbyeMessage, true);
-        await RespondAsync(embed: embedBuilder.Build());
+            EmbedBuilder embedBuilder = new();
+            embedBuilder.WithTitle("Welcome Message Status");
+            embedBuilder.WithDescription($"Status of Welcome Message for **{Context.Guild.Name}**");
+            embedBuilder.AddField("Channel", channel == null ? "No Channel" : channel.Mention);
+            embedBuilder.AddField("Welcome Message Enabled?", server.WelcomeMessageEnabled, true);
+            embedBuilder.AddField("Welcome Message", server.WelcomeMessage ?? "No welcome message set!", true);
+            embedBuilder.AddField("Goodbye Message Enabled?", server.GoodbyeMessageEnabled, true);
+            embedBuilder.AddField("Goodbye Message", server.GoodbyeMessage ?? "No goodbye message set!", true);
+            await RespondAsync(embed: embedBuilder.Build());
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "An error occured in welcome message status!");
+            throw;
+        }
     }
 
     [SlashCommand("channel", "Sets the channel to where messages will be sent")]

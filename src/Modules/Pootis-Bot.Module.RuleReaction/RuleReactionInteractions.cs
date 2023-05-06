@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -30,13 +31,20 @@ public class RuleReactionInteractions : InteractionModuleBase<SocketInteractionC
         SocketTextChannel? channel = Context.Guild.GetTextChannel(server.ChannelId);
         if (channel != null)
             message = await channel.GetMessageAsync(server.MessageId);
+        
+        //Role
+        SocketRole? role = null;
+        if(server.RoleId != 0)
+            role = Context.Guild.GetRole(server.RoleId);
 
         EmbedBuilder embedBuilder = new();
         embedBuilder.WithTitle("Rule Reaction Status");
         embedBuilder.WithDescription($"Status of Rule Reaction for **{Context.Guild.Name}**");
         embedBuilder.AddField("Enabled?", server.Enabled);
-        embedBuilder.AddField("Message", message == null ? "No Message" : $"[Link]({message.GetMessageUrl()})");
-        embedBuilder.AddField("Emoji", string.IsNullOrEmpty(server.Emoji) ? "No Emoji" : server.Emoji);
+        embedBuilder.AddField("Message", message == null ? "No Message Set" : $"[Link]({message.GetMessageUrl()})");
+        embedBuilder.AddField("Emoji", string.IsNullOrEmpty(server.Emoji) ? "No Emoji Set" : server.Emoji);
+        embedBuilder.AddField("Role", role == null ? "No Role Set" : role.Name);
+        
         await RespondAsync(embed: embedBuilder.Build());
     }
 
@@ -49,13 +57,20 @@ public class RuleReactionInteractions : InteractionModuleBase<SocketInteractionC
     }
 
     [SlashCommand("message", "Sets what message to use")]
-    public async Task SetMessageCommand(ulong messageId, IMessageChannel? channel = null)
+    public async Task SetMessageCommand(string messageId, IMessageChannel? channel = null)
     {
+        bool parsed = ulong.TryParse(messageId, out ulong result);
+        if (!parsed)
+        {
+            await RespondAsync($"Message ID needs to be a number!");
+            return;
+        }
+        
         IMessageChannel? channelThatItIsIn = channel;
         if (channelThatItIsIn == null)
             channelThatItIsIn = Context.Channel;
 
-        await SetMessage(channelThatItIsIn, messageId, Context.Guild);
+        await SetMessage(channelThatItIsIn, result, Context.Guild);
     }
 
     [SlashCommand("role", "Sets what role will be given on reaction")]
