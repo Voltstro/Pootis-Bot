@@ -1,1 +1,0 @@
-dotnet publish ../Pootis-Bot.sln -c Release -r osx-x64 --self-contained false

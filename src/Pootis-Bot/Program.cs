@@ -1,65 +1,60 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Pootis_Bot.Core;
-using Pootis_Bot.Helper;
-using Pootis_Bot.Logging;
-using Spectre.Console;
-using Spectre.Console.Cli;
+using Pootis_Bot.Services;
+using Pootis_Bot.Shared.Logging;
+using Serilog;
 
-namespace Pootis_Bot;
+//Create application
+HostApplicationBuilder builder = Host.CreateApplicationBuilder();
 
-internal static class Program
+//Setup logger
+Logger logger = builder.Services.SetupLogger(builder.Configuration);
+
+try
 {
-    public static void Main(string[] args)
-    {
-        CommandApp app = new CommandApp();
-        app.SetDefaultCommand<BaseCommand>();
-        app.Run(args);
-    }
+    //Setup Config
+    IConfigurationSection config = builder.Configuration.GetSection("Config");
+    builder.Services.Configure<PootisBotConfig>(config);
+    
+    //Setup Discord Config
+    builder.Services.Configure<DiscordSocketConfig>(builder.Configuration.GetSection("DiscordConfig"));
 
-    private sealed class BaseCommand : Command<BaseCommand.Settings>
-    {
-        public sealed class Settings : CommandSettings
-        {
-            [CommandOption("--headless")]
-            public bool Headless { get; init; }
-        }
-        
-        public override int Execute(CommandContext context, Settings settings)
-        {
-            //Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
-            FigletFont font = FigletFont.Parse(Resources.StandardFont);
-            AnsiConsole.Write(new FigletText(font, "Pootis-Bot"));
-            AnsiConsole.MarkupLine($"        [bold]Version[/]: {VersionUtils.GetApplicationVersion()}");
-            AnsiConsole.Write("\n");
-            
-            RunBot(settings).GetAwaiter().GetResult();
-            return 0;
-        }
+    //Setup DB
+    //builder.Services.UseVoltProjectDbContext(builder.Configuration, "Builder");
 
-        private async Task<int> RunBot(Settings settings)
-        {
-            Bot bot = new(new BotSettings
-            {
-                Headless = settings.Headless
-            });
+    builder.Services.AddSingleton<DiscordSocketClient>();
+    builder.Services.AddSingleton<CommandHandler>();
+    builder.Services.AddHostedService<BotClientService>();
 
-            Logger.Init();
-            try
-            {
-                await bot.Run();
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "An error occured during startup!");
-                return 1;
-            }
-            
-            if(!settings.Headless)
-                Bot.ConsoleLoop();
+    builder.Services.AddHttpClient();
 
-            bot.Dispose();
-            return 0;
-        }
-    }
+    //Setup app
+    IHost host = builder.Build();
+
+    //Handle DB migrations
+    //host.HandleDbMigrations();
+    
+    //Start
+    await host.RunAsync();
 }
+catch (Exception ex)
+{
+    Log.Error(ex, "An uncaught error occured!");
+#if DEBUG
+    if (Debugger.IsAttached)
+        throw;
+#endif
+    
+    return 1;
+}
+finally
+{
+    logger.Dispose();
+}
+
+return 0;

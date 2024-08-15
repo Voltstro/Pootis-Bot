@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Authors>Voltstro</Authors>
+        <Copyright>Copyright (c) Voltstro 2018-2024</Copyright>
+        
         <OutputType>Exe</OutputType>
         <RootNamespace>Pootis_Bot</RootNamespace>
         <ApplicationIcon>icon.ico</ApplicationIcon>
-        <Description>Entry point of Pootis-Bot. Is what glues everything together.</Description>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Pootis-Bot.Core\Pootis-Bot.Core.csproj" />
+        <PackageReference Include="Discord.Net" Version="3.15.3" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+        <None Update="appsettings.Development.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Resources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Resources.resx</DependentUpon>
-      </Compile>
+      <ProjectReference Include="..\Pootis-Bot.Shared\Pootis-Bot.Shared.csproj" />
     </ItemGroup>
-
-    <Import Project="..\GeneralProperties.props" />
 
 </Project>
