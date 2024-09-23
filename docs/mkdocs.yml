@@ -13,12 +13,12 @@ theme:
   highlightjs: true
 nav:
 - Home: index.md
-- Downloads: download.md
+- Downloads: download/index.md
 - Commands:
   - Discord Commands: commands/discord-commands.md
   - Console Commands: commands/console-commands.md
 - Bot Hosting:
-  - Bot Hosting: hosting.md
+  - Bot Hosting: hosting/index.md
   - Installation: hosting/install.md
   - Config Menu: hosting/config-menu.md
   - Getting a Bot Token: hosting/token.md
@@ -43,7 +43,7 @@ nav:
   - Config File: dev/config-file.md
   - Building Pootis-Bot: dev/building.md
 - Additional Notes:
-  - Additional Notes: additional-notes.md
+  - Additional Notes: additional-notes/index.md
   - License: additional-notes/license.md
   - Third Party Credits: additional-notes/thirdpartycredits.md
   - Special Thanks: additional-notes/special-thanks.md

@@ -1,4 +1,4 @@
-## Server Setup
+# Server Setup
 
 Everything in the Server Setup section should help you get Pootis-Bot working for your server!
 
