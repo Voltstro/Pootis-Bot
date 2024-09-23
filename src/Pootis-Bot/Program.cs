@@ -8,6 +8,7 @@ using Pootis_Bot.Core;
 using Pootis_Bot.Services;
 using Pootis_Bot.Shared.Logging;
 using Serilog;
+using Victoria;
 
 //Create application
 HostApplicationBuilder builder = Host.CreateApplicationBuilder();
@@ -30,6 +31,15 @@ try
     builder.Services.AddSingleton<DiscordSocketClient>();
     builder.Services.AddSingleton<CommandHandler>();
     builder.Services.AddHostedService<BotClientService>();
+
+    builder.Services.AddSingleton<AudioSelectionService>();
+    builder.Services.AddSingleton<AudioService>();
+    
+    //Extensions
+    builder.Services.AddLavaNode((configuration =>
+    {
+        //configuration.Port = 8080;
+    }));
 
     builder.Services.AddHttpClient();
 

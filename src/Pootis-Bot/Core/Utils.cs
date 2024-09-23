@@ -18,4 +18,11 @@ public static class Utils
             _ => throw new ArgumentOutOfRangeException(nameof(logSeverity), logSeverity, null)
         };
     }
+
+    public static string Truncate(string value, int maxLength, string truncationSuffix = "...")
+    {
+        return value.Length > maxLength
+            ? value[..(maxLength - truncationSuffix.Length)] + truncationSuffix
+            : value;
+    }
 }
