@@ -28,7 +28,7 @@ nav:
   - Music Services: hosting/audio.md
   - High Level Profile Message: hosting/highlevelprofilemsg.md
 - Server Setup:
-  - Server Setup: server-setup.md
+  - Server Setup: server-setup/index.md
   - Quick Setup: server-setup/quick-setup.md
   - Adding Owners: server-setup/adding-owners.md
   - Rule Reaction System: server-setup/rulereaction.md

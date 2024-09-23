@@ -1,6 +1,6 @@
-Everything in the Server Setup section should help you get Pootis-Bot working for your server!
+## Server Setup
 
-## Setting up Pootis-Bot for your server
+Everything in the Server Setup section should help you get Pootis-Bot working for your server!
 
 !!! note
     All commands that are contained in the server setup section require to be run by the Discord server's owner!
