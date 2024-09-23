@@ -1,11 +1,16 @@
-function getAllReleases() {
-	$.get('https://api.github.com/repos/voltstro/pootis-bot/releases', function (data) {
-    	for(i=0;i<data.length;i++) {
-       	 	var preReleaseText = "";
+async function getReleases() {
+	const response = await fetch('https://api.github.com/repos/voltstro/pootis-bot/releases');
+	return response.json();
+}
 
-        	if(data[i].prerelease == true) {
-            	preReleaseText+= " <span class='pre_release'>Pre-release</span>";
-        	}
+function getAllReleases() {
+	getReleases().then((data) => {
+		for(i=0;i<data.length;i++) {
+			var preReleaseText = "";
+
+			if(data[i].prerelease == true) {
+				preReleaseText+= " <span class='pre_release'>Pre-release</span>";
+			}
 
 			var title = document.createElement("h2");
 			title.innerHTML = "<a href='" + data[i].html_url + "'>" + data[i].name + "</a>" + preReleaseText;
@@ -32,14 +37,13 @@ function getAllReleases() {
 			download.innerHTML = downloadsText;
 
 			element.appendChild(download);
-		}                        
+		}
 	});
-
 }
 
 function getLatestRelease() {
-	$.get('https://api.github.com/repos/voltstro/pootis-bot/releases', function (data) {
-       	var preReleaseText = "";
+	getReleases().then((data) => {
+		var preReleaseText = "";
 
         if(data[0].prerelease == true) {
             preReleaseText+= " <span class='pre_release'>Pre-release</span>";
@@ -69,6 +73,6 @@ function getLatestRelease() {
 		var download = document.createElement("p");
 		download.innerHTML = downloadsText;
 
-		element.appendChild(download);             
+		element.appendChild(download);
 	});
 }

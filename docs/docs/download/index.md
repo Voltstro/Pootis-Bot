@@ -1,4 +1,3 @@
-<script src="../assets/javascript/jquery-3.4.1.min.js"></script>
 <script src="../assets/javascript/getallversions.js"></script>
 
 ![Pootis-Bot Downloads](assets/images/Pootis-Bot-Download.jpg)
