@@ -1,6 +1,6 @@
 <script src="../assets/javascript/getallversions.js"></script>
 
-![Pootis-Bot Downloads](assets/images/Pootis-Bot-Download.jpg)
+![Pootis-Bot Downloads](../assets/images/Pootis-Bot-Download.jpg)
 
 # Downloads
 
