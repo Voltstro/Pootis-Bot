@@ -38,7 +38,7 @@ public sealed class AudioSelectionService
         lavaTracks = new Dictionary<int, string>();
     }
 
-    public MessageComponent BuildSelectionMenu(LavaTrack[] tracks, IGuild guild, IUserMessage userMessage)
+    public MessageComponent BuildSelectionMenu(LavaTrack[] tracks, bool disabled = false)
     {
         SelectMenuBuilder menu = new()
         {
@@ -56,13 +56,15 @@ public sealed class AudioSelectionService
 
             menu.AddOption($"{title} by {author}", GetIdForTrack(track).ToString());
         }
+
+        menu.WithDisabled(disabled);
         
         ComponentBuilder builder = new ComponentBuilder()
             .WithSelectMenu(menu);
 
         return builder.Build();
     }
-
+    
     private int GetIdForTrack(LavaTrack lavaTrack)
     {
         string hash = lavaTrack.Hash;
@@ -91,17 +93,19 @@ public sealed class AudioSelectionService
             if(messageComponent.Data.CustomId != AudioSelectionId)
                 return;
 
+            //Get track
             string trackId = messageComponent.Data.Values.First();
-
             LavaTrack track = await GetTrackFromId(int.Parse(trackId));
-            await messageComponent.RespondAsync(
-                $"**{track.Title}** by **{track.Author}** has been added to the queue.");
-
-            //TODO: Update selection to be disabled
+            
+            //Build new select menu but disabled and update old one
+            MessageComponent component = BuildSelectionMenu([track], true);
+            await messageComponent.UpdateAsync(x => x.Components = component);
             
             logger.LogDebug("Handled on select menu executed. Got track {TrackName}.", track.Title);
             SocketGuild? guild = client.GetGuild(messageComponent.GuildId!.Value);
 
+            //Add song to queue
+            await messageComponent.FollowupAsync($"**{track.Title}** by **{track.Author}** has been added to the queue.");
             await audioService.Play(track, guild);
         }
         catch (Exception ex)

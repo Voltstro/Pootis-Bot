@@ -149,7 +149,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
         try
         {
             MessageComponent components =
-                audioSelectionService.BuildSelectionMenu(result.AudioTracks, Context.Guild, responseAsync);
+                audioSelectionService.BuildSelectionMenu(result.AudioTracks);
 
             await responseAsync.ModifyAsync(x =>
             {
