@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Models.Audio;
 using Pootis_Bot.Services;
+using Pootis_Bot.Services.Audio;
 using Victoria;
 
 namespace Pootis_Bot.Modules;
@@ -18,6 +19,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
     private readonly AudioSelectionService audioSelectionService;
     
     public AudioModule(
+        DiscordSocketClient client,
         ILogger<AudioModule> logger,
         AudioService audioService, 
         AudioSelectionService audioSelectionService)
@@ -25,44 +27,85 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
         this.logger = logger;
         this.audioService = audioService;
         this.audioSelectionService = audioSelectionService;
-        this.audioSelectionService.OnSelectionMade += OnAudioSelectionMade;
     }
 
     [SlashCommand("join", "Join your current audio channel")]
     public async Task JoinChannel()
     {
-        var voiceState = Context.User as IVoiceState;
-        
-        if (voiceState?.VoiceChannel == null) {
+        //Check user is connected to a voice channel
+        IVoiceState? voiceState = Context.User as IVoiceState;
+        if (voiceState?.VoiceChannel == null)
+        {
             await RespondAsync("You must be connected to a voice channel!");
+            return;
+        }
+
+        //Check if bot has already connected to a voice channel
+        if (audioService.TryGetAudioServer(Context.Guild, out AudioServer _))
+        {
+            await RespondAsync("I have already joined a voice channel!");
             return;
         }
         
         await audioService.JoinChannel(voiceState.VoiceChannel, Context.Channel);
-        await RespondAsync("I have joined your channel");
+        await RespondAsync("I have joined your voice channel.");
     }
     
     [SlashCommand("leave", "Leave your current audio channel")]
     public async Task LeaveChannel()
     {
-        var voiceState = Context.User as IVoiceState;
-        
-        if (voiceState?.VoiceChannel == null) {
+        IVoiceState? voiceState = Context.User as IVoiceState;
+        if (voiceState?.VoiceChannel == null)
+        {
             await RespondAsync("You must be connected to a voice channel!");
+            return;
+        }
+        
+        //Check if bot has connected to a voice channel
+        if (!audioService.TryGetAudioServer(Context.Guild, out AudioServer audioServer))
+        {
+            await RespondAsync("I am already not connected to any voice channel!");
+            return;
+        }
+
+        //Ensure user is in same voice channel
+        if (audioServer.VoiceChannel.Id != voiceState.VoiceChannel.Id)
+        {
+            await RespondAsync("You need to be in the same voice channel as me before telling me to leave!");
             return;
         }
 
         await audioService.LeaveChannel(voiceState.VoiceChannel);
-        await RespondAsync("I have left your channel");
+        await RespondAsync("I have left your voice channel.");
     }
 
     [SlashCommand("play", "Plays a song")]
     public async Task Play([Remainder, Discord.Interactions.Summary(description: "Search query to search for")] string? searchQuery = "")
     {
+        IVoiceState? voiceState = Context.User as IVoiceState;
+        if (voiceState?.VoiceChannel == null)
+        {
+            await RespondAsync("You must be connected to a voice channel!");
+            return;
+        }
+        
+        //Check if bot has connected to a voice channel
+        if (!audioService.TryGetAudioServer(Context.Guild, out AudioServer audioServer))
+        {
+            await RespondAsync("I am not connected to any voice channel!");
+            return;
+        }
+
+        //Ensure user is in same voice channel
+        if (audioServer.VoiceChannel.Id != voiceState.VoiceChannel.Id)
+        {
+            await RespondAsync("You need to be in the same voice channel as me before requesting to play audio!");
+            return;
+        }
+        
         SocketGuild guild = Context.Guild;
         if (string.IsNullOrWhiteSpace(searchQuery))
         {
-            //bool track = await audioService.IsTrack(guild);
             bool paused = await audioService.IsPaused(guild);
             if (!paused)
             {
@@ -125,11 +168,5 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
     {
         await audioService.Pause(Context.Guild);
         await RespondAsync("Current playing track has been paused. Use /play to continue playing.");
-    }
-    
-    
-    private async Task OnAudioSelectionMade(LavaTrack track, IGuild guild)
-    {
-        await audioService.Play(track, guild);
     }
 }

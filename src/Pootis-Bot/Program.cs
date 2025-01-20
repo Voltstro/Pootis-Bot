@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services;
+using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Shared.Logging;
 using Serilog;
 using Victoria;
