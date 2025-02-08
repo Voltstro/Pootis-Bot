@@ -20,7 +20,9 @@ Logger logger = builder.Services.SetupLogger(builder.Configuration);
 try
 {
     //Setup Config
+    PootisBotConfig pootisBotConfig = new();
     IConfigurationSection config = builder.Configuration.GetSection("Config");
+    config.Bind(pootisBotConfig);
     builder.Services.Configure<PootisBotConfig>(config);
     
     //Setup Discord Config
@@ -33,14 +35,18 @@ try
     builder.Services.AddSingleton<CommandHandler>();
     builder.Services.AddHostedService<BotClientService>();
 
-    builder.Services.AddSingleton<AudioSelectionService>();
-    builder.Services.AddSingleton<AudioService>();
-    
-    //Extensions
-    builder.Services.AddLavaNode((configuration =>
+    //Audio Services
+    if (pootisBotConfig.EnableAudioServices)
     {
-        //configuration.Port = 8080;
-    }));
+        builder.Services.AddSingleton<AudioSelectionService>();
+        builder.Services.AddSingleton<AudioService>();
+    
+        //Extensions
+        builder.Services.AddLavaNode(configuration =>
+        {
+            configuration = pootisBotConfig.VictoriaConfig;
+        });
+    }
 
     builder.Services.AddHttpClient();
 

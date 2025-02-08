@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pootis_Bot.Core;
+using Pootis_Bot.Modules;
 
 namespace Pootis_Bot.Services;
 
@@ -17,6 +18,16 @@ public class CommandHandler
     private readonly ILogger<CommandHandler> logger;
     private readonly PootisBotConfig config;
     private readonly InteractionService interactionService;
+
+    private readonly Type[] discordServices =
+    [
+        typeof(BasicModule)
+    ];
+
+    private readonly Type[] audioServices =
+    [
+        typeof(AudioModule)
+    ];
     
     public CommandHandler(
         DiscordSocketClient client,
@@ -30,14 +41,32 @@ public class CommandHandler
         this.config = config.Value;
         
         interactionService = new InteractionService(client);
-        //interactionService.SlashCommandExecuted += OnSlashCommandExecute;
         
         client.InteractionCreated += HandleInteraction;
     }
 
     public async Task InstallAssemblyModules(Assembly assembly)
     {
-        await interactionService.AddModulesAsync(assembly, serviceProvider);
+        //Install all services
+        logger.LogInformation("Installing discord modules...");
+        foreach (Type discordService in discordServices)
+        {
+            await interactionService.AddModuleAsync(discordService, serviceProvider);
+        }
+        
+        //Install audio services
+        if (config.EnableAudioServices)
+        {
+            logger.LogInformation("Installing audio module...");
+            foreach (Type audioService in audioServices)
+            {
+                await interactionService.AddModuleAsync(audioService, serviceProvider);
+            }
+        }
+        else
+        {
+            logger.LogWarning("Audio services are not enabled, not installing module.");
+        }
     }
 
     /// <summary>

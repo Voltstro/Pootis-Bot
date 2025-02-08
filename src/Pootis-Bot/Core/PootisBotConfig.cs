@@ -1,4 +1,5 @@
 using Discord;
+using Victoria;
 
 namespace Pootis_Bot.Core;
 
@@ -7,6 +8,8 @@ namespace Pootis_Bot.Core;
 /// </summary>
 public class PootisBotConfig
 {
+    public const string PootisBotConfigKey = "Config";
+    
     /// <summary>
     ///     Discord bot token
     /// </summary>
@@ -26,4 +29,11 @@ public class PootisBotConfig
                                                                   GatewayIntents.MessageContent;
     
     public ulong? TestGuildId { get; init; }
+    
+    public bool EnableAudioServices { get; set; }
+    
+    /// <summary>
+    ///     Configuration for Victoria
+    /// </summary>
+    public Configuration? VictoriaConfig { get; init; }
 }
