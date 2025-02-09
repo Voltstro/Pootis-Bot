@@ -22,6 +22,7 @@ public class CommandHandler
     private readonly Type[] discordServices =
     [
         typeof(BasicModule),
+        typeof(FunModule),
         typeof(HelpModule)
     ];
 

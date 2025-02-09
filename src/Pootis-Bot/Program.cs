@@ -10,6 +10,7 @@ using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Shared.Logging;
 using Serilog;
 using Victoria;
+using WikiDotNet;
 
 //Create application
 HostApplicationBuilder builder = Host.CreateApplicationBuilder();
@@ -47,6 +48,9 @@ try
             configuration = pootisBotConfig.VictoriaConfig;
         });
     }
+    
+    //Other
+    builder.Services.AddSingleton<WikiSearcher>();
 
     builder.Services.AddHttpClient();
 
