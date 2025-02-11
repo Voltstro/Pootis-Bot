@@ -23,7 +23,8 @@ public class CommandHandler
     [
         typeof(BasicModule),
         typeof(FunModule),
-        typeof(HelpModule)
+        typeof(HelpModule),
+        typeof(ProfileModule)
     ];
 
     private readonly Type[] audioServices =

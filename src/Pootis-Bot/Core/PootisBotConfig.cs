@@ -1,3 +1,4 @@
+using System;
 using Discord;
 using Victoria;
 
@@ -30,10 +31,17 @@ public class PootisBotConfig
     
     public ulong? TestGuildId { get; init; }
     
+    //Audio Settings
+    
     public bool EnableAudioServices { get; set; }
     
     /// <summary>
     ///     Configuration for Victoria
     /// </summary>
     public Configuration? VictoriaConfig { get; init; }
+    
+    //Xp Settings
+    
+    public TimeSpan XpGiveCooldown { get; init; } = new(0, 0, 15);
+    public uint XpGiveAmount { get; init; } = 15;
 }

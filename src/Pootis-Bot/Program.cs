@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Shared;
 using Pootis_Bot.Shared.Logging;
 using Serilog;
 using Victoria;
@@ -28,13 +29,14 @@ try
     
     //Setup Discord Config
     builder.Services.Configure<DiscordSocketConfig>(builder.Configuration.GetSection("DiscordConfig"));
-
-    //Setup DB
-    //builder.Services.UseVoltProjectDbContext(builder.Configuration, "Builder");
-
+    
+    //Add Discord config
     builder.Services.AddSingleton<DiscordSocketClient>();
     builder.Services.AddSingleton<CommandHandler>();
     builder.Services.AddHostedService<BotClientService>();
+    
+    //User Services
+    builder.Services.AddHostedService<UserXpService>();
 
     //Audio Services
     if (pootisBotConfig.EnableAudioServices)
@@ -51,6 +53,9 @@ try
     
     //Other
     builder.Services.AddSingleton<WikiSearcher>();
+    
+    //Setup DB
+    builder.Services.UsePootisBotDbContext(builder.Configuration, "Pootis");
 
     builder.Services.AddHttpClient();
 
@@ -58,7 +63,7 @@ try
     IHost host = builder.Build();
 
     //Handle DB migrations
-    //host.HandleDbMigrations();
+    host.HandleDbMigrations();
     
     //Start
     await host.RunAsync();
