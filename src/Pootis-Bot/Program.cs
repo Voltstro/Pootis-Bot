@@ -27,16 +27,20 @@ try
     config.Bind(pootisBotConfig);
     builder.Services.Configure<PootisBotConfig>(config);
     
-    //Setup Discord Config
-    builder.Services.Configure<DiscordSocketConfig>(builder.Configuration.GetSection("DiscordConfig"));
+    //Install Discord client
+    DiscordSocketConfig discordConfig = new();
+    builder.Configuration.GetSection("DiscordConfig").Bind(discordConfig);
     
-    //Add Discord config
-    builder.Services.AddSingleton<DiscordSocketClient>();
+    DiscordSocketClient client = new(discordConfig);
+    builder.Services.AddSingleton(client);
+    
+    //Core Pootis-Bot Services
     builder.Services.AddSingleton<CommandHandler>();
     builder.Services.AddHostedService<BotClientService>();
     
-    //User Services
-    builder.Services.AddHostedService<UserXpService>();
+    //Background Services
+    builder.Services.AddHostedService<ProfileBackgroundService>();
+    builder.Services.AddHostedService<ServersBackgroundService>();
 
     //Audio Services
     if (pootisBotConfig.EnableAudioServices)

@@ -13,15 +13,18 @@ using Pootis_Bot.Shared.Models;
 
 namespace Pootis_Bot.Services;
 
-public class UserXpService : IHostedService
+/// <summary>
+///     Service for handling profile interactions, such as XP
+/// </summary>
+public class ProfileBackgroundService : IHostedService
 {
-    private readonly ILogger<UserXpService> logger;
+    private readonly ILogger<ProfileBackgroundService> logger;
     private readonly IDbContextFactory<PootisBotDbContext> dbContextFactory;
     private readonly PootisBotConfig config;
     private readonly DiscordSocketClient client;
     
-    public UserXpService(
-        ILogger<UserXpService> logger,
+    public ProfileBackgroundService(
+        ILogger<ProfileBackgroundService> logger,
         IDbContextFactory<PootisBotDbContext> dbContextFactory,
         IOptions<PootisBotConfig> config,
         DiscordSocketClient client)

@@ -32,6 +32,7 @@ public static class DbContextExtensions
         services.AddNpgsqlDataSource(connectionString, builder =>
         {
             builder.EnableDynamicJson();
+            builder.MapEnum<MessageType>();
         });
         
         services.AddDbContextFactory<PootisBotDbContext>(options => options.UseNpgsql());
