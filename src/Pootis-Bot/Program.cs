@@ -41,6 +41,7 @@ try
     //Background Services
     builder.Services.AddHostedService<ProfileBackgroundService>();
     builder.Services.AddHostedService<ServersBackgroundService>();
+    builder.Services.AddHostedService<ServerSetupBackgroundService>();
 
     //Audio Services
     if (pootisBotConfig.EnableAudioServices)

@@ -34,13 +34,18 @@ public static class DbContextExtensions
 
     public static Server GetOrCreateServer(this PootisBotDbContext context, SocketGuild guild)
     {
-        Server? foundServer = context.Servers.FirstOrDefault(x => x.DiscordId == guild.Id);
+        return GetOrCreateServer(context, guild.Id);
+    }
+    
+    public static Server GetOrCreateServer(this PootisBotDbContext context, ulong guildId)
+    {
+        Server? foundServer = context.Servers.FirstOrDefault(x => x.DiscordId == guildId);
         if (foundServer == null)
         {
             foundServer = new Server
             {
                 Id = Guid.NewGuid(),
-                DiscordId = guild.Id,
+                DiscordId = guildId,
             };
             
             context.Servers.Add(foundServer);
