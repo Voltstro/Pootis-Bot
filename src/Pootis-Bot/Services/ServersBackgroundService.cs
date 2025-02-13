@@ -2,14 +2,15 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Shared;
-using Pootis_Bot.Shared.Messages;
 using Pootis_Bot.Shared.Models;
+using MessageType = Pootis_Bot.Shared.Messages.MessageType;
 
 namespace Pootis_Bot.Services;
 
@@ -33,16 +34,22 @@ public class ServersBackgroundService : IHostedService
     {
         client.UserJoined += ClientOnUserJoined;
         client.UserLeft += ClientOnUserLeft;
+        
+        client.ReactionAdded += ClientOnReactionAdded;
         return Task.CompletedTask;
     }
-    
+
     public Task StopAsync(CancellationToken cancellationToken)
     {
         client.UserJoined -= ClientOnUserJoined;
         client.UserLeft -= ClientOnUserLeft;
+        
+        client.ReactionAdded -= ClientOnReactionAdded;
         return Task.CompletedTask;
     }
 
+    #region Welcome / Goodbye Messages
+    
     private async Task ClientOnUserJoined(SocketGuildUser user)
     {
         await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
@@ -104,4 +111,35 @@ public class ServersBackgroundService : IHostedService
         string message = serverMessage.Message.Replace("%SERVER%", guild.Name).Replace("%USER%", type == MessageType.Goodbye ? user.Username : user.Mention);
         await textChannel.SendMessageAsync(message);
     }
+    
+    #endregion
+
+    #region Rele Reactions
+
+    private async Task ClientOnReactionAdded(Cacheable<IUserMessage, ulong> userMessage, Cacheable<IMessageChannel, ulong> messageChannel, SocketReaction reaction)
+    {
+        await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        ulong channelId = messageChannel.Id;
+        ulong messageId = userMessage.Id;
+        string emoji = reaction.Emote.Name;
+        ulong userId = reaction.UserId;
+        
+        logger.LogDebug("Got reaction on {ChannelId}/{MessageId} for {Emoji} by {UserId}", channelId, messageId, emoji, userId);
+
+        Server? server = dbContext.Servers.FirstOrDefault(x => x.RuleReactionChannelId == channelId && x.RuleReactionMessageId == messageId && x.RuleReactionEmoji == emoji);
+        if(server is not { RuleReactionEnabled: true } || server.RuleReactionRoleId == null)
+            return;
+
+        //Assign role (if user doesn't have it)
+        ulong roleId = server.RuleReactionRoleId.Value;
+        SocketGuild guild = client.GetGuild(server.DiscordId);
+        SocketGuildUser user = guild.GetUser(userId);
+        if(user.HasRole(roleId))
+            return;
+        
+        await user.AddRoleAsync(roleId);
+    }
+
+    #endregion
 }

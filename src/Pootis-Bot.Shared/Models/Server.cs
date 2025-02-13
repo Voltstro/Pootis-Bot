@@ -45,6 +45,8 @@ public class Server
     public string? RuleReactionEmoji { get; set; }
     
     public bool RuleReactionEnabled { get; set; }
+    
+    public ulong? RuleReactionRoleId { get; set; }
 
     #endregion
 }

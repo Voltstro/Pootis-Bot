@@ -20,14 +20,16 @@ public class PootisBotConfig
     ///     Name of the bot will use
     /// </summary>
     public string BotName { get; init; }
-    
+
     /// <summary>
     ///     Required <see cref="GatewayIntents" /> for the discord client
     /// </summary>
     public GatewayIntents GatewayIntents { get; init; } = GatewayIntents.AllUnprivileged |
-                                                                  GatewayIntents.GuildMembers |
-                                                                  GatewayIntents.GuildPresences |
-                                                                  GatewayIntents.MessageContent;
+                                                          GatewayIntents.GuildMembers |
+                                                          GatewayIntents.GuildPresences |
+                                                          GatewayIntents.MessageContent |
+                                                          GatewayIntents.DirectMessageReactions |
+                                                          GatewayIntents.GuildMessageReactions;
     
     public ulong? TestGuildId { get; init; }
     
