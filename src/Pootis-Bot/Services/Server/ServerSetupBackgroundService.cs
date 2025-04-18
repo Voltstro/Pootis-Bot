@@ -8,9 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Shared;
-using Pootis_Bot.Shared.Models;
 
-namespace Pootis_Bot.Services;
+namespace Pootis_Bot.Services.Server;
 
 /// <summary>
 ///     Service related to server setup
@@ -54,7 +53,7 @@ public sealed class ServerSetupBackgroundService : IHostedService
         SocketMessageComponentData messageInputData = modal.Data.Components.First(x => x.CustomId == ServerSetupRuleReactionModalMessageId);
 
         await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
-        Server server = dbContext.GetOrCreateServer(modal.GuildId.Value);
+        Shared.Models.Server server = dbContext.GetOrCreateServer(modal.GuildId.Value);
 
         //Get saved channel
         SocketTextChannel? channel = client.GetGuild(server.DiscordId).GetTextChannel(server.RuleReactionChannelId!.Value);

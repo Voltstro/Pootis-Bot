@@ -4,8 +4,10 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Services;
+using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
 using Pootis_Bot.Shared.Models;
+using Emoji = Pootis_Bot.Core.Discord.Emoji;
 
 namespace Pootis_Bot.Modules;
 
@@ -88,6 +90,29 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
             await dbContext.SaveChangesAsync();
             
             await RespondAsync($"Rule reaction role was set to **{role.Name}**.");
+        }
+
+        [SlashCommand("emoji", "Gets or sets what emoji is required to be reacted with")]
+        public async Task SetupRrEmoji(Emoji? emoji = null)
+        {
+            Server server = dbContext.GetOrCreateServer(Context.Guild);
+
+            if (emoji == null)
+            {
+                if (server.RuleReactionEmoji == null)
+                {
+                    await RespondAsync($"Currently no rule reaction emoji is set.");
+                    return;
+                }
+
+                await RespondAsync($"Currently the rule reaction emoji set to \"{server.RuleReactionEmoji}\".");
+                return;
+            }
+
+            server.RuleReactionEmoji = emoji.ToString();
+            await dbContext.SaveChangesAsync();
+            
+            await RespondAsync($"Rule reaction emoji was set to \"{emoji.ToString()}\".");
         }
     }
 }

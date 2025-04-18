@@ -7,15 +7,20 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pootis_Bot.Core;
+using Pootis_Bot.Core.Discord.TypeConverters;
 using Pootis_Bot.Modules;
+using Emoji = Pootis_Bot.Core.Discord.Emoji;
 
-namespace Pootis_Bot.Services;
+namespace Pootis_Bot.Services.Core;
 
-public class CommandHandler
+/// <summary>
+///     Service for handling installation and management of Discord.Net command modules
+/// </summary>
+public sealed class CommandHandlerService
 {
     private readonly DiscordSocketClient client;
     private readonly IServiceProvider serviceProvider;
-    private readonly ILogger<CommandHandler> logger;
+    private readonly ILogger<CommandHandlerService> logger;
     private readonly PootisBotConfig config;
     private readonly InteractionService interactionService;
 
@@ -33,10 +38,10 @@ public class CommandHandler
         typeof(AudioModule)
     ];
     
-    public CommandHandler(
+    public CommandHandlerService(
         DiscordSocketClient client,
         IServiceProvider serviceProvider,
-        ILogger<CommandHandler> logger,
+        ILogger<CommandHandlerService> logger,
         IOptions<PootisBotConfig> config)
     {
         this.client = client;
@@ -45,6 +50,7 @@ public class CommandHandler
         this.config = config.Value;
         
         interactionService = new InteractionService(client);
+        interactionService.AddTypeConverter<Emoji>(new EmojiTypeConverter());
         
         client.InteractionCreated += HandleInteraction;
     }

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pootis_Bot.Core;
 
-namespace Pootis_Bot.Services;
+namespace Pootis_Bot.Services.Core;
 
 /// <summary>
 ///     Service for running the bot client
@@ -18,18 +18,18 @@ public sealed class BotClientService : BackgroundService
     private readonly PootisBotConfig config;
     private readonly ILogger<BotClientService> logger;
     private readonly DiscordSocketClient client;
-    private readonly CommandHandler commandHandler;
+    private readonly CommandHandlerService commandHandlerService;
 
     public BotClientService(
         IOptions<PootisBotConfig> config,
         ILogger<BotClientService> logger,
         DiscordSocketClient client,
-        CommandHandler commandHandler)
+        CommandHandlerService commandHandlerService)
     {
         this.config = config.Value;
         this.logger = logger;
         this.client = client;
-        this.commandHandler = commandHandler;
+        this.commandHandlerService = commandHandlerService;
 
         //Check token is valid
         if (string.IsNullOrWhiteSpace(this.config.BotToken))
@@ -41,7 +41,7 @@ public sealed class BotClientService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await commandHandler.InstallAssemblyModules(typeof(Program).Assembly);
+        await commandHandlerService.InstallAssemblyModules(typeof(Program).Assembly);
         
         logger.LogInformation("Logging into Discord and starting client...");
         await client.LoginAsync(TokenType.Bot, config.BotToken);
@@ -60,7 +60,7 @@ public sealed class BotClientService : BackgroundService
     {
         logger.LogInformation("Discord client is ready.");
 
-        await commandHandler.RegisterCommands();
+        await commandHandlerService.RegisterCommands();
     }
     
     private Task ClientOnLogMessage(LogMessage logMessage)

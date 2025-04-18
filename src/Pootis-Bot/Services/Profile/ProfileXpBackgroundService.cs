@@ -9,22 +9,21 @@ using Microsoft.Extensions.Options;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Shared;
-using Pootis_Bot.Shared.Models;
 
-namespace Pootis_Bot.Services;
+namespace Pootis_Bot.Services.Profile;
 
 /// <summary>
-///     Service for handling profile interactions, such as XP
+///     Service for handling profile XP
 /// </summary>
-public class ProfileBackgroundService : IHostedService
+public class ProfileXpBackgroundService : IHostedService
 {
-    private readonly ILogger<ProfileBackgroundService> logger;
+    private readonly ILogger<ProfileXpBackgroundService> logger;
     private readonly IDbContextFactory<PootisBotDbContext> dbContextFactory;
     private readonly PootisBotConfig config;
     private readonly DiscordSocketClient client;
     
-    public ProfileBackgroundService(
-        ILogger<ProfileBackgroundService> logger,
+    public ProfileXpBackgroundService(
+        ILogger<ProfileXpBackgroundService> logger,
         IDbContextFactory<PootisBotDbContext> dbContextFactory,
         IOptions<PootisBotConfig> config,
         DiscordSocketClient client)
@@ -35,6 +34,20 @@ public class ProfileBackgroundService : IHostedService
         this.client = client;
     }
 
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        client.MessageReceived += ClientOnMessageReceived;
+        
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        client.MessageReceived -= ClientOnMessageReceived;
+        
+        return Task.CompletedTask;
+    }
+    
     private async Task ClientOnMessageReceived(SocketMessage message)
     {
         SocketUser author = message.Author;
@@ -42,7 +55,7 @@ public class ProfileBackgroundService : IHostedService
             return;
 
         await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
-        Profile profile = dbContext.GetOrCreateUser(message.Author);
+        Shared.Models.Profile profile = dbContext.GetOrCreateUser(message.Author);
             
         //Check cooldown time
         if (profile.LastXpMessageTime != null)
@@ -63,19 +76,5 @@ public class ProfileBackgroundService : IHostedService
         //New level
         if (profile.LevelNumber > lastLevel)
             await message.Channel.SendMessageAsync($"{author.Mention} leveled up! Now on level **{profile.LevelNumber}**!");
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        client.MessageReceived += ClientOnMessageReceived;
-        
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        client.MessageReceived -= ClientOnMessageReceived;
-        
-        return Task.CompletedTask;
     }
 }

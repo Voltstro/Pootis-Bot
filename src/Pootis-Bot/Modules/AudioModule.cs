@@ -1,14 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Models.Audio;
-using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
-using Victoria;
 
 namespace Pootis_Bot.Modules;
 
@@ -80,7 +77,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("play", "Plays a song")]
-    public async Task Play([Remainder, Discord.Interactions.Summary(description: "Search query to search for")] string? searchQuery = "")
+    public async Task Play([Summary(description: "Search query to search for")] string? searchQuery = "")
     {
         IVoiceState? voiceState = Context.User as IVoiceState;
         if (voiceState?.VoiceChannel == null)

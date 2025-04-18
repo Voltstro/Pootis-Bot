@@ -7,6 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Core;
+using Pootis_Bot.Services.Profile;
+using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
 using Pootis_Bot.Shared.Logging;
 using Serilog;
@@ -35,12 +38,13 @@ try
     builder.Services.AddSingleton(client);
     
     //Core Pootis-Bot Services
-    builder.Services.AddSingleton<CommandHandler>();
+    builder.Services.AddSingleton<CommandHandlerService>();
     builder.Services.AddHostedService<BotClientService>();
     
     //Background Services
-    builder.Services.AddHostedService<ProfileBackgroundService>();
-    builder.Services.AddHostedService<ServersBackgroundService>();
+    builder.Services.AddHostedService<ProfileXpBackgroundService>();
+    builder.Services.AddHostedService<ServerRuleReactionBackgroundService>();
+    builder.Services.AddHostedService<ServerWelcomeGoodbyeBackgroundService>();
     builder.Services.AddHostedService<ServerSetupBackgroundService>();
 
     //Audio Services
