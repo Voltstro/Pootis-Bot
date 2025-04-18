@@ -5,9 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pootis_Bot.Core;
-using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
-using Pootis_Bot.Services.Core;
+using Pootis_Bot.Services.Core.Client;
 using Pootis_Bot.Services.Profile;
 using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
@@ -24,22 +23,21 @@ Logger logger = builder.Services.SetupLogger(builder.Configuration);
 
 try
 {
+    //Http Client
+    builder.Services.AddHttpClient();
+    
     //Setup Config
     PootisBotConfig pootisBotConfig = new();
     IConfigurationSection config = builder.Configuration.GetSection("Config");
     config.Bind(pootisBotConfig);
     builder.Services.Configure<PootisBotConfig>(config);
     
-    //Install Discord client
-    DiscordSocketConfig discordConfig = new();
-    builder.Configuration.GetSection("DiscordConfig").Bind(discordConfig);
-    
-    DiscordSocketClient client = new(discordConfig);
-    builder.Services.AddSingleton(client);
+    //Install Discord client config
+    builder.Services.Configure<DiscordSocketConfig>(builder.Configuration.GetSection("DiscordConfig"));
     
     //Core Pootis-Bot Services
-    builder.Services.AddSingleton<CommandHandlerService>();
-    builder.Services.AddHostedService<BotClientService>();
+    builder.Services.AddSingleton<ClientService>();
+    builder.Services.AddHostedService<ClientBackgroundService>();
     
     //Background Services
     builder.Services.AddHostedService<ProfileXpBackgroundService>();
@@ -65,8 +63,6 @@ try
     
     //Setup DB
     builder.Services.UsePootisBotDbContext(builder.Configuration, "Pootis");
-
-    builder.Services.AddHttpClient();
 
     //Setup app
     IHost host = builder.Build();

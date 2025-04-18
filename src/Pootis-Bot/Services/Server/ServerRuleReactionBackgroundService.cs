@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Helper;
+using Pootis_Bot.Services.Core.Client;
 using Pootis_Bot.Shared;
 
 namespace Pootis_Bot.Services.Server;
@@ -20,11 +21,14 @@ public class ServerRuleReactionBackgroundService : IHostedService
     private readonly IDbContextFactory<PootisBotDbContext> dbContextFactory;
     private readonly DiscordSocketClient client;
     
-    public ServerRuleReactionBackgroundService(ILogger<ServerRuleReactionBackgroundService> logger, IDbContextFactory<PootisBotDbContext> dbContextFactory, DiscordSocketClient client)
+    public ServerRuleReactionBackgroundService(
+        ILogger<ServerRuleReactionBackgroundService> logger,
+        IDbContextFactory<PootisBotDbContext> dbContextFactory,
+        ClientService clientService)
     {
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
-        this.client = client;
+        client = clientService.DiscordClient;
     }
     
     public Task StartAsync(CancellationToken cancellationToken)

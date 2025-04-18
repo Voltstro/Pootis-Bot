@@ -8,6 +8,7 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Models.Audio;
+using Pootis_Bot.Services.Core.Client;
 using Victoria;
 using Victoria.Enums;
 using Victoria.Rest.Search;
@@ -18,7 +19,6 @@ namespace Pootis_Bot.Services.Audio;
 public class AudioService
 {
     private readonly LavaNode<LavaPlayer<LavaTrack>, LavaTrack> lavaNode;
-    private readonly DiscordSocketClient client;
     private readonly IServiceProvider serviceProvider;
     private readonly ILogger<AudioService> logger;
     
@@ -26,12 +26,11 @@ public class AudioService
     
     public AudioService(
         LavaNode<LavaPlayer<LavaTrack>, LavaTrack> lavaNode,
-        DiscordSocketClient client,
+        ClientService clientService,
         IServiceProvider serviceProvider,
         ILogger<AudioService> logger)
     {
         this.lavaNode = lavaNode;
-        this.client = client;
         this.serviceProvider = serviceProvider;
         this.logger = logger;
         
@@ -40,9 +39,10 @@ public class AudioService
         lavaNode.OnTrackEnd += OnTrackEndAsync;
         lavaNode.OnTrackStart += OnTrackStartAsync;
         lavaNode.OnTrackException += OnTrackException;
-        
-        client.Ready += ClientOnReady;
-        client.UserVoiceStateUpdated += OnClientUserVoiceStateUpdated;
+
+        DiscordSocketClient socketClient = clientService.DiscordClient;
+        socketClient.Ready += ClientOnReady;
+        socketClient.UserVoiceStateUpdated += OnClientUserVoiceStateUpdated;
 
         guildAudioChannels = new ConcurrentDictionary<ulong, AudioServer>();
     }

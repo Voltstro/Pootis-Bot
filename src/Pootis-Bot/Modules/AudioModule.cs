@@ -16,7 +16,6 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
     private readonly AudioSelectionService audioSelectionService;
     
     public AudioModule(
-        DiscordSocketClient client,
         ILogger<AudioModule> logger,
         AudioService audioService, 
         AudioSelectionService audioSelectionService)

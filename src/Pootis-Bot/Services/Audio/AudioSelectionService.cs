@@ -6,6 +6,7 @@ using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
+using Pootis_Bot.Services.Core.Client;
 using Victoria;
 
 namespace Pootis_Bot.Services.Audio;
@@ -24,12 +25,12 @@ public sealed class AudioSelectionService
     
     public AudioSelectionService(
         ILogger<AudioSelectionService> logger,
-        DiscordSocketClient client,
+        ClientService clientService,
         LavaNode<LavaPlayer<LavaTrack>, LavaTrack> lavaNode,
         AudioService audioService)
     {
         this.logger = logger;
-        this.client = client;
+        client = clientService.DiscordClient;
         this.lavaNode = lavaNode;
         this.audioService = audioService;
         

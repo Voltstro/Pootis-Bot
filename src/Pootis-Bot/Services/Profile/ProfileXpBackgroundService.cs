@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pootis_Bot.Core;
 using Pootis_Bot.Helper;
+using Pootis_Bot.Services.Core.Client;
 using Pootis_Bot.Shared;
 
 namespace Pootis_Bot.Services.Profile;
@@ -26,12 +27,12 @@ public class ProfileXpBackgroundService : IHostedService
         ILogger<ProfileXpBackgroundService> logger,
         IDbContextFactory<PootisBotDbContext> dbContextFactory,
         IOptions<PootisBotConfig> config,
-        DiscordSocketClient client)
+        ClientService clientService)
     {
         this.logger = logger;
         this.dbContextFactory = dbContextFactory;
         this.config = config.Value;
-        this.client = client;
+        client = clientService.DiscordClient;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
