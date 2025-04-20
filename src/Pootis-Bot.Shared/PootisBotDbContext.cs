@@ -25,7 +25,7 @@ public class PootisBotDbContext : DbContext
     public DbSet<Server> Servers { get; set; }
     
     public DbSet<ServerMessage> ServerMessages { get; set; }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder

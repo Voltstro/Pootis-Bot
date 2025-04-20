@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using Pootis_Bot.Models.Audio;
 using Pootis_Bot.Services.Core.Client;
 using Victoria;
 using Victoria.Enums;
@@ -101,7 +100,7 @@ public class AudioService
     }
 
     /// <summary>
-    ///     Searches for audio
+    ///     Searches for audio using an identifier
     /// </summary>
     /// <param name="searchQuery"></param>
     /// <param name="audioSource"></param>
@@ -191,7 +190,18 @@ public class AudioService
     public async Task Resume(IGuild guild)
     {
         LavaPlayer<LavaTrack> player = await GetPlayer(guild);
+        
         await player.ResumeAsync(lavaNode, player.Track);
+    }
+    
+    /// <summary>
+    ///     Gets a <see cref="LavaTrack"/> from a hash
+    /// </summary>
+    /// <param name="hash"></param>
+    /// <returns></returns>
+    public async Task<LavaTrack> GetTrackFromHash(string hash)
+    {
+        return await lavaNode.DecodeTrackAsync(hash);
     }
 
     [DebuggerStepThrough]

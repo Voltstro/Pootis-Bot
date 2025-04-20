@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using Pootis_Bot.Models.Audio;
+using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Core.SelectMenu;
+using Victoria;
 
 namespace Pootis_Bot.Modules;
 
@@ -13,16 +16,16 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly ILogger<AudioModule> logger;
     private readonly AudioService audioService;
-    private readonly AudioSelectionService audioSelectionService;
+    private readonly SelectMenuService selectMenuService;
     
     public AudioModule(
         ILogger<AudioModule> logger,
-        AudioService audioService, 
-        AudioSelectionService audioSelectionService)
+        AudioService audioService,
+        SelectMenuService selectMenuService)
     {
         this.logger = logger;
         this.audioService = audioService;
-        this.audioSelectionService = audioSelectionService;
+        this.selectMenuService = selectMenuService;
     }
 
     [SlashCommand("join", "Join your current audio channel")]
@@ -111,6 +114,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
 
             await audioService.Resume(guild);
             await RespondAsync("Resumed playing current track.");
+            return;
         }
 
         await RespondAsync("Searching...");
@@ -144,13 +148,26 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
         //Get selections
         try
         {
-            MessageComponent components =
-                audioSelectionService.BuildSelectionMenu(result.AudioTracks);
+            Dictionary<string, string> options = new();
+            for (int i = 0; i < Math.Clamp(result.AudioTracks.Length, 0, 4); i++)
+            {
+                LavaTrack track = result.AudioTracks[i];
+                string title = Utils.Truncate(track.Title, 53);
+                string author = Utils.Truncate(track.Author, 15);
 
+                options.Add($"{title} by {author}", track.Hash);
+            }
+
+            MessageComponent selectMessageComponent = selectMenuService.CreateSelectMenu("Select what song to play.", options, async trackHash =>
+            {
+                LavaTrack track = await audioService.GetTrackFromHash(trackHash);
+                await audioService.Play(track, Context.Guild);
+            });
+            
             await responseAsync.ModifyAsync(x =>
             {
                 x.Content = $"Multiple results were found, please select an option to add to the queue.";
-                x.Components = components;
+                x.Components = selectMessageComponent;
             });
         }
         catch (Exception ex)

@@ -1,6 +1,6 @@
 using Victoria;
 
-namespace Pootis_Bot.Models.Audio;
+namespace Pootis_Bot.Services.Audio;
 
 public class AudioSearchResult
 {

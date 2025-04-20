@@ -4,9 +4,11 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Core.Client;
+using Pootis_Bot.Services.Core.SelectMenu;
 using Pootis_Bot.Services.Profile;
 using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
@@ -38,6 +40,8 @@ try
     //Core Pootis-Bot Services
     builder.Services.AddSingleton<ClientService>();
     builder.Services.AddHostedService<ClientBackgroundService>();
+
+    builder.Services.AddSingleton<SelectMenuService>();
     
     //Background Services
     builder.Services.AddHostedService<ProfileXpBackgroundService>();
@@ -48,14 +52,25 @@ try
     //Audio Services
     if (pootisBotConfig.EnableAudioServices)
     {
-        builder.Services.AddSingleton<AudioSelectionService>();
-        builder.Services.AddSingleton<AudioService>();
-    
         //Extensions
+        builder.Services.AddSingleton<LavaNode<LavaPlayer<LavaTrack>, LavaTrack>>(provider =>
+        {
+            ClientService clientService = provider.GetRequiredService<ClientService>();
+            
+            ILogger<LavaNode<LavaPlayer<LavaTrack>, LavaTrack>> lavaNodeLogger = provider.GetRequiredService<ILogger<LavaNode<LavaPlayer<LavaTrack>, LavaTrack>>>();
+            return new LavaNode(clientService.DiscordClient, pootisBotConfig.VictoriaConfig, lavaNodeLogger);
+        });
+        
+        /*
         builder.Services.AddLavaNode(configuration =>
         {
-            configuration = pootisBotConfig.VictoriaConfig;
+            
+            configuration.Port = 2333;
         });
+        */
+        
+        //builder.Services.AddSingleton<AudioSelectionService>();
+        builder.Services.AddSingleton<AudioService>();
     }
     
     //Other
