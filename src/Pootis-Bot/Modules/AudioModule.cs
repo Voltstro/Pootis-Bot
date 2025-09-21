@@ -158,7 +158,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
                 options.Add($"{title} by {author}", track.Hash);
             }
 
-            MessageComponent selectMessageComponent = selectMenuService.CreateSelectMenu("Select what song to play.", options, async trackHash =>
+            MessageComponent selectMessageComponent = selectMenuService.CreateSelectMenu("Select what song to play.", options, async (trackHash, messageComponent) =>
             {
                 LavaTrack track = await audioService.GetTrackFromHash(trackHash);
                 await audioService.Play(track, Context.Guild);

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Core.Buttons;
 using Pootis_Bot.Services.Core.Client;
 using Pootis_Bot.Services.Core.SelectMenu;
 using Pootis_Bot.Services.Profile;
@@ -42,6 +43,8 @@ try
     builder.Services.AddHostedService<ClientBackgroundService>();
 
     builder.Services.AddSingleton<SelectMenuService>();
+    builder.Services.AddSingleton<ButtonsService>();
+    builder.Services.AddSingleton<ServerSetupService>();
     
     //Background Services
     builder.Services.AddHostedService<ProfileXpBackgroundService>();
@@ -61,15 +64,6 @@ try
             return new LavaNode(clientService.DiscordClient, pootisBotConfig.VictoriaConfig, lavaNodeLogger);
         });
         
-        /*
-        builder.Services.AddLavaNode(configuration =>
-        {
-            
-            configuration.Port = 2333;
-        });
-        */
-        
-        //builder.Services.AddSingleton<AudioSelectionService>();
         builder.Services.AddSingleton<AudioService>();
     }
     

@@ -35,7 +35,7 @@ public sealed class SelectMenuService
     /// <param name="options"></param>
     /// <param name="onSelect"></param>
     /// <returns></returns>
-    public MessageComponent CreateSelectMenu(string placeholder, Dictionary<string, string> options, Func<string, Task> onSelect)
+    public MessageComponent CreateSelectMenu(string placeholder, Dictionary<string, string> options, Func<string, SocketMessageComponent, Task> onSelect, string? responseMessage = null)
     {
         string menuItemId = $"{ItemIdPrefix}.{Guid.NewGuid()}";
         
@@ -58,7 +58,7 @@ public sealed class SelectMenuService
         ComponentBuilder builder = new ComponentBuilder()
             .WithSelectMenu(menu);
         
-        selectActions.Add(menuItemId, new SelectMenuItem(onSelect, menu, optionIdToValueMapping));
+        selectActions.Add(menuItemId, new SelectMenuItem(onSelect, menu, optionIdToValueMapping, responseMessage));
         
         return builder.Build();
     }
@@ -83,6 +83,9 @@ public sealed class SelectMenuService
             //Update select menu to be disabled
             SelectMenuBuilder selectMenuBuilder = selectMenuItem.SelectMenu;
             selectMenuBuilder.WithDisabled(true);
+            
+            if (selectMenuItem.ResponseMessage != null)
+                selectMenuBuilder.Placeholder = selectMenuItem.ResponseMessage;
 
             ComponentBuilder builder = new ComponentBuilder()
                 .WithSelectMenu(selectMenuBuilder);
@@ -93,7 +96,7 @@ public sealed class SelectMenuService
             KeyValuePair<string, string> selectedMenuItemValue = selectMenuItem.OptionKeysToValue.First(x => x.Key == selectedId);
 
             //Invoke action
-            await selectMenuItem.Action.Invoke(selectedMenuItemValue.Value);
+            await selectMenuItem.Action.Invoke(selectedMenuItemValue.Value, messageComponent);
         }
         catch (Exception ex)
         {
