@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Discord;
 
-namespace Pootis_Bot.Services.Core.Buttons;
+namespace Pootis_Bot.Services.Interactions.Buttons;
 
 public struct ButtonGroup
 {

@@ -8,8 +8,9 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using Pootis_Bot.Helper;
-using Pootis_Bot.Services.Core.Buttons;
-using Pootis_Bot.Services.Core.SelectMenu;
+using Pootis_Bot.Services.Interactions.Buttons;
+using Pootis_Bot.Services.Interactions.Modal;
+using Pootis_Bot.Services.Interactions.SelectMenu;
 using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
 using Pootis_Bot.Shared.Models;
@@ -193,17 +194,20 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
         private readonly ServerSetupService serverSetupService;
         private readonly ButtonsService buttonsService;
         private readonly SelectMenuService selectMenuService;
+        private readonly ModalService modalService;
     
         public WelcomeGoodbyeSubGroupModule(
             PootisBotDbContext dbContext,
             ServerSetupService serverSetupService,
             ButtonsService buttonsService,
-            SelectMenuService selectMenuService)
+            SelectMenuService selectMenuService,
+            ModalService modalService)
         {
             this.dbContext = dbContext;
             this.serverSetupService = serverSetupService;
             this.buttonsService = buttonsService;
             this.selectMenuService = selectMenuService;
+            this.modalService = modalService;
         }
 
         [SlashCommand("channel", "Gets or sets the channel used for welcome and goodbye messages")]
@@ -246,7 +250,7 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
             StringBuilder sb = new();
             if (messages.Length > 0)
             {
-                sb.AppendLine($"Total of {messages.Length} messages:\n");
+                sb.AppendLine($"Total of {messages.Length} messages:");
                 foreach (ServerMessage serverMessage in messages)
                 {
                     sb.AppendLine($" - {serverMessage.Message}");
@@ -269,6 +273,25 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
             [
                 new Button
                 {
+                    Label = "Add Message",
+                    Style = ButtonStyle.Primary,
+                    DisableOnClick = true,
+                    Action = async (messageComponent) =>
+                    {
+                        Modal modal = modalService.CreateModal("Enter new message", async (SetupWgAddMessage addMessage, SocketModal socketModal) =>
+                        {
+                            if (!socketModal.GuildId.HasValue)
+                                return;
+                            
+                            await serverSetupService.AddMessage(socketModal.GuildId.Value, messageType, addMessage.Message);
+                            await socketModal.RespondAsync("New message has been saved.");
+                        });
+
+                        await messageComponent.RespondWithModalAsync(modal);
+                    }
+                },
+                new Button
+                {
                     Label = "Remove Message",
                     Style = ButtonStyle.Danger,
                     DisableOnClick = true,
@@ -278,7 +301,7 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
                             async (item, messageComponent) =>
                             {
                                 await serverSetupService.RemoveMessage(guild.Id, Guid.Parse(item));
-                            }, "Successfully removed message.");
+                            }, "Message has been removed.");
 
                         await messageComponent.FollowupAsync("Select what message to remove:", components: menu);
                     }
@@ -321,6 +344,12 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
                 await RespondAsync($"Welcome/goodbye messages are now enabled.");
             else
                 await RespondAsync("Welcome/goodbye messages are now disabled.");
+        }
+
+        private class SetupWgAddMessage
+        {
+            [ModalProperty("Message", "Enter Message", true, ModalPropertyType.Text)]
+            public string Message;
         }
     }
 }

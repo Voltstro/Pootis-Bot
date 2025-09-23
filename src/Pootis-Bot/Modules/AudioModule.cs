@@ -7,7 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
-using Pootis_Bot.Services.Core.SelectMenu;
+using Pootis_Bot.Services.Interactions.SelectMenu;
 using Victoria;
 
 namespace Pootis_Bot.Modules;

@@ -7,7 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Services.Core.Client;
 
-namespace Pootis_Bot.Services.Core.SelectMenu;
+namespace Pootis_Bot.Services.Interactions.SelectMenu;
 
 /// <summary>
 ///     Service for handling select menus
@@ -20,7 +20,7 @@ public sealed class SelectMenuService
     private readonly ILogger<SelectMenuService> logger;
     private readonly Dictionary<string, SelectMenuItem> selectActions;
     
-    public SelectMenuService( ILogger<SelectMenuService> logger, ClientService clientService)
+    public SelectMenuService(ILogger<SelectMenuService> logger, ClientService clientService)
     {
         this.logger = logger;
         selectActions = new Dictionary<string, SelectMenuItem>();

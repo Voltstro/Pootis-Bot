@@ -7,9 +7,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
-using Pootis_Bot.Services.Core.Buttons;
 using Pootis_Bot.Services.Core.Client;
-using Pootis_Bot.Services.Core.SelectMenu;
+using Pootis_Bot.Services.Interactions.Buttons;
+using Pootis_Bot.Services.Interactions.Modal;
+using Pootis_Bot.Services.Interactions.SelectMenu;
 using Pootis_Bot.Services.Profile;
 using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
@@ -45,6 +46,7 @@ try
     builder.Services.AddSingleton<SelectMenuService>();
     builder.Services.AddSingleton<ButtonsService>();
     builder.Services.AddSingleton<ServerSetupService>();
+    builder.Services.AddSingleton<ModalService>();
     
     //Background Services
     builder.Services.AddHostedService<ProfileXpBackgroundService>();

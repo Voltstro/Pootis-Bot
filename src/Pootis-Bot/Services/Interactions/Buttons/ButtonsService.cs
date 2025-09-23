@@ -7,7 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Services.Core.Client;
 
-namespace Pootis_Bot.Services.Core.Buttons;
+namespace Pootis_Bot.Services.Interactions.Buttons;
 
 /// <summary>
 ///     Service for handling select menus
@@ -80,7 +80,7 @@ public sealed class ButtonsService
                 buttonBuilder.IsDisabled = true;
                 componentBuilder.WithButton(buttonBuilder);
                 
-                await messageComponent.UpdateAsync(x => x.Components = componentBuilder.Build());
+                //await messageComponent.UpdateAsync(x => x.Components = componentBuilder.Build());
                 //await messageComponent.UpdateAsync(x => x.)
             }
             

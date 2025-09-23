@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 
-namespace Pootis_Bot.Services.Core.Buttons;
+namespace Pootis_Bot.Services.Interactions.Buttons;
 
 public struct ButtonItem
 {

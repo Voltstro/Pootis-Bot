@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 
-namespace Pootis_Bot.Services.Core.SelectMenu;
+namespace Pootis_Bot.Services.Interactions.SelectMenu;
 
 public class SelectMenuItem
 {
