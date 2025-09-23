@@ -7,7 +7,8 @@ namespace Pootis_Bot.Shared.Logging;
 /// <summary>
 ///     Holder class for Serilog logger
 /// </summary>
-public sealed class Logger : IDisposable
+[GenerateFiggleText("LogoFiggle", "graffiti", "Pootis-Bot")]
+public sealed partial class Logger : IDisposable
 {
     internal Logger(IConfiguration configuration)
     {
@@ -20,7 +21,7 @@ public sealed class Logger : IDisposable
             .CreateLogger();
 
         //NOTE: We are adding a new line due to all the stuff at the start of each log message
-        Log.Information($"\n{FiggleFonts.Graffiti.Render("Pootis-Bot")}");
+        Log.Information($"\n{LogoFiggle}");
         Log.Information("Pootis-Bot starting...");
     }
     
