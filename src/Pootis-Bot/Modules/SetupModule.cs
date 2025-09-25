@@ -273,18 +273,18 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
             [
                 new Button
                 {
-                    Label = "Add Message",
+                    Label = "Add New Message",
                     Style = ButtonStyle.Primary,
                     DisableOnClick = true,
-                    Action = async (messageComponent) =>
+                    Action = async messageComponent =>
                     {
-                        Modal modal = modalService.CreateModal("Enter new message", async (SetupWgAddMessage addMessage, SocketModal socketModal) =>
+                        Modal modal = modalService.CreateModal($"Enter New {messageType} Message", async (SetupWgAddMessage addMessage, SocketModal socketModal) =>
                         {
                             if (!socketModal.GuildId.HasValue)
                                 return;
                             
                             await serverSetupService.AddMessage(socketModal.GuildId.Value, messageType, addMessage.Message);
-                            await socketModal.RespondAsync("New message has been saved.");
+                            await socketModal.RespondAsync($"New {messageType.ToString().ToLower()} message has been saved.");
                         });
 
                         await messageComponent.RespondWithModalAsync(modal);
@@ -295,7 +295,7 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
                     Label = "Remove Message",
                     Style = ButtonStyle.Danger,
                     DisableOnClick = true,
-                    Action = async (messageComponent) =>
+                    Action = async messageComponent =>
                     {
                         MessageComponent menu = selectMenuService.CreateSelectMenu("Select", options,
                             async (item, messageComponent) =>
@@ -303,7 +303,7 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
                                 await serverSetupService.RemoveMessage(guild.Id, Guid.Parse(item));
                             }, "Message has been removed.");
 
-                        await messageComponent.FollowupAsync("Select what message to remove:", components: menu);
+                        await messageComponent.RespondAsync("Select what message to remove:", components: menu);
                     }
                 }
 

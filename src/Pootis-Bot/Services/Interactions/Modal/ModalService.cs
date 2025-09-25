@@ -1,35 +1,41 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Services.Core.Client;
 
 namespace Pootis_Bot.Services.Interactions.Modal;
 
-public class ModalService
+/// <summary>
+///     Interaction service for handling Modal's from Discord
+/// </summary>
+public sealed class ModalService : InteractionServiceBase<ModalService, ModalInteractionData>
 {
-    private const string ModalIdPrefix = "PootisBotModal";
+    protected override string InteractionServiceName => "Modal";
     
-    private readonly ILogger<ModalService> logger;
-
-    private List<ModalItem> modals;
-    
-    public ModalService(ILogger<ModalService> logger, ClientService clientService)
+    public ModalService(
+        ILogger<ModalService> logger,
+        IMemoryCache memoryCache,
+        ClientService clientService)
+        : base(logger, memoryCache)
     {
-        this.logger = logger;
-        modals = new List<ModalItem>();
-        
         clientService.DiscordClient.ModalSubmitted += OnModalSubmitted;
     }
     
+    /// <summary>
+    ///     Creates a Discord modal
+    /// </summary>
+    /// <param name="title">The title of the modal</param>
+    /// <param name="onSubmit">Func to invoke when the modal is submitted</param>
+    /// <typeparam name="T">Class representing the modal form</typeparam>
+    /// <returns></returns>
     public Discord.Modal CreateModal<T>(string title, Func<T, SocketModal, Task> onSubmit)
         where T : class
     {
-        string modalId = $"{ModalIdPrefix}.{Guid.NewGuid()}";
+        string modalId = GenerateItemId();
         
         ModalBuilder builder = new();
         builder.WithTitle(title);
@@ -40,67 +46,74 @@ public class ModalService
         foreach (FieldInfo field in fields)
         {
             ModalPropertyAttribute? modalPropertyAttribute = field.GetCustomAttribute<ModalPropertyAttribute>();
-            if (modalPropertyAttribute == null || field.FieldType != typeof(string))
+            if (modalPropertyAttribute == null)
             {
-                logger.LogWarning("Field {FieldName} on class {ClassName} either does not have the ModalPropertyAttribute attribute, or is not a type of string.", field.Name, type.Name);
+                Logger.LogWarning("Field {FieldName} on class {ClassName} does not have the ModalPropertyAttribute attribute.", field.Name, type.Name);
                 continue;
             }
 
-            TextInputBuilder textInputBuilder = new();
-            textInputBuilder.WithCustomId(field.Name);
-            textInputBuilder.WithLabel(modalPropertyAttribute.Title);
-            textInputBuilder.WithPlaceholder(modalPropertyAttribute.Placeholder);
-            textInputBuilder.WithRequired(modalPropertyAttribute.Required);
-            builder.AddTextInput(textInputBuilder);
+            Type fieldType = field.FieldType;
+            if (fieldType == typeof(string))
+            {
+                TextInputBuilder textInputBuilder = new();
+                textInputBuilder.WithCustomId(field.Name);
+                textInputBuilder.WithLabel(modalPropertyAttribute.Title);
+                textInputBuilder.WithPlaceholder(modalPropertyAttribute.Placeholder);
+                textInputBuilder.WithRequired(modalPropertyAttribute.Required);
+                builder.AddTextInput(textInputBuilder);
+            }
+            else
+            {
+                throw new ArgumentException($"Field {fieldType.Name} on class {type.Name} is not supported!");
+            }
         }
         
         //Can't just cast directly as Func<object, Task>, so create a wrapper func
         //Not great, but works
         Func<object, SocketModal, Task> onSubmitCast = async (objValue, socketModal) => await onSubmit(objValue as T, socketModal);
-        ModalItem modalItem = new(modalId, type, onSubmitCast);
-        modals.Add(modalItem);
+        
+        ModalInteractionData interactionData = new(modalId, type, onSubmitCast);
+        StoreInteraction(interactionData);
 
         return builder.Build();
     }
     
     private async Task OnModalSubmitted(SocketModal socketModal)
     {
-        SocketModalData modalData = socketModal.Data;
-        if (!modalData.CustomId.StartsWith(ModalIdPrefix))
+        ModalInteractionData? modalItem = TryRetrieveInteraction(socketModal.Data.CustomId);
+        if (modalItem == null)
             return;
-
+        
         try
         {
-            ModalItem? modalItem = modals.FirstOrDefault(x => x.Id == modalData.CustomId);
-            if (modalItem == null)
-            {
-                logger.LogWarning("Modal item with id {Id} does not exist", modalData.CustomId);
-                return;
-            }
-            
-            //Create type
             Type modalType = modalItem.DataClassType;
             object dataClassInstance = Activator.CreateInstance(modalType)!;
-
-            foreach (SocketMessageComponentData socketMessageComponentData in modalData.Components)
+            
+            foreach (SocketMessageComponentData socketMessageComponentData in socketModal.Data.Components)
             {
                 FieldInfo? field = modalType.GetField(socketMessageComponentData.CustomId);
                 if (field == null)
                 {
-                    logger.LogWarning("Field {PropertyName} requested from modal {ModalId} on type {TypeName} does not exist!", socketMessageComponentData.CustomId, modalItem.Id, modalType.Name);
+                    Logger.LogWarning("Field {PropertyName} requested from modal {ModalId} on type {TypeName} does not exist!", socketMessageComponentData.CustomId, modalItem.ItemId, modalType.Name);
                     continue;
                 }
-
-                field.SetValue(dataClassInstance, socketMessageComponentData.Value);
+                
+                Type fieldType = field.FieldType;
+                if (fieldType == typeof(string))
+                {
+                    field.SetValue(dataClassInstance, socketMessageComponentData.Value);
+                }
+                else
+                {
+                    throw new ArgumentException($"Field {fieldType.Name} on {modalItem.ItemId} is not supported!");
+                }
             }
 
             await modalItem.OnSubmit.Invoke(dataClassInstance, socketModal);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error handling modal!");
+            Logger.LogError(ex, "Error handling modal interaction!");
         }
     }
-
-    private record ModalItem(string Id, Type DataClassType, Func<object, SocketModal, Task> OnSubmit);
 }

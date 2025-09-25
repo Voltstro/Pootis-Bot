@@ -29,6 +29,9 @@ try
 {
     //Http Client
     builder.Services.AddHttpClient();
+
+    //Memory cache
+    builder.Services.AddMemoryCache();
     
     //Setup Config
     PootisBotConfig pootisBotConfig = new();
