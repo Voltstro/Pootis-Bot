@@ -5,14 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Pootis_Bot.Helper;
+using Pootis_Bot.Services;
 using Pootis_Bot.Services.Interactions.Buttons;
 using Pootis_Bot.Services.Interactions.Modal;
 using Pootis_Bot.Services.Interactions.SelectMenu;
 using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
+using Pootis_Bot.Shared.Helper;
 using Pootis_Bot.Shared.Models;
 using Emoji = Pootis_Bot.Core.Discord.Emoji;
 using MessageType = Pootis_Bot.Shared.Messages.MessageType;
@@ -350,6 +354,45 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
         {
             [ModalProperty("Message", "Enter Message", true, ModalPropertyType.Text)]
             public string Message;
+        }
+    }
+
+    [Group("autovc", "Commands related to AutoVCs")]
+    public class AutoVcSubGroupModule : InteractionModuleBase<SocketInteractionContext>
+    {
+        private const string ObjectName = "AutoVC";
+        
+        private readonly ILogger<AutoVcSubGroupModule> logger;
+        private readonly AutoVcService autoVcService;
+        private readonly ServerService serverService;
+        
+        public AutoVcSubGroupModule(ILogger<AutoVcSubGroupModule> logger, AutoVcService autoVcService, ServerService serverService)
+        {
+            this.logger = logger;
+            this.autoVcService = autoVcService;
+            this.serverService = serverService;
+        }
+        
+        [SlashCommand("create", "Creates a new AutoVc channel")]
+        public async Task CreateAutoVc(string baseName, int maxChannels = 3, int maxUsers = 25)
+        {
+            SocketGuild guild = Context.Guild;
+            Server server = serverService.GetOrCreateServer(guild.Id);
+
+            try
+            {
+                //Create new channel
+                RestVoiceChannel vcChannel = await guild.CreateVoiceChannelAsync($"➕ New {baseName} VC");
+                autoVcService.CreateAutoVc(server.Id, vcChannel.Id, baseName, maxChannels, maxUsers);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed creating new AutoVC on server {ServerId}!", server.Id);
+                await RespondAsync(Messages.CreatedFailed(ObjectName));
+                return;
+            }
+            
+            await RespondAsync(Messages.CreateSuccessful(ObjectName));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pootis_Bot.Shared;
@@ -12,9 +13,11 @@ using Pootis_Bot.Shared.Messages;
 namespace Pootis_Bot.Shared.Migrations
 {
     [DbContext(typeof(PootisBotDbContext))]
-    partial class PootisBotDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251002113207_AddAutoVc")]
+    partial class AddAutoVc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

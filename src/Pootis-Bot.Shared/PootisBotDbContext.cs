@@ -20,6 +20,8 @@ public class PootisBotDbContext : DbContext
     {
     }
     
+    public DbSet<AutoVC> AutoVCs { get; set; }
+    
     public DbSet<Profile> Profiles { get; set; }
     
     public DbSet<Server> Servers { get; set; }
@@ -36,6 +38,14 @@ public class PootisBotDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //Default Values
+        modelBuilder.Entity<AutoVC>()
+            .Property(p => p.CreatedAt)
+            .HasDefaultValueSql("now()");
+        
+        modelBuilder.Entity<AutoVC>()
+            .Property(p => p.UpdatedAt)
+            .HasDefaultValueSql("now()");
+        
         modelBuilder.Entity<Profile>()
             .Property(p => p.CreatedAt)
             .HasDefaultValueSql("now()");
@@ -53,6 +63,10 @@ public class PootisBotDbContext : DbContext
             .HasDefaultValueSql("now()");
         
         //Indexes
+        modelBuilder.Entity<AutoVC>()
+            .HasIndex(p => p.BaseVcChannelId)
+            .IsUnique();
+        
         modelBuilder.Entity<Server>()
             .HasIndex(p => p.DiscordId)
             .IsUnique();

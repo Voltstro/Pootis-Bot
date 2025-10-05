@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
+using Pootis_Bot.Services;
 using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Background;
 using Pootis_Bot.Services.Core.Client;
 using Pootis_Bot.Services.Interactions.Buttons;
 using Pootis_Bot.Services.Interactions.Modal;
@@ -50,12 +52,16 @@ try
     builder.Services.AddSingleton<ButtonsService>();
     builder.Services.AddSingleton<ServerSetupService>();
     builder.Services.AddSingleton<ModalService>();
+
+    builder.Services.AddScoped<ServerService>();
+    builder.Services.AddScoped<AutoVcService>();
     
     //Background Services
     builder.Services.AddHostedService<ProfileXpBackgroundService>();
     builder.Services.AddHostedService<ServerRuleReactionBackgroundService>();
     builder.Services.AddHostedService<ServerWelcomeGoodbyeBackgroundService>();
     builder.Services.AddHostedService<ServerSetupBackgroundService>();
+    builder.Services.AddHostedService<AutoVcBackgroundService>();
 
     //Audio Services
     if (pootisBotConfig.EnableAudioServices)
