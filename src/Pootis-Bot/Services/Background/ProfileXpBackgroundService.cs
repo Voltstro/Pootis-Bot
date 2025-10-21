@@ -2,35 +2,33 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pootis_Bot.Core;
-using Pootis_Bot.Helper;
 using Pootis_Bot.Services.Core.Client;
-using Pootis_Bot.Shared;
 
-namespace Pootis_Bot.Services.Profile;
+namespace Pootis_Bot.Services.Background;
 
 /// <summary>
-///     Service for handling profile XP
+///     Background service for handling profile XP
 /// </summary>
 public class ProfileXpBackgroundService : IHostedService
 {
     private readonly ILogger<ProfileXpBackgroundService> logger;
-    private readonly IDbContextFactory<PootisBotDbContext> dbContextFactory;
+    private readonly IServiceScopeFactory scopeFactory;
     private readonly PootisBotConfig config;
     private readonly DiscordSocketClient client;
     
     public ProfileXpBackgroundService(
         ILogger<ProfileXpBackgroundService> logger,
-        IDbContextFactory<PootisBotDbContext> dbContextFactory,
+        IServiceScopeFactory scopeFactory,
         IOptions<PootisBotConfig> config,
         ClientService clientService)
     {
         this.logger = logger;
-        this.dbContextFactory = dbContextFactory;
+        this.scopeFactory = scopeFactory;
         this.config = config.Value;
         client = clientService.DiscordClient;
     }
@@ -55,8 +53,10 @@ public class ProfileXpBackgroundService : IHostedService
         if(author.IsBot || author.IsWebhook)
             return;
 
-        await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
-        Shared.Models.Profile profile = dbContext.GetOrCreateUser(message.Author);
+        using IServiceScope serviceScope = scopeFactory.CreateScope();
+        ProfileService profileService = serviceScope.ServiceProvider.GetRequiredService<ProfileService>();
+        
+        Shared.Models.Profile profile = profileService.GetOrCreateProfile(message.Author.Id);
             
         //Check cooldown time
         if (profile.LastXpMessageTime != null)
@@ -72,7 +72,7 @@ public class ProfileXpBackgroundService : IHostedService
         profile.LastXpMessageTime = DateTime.UtcNow;
         
         logger.LogDebug("Added {XpAmount} XP to user {UserId}", config.XpGiveAmount, profile.Id);
-        await dbContext.SaveChangesAsync();
+        profileService.UpdateProfile(profile);
         
         //New level
         if (profile.LevelNumber > lastLevel)

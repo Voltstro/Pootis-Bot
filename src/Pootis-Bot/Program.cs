@@ -13,8 +13,6 @@ using Pootis_Bot.Services.Core.Client;
 using Pootis_Bot.Services.Interactions.Buttons;
 using Pootis_Bot.Services.Interactions.Modal;
 using Pootis_Bot.Services.Interactions.SelectMenu;
-using Pootis_Bot.Services.Profile;
-using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared;
 using Pootis_Bot.Shared.Logging;
 using Serilog;
@@ -44,26 +42,28 @@ try
     //Install Discord client config
     builder.Services.Configure<DiscordSocketConfig>(builder.Configuration.GetSection("DiscordConfig"));
     
-    //Core Pootis-Bot Services
+    //Generic services
+    builder.Services.AddScoped<AutoVcService>();
+    builder.Services.AddScoped<ProfileService>();
+    builder.Services.AddScoped<ServerMessageService>();
+    builder.Services.AddScoped<ServerService>();
+    
+    //Core Pootis-Bot services
     builder.Services.AddSingleton<ClientService>();
     builder.Services.AddHostedService<ClientBackgroundService>();
-
+    
+    //Interaction services
     builder.Services.AddSingleton<SelectMenuService>();
     builder.Services.AddSingleton<ButtonsService>();
-    builder.Services.AddSingleton<ServerSetupService>();
     builder.Services.AddSingleton<ModalService>();
-
-    builder.Services.AddScoped<ServerService>();
-    builder.Services.AddScoped<AutoVcService>();
     
-    //Background Services
+    //Background services
+    builder.Services.AddHostedService<AutoVcBackgroundService>();
     builder.Services.AddHostedService<ProfileXpBackgroundService>();
     builder.Services.AddHostedService<ServerRuleReactionBackgroundService>();
     builder.Services.AddHostedService<ServerWelcomeGoodbyeBackgroundService>();
-    builder.Services.AddHostedService<ServerSetupBackgroundService>();
-    builder.Services.AddHostedService<AutoVcBackgroundService>();
 
-    //Audio Services
+    //Audio services
     if (pootisBotConfig.EnableAudioServices)
     {
         //Extensions

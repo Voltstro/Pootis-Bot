@@ -1,33 +1,31 @@
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Services.Core.Client;
-using Pootis_Bot.Shared;
 
-namespace Pootis_Bot.Services.Server;
+namespace Pootis_Bot.Services.Background;
 
 /// <summary>
 ///     Background service for handling server rule reactions
 /// </summary>
-public class ServerRuleReactionBackgroundService : IHostedService
+public sealed class ServerRuleReactionBackgroundService : IHostedService
 {
     private readonly ILogger<ServerRuleReactionBackgroundService> logger;
-    private readonly IDbContextFactory<PootisBotDbContext> dbContextFactory;
+    private readonly IServiceScopeFactory scopeFactory;
     private readonly DiscordSocketClient client;
     
     public ServerRuleReactionBackgroundService(
         ILogger<ServerRuleReactionBackgroundService> logger,
-        IDbContextFactory<PootisBotDbContext> dbContextFactory,
+        IServiceScopeFactory scopeFactory,
         ClientService clientService)
     {
         this.logger = logger;
-        this.dbContextFactory = dbContextFactory;
+        this.scopeFactory = scopeFactory;
         client = clientService.DiscordClient;
     }
     
@@ -45,7 +43,8 @@ public class ServerRuleReactionBackgroundService : IHostedService
     
     private async Task ClientOnReactionAdded(Cacheable<IUserMessage, ulong> userMessage, Cacheable<IMessageChannel, ulong> messageChannel, SocketReaction reaction)
     {
-        await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
+        using IServiceScope serviceScope = scopeFactory.CreateScope();
+        ServerService serverService = serviceScope.ServiceProvider.GetRequiredService<ServerService>();
 
         ulong channelId = messageChannel.Id;
         ulong messageId = userMessage.Id;
@@ -53,8 +52,8 @@ public class ServerRuleReactionBackgroundService : IHostedService
         ulong userId = reaction.UserId;
         
         logger.LogDebug("Got reaction on {ChannelId}/{MessageId} for {Emoji} by {UserId}", channelId, messageId, emoji, userId);
-
-        Shared.Models.Server? server = dbContext.Servers.FirstOrDefault(x => x.RuleReactionChannelId == channelId && x.RuleReactionMessageId == messageId && x.RuleReactionEmoji == emoji);
+        
+        Shared.Models.Server? server = serverService.GetServerByRuleReactionChannelMessageAndEmoji(channelId, messageId, emoji);
         if(server is not { RuleReactionEnabled: true } || server.RuleReactionRoleId == null)
             return;
 

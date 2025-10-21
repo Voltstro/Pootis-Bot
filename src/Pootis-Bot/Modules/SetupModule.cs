@@ -1,21 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.Rest;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Helper;
 using Pootis_Bot.Services;
 using Pootis_Bot.Services.Interactions.Buttons;
 using Pootis_Bot.Services.Interactions.Modal;
 using Pootis_Bot.Services.Interactions.SelectMenu;
-using Pootis_Bot.Services.Server;
-using Pootis_Bot.Shared;
 using Pootis_Bot.Shared.Helper;
 using Pootis_Bot.Shared.Models;
 using Emoji = Pootis_Bot.Core.Discord.Emoji;
@@ -29,31 +25,34 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
     [Group("rule-reaction", "Commands related to rule reactions")]
     public class RuleReactionSubCommandGroupModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private readonly PootisBotDbContext dbContext;
+        private readonly ILogger<RuleReactionSubCommandGroupModule> logger;
+        private readonly ServerService serverService;
     
-        public RuleReactionSubCommandGroupModule(PootisBotDbContext dbContext)
+        public RuleReactionSubCommandGroupModule(ILogger<RuleReactionSubCommandGroupModule> logger, ServerService serverService)
         {
-            this.dbContext = dbContext;
+            this.logger = logger;
+            this.serverService = serverService;
         }
 
         [SlashCommand("status", "Gets the status of rule reaction setup")]
         public async Task SetupRrStatus()
         {
-            Server server = dbContext.GetOrCreateServer(Context.Guild);
+            SocketGuild guild = Context.Guild;
+            Server server = serverService.GetOrCreateServer(guild.Id);
             
             IMessage? message = null;
-            SocketTextChannel? channel = server.RuleReactionChannelId.HasValue ? Context.Guild.GetTextChannel(server.RuleReactionChannelId.Value) : null;
+            SocketTextChannel? channel = server.RuleReactionChannelId.HasValue ? guild.GetTextChannel(server.RuleReactionChannelId.Value) : null;
             if (channel != null && server.RuleReactionMessageId.HasValue)
                 message = await channel.GetMessageAsync(server.RuleReactionMessageId.Value);
         
             //Role
             SocketRole? role = null;
             if(server.RuleReactionRoleId.HasValue)
-                role = Context.Guild.GetRole(server.RuleReactionRoleId.Value);
+                role = guild.GetRole(server.RuleReactionRoleId.Value);
 
             EmbedBuilder embedBuilder = new();
             embedBuilder.WithTitle("Rule Reaction Status");
-            embedBuilder.WithDescription($"Status of Rule Reaction for **{Context.Guild.Name}**");
+            embedBuilder.WithDescription($"Status of Rule Reaction for **{guild.Name}**");
             embedBuilder.AddField("Enabled?", server.RuleReactionEnabled);
             embedBuilder.AddField("Message", message == null ? "No Message Set" : $"[Link]({message.GetMessageUrl()})");
             embedBuilder.AddField("Emoji", string.IsNullOrEmpty(server.RuleReactionEmoji) ? "No Emoji Set" : server.RuleReactionEmoji);
@@ -62,190 +61,171 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
             await RespondAsync(embed: embedBuilder.Build());
         }
         
-        [SlashCommand("message", "Gets or sets the message that rule reactions should occur on")]
-        public async Task SetupRrMessage(SocketTextChannel channel, [Summary("messageId", "Discord ID of the message to look for a reaction on.")] string? messageId = null)
+        [SlashCommand("message", "Sets the message that rule reactions should occur on")]
+        public async Task SetupRrMessage(SocketTextChannel channel, [Summary("messageId", "Discord ID of the message to look for a reaction on.")] string messageId)
         {
-            ulong validMessageId = 0;
-            if (messageId != null)
+            // Validate messageId
+            bool valid = ulong.TryParse(messageId, out ulong validMessageId);
+            if (!valid)
             {
-                //Convert to ulong
-                bool valid = ulong.TryParse(messageId, out validMessageId);
-                if (!valid)
-                {
-                    await RespondAsync("Message ID is not a valid integer!");
-                    return;
-                }
-                
-                //Validate message ID first
-                IMessage? message = await channel.GetMessageAsync(validMessageId);
-                if (message == null)
-                {
-                    await RespondAsync($"Message of ID **{messageId}** was not found in channel {channel.Mention}!");
-                    return;
-                }
-
-                await RespondAsync($"Message of ID **{messageId}** in channel {channel.Mention} has been set as the rule reaction message.");
+                await RespondAsync(Messages.ValidationFailed("messageId", "a valid number"));
                 return;
             }
             
-            //Set channel and message
-            Server server = dbContext.GetOrCreateServer(Context.Guild);
-            server.RuleReactionChannelId = channel.Id;
-            
-            if(validMessageId != 0)
+            //Attempt to get message
+            IMessage? message = await channel.GetMessageAsync(validMessageId);
+            if (message == null)
+            {
+                await RespondAsync(Messages.ValidationFailed("messageId", "a valid ID of message"));
+                return;
+            }
+
+            try
+            {
+                //Set channel and message
+                Server server = serverService.GetOrCreateServer(Context.Guild.Id);
+                server.RuleReactionChannelId = channel.Id;
                 server.RuleReactionMessageId = validMessageId;
-            await dbContext.SaveChangesAsync();
-
-            //Create modal
-            ModalBuilder modelBuilder = new ModalBuilder()
-                .WithTitle("Rule Reaction Message")
-                .WithCustomId(ServerSetupBackgroundService.ServerSetupRuleReactionModalId)
-                .AddTextInput("Message", ServerSetupBackgroundService.ServerSetupRuleReactionModalMessageId, TextInputStyle.Paragraph, "What message would you like to be placed in this channel and used for rule-reactions?");
-
-            await Context.Interaction.RespondWithModalAsync(modelBuilder.Build());
-        }
-
-        [SlashCommand("role", "Gets or sets what role is given on reaction")]
-        public async Task SetupRrRole(SocketRole? role = null)
-        {
-            Server server = dbContext.GetOrCreateServer(Context.Guild);
-
-            //No role provided then get the current role and print
-            if (role == null)
+                serverService.UpdateServer(server);
+            }
+            catch (Exception ex)
             {
-                if (server.RuleReactionRoleId == null)
-                {
-                    await RespondAsync($"Currently no rule reaction role is set.");
-                    return;
-                }
-
-                SocketRole? currentRole = Context.Guild.GetRole(server.RuleReactionRoleId.Value);
-                await RespondAsync($"Currently the rule reaction role is **{currentRole.Name}**.");
+                logger.LogError(ex, "Failed to set rule reaction message");
+                await RespondAsync(Messages.SetFailed("rule reaction message"));
                 return;
             }
             
-            server.RuleReactionRoleId = role.Id;
-            await dbContext.SaveChangesAsync();
-            
-            await RespondAsync($"Rule reaction role was set to **{role.Name}**.");
+            await RespondAsync(Messages.SetSuccessful("rule reaction message",
+                $"channel {channel.Mention}({messageId})"));
         }
 
-        [SlashCommand("emoji", "Gets or sets what emoji is required to be reacted with")]
-        public async Task SetupRrEmoji(Emoji? emoji = null)
+        [SlashCommand("role", "Sets what role is given on reaction")]
+        public async Task SetupRrRole(SocketRole role)
         {
-            Server server = dbContext.GetOrCreateServer(Context.Guild);
+            SocketGuild guild = Context.Guild;
 
-            if (emoji == null)
+            try
             {
-                if (server.RuleReactionEmoji == null)
-                {
-                    await RespondAsync($"Currently no rule reaction emoji is set.");
-                    return;
-                }
-
-                await RespondAsync($"Currently the rule reaction emoji set to \"{server.RuleReactionEmoji}\".");
+                Server server = serverService.GetOrCreateServer(guild.Id);
+                server.RuleReactionRoleId = role.Id;
+                serverService.UpdateServer(server);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to set rule reaction role");
+                await RespondAsync(Messages.SetFailed("rule reaction role"));
                 return;
             }
-
-            server.RuleReactionEmoji = emoji.ToString();
-            await dbContext.SaveChangesAsync();
             
-            await RespondAsync($"Rule reaction emoji was set to \"{emoji.ToString()}\".");
+            await RespondAsync(Messages.SetSuccessful("rule reaction role", $"**{role.Name}**"));
+        }
+
+        [SlashCommand("emoji", "Sets what emoji is required to be reacted with")]
+        public async Task SetupRrEmoji(Emoji emoji)
+        {
+            try
+            {
+                Server server = serverService.GetOrCreateServer(Context.Guild.Id);
+                server.RuleReactionEmoji = emoji.ToString();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to set rule reaction emoji");
+                await RespondAsync(Messages.SetFailed("rule reaction emoji"));
+                return;
+            }
+            
+            await RespondAsync(Messages.SetSuccessful("rule reaction emoji", $"**{emoji}**"));
         }
 
         [SlashCommand("toggle", "Enables/disables rule reaction")]
         public async Task SetupRrEnable()
         {
-            Server server = dbContext.GetOrCreateServer(Context.Guild);
+            Server server = serverService.GetOrCreateServer(Context.Guild.Id);
 
             //Need to check that everything is all good (if we are enabling)
             if (!server.RuleReactionEnabled)
             {
                 if (server.RuleReactionChannelId == null || server.RuleReactionMessageId == null)
                 {
-                    await RespondAsync("A channel and message must be set before rule reaction can be enabled!");
+                    await RespondAsync(Messages.FeatureCannotBeEnable("rule reaction", "channel and message to be set first"));
                     return;
                 }
 
                 if (server.RuleReactionRoleId == null)
                 {
-                    await RespondAsync("A role must be set before rule reaction can be enabled!");
+                    await RespondAsync(Messages.FeatureCannotBeEnable("rule reaction", "role to be set first"));
                     return;
                 }
 
                 if (server.RuleReactionEmoji == null)
                 {
-                    await RespondAsync("An emoji must be set before rule reaction can be enabled!");
+                    await RespondAsync(Messages.FeatureCannotBeEnable("rule reaction", "emoji to be set first"));
                     return;
                 }
             }
             
+            //Toggle
             server.RuleReactionEnabled = !server.RuleReactionEnabled;
-            await dbContext.SaveChangesAsync();
+            serverService.UpdateServer(server);
             
-            if(server.RuleReactionEnabled)
-                await RespondAsync("Rule reaction are now enabled.");
-            else
-                await RespondAsync("Rule reaction are now disabled.");
+            await RespondAsync(server.RuleReactionEnabled ? Messages.FeatureEnabled("rule reaction") : Messages.FeatureDisabled("rule reaction"));
         }
     }
 
     [Group("welcome-goodbye", "Commands related to welcome and goodbye messages")]
     public class WelcomeGoodbyeSubGroupModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private readonly PootisBotDbContext dbContext;
-
-        private readonly ServerSetupService serverSetupService;
+        private readonly ILogger<WelcomeGoodbyeSubGroupModule> logger;
+        private readonly ServerService serverService;
+        private readonly ServerMessageService serverMessageService;
         private readonly ButtonsService buttonsService;
         private readonly SelectMenuService selectMenuService;
         private readonly ModalService modalService;
     
         public WelcomeGoodbyeSubGroupModule(
-            PootisBotDbContext dbContext,
-            ServerSetupService serverSetupService,
+            ILogger<WelcomeGoodbyeSubGroupModule> logger,
+            ServerService serverService,
+            ServerMessageService serverMessageService,
             ButtonsService buttonsService,
             SelectMenuService selectMenuService,
             ModalService modalService)
         {
-            this.dbContext = dbContext;
-            this.serverSetupService = serverSetupService;
+            this.logger = logger;
+            this.serverService = serverService;
+            this.serverMessageService =  serverMessageService;
             this.buttonsService = buttonsService;
             this.selectMenuService = selectMenuService;
             this.modalService = modalService;
         }
 
-        [SlashCommand("channel", "Gets or sets the channel used for welcome and goodbye messages")]
-        public async Task SetupWgChannel(SocketTextChannel? channel = null)
+        [SlashCommand("channel", "Sets the channel used for welcome and goodbye messages")]
+        public async Task SetupWgChannel(SocketTextChannel channel)
         {
-            Server server = dbContext.GetOrCreateServer(Context.Guild);
-
-            if (channel == null)
+            SocketGuild guild = Context.Guild;
+            try
             {
-                if (server.WelcomeGoodbyeChannelId == null)
-                {
-                    await RespondAsync("No welcome/goodbye channel is set.");
-                    return;
-                }
-                
-                channel = Context.Guild.GetTextChannel(server.WelcomeGoodbyeChannelId.Value);
-                await RespondAsync($"Welcome and goodbye channel is currently set to {channel.Mention}");
+                Server server = serverService.GetOrCreateServer(guild.Id);
+
+                server.WelcomeGoodbyeChannelId = channel.Id;
+                serverService.UpdateServer(server);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to set welcome goodbye channel");
+                await RespondAsync(Messages.SetFailed("welcome goodbye channel"));
                 return;
             }
-
-            server.WelcomeGoodbyeChannelId = channel.Id;
-            await dbContext.SaveChangesAsync();
-
-            await RespondAsync($"Welcome/goodbye channel is now set to {channel.Mention}");
+            
+            await Context.Interaction.RespondAsync(Messages.SetSuccessful("welcome goodbye channel", channel.Mention));
         }
 
-        [SlashCommand("messages", "Allows setup of messages")]
+        [SlashCommand("messages", "List all current message of type specified.")]
         public async Task SetupWgMessages(MessageType messageType)
         {
             SocketGuild guild = Context.Guild;
-            Server server = dbContext.GetOrCreateServer(guild);
-            ServerMessage[] messages = await dbContext.ServerMessages
-                .Where(x => x.ServerId == server.Id && x.Type == messageType)
-                .ToArrayAsync();
+            Server server = serverService.GetOrCreateServer(guild.Id);
+            ServerMessage[] messages = await serverMessageService.GetAllMessagesOfType(server, messageType);
             
             //Embed
             EmbedBuilder embedBuilder = new();
@@ -284,11 +264,8 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
                     {
                         Modal modal = modalService.CreateModal($"Enter New {messageType} Message", async (SetupWgAddMessage addMessage, SocketModal socketModal) =>
                         {
-                            if (!socketModal.GuildId.HasValue)
-                                return;
-                            
-                            await serverSetupService.AddMessage(socketModal.GuildId.Value, messageType, addMessage.Message);
-                            await socketModal.RespondAsync($"New {messageType.ToString().ToLower()} message has been saved.");
+                            await serverMessageService.AddMessage(server, messageType, addMessage.Message);
+                            await socketModal.RespondAsync(Messages.CreateSuccessful(messageType.ToString().ToLower()));
                         });
 
                         await messageComponent.RespondWithModalAsync(modal);
@@ -304,8 +281,8 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
                         MessageComponent menu = selectMenuService.CreateSelectMenu("Select", options,
                             async (item, messageComponent) =>
                             {
-                                await serverSetupService.RemoveMessage(guild.Id, Guid.Parse(item));
-                            }, "Message has been removed.");
+                                await serverMessageService.DeleteMessage(server, Guid.Parse(item));
+                            }, Messages.DeleteSuccessful(messageType.ToString().ToLower()));
 
                         await messageComponent.RespondAsync("Select what message to remove:", components: menu);
                     }
@@ -320,34 +297,30 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
         [SlashCommand("toggle", "Enables/disables welcome/goodbye messages")]
         public async Task SetupWgToggle()
         {
-            Server server = dbContext.GetOrCreateServer(Context.Guild);
+            Server server = serverService.GetOrCreateServer(Context.Guild.Id);
 
             if (!server.WelcomeMessageEnabled)
             {
                 if (server.WelcomeGoodbyeChannelId == null)
                 {
-                    await RespondAsync("No welcome/goodbye channel is set!");
+                    await RespondAsync(Messages.FeatureCannotBeEnable("welcome/goodbye messages", "a channel needs to be set"));
                     return;
                 }
 
-                bool welcomeMessage =
-                    dbContext.ServerMessages.Any(x => x.ServerId == server.Id && x.Type == MessageType.Welcome);
-                bool goodbyeMessage = dbContext.ServerMessages.Any(x => x.ServerId == server.Id && x.Type == MessageType.Goodbye);
+                bool welcomeMessage = await serverMessageService.GetIsAnyMessageOfType(server, MessageType.Welcome);
+                bool goodbyeMessage = await serverMessageService.GetIsAnyMessageOfType(server, MessageType.Goodbye);
 
                 if (!welcomeMessage || !goodbyeMessage)
                 {
-                    await RespondAsync("No welcome/goodbye messages are set!");
+                    await RespondAsync(Messages.FeatureCannotBeEnable("welcome/goodbye messages", "both a welcome and a goodbye message to be created"));
                     return;
                 }
             }
             
             server.WelcomeMessageEnabled = !server.WelcomeMessageEnabled;
-            await dbContext.SaveChangesAsync();
+            serverService.UpdateServer(server);
             
-            if(server.WelcomeMessageEnabled)
-                await RespondAsync($"Welcome/goodbye messages are now enabled.");
-            else
-                await RespondAsync("Welcome/goodbye messages are now disabled.");
+            await RespondAsync(server.WelcomeMessageEnabled ? Messages.FeatureEnabled("welcome/goodbye messages") : Messages.FeatureDisabled("welcome/goodbye messages"));
         }
 
         private class SetupWgAddMessage

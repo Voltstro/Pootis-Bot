@@ -1,35 +1,32 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Pootis_Bot.Helper;
 using Pootis_Bot.Services.Core.Client;
-using Pootis_Bot.Shared;
 using Pootis_Bot.Shared.Messages;
 using Pootis_Bot.Shared.Models;
 
-namespace Pootis_Bot.Services.Server;
+namespace Pootis_Bot.Services.Background;
 
 /// <summary>
 ///     Background service for handling server welcome and goodbye messages
 /// </summary>
-public class ServerWelcomeGoodbyeBackgroundService : IHostedService
+public sealed class ServerWelcomeGoodbyeBackgroundService : IHostedService
 {
     private readonly ILogger<ServerWelcomeGoodbyeBackgroundService> logger;
-    private readonly IDbContextFactory<PootisBotDbContext> dbContextFactory;
+    private readonly IServiceScopeFactory scopeFactory;
     private readonly DiscordSocketClient client;
     
     public ServerWelcomeGoodbyeBackgroundService(
         ILogger<ServerWelcomeGoodbyeBackgroundService> logger,
-        IDbContextFactory<PootisBotDbContext> dbContextFactory,
+        IServiceScopeFactory scopeFactory,
         ClientService clientService)
     {
         this.logger = logger;
-        this.dbContextFactory = dbContextFactory;
+        this.scopeFactory = scopeFactory;
         client = clientService.DiscordClient;
     }
     
@@ -49,12 +46,16 @@ public class ServerWelcomeGoodbyeBackgroundService : IHostedService
     
     private async Task ClientOnUserJoined(SocketGuildUser user)
     {
-        await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
         SocketGuild guild = user.Guild;
-        
         logger.LogInformation("{User} joined server {Server}.", user.Username, guild.Name);
+
+        if(user.IsBot || user.IsWebhook)
+            return;
         
-        Shared.Models.Server server = dbContext.GetOrCreateServer(guild);
+        using IServiceScope serviceScope = scopeFactory.CreateScope();
+        
+        ServerService serverService = serviceScope.ServiceProvider.GetRequiredService<ServerService>();
+        Shared.Models.Server server = serverService.GetOrCreateServer(guild.Id);
         
         //Ensure welcome message is enable, and a channel is set
         if(!server.WelcomeMessageEnabled || server.WelcomeGoodbyeChannelId == null)
@@ -68,15 +69,19 @@ public class ServerWelcomeGoodbyeBackgroundService : IHostedService
             return;
         }
         
-        await HandleMessage(MessageType.Welcome, guild, user, server, channel, dbContext);
+        await HandleMessage(MessageType.Welcome, guild, user, server, channel, serviceScope);
     }
     
     private async Task ClientOnUserLeft(SocketGuild guild, SocketUser user)
     {
-        await using PootisBotDbContext dbContext = await dbContextFactory.CreateDbContextAsync();
-        Shared.Models.Server server = dbContext.GetOrCreateServer(guild);
-        
         logger.LogInformation("{User} left server {Server}.", user.Username, guild.Name);
+        if(user.IsBot || user.IsWebhook)
+            return;
+        
+        using IServiceScope serviceScope = scopeFactory.CreateScope();
+        
+        ServerService serverService = serviceScope.ServiceProvider.GetRequiredService<ServerService>();
+        Shared.Models.Server server = serverService.GetOrCreateServer(guild.Id);
         
         //Ensure goodbye message is enable, and a channel is set
         if(!server.GoodbyeMessageEnabled || server.WelcomeGoodbyeChannelId == null)
@@ -90,19 +95,17 @@ public class ServerWelcomeGoodbyeBackgroundService : IHostedService
             return;
         }
 
-        await HandleMessage(MessageType.Goodbye, guild, user, server, channel, dbContext);
+        await HandleMessage(MessageType.Goodbye, guild, user, server, channel, serviceScope);
     }
     
-    private async Task HandleMessage(MessageType type, SocketGuild guild, SocketUser user, Shared.Models.Server server, SocketTextChannel textChannel, PootisBotDbContext dbContext)
+    private async Task HandleMessage(MessageType type, SocketGuild guild, SocketUser user, Shared.Models.Server server, SocketTextChannel textChannel, IServiceScope serviceScope)
     {
-        //Get goodbye messages
-        ServerMessage[] goodbyeMessages = await dbContext.ServerMessages
-            .Where(x => x.ServerId == server.Id && x.Type == type)
-            .ToArrayAsync();
+        ServerMessageService serverMessageService = serviceScope.ServiceProvider.GetRequiredService<ServerMessageService>();
+        ServerMessage[] messages = await serverMessageService.GetAllMessagesOfType(server, type);
         
         //Randomly select one
-        int index = Random.Shared.Next(0, goodbyeMessages.Length);
-        ServerMessage serverMessage = goodbyeMessages[index];
+        int index = Random.Shared.Next(0, messages.Length);
+        ServerMessage serverMessage = messages[index];
         
         //Format message
         string message = serverMessage.Message.Replace("%SERVER%", guild.Name).Replace("%USER%", type == MessageType.Goodbye ? user.Username : user.Mention);

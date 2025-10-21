@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
 using Pootis_Bot.Services.Audio;
 using Pootis_Bot.Services.Interactions.SelectMenu;
+using Pootis_Bot.Shared.Helper;
 using Victoria;
 
 namespace Pootis_Bot.Modules;
@@ -152,8 +153,8 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
             for (int i = 0; i < Math.Clamp(result.AudioTracks.Length, 0, 4); i++)
             {
                 LavaTrack track = result.AudioTracks[i];
-                string title = Utils.Truncate(track.Title, 53);
-                string author = Utils.Truncate(track.Author, 15);
+                string title = StringUtils.Truncate(track.Title, 53);
+                string author = StringUtils.Truncate(track.Author, 15);
 
                 options.Add($"{title} by {author}", track.Hash);
             }

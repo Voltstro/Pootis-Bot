@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pootis_Bot.Services.Core.Client;
-using Pootis_Bot.Services.Server;
 using Pootis_Bot.Shared.Models;
 
 namespace Pootis_Bot.Services.Background;
@@ -26,7 +25,10 @@ public sealed class AutoVcBackgroundService : IHostedService
     
     private List<ActiveAutoVcChannel> activeAutoVcChannels;
     
-    public AutoVcBackgroundService(ILogger<AutoVcBackgroundService> logger, ClientService clientService, IServiceScopeFactory scopeFactory)
+    public AutoVcBackgroundService(
+        ILogger<AutoVcBackgroundService> logger,
+        ClientService clientService,
+        IServiceScopeFactory scopeFactory)
     {
         this.logger = logger;
         client = clientService.DiscordClient;

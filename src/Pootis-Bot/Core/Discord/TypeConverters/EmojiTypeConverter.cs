@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Pootis_Bot.Helper;
+using Pootis_Bot.Shared.Helper;
 
 namespace Pootis_Bot.Core.Discord.TypeConverters;
 
