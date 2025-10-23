@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Pootis_Bot.Helper;
-using Pootis_Bot.Shared;
+using Pootis_Bot.Services;
+using Pootis_Bot.Shared.Helper;
 using Pootis_Bot.Shared.Models;
 
 namespace Pootis_Bot.Modules;
@@ -11,11 +11,11 @@ namespace Pootis_Bot.Modules;
 [Group("", "Commands for profile related things")]
 public class ProfileModule : InteractionModuleBase<SocketInteractionContext>
 {
-    private readonly PootisBotDbContext dbContext;
+    private readonly ProfileService profileService;
     
-    public ProfileModule(PootisBotDbContext dbContext)
+    public ProfileModule(ProfileService profileService)
     {
-        this.dbContext = dbContext;
+        this.profileService = profileService;
     }
     
     [SlashCommand("profile", "Gets a user's profile", true)]
@@ -25,12 +25,12 @@ public class ProfileModule : InteractionModuleBase<SocketInteractionContext>
 
         if (user.IsBot || user.IsWebhook)
         {
-            await RespondAsync("Selected user is a bot or a webhook!");
+            await RespondAsync(Messages.ValidationFailed(nameof(user), "not a bot or webhook"));
             return;
         }
-
-        Profile profileProfile = dbContext.GetOrCreateUser(user);
-
+        
+        Profile profileProfile = profileService.GetOrCreateProfile(user.Id);
+        
         EmbedBuilder embed = new();
         embed.WithTitle($"{user.Username}'s Profile");
         embed.WithFooter(profileProfile.ProfileMessage, user.GetAvatarUrl());
@@ -44,19 +44,19 @@ public class ProfileModule : InteractionModuleBase<SocketInteractionContext>
     }
     
     [SlashCommand("profile-message", "Sets your user profile message")]
-    public async Task SetUserProfileMessage(string message)
+    public async Task SetUserProfileMessage([MaxLength(25)] string message)
     {
         //TODO: We should probs filter this message
         if (string.IsNullOrWhiteSpace(message))
         {
-            await RespondAsync("Your message cannot just be empty or white space!");
+            await RespondAsync(Messages.ValidationFailed(nameof(message), "not empty or contain only whitespace"));
             return;
         }
 
-        Profile profileProfile = dbContext.GetOrCreateUser(Context.User);
-        profileProfile.ProfileMessage = message;
-        await dbContext.SaveChangesAsync();
+        Profile profile = profileService.GetOrCreateProfile(Context.User.Id);
+        profile.ProfileMessage = message;
+        profileService.UpdateProfile(profile);
 
-        await RespondAsync("Your profile message was updated.");
+        await RespondAsync(Messages.SetSuccessful("profile message", message));
     }
 }
