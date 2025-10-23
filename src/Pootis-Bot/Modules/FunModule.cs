@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
+using Pootis_Bot.Shared.Helper;
 using WikiDotNet;
 
 namespace Pootis_Bot.Modules;
@@ -20,34 +21,36 @@ public class FunModule : InteractionModuleBase<SocketInteractionContext>
     {
         if (string.IsNullOrWhiteSpace(search))
         {
-            await RespondAsync("Search cannot be empty or white space!");
+            await RespondAsync(Messages.ValidationFailed(nameof(search), "not empty"));
             return;
         }
 
-        await RespondAsync("Searching...");
+        await RespondAsync(Messages.Search("wikipedia"));
+        IUserMessage responseAsync = await GetOriginalResponseAsync();
         
-        WikiSearchResponse searchResult = wikiSearcher.Search(search, new WikiSearchSettings
+        WikiSearchResponse searchResult = await wikiSearcher.SearchAsync(search, new WikiSearchSettings
         {
-            ResultLimit = 8
+            ResultLimit = 8,
+            BotUserAgent = "PootisBot (https://github.com/Voltstro/Pootis-Bot)"
         });
+        
         if (!searchResult.WasSuccessful)
         {
             //TODO: We should read the errors
-            await RespondAsync("Wiki search was not successful!");
+            await responseAsync.ModifyAsync(x => x.Content = Messages.SearchFailed("wikipedia"));
             return;
         }
 
         EmbedBuilder embedBuilder = new();
         embedBuilder.WithTitle($"Wikipedia Search Results for `{search}`");
+        embedBuilder.WithColor(252, 252, 252);
+        embedBuilder.WithTimestamp(searchResult.Timestamp);
         foreach (WikiSearchResult querySearchResult in searchResult.Query.SearchResults)
         {
             embedBuilder.AddField($"{querySearchResult.Title} - ({querySearchResult.ConstantUrl.AbsoluteUri})",
                 $"{querySearchResult.Preview}...");
         }
-
-        embedBuilder.WithTimestamp(searchResult.Timestamp);
-
-        IUserMessage responseAsync = await GetOriginalResponseAsync();
+        
         await responseAsync.ModifyAsync(x =>
         {
             x.Content = string.Empty;

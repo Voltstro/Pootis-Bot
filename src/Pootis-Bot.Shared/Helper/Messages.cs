@@ -51,4 +51,12 @@ public static class Messages
     
     public static string FeatureCannotBeEnable(string featureName, string requirement) =>
         $"❌ {featureName} cannot be enabled! Requires {requirement}.";
+    
+    //
+    // Search
+    //
+
+    public static string Search(string searchThing) => $"🔍 Searching {searchThing}...";
+    
+    public static string SearchFailed(string searchThing) => $"❌ Failed searching {searchThing}! Please try again later.";
 }

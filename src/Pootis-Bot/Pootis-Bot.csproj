@@ -18,7 +18,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.9" />
         <PackageReference Include="Victoria" Version="7.0.5" />
-        <PackageReference Include="Wiki.Net" Version="4.1.1" />
+        <PackageReference Include="Wiki.Net" Version="4.2.0" />
     </ItemGroup>
 
     <ItemGroup>
