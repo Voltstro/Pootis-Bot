@@ -56,6 +56,7 @@ public class BasicModule : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("server", "Displays information about the server")]
+    [CommandContextType(InteractionContextType.Guild)]
     public async Task Server()
     {
         SocketGuild guild = Context.Guild;

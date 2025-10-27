@@ -13,6 +13,7 @@ using Victoria;
 
 namespace Pootis_Bot.Modules;
 
+[CommandContextType(InteractionContextType.Guild)]
 public class AudioModule : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly ILogger<AudioModule> logger;

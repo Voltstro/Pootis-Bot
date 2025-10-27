@@ -153,15 +153,7 @@ public class ClientService : IDisposable
 
         try
         {
-            if (botConfig.TestGuildId.HasValue)
-            {
-                await interactionService.RegisterCommandsToGuildAsync(botConfig.TestGuildId.Value);
-            }
-            else
-            {
-                await interactionService.RegisterCommandsGloballyAsync();
-            }
-
+            await interactionService.RegisterCommandsGloballyAsync();
         }
         catch (Exception ex)
         {

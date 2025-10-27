@@ -19,6 +19,7 @@ using MessageType = Pootis_Bot.Shared.Messages.MessageType;
 
 namespace Pootis_Bot.Modules;
 
+[CommandContextType(InteractionContextType.Guild)]
 [Group("setup", "Commands for server setup")]
 public class SetupModule : InteractionModuleBase<SocketInteractionContext>
 {
@@ -61,6 +62,8 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
             await RespondAsync(embed: embedBuilder.Build());
         }
         
+        [RequireBotPermission(GuildPermission.ViewChannel)]
+        [RequireUserPermission(GuildPermission.ViewChannel)]
         [SlashCommand("message", "Sets the message that rule reactions should occur on")]
         public async Task SetupRrMessage(SocketTextChannel channel, [Summary("messageId", "Discord ID of the message to look for a reaction on.")] string messageId)
         {
@@ -99,6 +102,8 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
                 $"channel {channel.Mention}({messageId})"));
         }
 
+        [RequireBotPermission(GuildPermission.ManageRoles)]
+        [RequireUserPermission(GuildPermission.ManageRoles)]
         [SlashCommand("role", "Sets what role is given on reaction")]
         public async Task SetupRrRole(SocketRole role)
         {
@@ -346,6 +351,8 @@ public class SetupModule : InteractionModuleBase<SocketInteractionContext>
             this.serverService = serverService;
         }
         
+        [RequireBotPermission(GuildPermission.ManageChannels)]
+        [RequireUserPermission(GuildPermission.ManageChannels)]
         [SlashCommand("create", "Creates a new AutoVc channel")]
         public async Task CreateAutoVc(string baseName, int maxChannels = 3, int maxUsers = 25)
         {
