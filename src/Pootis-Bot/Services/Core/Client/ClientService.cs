@@ -72,6 +72,7 @@ public class ClientService : IDisposable
         interactionService.AddTypeConverter<Emoji>(new EmojiTypeConverter());
         
         client.InteractionCreated += HandleInteraction;
+        interactionService.SlashCommandExecuted += SlashCommandExecuted;
     }
 
     /// <summary>
@@ -193,6 +194,34 @@ public class ClientService : IDisposable
             //response, or at least let the user know that something went wrong during the command execution.
             if (interaction.Type == InteractionType.ApplicationCommand)
                 await interaction.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
+        }
+    }
+    
+    private async Task SlashCommandExecuted(SlashCommandInfo command, IInteractionContext ctx, IResult result)
+    {
+        if (result.IsSuccess || result.Error == null)
+            return;
+
+        switch (result.Error)
+        {
+            case InteractionCommandError.UnknownCommand: //Interactions shouldn't ever have this right?
+                await ctx.Interaction.RespondAsync("Unknown Command!");
+                break;
+            case InteractionCommandError.ParseFailed:
+            case InteractionCommandError.ConvertFailed:
+            case InteractionCommandError.BadArgs:
+                await ctx.Interaction.RespondAsync($"Command has bad arguments! {result.ErrorReason}");
+                break;
+            case InteractionCommandError.Exception:
+            case InteractionCommandError.Unsuccessful:
+                await ctx.Interaction.RespondAsync("Sorry, but an internal error occured while executing this command!");
+                logger.LogError("An error occured while executing a command!\n{ResultErrorReason}", result.ErrorReason);
+                break;
+            case InteractionCommandError.UnmetPrecondition:
+                await ctx.Interaction.RespondAsync("Sorry, but you don't meet the preconditions to run this command!");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 }
