@@ -173,6 +173,11 @@ public class ClientService : IDisposable
     
     private async Task HandleInteraction(SocketInteraction interaction)
     {
+        if (interaction is not ISlashCommandInteraction slashCommandInteraction)
+            return;
+        
+        logger.LogInformation("Interaction /{CommandName} on guild {GuildId}", slashCommandInteraction.Data.Name, slashCommandInteraction.GuildId);
+        
         try
         {
             SocketInteractionContext ctx = new(client, interaction);
@@ -184,8 +189,7 @@ public class ClientService : IDisposable
 
             //If a Slash Command execution fails it is most likely that the original interaction acknowledgement will persist. It is a good idea to delete the original
             //response, or at least let the user know that something went wrong during the command execution.
-            if (interaction.Type == InteractionType.ApplicationCommand)
-                await interaction.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
+            await interaction.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
         }
     }
     
