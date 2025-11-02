@@ -10,9 +10,7 @@ Pootis-Bot, a multipurpose, modular, open-source Discord bot written in the C# l
 
 # Bot Features
 
-Due to modular design of Pootis-Bot, any number of features could be added to Pootis.
-
-The bot by default comes with a few modules, theses modules can of course be removed.
+Pootis-Bot has a fairly modular design, a module includes commands that a user can use. Pootis-Bot includes the base services that most modules should need. There are also some included modules.
 
 ## Included Modules
 
@@ -22,14 +20,10 @@ The bot by default comes with a few modules, theses modules can of course be rem
     - Allows for a voice channel to automatically create smaller sub chats
 - Profiles
     - XP, levels
-- Reminders
-    - Remind you about stuff
 - Rule Reaction
     - Require a message to be reacted to gain entry
 - Welcome & Goodbye Message
     - Set a custom welcome and goodbye message for when your users join and leave
-- Permissions
-    - Set permissions on any bot command.
 
 ## Getting Started
 

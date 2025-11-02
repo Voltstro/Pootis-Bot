@@ -1,0 +1,4 @@
+apiRules:
+- exclude:
+    uidRegex: ^Pootis_Bot\.Shared\.Migrations.*$
+    type: Namespace

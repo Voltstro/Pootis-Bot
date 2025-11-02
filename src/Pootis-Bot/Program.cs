@@ -1,65 +1,111 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Pootis_Bot.Core;
-using Pootis_Bot.Helper;
-using Pootis_Bot.Logging;
-using Spectre.Console;
-using Spectre.Console.Cli;
+using Pootis_Bot.Services;
+using Pootis_Bot.Services.Audio;
+using Pootis_Bot.Services.Background;
+using Pootis_Bot.Services.Core.Client;
+using Pootis_Bot.Services.Interactions.Buttons;
+using Pootis_Bot.Services.Interactions.Modal;
+using Pootis_Bot.Services.Interactions.SelectMenu;
+using Pootis_Bot.Shared;
+using Pootis_Bot.Shared.Logging;
+using Serilog;
+using Victoria;
+using WikiDotNet;
 
-namespace Pootis_Bot;
+//Create application
+HostApplicationBuilder builder = Host.CreateApplicationBuilder();
 
-internal static class Program
+//Setup logger
+Logger logger = builder.Services.SetupLogger(builder.Configuration);
+
+try
 {
-    public static void Main(string[] args)
-    {
-        CommandApp app = new CommandApp();
-        app.SetDefaultCommand<BaseCommand>();
-        app.Run(args);
-    }
+    //Http Client
+    builder.Services.AddHttpClient();
 
-    private sealed class BaseCommand : Command<BaseCommand.Settings>
+    //Memory cache
+    builder.Services.AddMemoryCache();
+    
+    //Setup Config
+    PootisBotConfig pootisBotConfig = new();
+    IConfigurationSection config = builder.Configuration.GetSection("Config");
+    config.Bind(pootisBotConfig);
+    builder.Services.Configure<PootisBotConfig>(config);
+    
+    //Install Discord client config
+    builder.Services.Configure<DiscordSocketConfig>(builder.Configuration.GetSection("DiscordConfig"));
+    
+    //Generic services
+    builder.Services.AddScoped<AutoVcService>();
+    builder.Services.AddScoped<ProfileService>();
+    builder.Services.AddScoped<ServerMessageService>();
+    builder.Services.AddScoped<ServerService>();
+    
+    //Core Pootis-Bot services
+    builder.Services.AddSingleton<ClientService>();
+    builder.Services.AddHostedService<ClientBackgroundService>();
+    
+    //Interaction services
+    builder.Services.AddSingleton<SelectMenuService>();
+    builder.Services.AddSingleton<ButtonsService>();
+    builder.Services.AddSingleton<ModalService>();
+    
+    //Background services
+    builder.Services.AddHostedService<AutoVcBackgroundService>();
+    builder.Services.AddHostedService<ProfileXpBackgroundService>();
+    builder.Services.AddHostedService<ServerRuleReactionBackgroundService>();
+    builder.Services.AddHostedService<ServerWelcomeGoodbyeBackgroundService>();
+
+    //Audio services
+    if (pootisBotConfig.EnableAudioServices)
     {
-        public sealed class Settings : CommandSettings
+        //Extensions
+        builder.Services.AddSingleton<LavaNode<LavaPlayer<LavaTrack>, LavaTrack>>(provider =>
         {
-            [CommandOption("--headless")]
-            public bool Headless { get; init; }
-        }
+            ClientService clientService = provider.GetRequiredService<ClientService>();
+            
+            ILogger<LavaNode<LavaPlayer<LavaTrack>, LavaTrack>> lavaNodeLogger = provider.GetRequiredService<ILogger<LavaNode<LavaPlayer<LavaTrack>, LavaTrack>>>();
+            return new LavaNode(clientService.DiscordClient, pootisBotConfig.VictoriaConfig, lavaNodeLogger);
+        });
         
-        public override int Execute(CommandContext context, Settings settings)
-        {
-            //Ascii art of Pootis-Bot because why not ¯\_(ツ)_/¯
-            FigletFont font = FigletFont.Parse(Resources.StandardFont);
-            AnsiConsole.Write(new FigletText(font, "Pootis-Bot"));
-            AnsiConsole.MarkupLine($"        [bold]Version[/]: {VersionUtils.GetApplicationVersion()}");
-            AnsiConsole.Write("\n");
-            
-            RunBot(settings).GetAwaiter().GetResult();
-            return 0;
-        }
-
-        private async Task<int> RunBot(Settings settings)
-        {
-            Bot bot = new(new BotSettings
-            {
-                Headless = settings.Headless
-            });
-
-            Logger.Init();
-            try
-            {
-                await bot.Run();
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "An error occured during startup!");
-                return 1;
-            }
-            
-            if(!settings.Headless)
-                Bot.ConsoleLoop();
-
-            bot.Dispose();
-            return 0;
-        }
+        builder.Services.AddSingleton<AudioService>();
     }
+    
+    //Other
+    builder.Services.AddSingleton<WikiSearcher>();
+    
+    //Setup DB
+    builder.Services.UsePootisBotDbContext(builder.Configuration, "Pootis");
+
+    //Setup app
+    IHost host = builder.Build();
+
+    //Handle DB migrations
+    host.HandleDbMigrations();
+    
+    //Start
+    await host.RunAsync();
 }
+catch (Exception ex)
+{
+    Log.Error(ex, "An uncaught error occured!");
+#if DEBUG
+    if (Debugger.IsAttached)
+        throw;
+#endif
+    
+    return 1;
+}
+finally
+{
+    logger.Dispose();
+}
+
+return 0;
