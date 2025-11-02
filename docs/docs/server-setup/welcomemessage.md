@@ -1,6 +1,6 @@
-Pootis-Bot has a custom welcome and goodbye message system.
+# Welcome & Goodbye Message
 
-## Setting welcome message
+Pootis-Bot has a custom welcome and goodbye message system.
 
 The welcome message is a message that is sent everytime a new user joins the server.
 

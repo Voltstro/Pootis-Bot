@@ -1,4 +1,3 @@
-<script src="../../assets/javascript/jquery-3.4.1.min.js"></script>
 <script src="../../assets/javascript/getallversions.js"></script>
 
 This list contains all released builds of Pootis-Bot.
