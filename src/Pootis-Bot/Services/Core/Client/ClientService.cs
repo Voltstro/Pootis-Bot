@@ -166,7 +166,7 @@ public class ClientService : IDisposable
     
     private Task ClientOnLogMessage(LogMessage logMessage)
     {
-        LogLevel logLevel = Utils.DiscordLogSeverityToLogLevel(logMessage.Severity);
+        LogLevel logLevel = DiscordLogSeverityToLogLevel(logMessage.Severity);
         logger.Log(logLevel, logMessage.Exception, logMessage.Message);
         return Task.CompletedTask;
     }
@@ -219,5 +219,18 @@ public class ClientService : IDisposable
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+    
+    private static LogLevel DiscordLogSeverityToLogLevel(LogSeverity logSeverity)
+    {
+        return logSeverity switch
+        {
+            LogSeverity.Critical => LogLevel.Critical,
+            LogSeverity.Error => LogLevel.Error,
+            LogSeverity.Warning => LogLevel.Warning,
+            LogSeverity.Info => LogLevel.Information,
+            LogSeverity.Verbose or LogSeverity.Debug => LogLevel.Debug,
+            _ => throw new ArgumentOutOfRangeException(nameof(logSeverity), logSeverity, null)
+        };
     }
 }

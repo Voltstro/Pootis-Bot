@@ -1,0 +1,6 @@
+- name: Articles
+  href: articles/
+- name: API Documentation
+  href: api/
+- name: Changelog
+  href: CHANGELOG.html

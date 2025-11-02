@@ -7,7 +7,7 @@ namespace Pootis_Bot.Core;
 /// <summary>
 ///     Pootis-Bot's general config
 /// </summary>
-public class PootisBotConfig
+public sealed class PootisBotConfig
 {
     public const string PootisBotConfigKey = "Config";
     
